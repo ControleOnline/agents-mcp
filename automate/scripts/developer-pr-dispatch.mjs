@@ -10,6 +10,15 @@ import {
 const GRAPHQL_URL = 'https://api.github.com/graphql';
 const RETRY = githubRetryConfig('DEVELOPER_PR_DISPATCH');
 const DEFAULT_ALLOWED_AUTHOR_ASSOCIATIONS = 'OWNER,MEMBER,COLLABORATOR';
+const DEFAULT_WORK_STATUSES = 'Work,Working';
+const DEVELOPER_LABEL = 'agent:developer';
+const ALL_AGENT_LABELS = [
+  'agent:developer',
+  'agent:security',
+  'agent:qa',
+  'agent:devops',
+  'agent:sysadmin',
+];
 const QA_ACCEPTED_LABEL = 'qa:accepted';
 const QA_REJECTED_LABEL = 'qa:rejected';
 const SECURITY_ACCEPTED_LABEL = 'security:accepted';
@@ -88,6 +97,18 @@ async function getProjectSnapshot(org, projectNumber) {
           }
           nodes {
             id
+            fieldValues(first:20) {
+              nodes {
+                ... on ProjectV2ItemFieldSingleSelectValue {
+                  name
+                  field {
+                    ... on ProjectV2SingleSelectField {
+                      name
+                    }
+                  }
+                }
+              }
+            }
             content {
               ... on Issue {
                 id
@@ -100,6 +121,11 @@ async function getProjectSnapshot(org, projectNumber) {
                 authorAssociation
                 author {
                   login
+                }
+                labels(first:50) {
+                  nodes {
+                    name
+                  }
                 }
                 repository {
                   nameWithOwner
@@ -156,6 +182,15 @@ async function getProjectSnapshot(org, projectNumber) {
   return firstPage;
 }
 
+function issueLabels(issue) {
+  return (issue.labels?.nodes || []).map((label) => label?.name).filter(Boolean);
+}
+
+function getProjectStatus(item) {
+  const statusValue = item.fieldValues?.nodes?.find((node) => node?.field?.name?.toLowerCase() === 'status');
+  return statusValue?.name || null;
+}
+
 function pullRequestLabels(pr) {
   return (pr.labels?.nodes || []).map((label) => label?.name).filter(Boolean);
 }
@@ -204,6 +239,22 @@ function prIsPendingQaOrSecurity(pr) {
   return isOpenPullRequest(pr) && !prIsRejected(pr) && !prIsFullyApproved(pr);
 }
 
+function currentAgentLabels(issue) {
+  return issueLabels(issue).filter((label) => ALL_AGENT_LABELS.includes(label));
+}
+
+function issueBelongsToDeveloper(issue) {
+  const agentLabels = currentAgentLabels(issue);
+  if (agentLabels.length === 0) return true;
+  return agentLabels.every((label) => label === DEVELOPER_LABEL);
+}
+
+function issueInWorkStatus(item, workStatuses) {
+  const currentStatus = (getProjectStatus(item) || '').trim();
+  if (!currentStatus) return true;
+  return workStatuses.has(currentStatus.toLowerCase());
+}
+
 function serializeIssue(item) {
   const issue = item.content;
   const pullRequests = normalizePullRequests(issue);
@@ -218,8 +269,10 @@ function serializeIssue(item) {
       updatedAt: issue.updatedAt,
       authorLogin: issue.author?.login || null,
       authorAssociation: issue.authorAssociation || null,
+      labels: issueLabels(issue),
     },
     projectItemId: item.id,
+    currentProjectStatus: getProjectStatus(item),
     openPullRequestCount: pullRequests.filter((pr) => pr.state === 'OPEN').length,
     pendingPullRequestCount: pullRequests.filter((pr) => prIsPendingQaOrSecurity(pr)).length,
     pullRequests: pullRequests.map((pr) => ({
@@ -233,11 +286,13 @@ function serializeIssue(item) {
   };
 }
 
-function isDeveloperCandidate(item, allowedAssociations) {
+function isDeveloperCandidate(item, allowedAssociations, workStatuses) {
   const issue = item.content;
   if (!issue?.repository?.nameWithOwner) return false;
   if (issue.state !== 'OPEN') return false;
   if (!authorIsEligible(issue, allowedAssociations)) return false;
+  if (!issueInWorkStatus(item, workStatuses)) return false;
+  if (!issueBelongsToDeveloper(issue)) return false;
 
   const openPullRequests = normalizePullRequests(issue).filter((pr) => isOpenPullRequest(pr));
   if (openPullRequests.length === 0) return true;
@@ -262,13 +317,18 @@ async function main() {
       value.toUpperCase()
     )
   );
+  const workStatuses = new Set(
+    parseCsv(env('DEVELOPER_WORK_STATUSES', env('AGENT_WORK_STATUSES', DEFAULT_WORK_STATUSES))).map((value) =>
+      value.toLowerCase()
+    )
+  );
 
   const data = await getProjectSnapshot(org, projectNumber);
   const project = data?.organization?.projectV2;
   if (!project) throw new Error(`Project not found: ${org}/projects/${projectNumber}`);
 
   const items = sortByCreatedAt(project.items?.nodes || []);
-  const candidateItems = items.filter((item) => isDeveloperCandidate(item, allowedAssociations));
+  const candidateItems = items.filter((item) => isDeveloperCandidate(item, allowedAssociations, workStatuses));
 
   const result = {
     generatedAt: new Date().toISOString(),
@@ -281,23 +341,24 @@ async function main() {
       title: project.title,
     },
     allowedAuthorAssociations: Array.from(allowedAssociations),
+    workStatuses: Array.from(workStatuses),
     candidateCount: candidateItems.length,
     candidateItems: candidateItems.map((item) => serializeIssue(item)),
     selectedItem: candidateItems.length > 0 ? serializeIssue(candidateItems[0]) : null,
-    discoveryMode: 'open-team-issues-without-pending-qa-security-pr',
+    discoveryMode: 'open-team-issues-in-work-owned-by-developer-without-pending-qa-security-pr',
   };
 
   if (candidateItems.length === 0) {
     result.ok = true;
     result.skipped = true;
-    result.reason = 'Nenhuma issue aberta de membro da equipe sem PR pendente de QA/Security foi encontrada.';
+    result.reason = 'Nenhuma issue aberta de membro da equipe em Work/Working e pertencente a Developer sem PR pendente de QA/Security foi encontrada.';
     const outPath = writeOutputFile(result);
     console.log(JSON.stringify({ ok: true, skipped: true, reason: result.reason, outPath }, null, 2));
     return;
   }
 
   result.ok = true;
-  result.reason = 'Selecao concluida usando apenas issue aberta, autoria de membro da equipe e ausencia de PR pendente de QA/Security.';
+  result.reason = 'Seleção concluída usando issue aberta, autoria de membro da equipe, status em Work/Working, ownership de Developer e ausência de PR pendente de QA/Security.';
   const outPath = writeOutputFile(result);
   console.log(
     JSON.stringify(
