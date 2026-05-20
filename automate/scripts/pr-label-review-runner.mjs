@@ -13,26 +13,32 @@ const RETRY = githubRetryConfig('PR_LABEL_REVIEW');
 const DEFAULT_ALLOWED_AUTHOR_ASSOCIATIONS = 'OWNER,MEMBER,COLLABORATOR';
 const DEFAULT_STAGING_BRANCH = 'staging';
 const DEFAULT_BLOCKED_HEAD_BRANCHES = 'master,main,staging';
+const DEFAULT_WORK_STATUSES = 'Work,Working';
+const ALL_AGENT_LABELS = [
+  'agent:developer',
+  'agent:security',
+  'agent:qa',
+  'agent:devops',
+  'agent:sysadmin',
+];
 
 const REVIEWER_META = {
   qa: {
     displayName: 'Quality Assurance',
     acceptedLabel: 'qa:accepted',
     rejectedLabel: 'qa:rejected',
+    expectedIssueLabel: 'agent:qa',
+    nextIssueLabel: 'agent:qa',
   },
   security: {
     displayName: 'Security Review',
     acceptedLabel: 'security:accepted',
     rejectedLabel: 'security:rejected',
+    expectedIssueLabel: 'agent:security',
+    nextIssueLabel: 'agent:qa',
   },
 };
 
-const ALL_APPROVAL_LABELS = [
-  REVIEWER_META.qa.acceptedLabel,
-  REVIEWER_META.security.acceptedLabel,
-  'approved:qa',
-  'approved:security',
-];
 const ALL_REVIEW_LABELS = [
   REVIEWER_META.qa.acceptedLabel,
   REVIEWER_META.qa.rejectedLabel,
@@ -167,6 +173,18 @@ async function getProjectSnapshot(org, projectNumber) {
           }
           nodes {
             id
+            fieldValues(first:20) {
+              nodes {
+                ... on ProjectV2ItemFieldSingleSelectValue {
+                  name
+                  field {
+                    ... on ProjectV2SingleSelectField {
+                      name
+                    }
+                  }
+                }
+              }
+            }
             content {
               ... on Issue {
                 id
@@ -252,6 +270,11 @@ function pullRequestLabels(pr) {
   return labelsFrom(pr.labels?.nodes || []);
 }
 
+function getProjectStatus(item) {
+  const statusValue = item.fieldValues?.nodes?.find((node) => node?.field?.name?.toLowerCase() === 'status');
+  return statusValue?.name || null;
+}
+
 function authorIsEligible(issue, allowedAssociations) {
   return allowedAssociations.has((issue.authorAssociation || '').toUpperCase());
 }
@@ -318,13 +341,21 @@ function sortByIssueCreatedAt(items) {
   });
 }
 
-function getCandidate(items, role, allowedAssociations, stagingBranch, blockedHeadBranches) {
+function issueInExpectedStage(item, meta, workStatuses) {
+  const status = (getProjectStatus(item) || '').trim();
+  if (status && !workStatuses.has(status.toLowerCase())) return false;
+  const labels = new Set(issueLabels(item.content));
+  return labels.has(meta.expectedIssueLabel);
+}
+
+function getCandidate(items, role, allowedAssociations, stagingBranch, blockedHeadBranches, workStatuses) {
   const meta = REVIEWER_META[role];
   for (const item of sortByIssueCreatedAt(items)) {
     const issue = item.content;
     if (!issue?.repository?.nameWithOwner) continue;
     if (issue.state !== 'OPEN') continue;
     if (!authorIsEligible(issue, allowedAssociations)) continue;
+    if (!issueInExpectedStage(item, meta, workStatuses)) continue;
     if (issueAlreadyReviewed(issue, meta)) continue;
 
     const pr = candidatePullRequest(issue, stagingBranch, blockedHeadBranches);
@@ -371,8 +402,18 @@ async function addIssueComment(repoFullName, issueNumber, body) {
   });
 }
 
-function serializeCandidate(issue, pr) {
+async function syncIssueStage(issue, meta) {
+  for (const label of ALL_AGENT_LABELS) {
+    await removeLabelFromIssue(issue.repository.nameWithOwner, issue.number, label);
+  }
+
+  const nextLabels = [meta.acceptedLabel, meta.nextIssueLabel].filter(Boolean);
+  await addLabelsToIssue(issue.repository.nameWithOwner, issue.number, nextLabels);
+}
+
+function serializeCandidate(item, issue, pr) {
   return {
+    currentProjectStatus: getProjectStatus(item),
     issue: {
       ref: `${issue.repository.nameWithOwner}#${issue.number}`,
       title: issue.title,
@@ -392,14 +433,19 @@ function serializeCandidate(issue, pr) {
 }
 
 function buildComment(meta, issueRef, prRef) {
+  const closingLine =
+    meta.nextIssueLabel === 'agent:qa'
+      ? 'A trilha foi entregue para `agent:qa` com o aceite de Security registrado.'
+      : 'A trilha segue pronta para a aprovação exclusiva do CTO, mantendo `agent:qa` como ownership atual.';
+
   return [
-    `### ${meta.displayName} concluido`,
+    `### ${meta.displayName} concluído`,
     '',
     `Issue: ${issueRef}`,
     `PR: ${prRef}`,
     '',
     `Resultado: foram registrados os labels \`${meta.acceptedLabel}\` na issue e na PR correspondente.`,
-    'Se a trilha precisar voltar para Developer, remova os labels de aprovacao antes do novo handoff.',
+    closingLine,
   ].join('\n');
 }
 
@@ -428,12 +474,22 @@ async function main() {
       value.toUpperCase()
     )
   );
+  const workStatuses = new Set(
+    parseCsv(env('PR_REVIEW_WORK_STATUSES', DEFAULT_WORK_STATUSES)).map((value) => value.toLowerCase())
+  );
 
   const data = await getProjectSnapshot(org, projectNumber);
   const project = data?.organization?.projectV2;
   if (!project) throw new Error(`Project not found: ${org}/projects/${projectNumber}`);
 
-  const candidate = getCandidate(project.items?.nodes || [], role, allowedAssociations, stagingBranch, blockedHeadBranches);
+  const candidate = getCandidate(
+    project.items?.nodes || [],
+    role,
+    allowedAssociations,
+    stagingBranch,
+    blockedHeadBranches,
+    workStatuses
+  );
   const result = {
     generatedAt: new Date().toISOString(),
     dryRun,
@@ -444,13 +500,14 @@ async function main() {
       id: project.id,
       title: project.title,
     },
-    candidate: candidate ? serializeCandidate(candidate.issue, candidate.pr) : null,
+    workStatuses: Array.from(workStatuses),
+    candidate: candidate ? serializeCandidate(candidate.item, candidate.issue, candidate.pr) : null,
   };
 
   if (!candidate) {
     result.ok = true;
     result.skipped = true;
-    result.reason = `Nenhuma issue elegivel para ${meta.displayName} foi encontrada.`;
+    result.reason = `Nenhuma issue elegível para ${meta.displayName} na etapa ${meta.expectedIssueLabel} foi encontrada.`;
     const outPath = writeOutputFile(result);
     console.log(JSON.stringify({ ok: true, skipped: true, reason: result.reason, outPath }, null, 2));
     return;
@@ -463,6 +520,7 @@ async function main() {
     issue: issueRef,
     pullRequest: prRef,
     labelsApplied: [meta.acceptedLabel],
+    nextIssueLabel: meta.nextIssueLabel,
     legacyLabelsStillRecognized: ['approved:qa', 'rejected:qa', 'approved:security', 'rejected:security'],
   };
 
@@ -471,7 +529,7 @@ async function main() {
       await removeLabelFromIssue(candidate.issue.repository.nameWithOwner, candidate.issue.number, label);
       await removeLabelFromIssue(candidate.pr.repository.nameWithOwner, candidate.pr.number, label);
     }
-    await addLabelsToIssue(candidate.issue.repository.nameWithOwner, candidate.issue.number, [meta.acceptedLabel]);
+    await syncIssueStage(candidate.issue, meta);
     await addLabelsToPullRequest(candidate.pr.repository.nameWithOwner, candidate.pr.number, [meta.acceptedLabel]);
     await addIssueComment(
       candidate.issue.repository.nameWithOwner,
@@ -481,9 +539,23 @@ async function main() {
   }
 
   result.ok = true;
-  result.reason = `${meta.displayName} registrou ${meta.acceptedLabel} na issue e na PR.`;
+  result.reason = `${meta.displayName} registrou ${meta.acceptedLabel} e manteve a trilha na etapa operacional correta.`;
   const outPath = writeOutputFile(result);
-  console.log(JSON.stringify({ ok: true, dryRun, issue: issueRef, pullRequest: prRef, label: meta.acceptedLabel, outPath }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        ok: true,
+        dryRun,
+        issue: issueRef,
+        pullRequest: prRef,
+        label: meta.acceptedLabel,
+        nextIssueLabel: meta.nextIssueLabel,
+        outPath,
+      },
+      null,
+      2
+    )
+  );
 }
 
 main().catch((error) => {
