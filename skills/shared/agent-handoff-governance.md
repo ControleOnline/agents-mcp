@@ -10,7 +10,7 @@ Use esta skill para padronizar tags, transicao de etapa, handoff tecnico e desvi
 2. nunca atribua a task a pessoas, bots ou fallbacks tecnicos; assignee nao faz parte do fluxo
 3. agentes nao fecham tasks; so humanos podem mover a issue para `closed`
 4. se a task estiver em `Work` ou `Working` sem `agent:*`, a entrada padrao e `Developer`
-5. o fluxo tecnico padrao e sequencial: `Developer` troca para `Security`, `Security` troca para `Q.A.`, `Q.A.` move para `In Review` quando aprovar tecnicamente, um humano decide a passagem de `In Review` para `Deploy`, e `DevOps` executa a promocao a partir de `Deploy`
+5. o fluxo tecnico padrao e sequencial: `Developer` implementa e publica PR para `staging`, `Security` registra `security:accepted` ou `security:rejected` na PR, `Q.A.` registra `qa:accepted` ou `qa:rejected` na PR, somente o `CTO` aprova a PR no GitHub, promove para `staging` e move a task para `In Review`, um humano decide a passagem de `In Review` para `Deploy`, e `DevOps` executa a promocao a partir de `Deploy`
 6. qualquer etapa pode abrir uma task paralela de infraestrutura com `agent:sysadmin`; essa task nunca substitui a tarefa-mãe e deve sempre referenciá-la
 7. quando o `Sysadmin` concluir a task paralela, ele deve trocar essa task para `agent:security` e comentar na tarefa-mãe que o impedimento foi resolvido ou diagnosticado
 8. cada agent so troca a tag ou a coluna da propria proxima etapa quando sua etapa estiver realmente concluida
