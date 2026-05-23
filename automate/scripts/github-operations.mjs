@@ -35,6 +35,29 @@ function requiredToken() {
   return value;
 }
 
+function parseGraphQlErrorMessage(error) {
+  const message = error?.message || String(error || '');
+  try {
+    return JSON.parse(message);
+  } catch {
+    return null;
+  }
+}
+
+function isMissingProjectError(error) {
+  const parsed = parseGraphQlErrorMessage(error);
+  if (
+    parsed?.errors?.some(
+      (entry) => entry?.type === 'NOT_FOUND' && Array.isArray(entry.path) && entry.path.includes('projectV2')
+    )
+  ) {
+    return true;
+  }
+
+  const message = error?.message || '';
+  return /Could not resolve to a ProjectV2/i.test(message) || /Project not found:/i.test(message);
+}
+
 async function githubGraphQL(query, variables = {}) {
   const auth = requiredToken();
   return retryAsync(
@@ -543,6 +566,35 @@ function statusMatches(status, allowedStatuses) {
   return allowedStatuses.some((entry) => entry.toLowerCase() === normalized);
 }
 
+function buildMissingProjectAuditSummary({
+  org,
+  projectNumber,
+  dryRun,
+  workStatuses,
+  inReviewStatuses,
+  doneStatuses,
+}) {
+  return {
+    generatedAt: new Date().toISOString(),
+    mode: 'manager-audit',
+    dryRun,
+    skipped: true,
+    reason: 'project-not-found',
+    project: {
+      org,
+      number: projectNumber,
+      id: null,
+      title: null,
+    },
+    workStatuses,
+    inReviewStatuses,
+    doneStatuses,
+    actionCount: 0,
+    actions: [],
+    notes: [`No ProjectV2 found for ${org}#${projectNumber}. Scheduled audit skipped.`],
+  };
+}
+
 async function updateProjectStatus(input) {
   const project = await getProjectMetadata(input.org, Number(input.project_number));
   const statusField = getStatusField(project);
@@ -731,7 +783,22 @@ async function runManagerAudit(explicitDryRun = null) {
   const commentChanges = env('GITHUB_MANAGER_COMMENT_CHANGES', 'true').toLowerCase() !== 'false';
   const cleanupAssignees = env('GITHUB_MANAGER_REMOVE_ASSIGNEES', 'true').toLowerCase() !== 'false';
 
-  const project = await getProjectAuditSnapshot(org, projectNumber);
+  let project;
+  try {
+    project = await getProjectAuditSnapshot(org, projectNumber);
+  } catch (error) {
+    if (isMissingProjectError(error)) {
+      return buildMissingProjectAuditSummary({
+        org,
+        projectNumber,
+        dryRun,
+        workStatuses,
+        inReviewStatuses,
+        doneStatuses,
+      });
+    }
+    throw error;
+  }
   const statusField = getStatusField(project);
   const inReviewOption = getStatusOption(statusField, inReviewStatuses[0] || 'In Review');
   const actions = [];
@@ -894,6 +961,8 @@ async function main() {
           ok: true,
           mode: summary.mode,
           dryRun: summary.dryRun,
+          skipped: summary.skipped === true,
+          reason: summary.reason || null,
           actionCount: summary.actionCount,
           outPath,
         },
