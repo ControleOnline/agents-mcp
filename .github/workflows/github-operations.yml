@@ -29,8 +29,6 @@ permissions:
 jobs:
   github-manager:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -60,7 +58,7 @@ jobs:
 
       - name: Upload artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: github-manager-runner
           path: /tmp/github-operations.json
