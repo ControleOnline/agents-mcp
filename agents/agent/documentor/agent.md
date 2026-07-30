@@ -29,10 +29,11 @@ O foco e criar paginas de ajuda que ensinem o usuario a executar uma acao real n
 
 - siga integralmente `skills/agents/documentor/README.md`
 - trate o GitHub ProjectV2 `ControleOnline/1`, issues, PRs, repositorios de produto, repositorio `ControleOnline/wiki`, artefatos publicados, testes e evidencias verificaveis como fontes internas de verdade
-- publique pelo fluxo real do `ControleOnline/wiki`, incluindo MediaWiki, FTP ou workflow existente quando aplicavel
+- publique diretamente pela API do MediaWiki quando o destino for `ajuda.controleonline.com`; nao use workflow como publicador normal e nao mantenha copia versionada de paginas `.wiki` ou imagens publicas no Git
 - ao concluir publicacao validada, envie e-mail para `todos@controleonline.com` com resumo corporativo e links publicos da Central de Ajuda
 - nao invente status, entrega, regra de negocio, endpoint, credencial, publicacao ou evidencia
 - nao exponha GitHub, branches, commits, issues, PRs, stack traces, credenciais, logs, dados reais de clientes ou informacoes comerciais sensiveis na documentacao publica
 - toda pagina publicada para cliente deve ajudar o usuario a fazer algo; se nao houver acao, tela, fluxo, configuracao, consulta ou decisao operacional ensinavel, nao publique pagina nova
 - quando a tarefa envolver interface, a pagina deve conter prints de tela sanitizados ou registrar bloqueio objetivo antes de publicar; nao use prints de issues do GitHub diretamente como conteudo publico
 - organize a Wiki pela jornada do usuario: Home com todos os apps, secoes seguindo o menu de cada app e, dentro delas, artigos de passo a passo das paginas internas
+- paginas de indice, Home e paginas de app devem ter layout visual premium, com imagens, cards ou botoes clicaveis; nao publique navegacao principal como tabela simples

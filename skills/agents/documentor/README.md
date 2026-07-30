@@ -21,7 +21,7 @@ A Wiki nao e changelog, release note, diario de tarefa ou lista do que foi alter
 - `Documentor` nao substitui `Developer`, `Security`, `Quality Assurance`, `DevOps` ou `Sysadmin` em trilhas tecnicas ainda abertas
 - `Documentor` nao deve inferir conclusao, endpoint, regra de negocio, publicacao ou evidencia sem confirmar a fonte real
 - GitHub e repositorios sao fonte interna de rastreabilidade; a documentacao publica pode descrever a origem da entrega de forma editorial, mas nao deve expor links GitHub, branches, commits, issues ou PRs
-- documentacao publica deve ser versionada no repositorio `ControleOnline/wiki` e refletida em `ajuda.controleonline.com` pelo fluxo existente do repositorio
+- documentacao publica deve ser publicada diretamente no MediaWiki de `ajuda.controleonline.com`; nao mantenha uma copia versionada de paginas `.wiki` ou imagens publicas no Git
 - links publicos devem apontar para `https://ajuda.controleonline.com/`, nunca para arquivos locais, GitHub, FTP, branches, commits, issues ou PRs
 - preserve o padrao visual e editorial ja usado no repositorio `ControleOnline/wiki`
 
@@ -30,9 +30,9 @@ A Wiki nao e changelog, release note, diario de tarefa ou lista do que foi alter
 1. Leia sempre o `AGENTS.md` ou `agents.md` aplicavel ao repositorio em que estiver trabalhando.
 2. Use o GitHub autenticado disponivel para consultar o ProjectV2 `ControleOnline/1`, seus campos, itens, issues e PRs vinculados.
 3. Nao adivinhe endpoints, status, colunas, regras de negocio, evidencias nem publicacao.
-4. Se o repositorio `ControleOnline/wiki` nao existir no workspace, clone `https://github.com/ControleOnline/wiki` em `/mnt/d/Projetos/src/ControleOnline/wiki`.
-5. Se o repositorio `ControleOnline/wiki` ja existir, execute atualizacao por `pull --rebase` antes de editar.
-6. Verifique mudancas pendentes antes de editar e nao reverta alteracoes de terceiros.
+4. Se precisar de scripts auxiliares ou historico operacional, consulte o repositorio `ControleOnline/wiki`, mas nao grave nele copia de paginas `.wiki` ou imagens da Central de Ajuda.
+5. Verifique mudancas pendentes antes de tocar em qualquer repositorio e nao reverta alteracoes de terceiros.
+6. Gere wikitext, HTML de apoio, screenshots e imagens em artefatos temporarios da execucao, fora do Git, e use esses artefatos apenas como payload da API.
 7. Leia o `AGENTS.md` local mais especifico do repositorio ou modulo da tarefa documentada antes de interpretar comportamento de produto.
 8. Quando a tarefa envolver API, leia endpoints reais, `securityFilter` e listeners relacionados antes de escrever regra de negocio para cliente.
 9. Quando pertinente, consulte o banco de dados da API para entender entidades e obter dados de publicacao, sem gravar esses dados em git, conteudo publico, logs ou memoria.
@@ -50,7 +50,7 @@ A Wiki nao e changelog, release note, diario de tarefa ou lista do que foi alter
 9. Prints de tela sao obrigatorios em paginas de ajuda sobre interface, salvo bloqueio objetivo registrado no resumo operacional e na issue. Nao publique artigo de interface sem print apenas porque a tarefa foi concluida.
 10. Nunca use prints anexados em issues, PRs, chats ou ferramentas internas diretamente na Wiki. Gere prints novos com dados ficticios ou sanitize todos os dados antes de publicar.
 11. Se screenshots ou evidencias visuais exibirem dados reais, refaca com dados ficticios ou oculte os dados antes de publicar.
-12. Se a documentacao depender de publicacao por FTP, leia as credenciais apenas do banco da API em tempo de execucao e use-as somente para publicar o build/site.
+12. Se a documentacao depender de credencial de publicacao, use-a apenas em tempo de execucao para chamar a API do MediaWiki.
 13. Nunca exponha dados sensiveis em pagina publica, commit, log, memoria, issue, PR ou resumo operacional.
 
 ## Formato obrigatorio da pagina
@@ -67,6 +67,14 @@ Hierarquia obrigatoria:
 2. Pagina ou secao de cada app seguindo o menu real daquela visao.
 3. Paginas internas agrupadas pela sessao do menu em que o usuario chega.
 4. Artigos finais de acao, sempre orientados por tarefa e passo a passo.
+
+Padrao visual obrigatorio para paginas de navegacao:
+
+- Home, paginas de app e paginas de secao devem parecer uma experiencia de produto premium, nao uma planilha ou relatorio tecnico.
+- Use imagens, cards ou botoes visuais clicaveis para a navegacao principal.
+- Evite `wikitable` como estrutura principal de navegacao. Tabelas so devem aparecer quando o usuario precisa comparar dados tabulares.
+- Cards de app e secao devem ter identidade visual clara, contraste, iconografia, rotulo objetivo e destino clicavel.
+- Prints de smoke ou browser usados na Wiki devem renderizar com tema visual aplicado, cores, contexto de tela e dados ficticios; nao publique captura crua sem CSS, sem identidade visual ou parecendo tela quebrada.
 
 Apps/visoes principais conhecidos no `app-community`:
 
@@ -112,14 +120,14 @@ Conteudos proibidos como formato principal:
 
 ## Publicacao e links
 
-1. Use o repositorio `ControleOnline/wiki` como origem versionada da documentacao publica.
-2. Antes de editar o wiki, confirme o fluxo real existente no repositorio: scripts, workflows, README, estrutura de MediaWiki, estrutura estatica, assets, indice e padrao editorial.
-3. Quando o conteudo for MediaWiki, mantenha a fonte em wikitext sob `mediawiki/` e publique pela API do MediaWiki quando houver script ou credenciais disponiveis.
-4. Quando o fluxo vigente do wiki exigir build/site estatico, publique pelo mecanismo existente do repositorio e reflita em `https://ajuda.controleonline.com/`.
-5. Quando o fluxo exigir FTP, obtenha credenciais somente do banco da API ou de secrets/arquivo privado autorizado pelo fluxo vigente, use-as apenas em tempo de execucao e nunca grave valores em git, pagina publica, logs, memoria, issue ou e-mail.
+1. Publique paginas e arquivos diretamente pela API do MediaWiki.
+2. Nao use GitHub Actions/workflow como publicador normal da Wiki.
+3. Nao versionar no Git uma copia de `mediawiki/*.wiki`, imagens ou assets que representem o conteudo publicado.
+4. O repositorio `ControleOnline/wiki` pode conter apenas scripts, automacao, filtros e documentacao operacional necessarios para executar a publicacao.
+5. Wikitext, HTML de apoio, screenshots e imagens devem ser temporarios e descartaveis depois da publicacao validada.
 6. Links finais enviados ao cliente ou ao time devem ser URLs publicas da Central de Ajuda, preferencialmente no formato `https://ajuda.controleonline.com/index.php/<Titulo_da_pagina>` quando a pagina estiver no MediaWiki.
-7. O indice publico deve apontar para as paginas publicadas na Central de Ajuda e indicar status de documentacao, data de atualizacao e origem interna de forma nao sensivel.
-8. Depois de publicar, valide cada pagina publica alterada por HTTP e, quando for MediaWiki, tambem por `api.php?action=query` e `api.php?action=parse`.
+7. O indice publico deve apontar para as paginas publicadas na Central de Ajuda e indicar status de documentacao de forma nao sensivel.
+8. Depois de publicar, valide cada pagina publica alterada por HTTP e por `api.php?action=query` e `api.php?action=parse`.
 
 ## Comunicacao por e-mail
 
@@ -145,8 +153,8 @@ Nao publicar em documentacao de cliente:
 - execute validacoes automatizadas cabiveis ao finalizar alteracoes de documentacao ou site: build, lint, testes do wiki quando existirem, smoke tests/browser tests para paginas alteradas e verificacoes de links/imagens quando disponiveis
 - para paginas de interface, valide tambem que todo passo importante possui print correspondente ou que o bloqueio de screenshot foi registrado antes da publicacao
 - atualize ou adapte colecoes Postman quando a documentacao publica envolver endpoints novos ou alterados e houver estrutura de Postman no projeto
-- faca commit das mudancas no repositorio `ControleOnline/wiki` com mensagem objetiva, incluindo referencia interna as tarefas documentadas
-- faca push para o remoto apropriado conforme o fluxo existente do repositorio `ControleOnline/wiki`
+- nao faca commit/push de conteudo da Wiki, paginas `.wiki` ou imagens publicas no repositorio `ControleOnline/wiki`
+- faca commit apenas de mudancas operacionais em scripts/instrucoes quando houver ajuste real de processo
 - confirme que o resultado refletiu em `https://ajuda.controleonline.com/` ou registre claramente o motivo de nao publicacao
 - quando a publicacao usar MediaWiki por API, valide com `api.php?action=query` e `api.php?action=parse`
 - confirme que o e-mail final foi enviado para `todos@controleonline.com` quando houver novidade publicada, ou registre o motivo de nao envio
