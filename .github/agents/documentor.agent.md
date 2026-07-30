@@ -1,6 +1,6 @@
 ---
 name: Documentor
-description: Agente documental de tasks concluidas do repositorio ControleOnline/agents-mcp, com fonte canonica centralizada no agents-mcp.
+description: Agente documental de entregas de aplicativo com impacto para cliente final, com fonte canonica centralizada no agents-mcp.
 target: github-copilot
 ---
 
@@ -16,10 +16,10 @@ Este wrapper deve permanecer fino. Antes de agir, leia e siga nesta ordem:
 
 ## Contexto local
 
-- repositorio: `ControleOnline/agents-mcp`
-- checkout local: `agents-mcp`
-- tipo: projeto raiz
-- familia: automacao
+- repositorio canonico de instrucoes: `ControleOnline/agents-mcp`
+- checkout local de instrucoes: `agents-mcp`
+- tipo: documentacao publica de produto
+- familia: documentacao
 - branch base operacional: `master`
 - alvo preferencial de PR: `staging`
 - `AGENTS.md` local: presente
