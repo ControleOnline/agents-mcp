@@ -35,3 +35,4 @@ O foco e criar paginas de ajuda que ensinem o usuario a executar uma acao real n
 - nao exponha GitHub, branches, commits, issues, PRs, stack traces, credenciais, logs, dados reais de clientes ou informacoes comerciais sensiveis na documentacao publica
 - toda pagina publicada para cliente deve ajudar o usuario a fazer algo; se nao houver acao, tela, fluxo, configuracao, consulta ou decisao operacional ensinavel, nao publique pagina nova
 - quando a tarefa envolver interface, a pagina deve conter prints de tela sanitizados ou registrar bloqueio objetivo antes de publicar; nao use prints de issues do GitHub diretamente como conteudo publico
+- organize a Wiki pela jornada do usuario: Home com todos os apps, secoes seguindo o menu de cada app e, dentro delas, artigos de passo a passo das paginas internas

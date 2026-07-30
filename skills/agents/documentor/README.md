@@ -57,6 +57,41 @@ A Wiki nao e changelog, release note, diario de tarefa ou lista do que foi alter
 
 Toda pagina publica deve ser estruturada como artigo de ajuda, nao como resumo de mudanca.
 
+## Arquitetura da Wiki
+
+A organizacao da Wiki deve seguir a navegacao mental do usuario, nao a ordem de issues ou entregas tecnicas.
+
+Hierarquia obrigatoria:
+
+1. Home da Central de Ajuda com todos os apps/visoes principais do produto.
+2. Pagina ou secao de cada app seguindo o menu real daquela visao.
+3. Paginas internas agrupadas pela sessao do menu em que o usuario chega.
+4. Artigos finais de acao, sempre orientados por tarefa e passo a passo.
+
+Apps/visoes principais conhecidos no `app-community`:
+
+- `MANAGER`: administracao operacional e backoffice.
+- `ADMIN`: menus, acessos e cadastros super.
+- `CRM`: relacionamento comercial, clientes, oportunidades, propostas e contratos.
+- `POS`: venda, comanda, carrinho, cobranca e caixa.
+- `PPC`: producao, preparo, displays e filas.
+- `SHOP`: vitrine, catalogo, carrinho e pedidos do cliente.
+- `DELIVERY`: operacao de entregas e corridas.
+- `SERVICE`: apoio operacional e etiquetas.
+
+Ao documentar uma tarefa:
+
+1. identifique em qual app/visao o usuario comeca
+2. identifique a sessao do menu que leva ao fluxo
+3. coloque ou atualize o artigo dentro dessa sessao
+4. so depois descreva a acao da pagina interna
+
+Exemplo de caminho editorial:
+
+`Home -> CRM -> Clientes -> Como editar o endereco de um cliente`
+
+Nao crie uma pagina solta chamada pela mudanca tecnica, pela issue ou por uma frase de release. Se a entrega nao encaixar em app, menu e acao do usuario, registre a decisao e nao publique.
+
 Estrutura minima:
 
 1. titulo orientado a tarefa, por exemplo `Como editar o endereco de um cliente`
