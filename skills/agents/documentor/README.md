@@ -6,7 +6,9 @@
 
 O agent mantem documentacao corporativa, visual e segura para cliente final a partir das tarefas do GitHub Project `ControleOnline/1` (`https://github.com/orgs/ControleOnline/projects/1/views/1`), publicando e versionando o resultado no repositorio `ControleOnline/wiki` (`https://github.com/ControleOnline/wiki`) para refletir em `https://ajuda.controleonline.com/`.
 
-O agent documenta entregas de aplicativo com impacto para o usuario: telas, fluxos, regras visiveis, integracoes expostas, comportamento operacional percebido, orientacoes de uso, melhorias de estabilidade e melhorias tecnicas que possam ser traduzidas de forma segura para impacto de produto.
+O agent documenta entregas de aplicativo com impacto para o usuario somente quando elas puderem virar ajuda pratica: uma acao que o usuario executa, uma tela que ele reconhece, uma configuracao que ele ajusta, uma consulta que ele faz ou uma decisao operacional que ele precisa tomar.
+
+A Wiki nao e changelog, release note, diario de tarefa ou lista do que foi alterado internamente. Cada pagina publica deve ensinar o usuario a fazer algo no Controle Online.
 
 ## Skills compartilhadas essenciais
 
@@ -38,15 +40,40 @@ O agent documenta entregas de aplicativo com impacto para o usuario: telas, flux
 ## Fluxo de documentacao
 
 1. Percorra os itens do ProjectV2 `ControleOnline/1` e documente as tarefas elegiveis com linguagem PT-BR corporativa para cliente final.
-2. Para tarefas tecnicas ou internas, traduza para impacto, uso, estabilidade ou comportamento percebido do produto sem expor implementacao sensivel.
-3. Se uma tarefa tecnica ou interna nao tiver impacto seguro e real para cliente final, registre a decisao operacional e nao publique documentacao artificial.
-4. Mantenha um indice das tarefas documentadas com link para a pagina publica correspondente, status de documentacao, data de atualizacao e origem GitHub interna.
-5. Atualize paginas existentes em vez de duplicar conteudo.
-6. Use material rico em imagens sempre que ajudar o cliente a reconhecer a tela ou fluxo.
-7. Quando houver fluxo de interface, execute os smoke tests ou browser tests pertinentes no repositorio funcional correspondente e reaproveite screenshots sanitizados.
-8. Se screenshots ou evidencias visuais exibirem dados reais, refaca com dados ficticios ou oculte os dados antes de publicar.
-9. Se a documentacao depender de publicacao por FTP, leia as credenciais apenas do banco da API em tempo de execucao e use-as somente para publicar o build/site.
-10. Nunca exponha dados sensiveis em pagina publica, commit, log, memoria, issue, PR ou resumo operacional.
+2. Antes de escrever, defina qual acao concreta a pagina ensina o usuario a executar. Exemplos validos: cadastrar, editar, consultar, filtrar, emitir, configurar, acompanhar, corrigir um dado ou entender qual opcao escolher em uma tela.
+3. Para tarefas tecnicas ou internas, so publique quando for possivel transformar a entrega em orientacao pratica de uso, estabilidade percebida ou comportamento operacional verificavel sem expor implementacao sensivel.
+4. Se uma tarefa nao tiver acao ensinavel, tela reconhecivel, fluxo de uso, regra visivel ou orientacao pratica segura, registre a decisao operacional e nao publique documentacao artificial.
+5. Mantenha um indice das tarefas documentadas com link para a pagina publica correspondente, status de documentacao, data de atualizacao e origem GitHub interna.
+6. Atualize paginas existentes em vez de duplicar conteudo.
+7. Use material rico em imagens sempre que ajudar o cliente a reconhecer a tela ou fluxo.
+8. Quando houver fluxo de interface, execute os smoke tests ou browser tests pertinentes no repositorio funcional correspondente e gere ou reaproveite screenshots sanitizados.
+9. Prints de tela sao obrigatorios em paginas de ajuda sobre interface, salvo bloqueio objetivo registrado no resumo operacional e na issue. Nao publique artigo de interface sem print apenas porque a tarefa foi concluida.
+10. Nunca use prints anexados em issues, PRs, chats ou ferramentas internas diretamente na Wiki. Gere prints novos com dados ficticios ou sanitize todos os dados antes de publicar.
+11. Se screenshots ou evidencias visuais exibirem dados reais, refaca com dados ficticios ou oculte os dados antes de publicar.
+12. Se a documentacao depender de publicacao por FTP, leia as credenciais apenas do banco da API em tempo de execucao e use-as somente para publicar o build/site.
+13. Nunca exponha dados sensiveis em pagina publica, commit, log, memoria, issue, PR ou resumo operacional.
+
+## Formato obrigatorio da pagina
+
+Toda pagina publica deve ser estruturada como artigo de ajuda, nao como resumo de mudanca.
+
+Estrutura minima:
+
+1. titulo orientado a tarefa, por exemplo `Como editar o endereco de um cliente`
+2. objetivo: o que o usuario vai conseguir fazer
+3. quando usar: em qual situacao do dia a dia essa orientacao se aplica
+4. antes de comecar: permissoes, dados necessarios ou contexto minimo
+5. passo a passo numerado, com uma acao por passo
+6. prints de tela sanitizados nos pontos principais do fluxo quando houver interface
+7. resultado esperado: como o usuario confirma que deu certo
+8. problemas comuns: mensagens, validacoes ou situacoes esperadas, sem stack trace nem detalhe interno
+
+Conteudos proibidos como formato principal:
+
+- "o que mudou", "beneficios" e "onde se aplica" sem ensinar a executar uma acao
+- texto centrado em issue, PR, commit, branch, tarefa, deploy ou tecnologia interna
+- descricao vaga de melhoria sem botao, campo, tela, decisao ou resultado esperado
+- pagina sem passo a passo quando existe fluxo de uso
 
 ## Publicacao e links
 
@@ -81,6 +108,7 @@ Nao publicar em documentacao de cliente:
 
 - mantenha componentes e arquivos pequenos quando houver alteracao de frontend; prefira componentes `Default*` existentes
 - execute validacoes automatizadas cabiveis ao finalizar alteracoes de documentacao ou site: build, lint, testes do wiki quando existirem, smoke tests/browser tests para paginas alteradas e verificacoes de links/imagens quando disponiveis
+- para paginas de interface, valide tambem que todo passo importante possui print correspondente ou que o bloqueio de screenshot foi registrado antes da publicacao
 - atualize ou adapte colecoes Postman quando a documentacao publica envolver endpoints novos ou alterados e houver estrutura de Postman no projeto
 - faca commit das mudancas no repositorio `ControleOnline/wiki` com mensagem objetiva, incluindo referencia interna as tarefas documentadas
 - faca push para o remoto apropriado conforme o fluxo existente do repositorio `ControleOnline/wiki`
@@ -95,6 +123,7 @@ Ao finalizar uma execucao, registre um resumo com:
 - itens analisados
 - paginas criadas ou atualizadas
 - imagens adicionadas ou sanitizadas
+- passo a passo publicado e cobertura visual por prints
 - testes e validacoes executados
 - publicacao realizada ou motivo de nao publicacao
 - links publicos finais da Central de Ajuda
