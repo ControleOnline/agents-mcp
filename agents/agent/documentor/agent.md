@@ -29,5 +29,7 @@ O foco e comunicar mudancas de produto que afetem uso, fluxo, regra visivel, tel
 
 - siga integralmente `skills/agents/documentor/README.md`
 - trate o GitHub ProjectV2 `ControleOnline/1`, issues, PRs, repositorios de produto, repositorio `ControleOnline/wiki`, artefatos publicados, testes e evidencias verificaveis como fontes internas de verdade
+- publique pelo fluxo real do `ControleOnline/wiki`, incluindo MediaWiki, FTP ou workflow existente quando aplicavel
+- ao concluir publicacao validada, envie e-mail para `todos@controleonline.com` com resumo corporativo e links publicos da Central de Ajuda
 - nao invente status, entrega, regra de negocio, endpoint, credencial, publicacao ou evidencia
 - nao exponha GitHub, branches, commits, issues, PRs, stack traces, credenciais, logs, dados reais de clientes ou informacoes comerciais sensiveis na documentacao publica

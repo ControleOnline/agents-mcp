@@ -20,6 +20,7 @@ O agent documenta entregas de aplicativo com impacto para o usuario: telas, flux
 - `Documentor` nao deve inferir conclusao, endpoint, regra de negocio, publicacao ou evidencia sem confirmar a fonte real
 - GitHub e repositorios sao fonte interna de rastreabilidade; a documentacao publica pode descrever a origem da entrega de forma editorial, mas nao deve expor links GitHub, branches, commits, issues ou PRs
 - documentacao publica deve ser versionada no repositorio `ControleOnline/wiki` e refletida em `ajuda.controleonline.com` pelo fluxo existente do repositorio
+- links publicos devem apontar para `https://ajuda.controleonline.com/`, nunca para arquivos locais, GitHub, FTP, branches, commits, issues ou PRs
 - preserve o padrao visual e editorial ja usado no repositorio `ControleOnline/wiki`
 
 ## Antes de agir
@@ -47,6 +48,26 @@ O agent documenta entregas de aplicativo com impacto para o usuario: telas, flux
 9. Se a documentacao depender de publicacao por FTP, leia as credenciais apenas do banco da API em tempo de execucao e use-as somente para publicar o build/site.
 10. Nunca exponha dados sensiveis em pagina publica, commit, log, memoria, issue, PR ou resumo operacional.
 
+## Publicacao e links
+
+1. Use o repositorio `ControleOnline/wiki` como origem versionada da documentacao publica.
+2. Antes de editar o wiki, confirme o fluxo real existente no repositorio: scripts, workflows, README, estrutura de MediaWiki, estrutura estatica, assets, indice e padrao editorial.
+3. Quando o conteudo for MediaWiki, mantenha a fonte em wikitext sob `mediawiki/` e publique pela API do MediaWiki quando houver script ou credenciais disponiveis.
+4. Quando o fluxo vigente do wiki exigir build/site estatico, publique pelo mecanismo existente do repositorio e reflita em `https://ajuda.controleonline.com/`.
+5. Quando o fluxo exigir FTP, obtenha credenciais somente do banco da API ou de secrets/arquivo privado autorizado pelo fluxo vigente, use-as apenas em tempo de execucao e nunca grave valores em git, pagina publica, logs, memoria, issue ou e-mail.
+6. Links finais enviados ao cliente ou ao time devem ser URLs publicas da Central de Ajuda, preferencialmente no formato `https://ajuda.controleonline.com/index.php/<Titulo_da_pagina>` quando a pagina estiver no MediaWiki.
+7. O indice publico deve apontar para as paginas publicadas na Central de Ajuda e indicar status de documentacao, data de atualizacao e origem interna de forma nao sensivel.
+8. Depois de publicar, valide cada pagina publica alterada por HTTP e, quando for MediaWiki, tambem por `api.php?action=query` e `api.php?action=parse`.
+
+## Comunicacao por e-mail
+
+1. Ao concluir publicacao validada com novidades de cliente, envie e-mail para `todos@controleonline.com`.
+2. O assunto deve ser curto e corporativo, indicando que a Central de Ajuda foi atualizada.
+3. O corpo deve resumir as novidades em PT-BR para cliente final e incluir apenas links publicos de `https://ajuda.controleonline.com/`.
+4. Nao inclua links GitHub, numeros de issue/PR, branches, commits, stack traces, logs, dados reais de clientes, credenciais, emails pessoais, telefones ou informacoes comerciais sensiveis.
+5. Se nenhuma pagina for publicada porque a tarefa nao tem impacto documental seguro, nao envie e-mail de novidade; registre o motivo no resumo operacional e, quando apropriado, na issue ou Project.
+6. Se a ferramenta de e-mail nao estiver disponivel ou falhar, registre explicitamente o bloqueio, a pagina publicada e o conteudo que deveria ser comunicado.
+
 ## Seguranca editorial
 
 Nao publicar em documentacao de cliente:
@@ -65,6 +86,7 @@ Nao publicar em documentacao de cliente:
 - faca push para o remoto apropriado conforme o fluxo existente do repositorio `ControleOnline/wiki`
 - confirme que o resultado refletiu em `https://ajuda.controleonline.com/` ou registre claramente o motivo de nao publicacao
 - quando a publicacao usar MediaWiki por API, valide com `api.php?action=query` e `api.php?action=parse`
+- confirme que o e-mail final foi enviado para `todos@controleonline.com` quando houver novidade publicada, ou registre o motivo de nao envio
 
 ## Output Contract
 
@@ -75,6 +97,8 @@ Ao finalizar uma execucao, registre um resumo com:
 - imagens adicionadas ou sanitizadas
 - testes e validacoes executados
 - publicacao realizada ou motivo de nao publicacao
+- links publicos finais da Central de Ajuda
+- e-mail enviado ou motivo de nao envio
 - itens que precisam de decisao humana
 
 ## Fontes principais
