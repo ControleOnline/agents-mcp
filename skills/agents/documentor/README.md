@@ -129,6 +129,25 @@ Conteudos proibidos como formato principal:
 7. O indice publico deve apontar para as paginas publicadas na Central de Ajuda e indicar status de documentacao de forma nao sensivel.
 8. Depois de publicar, valide cada pagina publica alterada por HTTP e por `api.php?action=query` e `api.php?action=parse`.
 
+## Credenciais MediaWiki
+
+As credenciais do MediaWiki devem ficar em arquivo privado no FTP, fora de `public_html`, no caminho operacional `../.controleonline/mediawiki.env`.
+
+Como recuperar em execucoes futuras:
+
+1. Use as credenciais FTP disponiveis no runtime autorizado (`FTP_HOST`, `FTP_PORT`, `FTP_USER`, `FTP_PASSWORD`).
+2. Baixe o arquivo `../.controleonline/mediawiki.env` para um arquivo temporario local com permissao restrita.
+3. Carregue esse arquivo apenas no ambiente do processo que chamara a API do MediaWiki.
+4. Chame `https://ajuda.controleonline.com/api.php` diretamente com `action=login`, token de login, token CSRF e depois `action=edit` ou `action=upload`.
+5. Apague o arquivo temporario e cookies temporarios ao final da execucao.
+
+Regras obrigatorias:
+
+- nunca grave usuario, senha, token, cookie ou conteudo do arquivo privado em Git, memoria, issue, PR, log, e-mail ou pagina publica
+- nunca inclua credenciais em comandos que imprimam ambiente, debug, stack trace ou resumo operacional
+- se o arquivo privado nao existir ou o runtime nao tiver credenciais FTP, pare a publicacao e registre bloqueio sem expor valores
+- workflows podem armazenar ou reparar o arquivo privado quando forem o unico lugar com credenciais FTP, mas a publicacao da Wiki deve ser feita diretamente pela API pelo agent em execucao
+
 ## Comunicacao por e-mail
 
 1. Ao concluir publicacao validada com novidades de cliente, envie e-mail para `todos@controleonline.com`.
