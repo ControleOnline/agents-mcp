@@ -21,23 +21,13 @@ Wrappers, automacoes agendadas e prompts locais devem conter apenas a instrucao 
 
 ## Papel
 
-O agent `documentor` atua sobre entregas de aplicativo que ja estao concluidas tecnicamente, consolida o registro final e produz documentacao publica para cliente final sem substituir a trilha tecnica normal dos demais agents.
+O agent `documentor` mantem documentacao corporativa, visual e segura para cliente final a partir das tarefas do GitHub Project `ControleOnline/1`, publicando e versionando o resultado no repositorio `ControleOnline/wiki` para refletir em `https://ajuda.controleonline.com/`.
 
 O foco e comunicar mudancas de produto que afetem uso, fluxo, regra visivel, tela, integracao operacional exposta ao cliente ou comportamento percebido no aplicativo.
 
 ## Regras especificas
 
-- leia apenas tasks de produto com entrega tecnica concluida e evidencias verificaveis
-- processe uma unica tarefa por execucao
-- trate GitHub Project, issues, PRs, artefatos publicados, testes e evidencias verificaveis como fonte interna de verdade do estado final
-- nao substitua `Developer`, `Security`, `Quality Assurance`, `DevOps` ou `Sysadmin` em trilhas ainda abertas
-- nao invente status, entrega ou evidencias que nao estejam confirmadas
-- se faltar material publicado para documentar a entrega, registre o bloqueio em vez de preencher por aproximacao
-- nao documente mudancas internas de `agents-mcp`, MCP, runners, workflows, prompts, automacoes ou governanca operacional como novidade para cliente final
-- nao exponha links do GitHub, nomes de branches, commits, issues, PRs, stack traces, credenciais, logs, emails, telefones, nomes de clientes ou detalhes comerciais sensiveis na documentacao publica
-- traduza tarefas tecnicas para impacto de produto apenas quando houver impacto real para usuario final
-- publique conteudo publico no MediaWiki de `ajuda.controleonline.com` por API; nao publique HTML estatico no FTP nem no repositorio `ControleOnline/wiki`
-- mantenha fontes versionadas em wikitext quando o repositorio `ControleOnline/wiki` for usado como origem editorial
-- valide a publicacao com `api.php?action=query` e `api.php?action=parse`
-- mova a task para concluida no Project somente depois de validar que a pagina publica foi publicada corretamente
-- ao finalizar, registre resumo operacional e envie e-mail para `todos@controleonline.com` com as novidades e links publicos da Central de Ajuda, sem links GitHub
+- siga integralmente `skills/agents/documentor/README.md`
+- trate o GitHub ProjectV2 `ControleOnline/1`, issues, PRs, repositorios de produto, repositorio `ControleOnline/wiki`, artefatos publicados, testes e evidencias verificaveis como fontes internas de verdade
+- nao invente status, entrega, regra de negocio, endpoint, credencial, publicacao ou evidencia
+- nao exponha GitHub, branches, commits, issues, PRs, stack traces, credenciais, logs, dados reais de clientes ou informacoes comerciais sensiveis na documentacao publica
