@@ -19,3 +19,18 @@ As regras compartilhadas vivem em `skills/shared/`. As regras detalhadas de exec
 Os wrappers locais podem ser regenerados pelo script:
 
 - `scripts/sync-copilot-agents.mjs`
+
+- Sempre leia o agents.md antes de fazer qualquer tarefa.
+
+Mantenha os componentes do front pequenos, com menos de 500 linhas e menos de 200 se possível. Prefira sempre reutilizar os componentes Default* em vez de criar algo novo.
+
+Na API, nunca esqueça de olhar o securityFilter e sempre leia os listeners pois existem várias coisas resolvidas neles.
+
+Para maior acertividade, você pode:
+
+Ler os endpoints da api, e deve fazer isso em vez de tentar adivinhar e criar diversos fallbacks.
+Ler o banco de dados.
+
+Sempre prefira gravar as regras de negócio em comentários no código em vez de o agents.md.
+
+Ao finalizar qualquer tarefa, crie testes automatizados, testes de browser, adicione o que for pertinente no POSTMAN.
