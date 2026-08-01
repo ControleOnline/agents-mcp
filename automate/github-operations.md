@@ -90,15 +90,18 @@ Campos aceitos:
 
 ### `create_issue`
 
+Cria uma issue e, quando `org`, `project_number` e `target_status` forem informados, adiciona a nova task ao ProjectV2 e define sua coluna na mesma operacao. Varias operacoes `create_issue` podem ser enviadas no mesmo `operations_json`.
+
 Campos aceitos:
 
 - `repo_full_name`
 - `title`
-- `body`
-- `labels`
-- `assignees`
+- `body` opcional
+- `labels` opcionais
+- `assignees` opcionais
+- `milestone` opcional
+- `project_org` ou `org`
 - `project_number`
-- `project_org`
 - `target_status`
 
 Esse tipo de operacao pode aparecer varias vezes no mesmo `operations_json`, o que permite ao CTO criar varias tasks em um unico disparo.

@@ -730,6 +730,9 @@ async function createIssue(input) {
   if (Array.isArray(input.assignees) && input.assignees.length > 0) {
     payload.assignees = input.assignees;
   }
+  if (input.milestone !== undefined && input.milestone !== null && input.milestone !== '') {
+    payload.milestone = input.milestone;
+  }
 
   const created = await githubRest(`/repos/${owner}/${repo}/issues`, {
     method: 'POST',
@@ -746,9 +749,10 @@ async function createIssue(input) {
   };
 
   if (input.project_number !== undefined && input.project_number !== null && input.project_number !== '') {
+    const projectOrg = input.project_org || input.org || owner;
     const targetStatus = input.target_status || 'Backlog';
     const projectResult = await updateProjectStatus({
-      org: input.project_org || owner,
+      org: projectOrg,
       project_number: input.project_number,
       repo_full_name: input.repo_full_name,
       issue_number: created?.number,
