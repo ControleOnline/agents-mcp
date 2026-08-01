@@ -67,6 +67,8 @@ Executa a mesma auditoria gerencial do agendamento.
 
 ### `project_status`
 
+A operacao localiza o item existente ou adiciona a issue ao ProjectV2 quando ainda nao estiver associada, e depois atualiza o status solicitado.
+
 Campos aceitos:
 
 - `org`
