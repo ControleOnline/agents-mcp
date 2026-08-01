@@ -435,20 +435,55 @@ function getStatusOption(field, targetStatus) {
   return option;
 }
 
-function getProjectItem(project, repoFullName, issueNumber, itemId) {
-  if (itemId) {
-    const item = (project.items?.nodes || []).find((entry) => entry.id === itemId);
-    if (!item) throw new Error(`Project item not found by item_id: ${itemId}`);
-    return item;
+async function getIssueNodeId(repoFullName, issueNumber) {
+  const [owner, name] = splitRepo(repoFullName);
+  const data = await githubGraphQL(
+    `query($owner:String!, $name:String!, $number:Int!) {
+      repository(owner:$owner, name:$name) {
+        issue(number:$number) {
+          id
+        }
+      }
+    }`,
+    { owner, name, number: Number(issueNumber) }
+  );
+
+  return data?.repository?.issue?.id || null;
+}
+
+async function addProjectItem(projectId, contentId) {
+  const data = await githubGraphQL(
+    `mutation($projectId:ID!, $contentId:ID!) {
+      addProjectV2ItemById(input:{ projectId:$projectId, contentId:$contentId }) {
+        item {
+          id
+        }
+      }
+    }`,
+    { projectId, contentId }
+  );
+
+  return data?.addProjectV2ItemById?.item?.id || null;
+}
+
+async function resolveProjectItemId(project, input) {
+  if (input.item_id) return input.item_id;
+
+  if (!input.repo_full_name || input.issue_number === undefined || input.issue_number === null) {
+    throw new Error('project_status requires item_id or repo_full_name + issue_number.');
   }
 
-  const item = (project.items?.nodes || []).find(
-    (entry) =>
-      entry?.content?.repository?.nameWithOwner === repoFullName &&
-      entry?.content?.number === Number(issueNumber)
-  );
-  if (!item) throw new Error(`Project item not found for ${repoFullName}#${issueNumber}`);
-  return item;
+  const contentId = await getIssueNodeId(input.repo_full_name, input.issue_number);
+  if (!contentId) {
+    throw new Error(`Issue not found: ${input.repo_full_name}#${input.issue_number}`);
+  }
+
+  const itemId = await addProjectItem(project.id, contentId);
+  if (!itemId) {
+    throw new Error(`Project item could not be added for ${input.repo_full_name}#${input.issue_number}`);
+  }
+
+  return itemId;
 }
 
 function getStatusValue(item) {
@@ -599,7 +634,7 @@ async function updateProjectStatus(input) {
   const project = await getProjectMetadata(input.org, Number(input.project_number));
   const statusField = getStatusField(project);
   const statusOption = getStatusOption(statusField, input.target_status);
-  const item = getProjectItem(project, input.repo_full_name, input.issue_number, input.item_id);
+  const itemId = await resolveProjectItemId(project, input);
 
   await githubGraphQL(
     `mutation($projectId:ID!, $itemId:ID!, $fieldId:ID!, $optionId:String!) {
@@ -618,7 +653,7 @@ async function updateProjectStatus(input) {
     }`,
     {
       projectId: project.id,
-      itemId: item.id,
+      itemId,
       fieldId: statusField.id,
       optionId: statusOption.id,
     }
@@ -626,10 +661,10 @@ async function updateProjectStatus(input) {
 
   return {
     project: { id: project.id, title: project.title, org: input.org, number: Number(input.project_number) },
-    item_id: item.id,
+    item_id: itemId,
     target_status: input.target_status,
-    repo_full_name: input.repo_full_name || item?.content?.repository?.nameWithOwner || null,
-    issue_number: input.issue_number || item?.content?.number || null,
+    repo_full_name: input.repo_full_name || null,
+    issue_number: input.issue_number || null,
   };
 }
 
@@ -640,6 +675,52 @@ async function addIssueComment(input) {
     body: JSON.stringify({ body: input.body }),
   });
   return { comment_id: body?.id || null, html_url: body?.html_url || null };
+}
+
+async function createIssue(input) {
+  const { owner, repo } = splitRepo(input.repo_full_name);
+  const payload = {
+    title: input.title,
+    body: input.body || '',
+  };
+
+  if (Array.isArray(input.labels) && input.labels.length > 0) {
+    payload.labels = input.labels;
+  }
+  if (Array.isArray(input.assignees) && input.assignees.length > 0) {
+    payload.assignees = input.assignees;
+  }
+
+  const created = await githubRest(`/repos/${owner}/${repo}/issues`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+
+  const result = {
+    issue: {
+      id: created?.node_id || null,
+      number: created?.number || null,
+      url: created?.html_url || null,
+      title: created?.title || input.title,
+    },
+  };
+
+  if (input.project_number !== undefined && input.project_number !== null && input.project_number !== '') {
+    const targetStatus = input.target_status || 'Work';
+    const projectResult = await updateProjectStatus({
+      org: input.project_org || owner,
+      project_number: input.project_number,
+      repo_full_name: input.repo_full_name,
+      issue_number: created?.number,
+      target_status: targetStatus,
+    });
+
+    result.project = projectResult.project;
+    result.item_id = projectResult.item_id;
+    result.target_status = projectResult.target_status;
+  }
+
+  return result;
 }
 
 async function replaceLabels(input) {
@@ -701,6 +782,8 @@ async function executeOperation(operation) {
   if (!type) throw new Error('Operation is missing type.');
 
   switch (type) {
+    case 'create_issue':
+      return createIssue(operation);
     case 'project_status':
       return updateProjectStatus(operation);
     case 'issue_comment':

@@ -21,9 +21,8 @@ Ele:
 
 ## Cadeia real do runner
 
-- workflow ativo: `.github/workflows/developer-runner.yml`
-- workflow de compatibilidade: `automate/workflows/developer-project-dispatch.yml`
 - entry point de runtime: `src/developer-runner.js`
+- workflow de compatibilidade: `automate/workflows/developer-project-dispatch.yml`
 - runner comum: `src/agent-dispatch-runner.js`
 - wrapper do papel: `automate/agents/developer/dispatch.mjs`
 - logica compartilhada final: `automate/scripts/agent-project-dispatch.mjs`

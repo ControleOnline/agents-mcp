@@ -75,6 +75,8 @@ Campos aceitos:
 - `item_id` opcional quando o item ja for conhecido
 - `repo_full_name` e `issue_number` quando for preciso localizar o item pela issue
 
+Quando `repo_full_name` e `issue_number` forem informados, o runner garante que a issue esteja vinculada ao ProjectV2 antes de alterar o status. Se o item ainda nao existir no projeto, ele e incluido automaticamente e depois movido para o status solicitado.
+
 ### `issue_comment`
 
 Campos aceitos:
@@ -82,6 +84,21 @@ Campos aceitos:
 - `repo_full_name`
 - `issue_number`
 - `body`
+
+### `create_issue`
+
+Campos aceitos:
+
+- `repo_full_name`
+- `title`
+- `body`
+- `labels`
+- `assignees`
+- `project_number`
+- `project_org`
+- `target_status`
+
+Esse tipo de operacao pode aparecer varias vezes no mesmo `operations_json`, o que permite ao CTO criar varias tasks em um unico disparo.
 
 ### `replace_labels`
 
@@ -136,6 +153,7 @@ Campos aceitos:
 
 - o runner so executa comentario-comando de logins permitidos
 - o token preferencial e `GH_TOKEN`; `GITHUB_TOKEN` fica como fallback
+- o job precisa de permissao `projects: write` para ler e alterar ProjectV2
 - `dry_run` deve ser usado quando a operacao ainda estiver sendo validada
 - o output precisa deixar rastreavel o que foi pedido, o que foi executado e o que falhou
 

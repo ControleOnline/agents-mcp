@@ -30,4 +30,4 @@
 - `agents/agent/developer/agent.md`
 - `automation/developer/base.md`
 - `automate/developer/README.md`
-- `.github/workflows/developer-runner.yml`
+- `src/developer-runner.js`
