@@ -953,7 +953,7 @@ async function main() {
       loaded.source === 'none');
 
   if (shouldRunAuditByDefault) {
-    const summary = await runManagerAudit();
+    const summary = await runManagerAudit(loaded.commandOnly ? true : null);
     const outPath = writeOutput(summary);
     console.log(
       JSON.stringify(
