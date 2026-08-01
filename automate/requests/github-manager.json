@@ -1,0 +1,116 @@
+{
+  "requested_at": "2026-08-01T17:09:00Z",
+  "requested_by": "CTO",
+  "purpose": "Adicionar as tarefas #285-#297 ao Backlog do ProjectV2 ControleOnline#1 apos liberacao de acesso",
+  "dry_run": false,
+  "report_to": {
+    "repo_full_name": "ControleOnline/agents-mcp",
+    "issue_number": 92
+  },
+  "operations": [
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 285,
+      "target_status": "Backlog"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 286,
+      "target_status": "Backlog"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 287,
+      "target_status": "Backlog"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 288,
+      "target_status": "Backlog"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 289,
+      "target_status": "Backlog"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 290,
+      "target_status": "Backlog"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 291,
+      "target_status": "Backlog"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 292,
+      "target_status": "Backlog"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 293,
+      "target_status": "Backlog"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 294,
+      "target_status": "Backlog"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 295,
+      "target_status": "Backlog"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 296,
+      "target_status": "Backlog"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 297,
+      "target_status": "Backlog"
+    }
+  ]
+}

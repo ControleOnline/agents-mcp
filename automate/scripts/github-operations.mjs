@@ -207,6 +207,15 @@ function readOperationsPayload() {
     return { payload: JSON.parse(inline), source: 'OPERATIONS_JSON', commandOnly: false };
   }
 
+  const operationsFile = env('OPERATIONS_FILE');
+  if (operationsFile && fs.existsSync(operationsFile)) {
+    return {
+      payload: JSON.parse(fs.readFileSync(operationsFile, 'utf8')),
+      source: `OPERATIONS_FILE:${operationsFile}`,
+      commandOnly: false,
+    };
+  }
+
   const fromComment = readIssueCommentCommand();
   if (fromComment.ignored) {
     return { payload: null, source: fromComment.source, ignored: true, commandOnly: false };
@@ -435,20 +444,44 @@ function getStatusOption(field, targetStatus) {
   return option;
 }
 
+function getProjectItem(project, repoFullName, issueNumber, itemId) {
+  if (itemId) {
+    const item = (project.items?.nodes || []).find((entry) => entry.id === itemId);
+    if (!item) throw new Error(`Project item not found by item_id: ${itemId}`);
+    return item;
+  }
+
+  if (!repoFullName || issueNumber === undefined || issueNumber === null) {
+    return null;
+  }
+
+  return (
+    (project.items?.nodes || []).find(
+      (entry) =>
+        entry?.content?.repository?.nameWithOwner === repoFullName &&
+        entry?.content?.number === Number(issueNumber)
+    ) || null
+  );
+}
+
 async function getIssueNodeId(repoFullName, issueNumber) {
-  const [owner, name] = splitRepo(repoFullName);
+  const [owner, repo] = splitRepo(repoFullName);
   const data = await githubGraphQL(
-    `query($owner:String!, $name:String!, $number:Int!) {
-      repository(owner:$owner, name:$name) {
+    `query($owner:String!, $repo:String!, $number:Int!) {
+      repository(owner:$owner, name:$repo) {
         issue(number:$number) {
           id
+          number
+          repository {
+            nameWithOwner
+          }
         }
       }
     }`,
-    { owner, name, number: Number(issueNumber) }
+    { owner, repo, number: Number(issueNumber) }
   );
 
-  return data?.repository?.issue?.id || null;
+  return data?.repository?.issue || null;
 }
 
 async function addProjectItem(projectId, contentId) {
@@ -466,24 +499,31 @@ async function addProjectItem(projectId, contentId) {
   return data?.addProjectV2ItemById?.item?.id || null;
 }
 
-async function resolveProjectItemId(project, input) {
-  if (input.item_id) return input.item_id;
+async function resolveProjectItem(project, input) {
+  if (input.item_id) {
+    return getProjectItem(project, null, null, input.item_id);
+  }
 
   if (!input.repo_full_name || input.issue_number === undefined || input.issue_number === null) {
     throw new Error('project_status requires item_id or repo_full_name + issue_number.');
   }
 
-  const contentId = await getIssueNodeId(input.repo_full_name, input.issue_number);
-  if (!contentId) {
+  const existing = getProjectItem(project, input.repo_full_name, input.issue_number, null);
+  if (existing) {
+    return existing;
+  }
+
+  const issue = await getIssueNodeId(input.repo_full_name, input.issue_number);
+  if (!issue?.id) {
     throw new Error(`Issue not found: ${input.repo_full_name}#${input.issue_number}`);
   }
 
-  const itemId = await addProjectItem(project.id, contentId);
+  const itemId = await addProjectItem(project.id, issue.id);
   if (!itemId) {
     throw new Error(`Project item could not be added for ${input.repo_full_name}#${input.issue_number}`);
   }
 
-  return itemId;
+  return { id: itemId, content: issue };
 }
 
 function getStatusValue(item) {
@@ -634,7 +674,7 @@ async function updateProjectStatus(input) {
   const project = await getProjectMetadata(input.org, Number(input.project_number));
   const statusField = getStatusField(project);
   const statusOption = getStatusOption(statusField, input.target_status);
-  const itemId = await resolveProjectItemId(project, input);
+  const item = await resolveProjectItem(project, input);
 
   await githubGraphQL(
     `mutation($projectId:ID!, $itemId:ID!, $fieldId:ID!, $optionId:String!) {
@@ -653,7 +693,7 @@ async function updateProjectStatus(input) {
     }`,
     {
       projectId: project.id,
-      itemId,
+      itemId: item.id,
       fieldId: statusField.id,
       optionId: statusOption.id,
     }
@@ -661,10 +701,10 @@ async function updateProjectStatus(input) {
 
   return {
     project: { id: project.id, title: project.title, org: input.org, number: Number(input.project_number) },
-    item_id: itemId,
+    item_id: item.id,
     target_status: input.target_status,
-    repo_full_name: input.repo_full_name || null,
-    issue_number: input.issue_number || null,
+    repo_full_name: input.repo_full_name || item?.content?.repository?.nameWithOwner || null,
+    issue_number: input.issue_number || item?.content?.number || null,
   };
 }
 
@@ -706,7 +746,7 @@ async function createIssue(input) {
   };
 
   if (input.project_number !== undefined && input.project_number !== null && input.project_number !== '') {
-    const targetStatus = input.target_status || 'Work';
+    const targetStatus = input.target_status || 'Backlog';
     const projectResult = await updateProjectStatus({
       org: input.project_org || owner,
       project_number: input.project_number,
@@ -1036,7 +1076,7 @@ async function main() {
       loaded.source === 'none');
 
   if (shouldRunAuditByDefault) {
-    const summary = await runManagerAudit();
+    const summary = await runManagerAudit(loaded.commandOnly ? true : null);
     const outPath = writeOutput(summary);
     console.log(
       JSON.stringify(
@@ -1056,7 +1096,9 @@ async function main() {
     return;
   }
 
-  const dryRun = payload.dry_run === true || env('GITHUB_OPS_DRY_RUN', 'false').toLowerCase() === 'true';
+  const dryRun = loaded.source.startsWith('OPERATIONS_FILE:')
+    ? payload.dry_run !== false
+    : payload.dry_run === true || env('GITHUB_OPS_DRY_RUN', 'false').toLowerCase() === 'true';
   const operations = hasOperations ? payload.operations : [];
   if (operations.length === 0) {
     throw new Error('No operations provided.');
@@ -1091,6 +1133,35 @@ async function main() {
     results,
   };
   const outPath = writeOutput(summary);
+  const sourceMatch = loaded.source.match(/^issue_comment:(.+)#(\d+)$/);
+  const reportTo = payload.report_to || (
+    sourceMatch
+      ? { repo_full_name: sourceMatch[1], issue_number: Number(sourceMatch[2]) }
+      : null
+  );
+  if (reportTo?.repo_full_name && reportTo?.issue_number) {
+    const failedRefs = results
+      .filter((entry) => entry.ok === false)
+      .map((entry) => {
+        const ref = entry.input?.repo_full_name && entry.input?.issue_number
+          ? `${entry.input.repo_full_name}#${entry.input.issue_number}`
+          : entry.type;
+        return `- ${ref}`;
+      });
+    const body = [
+      '### GitHub Manager',
+      '',
+      `Operacoes concluidas: ${summary.successCount}/${summary.operationCount} com sucesso.`,
+      `Falhas: ${summary.failureCount}.`,
+      `Modo dry-run: ${summary.dryRun ? 'sim' : 'nao'}.`,
+      ...(failedRefs.length > 0 ? ['', 'Itens com falha:', ...failedRefs] : []),
+    ].join('\n');
+    await addIssueComment({
+      repo_full_name: reportTo.repo_full_name,
+      issue_number: Number(reportTo.issue_number),
+      body,
+    });
+  }
   console.log(
     JSON.stringify(
       {
