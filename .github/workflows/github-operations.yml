@@ -49,7 +49,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_OPS_DRY_RUN: ${{ github.event_name == 'schedule' && 'true' || github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run || 'false' }}
           OPERATIONS_JSON: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.operations_json || '' }}
-          OPERATIONS_FILE: ${{ (github.event_name == 'push' || github.event_name == 'schedule') && 'automate/requests/github-manager.json' || '' }}
+          OPERATIONS_FILE: ${{ (github.event_name == 'push' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !github.event.inputs.operations_json)) && 'automate/requests/github-manager.json' || '' }}
           GITHUB_MANAGER_ALLOWED_LOGINS: luizkim,github-copilot[bot],copilot-swe-agent,copilot
           GITHUB_MANAGER_PROJECT_ORG: ControleOnline
           GITHUB_MANAGER_PROJECT_NUMBER: 1
