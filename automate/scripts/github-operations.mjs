@@ -465,7 +465,7 @@ function getProjectItem(project, repoFullName, issueNumber, itemId) {
 }
 
 async function getIssueNodeId(repoFullName, issueNumber) {
-  const [owner, repo] = splitRepo(repoFullName);
+  const { owner, repo } = splitRepo(repoFullName);
   const data = await githubGraphQL(
     `query($owner:String!, $repo:String!, $number:Int!) {
       repository(owner:$owner, name:$repo) {
