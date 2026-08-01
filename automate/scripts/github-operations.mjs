@@ -1046,6 +1046,30 @@ async function main() {
     results,
   };
   const outPath = writeOutput(summary);
+  const sourceMatch = loaded.source.match(/^issue_comment:(.+)#(\d+)$/);
+  if (sourceMatch) {
+    const failedRefs = results
+      .filter((entry) => entry.ok === false)
+      .map((entry) => {
+        const ref = entry.input?.repo_full_name && entry.input?.issue_number
+          ? `${entry.input.repo_full_name}#${entry.input.issue_number}`
+          : entry.type;
+        return `- ${ref}`;
+      });
+    const body = [
+      '### GitHub Manager',
+      '',
+      `Operacoes concluidas: ${summary.successCount}/${summary.operationCount} com sucesso.`,
+      `Falhas: ${summary.failureCount}.`,
+      `Modo dry-run: ${summary.dryRun ? 'sim' : 'nao'}.`,
+      ...(failedRefs.length > 0 ? ['', 'Itens com falha:', ...failedRefs] : []),
+    ].join('\n');
+    await addIssueComment({
+      repo_full_name: sourceMatch[1],
+      issue_number: Number(sourceMatch[2]),
+      body,
+    });
+  }
   console.log(
     JSON.stringify(
       {
