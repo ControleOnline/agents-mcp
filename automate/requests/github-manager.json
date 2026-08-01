@@ -1,7 +1,7 @@
 {
-  "requested_at": "2026-08-01T16:36:00Z",
+  "requested_at": "2026-08-01T17:09:00Z",
   "requested_by": "CTO",
-  "purpose": "Adicionar as tarefas de intake #285-#297 ao backlog do ProjectV2 ControleOnline#1",
+  "purpose": "Adicionar as tarefas #285-#297 ao Backlog do ProjectV2 ControleOnline#1 apos liberacao de acesso",
   "dry_run": false,
   "report_to": {
     "repo_full_name": "ControleOnline/agents-mcp",
