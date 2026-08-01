@@ -256,7 +256,7 @@ async function main() {
   const org = env('AGENT_PROJECT_ORG', 'ControleOnline');
   const projectNumber = Number(env('AGENT_PROJECT_NUMBER', '1'));
   const dryRun = env('AGENT_DRY_RUN', 'true').toLowerCase() !== 'false';
-  const workStatuses = parseCsv(env('AGENT_WORK_STATUSES', 'Work,Working'));
+  const workStatuses = parseCsv(env('AGENT_WORK_STATUSES', 'Ready,Working'));
   const deployStatuses = parseCsv(env('AGENT_DEPLOY_STATUSES', 'Deploy'));
 
   const data = await getProjectSnapshot(org, projectNumber);

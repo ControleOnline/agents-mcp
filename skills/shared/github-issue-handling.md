@@ -59,14 +59,15 @@ Ao checar GitHub Actions:
 4. nunca exponha credenciais, segredos, tokens, conteudo sensivel de arquivos de ambiente, dados pessoais ou trechos sensiveis de logs
 5. se citar logs, resuma ou sanitize o conteudo
 6. registre contexto suficiente para entendimento tecnico, rastreabilidade e continuidade operacional
-7. quando outro agent ficar bloqueado por infraestrutura, abra ou atualize uma issue separada em `Work` com tag `agent:sysadmin`, referencie a issue original e descreva apenas o bloqueio operacional necessario para destravar a trilha
+7. quando outro agent ficar bloqueado por infraestrutura, abra ou atualize uma issue separada em `Ready` com tag `agent:sysadmin`, referencie a issue original e descreva apenas o bloqueio operacional necessario para destravar a trilha
 8. a issue paralela de `Sysadmin` deve continuar separada da tarefa-mãe; quando o impedimento for resolvido ou diagnosticado, o `Sysadmin` deve comentar na tarefa-mãe e trocar a issue paralela para `agent:security`
 
 ## Column Policy
 
 Use as colunas desta forma:
 
-- problemas operacionais, de desenvolvimento, de seguranca e demais encaminhamentos de trabalho devem ir para a coluna `Work` ou `Working`
+- problemas operacionais, de desenvolvimento, de seguranca e demais encaminhamentos de trabalho devem ir para a coluna `Ready` ou `Working`
+- `Ready` e a fila canonica de entrada; `Working` e o estado transitorio da execucao ativa
 - itens que existem para validacao manual posterior devem ir para a coluna `In Review`
 - tarefas de `DevOps` devem ser lidas na coluna `Deploy`
 - agents documentais externos ao nucleo, como `Documentor`, leem suas tasks na coluna `Done`
@@ -74,9 +75,9 @@ Use as colunas desta forma:
 
 ## Classification Rules
 
-### Work
+### Ready
 
-Use a coluna `Work` ou `Working` quando houver:
+Use a coluna `Ready` ou `Working` quando houver:
 
 - bug
 - regressao
@@ -87,7 +88,7 @@ Use a coluna `Work` ou `Working` quando houver:
 - indicio de problema de seguranca, vulnerabilidade, exposicao indevida, comportamento suspeito, acesso anomalo ou possivel incidente
 - bloqueio de infraestrutura que precise acompanhamento do `Sysadmin`
 
-Em casos de seguranca, mantenha a issue em `Work`, mas reduza detalhes exploraveis e preserve somente o contexto seguro necessario.
+Em casos de seguranca, mantenha a issue em `Ready`, mas reduza detalhes exploraveis e preserve somente o contexto seguro necessario.
 
 ### In Review
 
@@ -112,7 +113,7 @@ Ao criar ou atualizar issues:
 Quando houver indicio de problema de seguranca:
 
 - faca o registro no GitHub por esta skill, sem criar fluxo separado fora dela
-- coloque a issue em `Work` ou `Working`
+- coloque a issue em `Ready` ou `Working`
 - descreva risco, impacto potencial, sintomas observados, escopo afetado e evidencias nao sensiveis
 - omita detalhes que aumentem risco de exploracao ou revelem segredos desnecessariamente
 - preserve rastreabilidade suficiente para continuidade da investigacao

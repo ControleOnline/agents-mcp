@@ -10,7 +10,7 @@ import {
 const GRAPHQL_URL = 'https://api.github.com/graphql';
 const RETRY = githubRetryConfig('DEVELOPER_PR_DISPATCH');
 const DEFAULT_ALLOWED_AUTHOR_ASSOCIATIONS = 'OWNER,MEMBER,COLLABORATOR';
-const DEFAULT_WORK_STATUSES = 'Work,Working';
+const DEFAULT_WORK_STATUSES = 'Ready,Working';
 const DEVELOPER_LABEL = 'agent:developer';
 const ALL_AGENT_LABELS = [
   'agent:developer',
@@ -351,14 +351,14 @@ async function main() {
   if (candidateItems.length === 0) {
     result.ok = true;
     result.skipped = true;
-    result.reason = 'Nenhuma issue aberta de membro da equipe em Work/Working e pertencente a Developer sem PR pendente de QA/Security foi encontrada.';
+    result.reason = 'Nenhuma issue aberta de membro da equipe em Ready/Working e pertencente a Developer sem PR pendente de QA/Security foi encontrada.';
     const outPath = writeOutputFile(result);
     console.log(JSON.stringify({ ok: true, skipped: true, reason: result.reason, outPath }, null, 2));
     return;
   }
 
   result.ok = true;
-  result.reason = 'Seleção concluída usando issue aberta, autoria de membro da equipe, status em Work/Working, ownership de Developer e ausência de PR pendente de QA/Security.';
+  result.reason = 'Seleção concluída usando issue aberta, autoria de membro da equipe, status em Ready/Working, ownership de Developer e ausência de PR pendente de QA/Security.';
   const outPath = writeOutputFile(result);
   console.log(
     JSON.stringify(

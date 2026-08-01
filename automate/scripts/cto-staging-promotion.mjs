@@ -15,7 +15,7 @@ const DEFAULT_KNOWN_AGENT_LOGINS = 'github-copilot[bot],copilot-swe-agent,copilo
 const DEFAULT_QA_APPROVED_LABEL = 'approved:qa';
 const DEFAULT_SECURITY_APPROVED_LABEL = 'approved:security';
 const DEFAULT_STAGING_BRANCH = 'staging';
-const DEFAULT_READY_STATUSES = 'Work,Working,In Review';
+const DEFAULT_READY_STATUSES = 'Ready,Working,In Review';
 
 function env(name, fallback = '') {
   return (process.env[name] || fallback).trim();

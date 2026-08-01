@@ -374,7 +374,7 @@ function buildDeveloperSeedComment(issueRef, signature) {
     '### Fluxo iniciado por tags',
     '',
     `Issue: ${issueRef}`,
-    'Ação: a task entrou em `Work` ou `Working` sem `agent:*`, então a trilha oficial marcou `agent:developer` como primeira etapa.',
+    'Ação: a task entrou em `Ready` ou `Working` sem `agent:*`, então a trilha oficial marcou `agent:developer` como primeira etapa.',
     'Próximo passo: o agent `Developer` deve descobrir essa task pela tag e pela coluna, sem uso de assignee.',
     '',
     buildCommentMarker(COMMENT_TYPES.seedDeveloper, signature),
@@ -455,7 +455,7 @@ async function main() {
   const org = env('FLOW_PROJECT_ORG', 'ControleOnline');
   const projectNumber = Number(env('FLOW_PROJECT_NUMBER', '1'));
   const dryRun = env('FLOW_DRY_RUN', 'true').toLowerCase() !== 'false';
-  const workStatuses = parseCsv(env('FLOW_WORK_STATUSES', 'Work,Working'));
+  const workStatuses = parseCsv(env('FLOW_WORK_STATUSES', 'Ready,Working'));
   const deployStatuses = parseCsv(env('FLOW_DEPLOY_STATUSES', 'Deploy'));
   const inReviewStatuses = parseCsv(env('FLOW_IN_REVIEW_STATUSES', 'In Review'));
   const doneStatuses = parseCsv(env('FLOW_DONE_STATUSES', 'Done'));

@@ -16,7 +16,7 @@ Hoje a execucao operacional oficial do ecossistema combina duas trilhas compleme
 - workflow desativado: `.github/workflows/developer-runner.yml`
 - entry point de runtime: `src/developer-runner.js`
 - logica final atual: `automate/scripts/developer-pr-dispatch.mjs`
-- criterio de captura: issue aberta de membro da equipe sem PR pendente de decisao por `QA` e `Security`
+- criterio de captura: issue aberta de membro da equipe sem PR pendente de decisao por `QA` e `Security`, com prioridade em `Ready`
 
 ### Quality Assurance
 

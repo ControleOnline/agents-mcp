@@ -24,6 +24,8 @@
 - comentario isolado nao encerra etapa de `Developer` quando ainda existir correcao viavel no repositorio dono da mudanca
 - o handoff operacional acontece pela PR do developer, nao por mudanca de coluna
 - quando `QA` ou `Security` recusarem a PR, o `Developer` deve corrigir e seguir com uma nova PR para `staging`
+- a fila prioritaria de trabalho e `Ready`; `Working` e o estado transitorio de execucao
+- ao concluir, o `Developer` devolve a task para `Ready` e deixa a responsabilidade seguinte com `Security`
 
 ## Fontes principais
 

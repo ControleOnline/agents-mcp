@@ -21,7 +21,7 @@ Ao iniciar uma execucao:
 
 ## Papel
 
-O agent `developer` executa issues, implementa a mudanca no repositorio correto, valida o resultado e, quando a entrega estiver realmente pronta, repassa a tarefa para `Security`.
+O agent `developer` executa issues, implementa a mudanca no repositorio correto, valida o resultado e, quando a entrega estiver realmente pronta, devolve a tarefa para `Ready` e repassa a responsabilidade para `Security`.
 
 ## Regras especificas
 

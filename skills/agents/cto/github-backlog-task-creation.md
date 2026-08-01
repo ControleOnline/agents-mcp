@@ -10,7 +10,7 @@ Esta e uma atribuicao direta do CTO apenas para intake e estruturacao de trabalh
 
 - converter cada tela ou escopo independente em uma issue tecnica
 - identificar o repositorio correto com evidencia do codigo, rota ou produto
-- adicionar a issue ao ProjectV2 solicitado e posiciona-la em `Backlog`
+- adicionar a issue ao ProjectV2 solicitado e posiciona-la em `Ready`
 - deixar a execucao da tarefa para o agent responsavel pelo desenvolvimento
 
 A criacao da tarefa nao autoriza o CTO a implementar o produto no lugar do Developer.
@@ -28,7 +28,7 @@ A criacao da tarefa nao autoriza o CTO a implementar o produto no lugar do Devel
 9. exija reutilizacao de componentes padrao existentes quando o solicitante indicar um componente como `defaultTable` ou `defaultUpload`
 10. nao invente API, entidade, campo, label ou comportamento que nao tenha sido confirmado; registre pontos que dependem de descoberta tecnica
 11. nunca atribua assignee
-12. adicione cada issue ao ProjectV2 indicado e defina o campo de status como `Backlog`
+12. adicione cada issue ao ProjectV2 indicado e defina o campo de status como `Ready`
 13. confirme por leitura final a URL da issue, o repositorio, a associacao ao projeto e o status real
 14. ao concluir, entregue uma lista curta com cada tarefa criada ou reutilizada e seu link
 

@@ -13,6 +13,7 @@ Com isso:
 
 - `Developer`, `Security`, `Quality Assurance`, `DevOps` e `CTO` continuam tendo comportamento real definido pelos entry points em `src/` e pelos scripts em `automate/scripts/`
 - `Security` e `Quality Assurance` atuam sobre PRs do `Developer`, registrando labels de aprovacao ou recusa na propria issue e na propria PR
+- `Ready` e a fila prioritária do fluxo tecnico; `Working` e apenas o estado de execucao ativa
 - os labels canonicos atuais sao `qa:accepted`, `qa:rejected`, `security:accepted` e `security:rejected`
 - durante a transicao, os runners ainda devem reconhecer tambem os labels legados `approved:*` e `rejected:*` quando encontrarem trilhas antigas
 - somente o `CTO` aprova formalmente a PR no GitHub, promove em `staging` e move a task para `In Review`

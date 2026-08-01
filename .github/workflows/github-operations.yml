@@ -53,7 +53,7 @@ jobs:
           GITHUB_MANAGER_ALLOWED_LOGINS: luizkim,github-copilot[bot],copilot-swe-agent,copilot
           GITHUB_MANAGER_PROJECT_ORG: ControleOnline
           GITHUB_MANAGER_PROJECT_NUMBER: 1
-          GITHUB_MANAGER_WORK_STATUSES: Work,Working
+          GITHUB_MANAGER_WORK_STATUSES: Ready,Working
           GITHUB_MANAGER_IN_REVIEW_STATUSES: In Review
           GITHUB_MANAGER_DONE_STATUSES: Done
           GITHUB_MANAGER_QA_LABEL: agent:qa

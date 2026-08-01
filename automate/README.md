@@ -4,7 +4,7 @@ Esta pasta concentra a politica e a base executavel dos runners operacionais do 
 
 ## Agentes cobertos
 
-- `Developer`: seleciona issue aberta de membro da equipe sem PR pendente de `QA` e `Security`
+- `Developer`: seleciona issue aberta de membro da equipe sem PR pendente de `QA` e `Security`, com prioridade em `Ready`
 - `Security`: analisa PR aberta do developer e registra `security:accepted` ou `security:rejected`
 - `Quality Assurance`: analisa PR aberta do developer e registra `qa:accepted` ou `qa:rejected`
 - `CTO`: supervisiona o ecossistema e, quando a PR estiver pronta, aprova a PR e move a task para `In Review`
@@ -38,6 +38,6 @@ Permitir que o GitHub execute o fluxo padronizado:
 
 - `Security` e `QA` nao publicam `APPROVE` ou `REQUEST_CHANGES` no GitHub Review.
 - `Security` e `QA` nao finalizam task.
-- coluna do projeto nao participa mais da captura de backlog de `Developer`, `Security` e `QA`.
+- coluna do projeto nao participa mais da captura de backlog de `Developer`, `Security` e `QA`; a fila oficial de entrada e `Ready`.
 - somente `CTO` faz a aprovacao final da PR do fluxo normal.
 - quando houver conflito entre script e politica, siga os arquivos `.md` desta pasta.

@@ -13,7 +13,7 @@ const RETRY = githubRetryConfig('PR_LABEL_REVIEW');
 const DEFAULT_ALLOWED_AUTHOR_ASSOCIATIONS = 'OWNER,MEMBER,COLLABORATOR';
 const DEFAULT_STAGING_BRANCH = 'staging';
 const DEFAULT_BLOCKED_HEAD_BRANCHES = 'master,main,staging';
-const DEFAULT_WORK_STATUSES = 'Work,Working';
+const DEFAULT_WORK_STATUSES = 'Ready,Working';
 const ALL_AGENT_LABELS = [
   'agent:developer',
   'agent:security',

@@ -22,7 +22,7 @@ Quando executado por `schedule` ou por `workflow_dispatch` sem `operations_json`
 
 Nesse modo ele:
 
-- procura tasks em `Work` ou `Working`
+- procura tasks em `Ready` ou `Working`
 - verifica evidencias de aprovacao de `Security` e `Q.A.`
 - move para `In Review` a task que ficou presa na coluna errada
 - remove labels operacionais residuais
@@ -106,7 +106,7 @@ Campos aceitos:
 
 Esse tipo de operacao pode aparecer varias vezes no mesmo `operations_json`, o que permite ao CTO criar varias tasks em um unico disparo.
 
-Quando `project_number` for informado e `target_status` nao vier no payload, a issue e adicionada ao ProjectV2 em `Backlog`.
+Quando `project_number` for informado e `target_status` nao vier no payload, a issue e adicionada ao ProjectV2 em `Ready`.
 
 ### `replace_labels`
 

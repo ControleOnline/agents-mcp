@@ -9,12 +9,12 @@ Use esta skill para padronizar tags, transicao de etapa, handoff tecnico e desvi
 1. confirme a tag `agent:*` esperada para a etapa atual, a coluna real da issue, o PR e os checks
 2. nunca atribua a task a pessoas, bots ou fallbacks tecnicos; assignee nao faz parte do fluxo
 3. agentes nao fecham tasks; so humanos podem mover a issue para `closed`
-4. se a task estiver em `Work` ou `Working` sem `agent:*`, a entrada padrao e `Developer`
-5. o fluxo tecnico padrao e sequencial: `Developer` implementa e publica PR para `staging`, `Security` registra `security:accepted` ou `security:rejected` na PR, `Q.A.` registra `qa:accepted` ou `qa:rejected` na PR, somente o `CTO` aprova a PR no GitHub, promove para `staging` e move a task para `In Review`, um humano decide a passagem de `In Review` para `Deploy`, e `DevOps` executa a promocao a partir de `Deploy`
+4. se a task estiver em `Ready` ou `Working` sem `agent:*`, a entrada padrao e `Developer`
+5. o fluxo tecnico padrao e sequencial: `Developer` implementa e publica PR para `staging`, devolve a task para `Ready` ao finalizar a etapa, `Security` registra `security:accepted` ou `security:rejected` na PR e tambem devolve a task para `Ready`, `Q.A.` registra `qa:accepted` ou `qa:rejected` na PR e tambem devolve a task para `Ready`, somente o `CTO` aprova a PR no GitHub, promove para `staging` e move a task para `In Review`, um humano decide a passagem de `In Review` para `Deploy`, e `DevOps` executa a promocao a partir de `Deploy`
 6. qualquer etapa pode abrir uma task paralela de infraestrutura com `agent:sysadmin`; essa task nunca substitui a tarefa-mãe e deve sempre referenciá-la
 7. quando o `Sysadmin` concluir a task paralela, ele deve trocar essa task para `agent:security` e comentar na tarefa-mãe que o impedimento foi resolvido ou diagnosticado
 8. cada agent so troca a tag ou a coluna da propria proxima etapa quando sua etapa estiver realmente concluida
-9. `Developer`, `Security`, `Quality Assurance` e `Sysadmin` trabalham em `Work` ou `Working`; `DevOps` le a fila aprovada em `Deploy`; agents documentais externos ao nucleo, como `Documentor`, trabalham em `Done`
+9. `Developer`, `Security`, `Quality Assurance` e `Sysadmin` trabalham em `Ready` ou `Working`; `Ready` e a fila prioritária, `Working` e apenas a execucao ativa; `DevOps` le a fila aprovada em `Deploy`; agents documentais externos ao nucleo, como `Documentor`, trabalham em `Done`
 10. nao faca handoff sem evidencia concreta do que foi validado, corrigido ou bloqueado
 
 ## Output Contract

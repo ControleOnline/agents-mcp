@@ -177,7 +177,8 @@ function buildDeveloperInstructions(issueRef, issueNumber) {
     'Leia também o `AGENTS.md` mais específico do código afetado.',
     `Trabalhe a partir do branch \`task-${issueNumber}\` derivado de \`master\`, reutilizando-o quando ele já existir.`,
     'Use GitHub como fonte de verdade para issue, PR, comentários, branch e evidências.',
-    'Ao concluir a implementação com evidência suficiente, repasse a issue para o agent Security.',
+    'Ao iniciar a execução, mova a task para `Working`.',
+    'Ao concluir a implementação com evidência suficiente, devolva a task para `Ready` e repasse a responsabilidade para o agent Security.',
   ].join(' ');
 }
 
@@ -186,8 +187,9 @@ function buildAssignmentComment(issueRef) {
     '### Developer iniciado',
     '',
     `Issue: ${issueRef}`,
-    'Origem: coluna `Work` do ProjectV2',
-    'Critério: task parada, sem ownership exclusivamente humano e sem outra execução ativa do Developer em `Work`.',
+    'Origem: coluna `Ready` do ProjectV2',
+    'Critério: task parada, sem ownership exclusivamente humano e sem outra execução ativa do Developer em `Ready`.',
+    'Ação inicial: quando assumir a task, mova a coluna para `Working`.',
     'Ação: o runner atribuiu o agent `Developer` para iniciar a execução.',
   ].join('\n');
 }
@@ -277,7 +279,7 @@ async function main() {
   const org = env('DEVELOPER_PROJECT_ORG', 'ControleOnline');
   const projectNumber = Number(env('DEVELOPER_PROJECT_NUMBER', '1'));
   const dryRun = env('DEVELOPER_DRY_RUN', 'true').toLowerCase() !== 'false';
-  const workStatus = env('DEVELOPER_WORK_STATUS', 'Work');
+  const workStatus = env('DEVELOPER_WORK_STATUS', 'Ready');
   const preferredAgentLogin = env('DEVELOPER_AGENT_LOGIN', DEFAULT_AGENT_LOGIN).toLowerCase();
   const agentLogins = new Set(
     parseCsv(env('DEVELOPER_AGENT_LOGINS', DEFAULT_AGENT_LOGINS)).map((login) => login.toLowerCase())
@@ -322,7 +324,7 @@ async function main() {
   if (activeItems.length > 0) {
     result.ok = true;
     result.skipped = true;
-    result.reason = 'Já existe task em execução pelo Developer na coluna Work.';
+    result.reason = 'Já existe task em execução pelo Developer na coluna Ready.';
     const outPath = writeOutputFile(result);
     console.log(JSON.stringify({ ok: true, skipped: true, reason: result.reason, outPath }, null, 2));
     return;
@@ -331,7 +333,7 @@ async function main() {
   if (candidateItems.length === 0) {
     result.ok = true;
     result.skipped = true;
-    result.reason = 'Nenhuma task elegível foi encontrada em Work.';
+    result.reason = 'Nenhuma task elegível foi encontrada em Ready.';
     const outPath = writeOutputFile(result);
     console.log(JSON.stringify({ ok: true, skipped: true, reason: result.reason, outPath }, null, 2));
     return;
@@ -401,7 +403,7 @@ async function main() {
 
   result.ok = false;
   result.skipped = true;
-  result.reason = 'Nenhuma task elegível em Work pôde ser atribuída ao agent configurado.';
+  result.reason = 'Nenhuma task elegível em Ready pôde ser atribuída ao agent configurado.';
   const outPath = writeOutputFile(result);
   console.log(JSON.stringify({ ok: false, skipped: true, reason: result.reason, outPath }, null, 2));
 }

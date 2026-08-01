@@ -90,6 +90,7 @@ Regras centrais:
 
 - `Developer` le apenas issue aberta criada por membro da equipe sem PR pendente de decisao por `QA` e `Security`
 - `Developer` trabalha somente na propria branch da tarefa, contendo o numero da issue, e publica PR apenas para `staging`
+- `Ready` e a fila prioritária do fluxo tecnico; `Working` e apenas o estado de execucao ativa
 - `Security` e `QA` atuam sobre PRs do `Developer`, nao sobre coluna do projeto
 - `Security` so registra `security:accepted` ou `security:rejected` na PR correspondente
 - `QA` so registra `qa:accepted` ou `qa:rejected` na PR correspondente
@@ -97,4 +98,4 @@ Regras centrais:
 - `Security` e `QA` nao aprovam PR por review do GitHub e nao finalizam task
 - somente o runner de `CTO` pode aprovar a PR, promover em `staging` e mover a task para `In Review`
 - nenhum agent fecha task; fechamento em `closed` continua pertencendo apenas a humanos
-- coluna do projeto nao entra no criterio de captura do backlog de `Developer`, `Security` e `QA`
+- coluna do projeto nao entra no criterio de captura do backlog de `Developer`, `Security` e `QA`, mas `Ready` continua sendo a fila oficial de entrada

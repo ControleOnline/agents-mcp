@@ -414,7 +414,7 @@ function buildComment(issueRef, fromStatus, targetStatus, reasons) {
     'Sinais objetivos:',
     ...reasons.map((reason) => `- ${reason}`),
     '',
-    'Regra aplicada: durante `Developer`, `Security`, `Q.A.` e `DevOps` a task permanece em `Work`; somente `DevOps` move para `In Review`, e `Done` não deve ser usado enquanto ainda houver bloqueio, ownership operacional ativo ou PR aberto sem revisão concluída.',
+    'Regra aplicada: durante `Developer`, `Security`, `Q.A.` e `DevOps` a task permanece em `Ready`; somente `DevOps` move para `In Review`, e `Done` não deve ser usado enquanto ainda houver bloqueio, ownership operacional ativo ou PR aberto sem revisão concluída.',
   ].join('\n');
 }
 
@@ -1192,7 +1192,7 @@ async function main() {
   const org = env('CTO_PROJECT_ORG', 'ControleOnline');
   const projectNumber = Number(env('CTO_PROJECT_NUMBER', '1'));
   const dryRun = env('CTO_DRY_RUN', 'true').toLowerCase() !== 'false';
-  const workStatus = env('CTO_WORK_STATUS', 'Work');
+  const workStatus = env('CTO_WORK_STATUS', 'Ready');
   const inReviewStatus = env('CTO_IN_REVIEW_STATUS', 'In Review');
   const doneStatus = env('CTO_DONE_STATUS', 'Done');
   const unsupportedLabel = env('CTO_UNSUPPORTED_LABEL', DEFAULT_UNSUPPORTED_LABEL);

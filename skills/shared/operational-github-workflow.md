@@ -29,7 +29,7 @@ Quando a correcao de codigo precisar de acompanhamento manual posterior:
 
 Quando a correcao de codigo tambem precisar entrar no fluxo normal de trabalho tecnico:
 
-- mantenha o acompanhamento tecnico principal na coluna `Work` por meio da skill de manipulacao de issues do GitHub
+- mantenha o acompanhamento tecnico principal na coluna `Ready` por meio da skill de manipulacao de issues do GitHub
 - use `In Review` especificamente para a etapa de validacao manual posterior
 
 ## Quality Bar

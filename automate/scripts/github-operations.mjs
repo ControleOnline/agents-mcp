@@ -750,7 +750,7 @@ async function createIssue(input) {
 
   if (input.project_number !== undefined && input.project_number !== null && input.project_number !== '') {
     const projectOrg = input.project_org || input.org || owner;
-    const targetStatus = input.target_status || 'Backlog';
+    const targetStatus = input.target_status || 'Ready';
     const projectResult = await updateProjectStatus({
       org: projectOrg,
       project_number: input.project_number,
@@ -899,7 +899,7 @@ async function runManagerAudit(explicitDryRun = null) {
     explicitDryRun === null
       ? env('GITHUB_OPS_DRY_RUN', 'false').toLowerCase() === 'true'
       : explicitDryRun;
-  const workStatuses = parseCsv(env('GITHUB_MANAGER_WORK_STATUSES', 'Work,Working'));
+  const workStatuses = parseCsv(env('GITHUB_MANAGER_WORK_STATUSES', 'Ready,Working'));
   const inReviewStatuses = parseCsv(env('GITHUB_MANAGER_IN_REVIEW_STATUSES', 'In Review'));
   const doneStatuses = parseCsv(env('GITHUB_MANAGER_DONE_STATUSES', 'Done'));
   const qaLabel = env('GITHUB_MANAGER_QA_LABEL', 'agent:qa');
