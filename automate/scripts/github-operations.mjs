@@ -1020,7 +1020,9 @@ async function main() {
     return;
   }
 
-  const dryRun = payload.dry_run === true || env('GITHUB_OPS_DRY_RUN', 'false').toLowerCase() === 'true';
+  const dryRun = loaded.source.startsWith('OPERATIONS_FILE:')
+    ? payload.dry_run !== false
+    : payload.dry_run === true || env('GITHUB_OPS_DRY_RUN', 'false').toLowerCase() === 'true';
   const operations = hasOperations ? payload.operations : [];
   if (operations.length === 0) {
     throw new Error('No operations provided.');
