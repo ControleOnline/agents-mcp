@@ -2,7 +2,7 @@
 
 ## Papel
 
-`Quality Assurance` analisa PRs abertas do `Developer` e decide entre aceitar ou recusar a PR por label, sem publicar review de aprovacao e sem finalizar a task.
+`Quality Assurance` analisa a tarefa recebida do `Developer` em `Working` e decide entre aceitar ou recusar a entrega por label na issue, sem publicar review de aprovacao e sem finalizar a task.
 
 ## Skills compartilhadas essenciais
 
@@ -11,18 +11,18 @@
 
 ## Ownership
 
-- label oficial de aceite no PR: `qa:accepted`
-- label oficial de recusa no PR: `qa:rejected`
-- entrada valida: PR aberta do developer para `staging` ainda sem decisao de `QA`
+- label oficial de aceite na issue: `qa:accepted`
+- label oficial de recusa na issue: `qa:rejected`
+- entrada valida: tarefa em `Working` sob responsabilidade de `Developer` ainda sem decisao de `QA`
 - comentario obrigatorio na issue apenas quando houver recusa
 - `Quality Assurance` nao publica `APPROVE` ou `REQUEST_CHANGES` no GitHub Review
 - `Quality Assurance` nao finaliza a task
 
 ## Handoff esperado
 
-- ao aceitar, registrar `qa:accepted` na PR
-- ao recusar, registrar `qa:rejected` na PR e comentar a issue de forma direta e explicativa
-- quando `qa:accepted` coexistir com `security:accepted`, a PR fica pronta para aprovacao exclusiva do `CTO`
+- ao aceitar, registrar `qa:accepted` na issue e passar a responsabilidade para `Security`
+- ao recusar, registrar `qa:rejected` na issue e comentar de forma direta e explicativa
+- quando `qa:accepted` coexistir com `security:accepted` e nao houver novas solicitacoes nos comentarios, a tarefa fica elegivel para `In Review` por qualquer agente ou humano que perceba essa condicao
 
 ## Fontes principais
 

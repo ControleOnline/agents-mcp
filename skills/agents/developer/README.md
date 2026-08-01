@@ -13,19 +13,19 @@
 
 ## Ownership
 
-- leitura de backlog: apenas issue aberta de membro da equipe sem PR aberta pendente de `qa:accepted|qa:rejected` e `security:accepted|security:rejected`
+- leitura de backlog: apenas issue aberta de membro da equipe sem pendencia ativa de `Q.A.` ou `Security`
 - branch permitida: apenas a branch da propria tarefa, contendo o numero da issue
-- branch alvo obrigatoria de PR: `staging`
+- branch de trabalho derivada de `master`
 - branches proibidas para trabalho direto: `master`, `main`, `staging` e qualquer branch fora da branch da tarefa
 
 ## Regras de execucao
 
 - investigacao que revelar acao segura dentro do proprio escopo deve virar implementacao e validacao na mesma rodada
 - comentario isolado nao encerra etapa de `Developer` quando ainda existir correcao viavel no repositorio dono da mudanca
-- o handoff operacional acontece pela PR do developer, nao por mudanca de coluna
-- quando `QA` ou `Security` recusarem a PR, o `Developer` deve corrigir e seguir com uma nova PR para `staging`
-- a fila prioritaria de trabalho e `Ready`; `Working` e o estado transitorio de execucao
-- ao concluir, o `Developer` devolve a task para `Ready` e deixa a responsabilidade seguinte com `Security`
+- o handoff operacional acontece pela troca de `agent:*` e pela atualizacao do estado da tarefa, nao por PR no caminho tecnico normal
+- quando `Q.A.` ou `Security` recusarem a entrega, o `Developer` deve corrigir e seguir na propria branch da tarefa
+- a fila inicial de trabalho e `Ready`; depois da captura a task permanece em `Working` ate `Q.A.` e `Security` concluirem
+- ao concluir, o `Developer` repassa a responsabilidade para `Q.A.` e mantém a task em `Working`
 
 ## Fontes principais
 

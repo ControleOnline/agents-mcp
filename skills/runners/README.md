@@ -11,12 +11,12 @@ Hoje existem duas trilhas oficiais e complementares:
 
 Com isso:
 
-- `Developer`, `Security`, `Quality Assurance`, `DevOps` e `CTO` continuam tendo comportamento real definido pelos entry points em `src/` e pelos scripts em `automate/scripts/`
-- `Security` e `Quality Assurance` atuam sobre PRs do `Developer`, registrando labels de aprovacao ou recusa na propria issue e na propria PR
-- `Ready` e a fila prioritária do fluxo tecnico; `Working` e apenas o estado de execucao ativa
+- `Developer`, `Security`, `Quality Assurance` e `DevOps` continuam tendo comportamento real definido pelos entry points em `src/` e pelos scripts em `automate/scripts/`
+- `Developer`, `Quality Assurance` e `Security` atuam sobre a mesma tarefa em `Working`, trocando apenas o label `agent:*` do dono atual
+- `Ready` e a fila de entrada; `Working` e o estado de ownership ativo ate o trio tecnico concluir a etapa
 - os labels canonicos atuais sao `qa:accepted`, `qa:rejected`, `security:accepted` e `security:rejected`
 - durante a transicao, os runners ainda devem reconhecer tambem os labels legados `approved:*` e `rejected:*` quando encontrarem trilhas antigas
-- somente o `CTO` aprova formalmente a PR no GitHub, promove em `staging` e move a task para `In Review`
+- quando `qa:accepted` e `security:accepted` coexistem sem novas solicitacoes nos comentarios, a task fica elegivel para `In Review`; uma pessoa cria a PR de `master` e move a tarefa para `Deploy`, e `DevOps` aprova a PR, publica a liberacao e acompanha a verificacao das URLs de producao
 - `DevOps` permanece responsavel pela fila propria de deploy e pela reconciliacao operacional quando houver conflito de merge ou bloqueio repo-local de publicacao
 
 ## GitHub Manager Runner
@@ -31,8 +31,8 @@ Com isso:
 - `src/security-runner.js` -> `automate/scripts/pr-label-review-runner.mjs` com `PR_REVIEW_ROLE=security`
 - `src/qa-runner.js` -> `automate/scripts/pr-label-review-runner.mjs` com `PR_REVIEW_ROLE=qa`
 - `src/devops-runner.js` -> `src/agent-dispatch-runner.js` com `AGENT_DISPATCH_ROLE=devops`
-- `src/cto-runner.js` -> `automate/scripts/cto-project-supervisor.mjs`
-- `automate/scripts/cto-pr-finalizer.mjs` -> aprovacao exclusiva do CTO para trilhas prontas
+- `src/cto-runner.js` -> `automate/scripts/cto-project-supervisor.mjs` (legado; nao faz parte da trilha atual `Developer` -> `QA` -> `Security` -> `In Review` -> `Deploy` -> `DevOps`)
+- `automate/scripts/cto-pr-finalizer.mjs` -> legado de consolidacao tecnica anterior; a trilha atual usa `In Review` -> `Deploy` -> `DevOps`
 
 ## Legado
 

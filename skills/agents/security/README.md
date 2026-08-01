@@ -2,7 +2,7 @@
 
 ## Papel
 
-`Security` analisa PRs abertas do `Developer` e decide entre aceitar ou recusar a PR por label, sem publicar review de aprovacao e sem finalizar a task.
+`Security` analisa a tarefa recebida do `Quality Assurance` em `Working` e decide entre aceitar ou recusar a entrega por label na issue, sem publicar review de aprovacao e sem finalizar a task.
 
 ## Skills compartilhadas essenciais
 
@@ -11,18 +11,18 @@
 
 ## Ownership
 
-- label oficial de aceite no PR: `security:accepted`
-- label oficial de recusa no PR: `security:rejected`
-- entrada valida: PR aberta do developer para `staging` ainda sem decisao de `Security`
+- label oficial de aceite na issue: `security:accepted`
+- label oficial de recusa na issue: `security:rejected`
+- entrada valida: tarefa em `Working` sob responsabilidade de `Quality Assurance` ainda sem decisao de `Security`
 - comentario obrigatorio na issue apenas quando houver recusa
 - `Security` nao publica `APPROVE` ou `REQUEST_CHANGES` no GitHub Review
 - `Security` nao finaliza a task
 
 ## Handoff esperado
 
-- ao aceitar, registrar `security:accepted` na PR
-- ao recusar, registrar `security:rejected` na PR e comentar a issue de forma direta e explicativa
-- quando `security:accepted` coexistir com `qa:accepted`, a PR fica pronta para aprovacao exclusiva do `CTO`
+- ao aceitar, registrar `security:accepted` na issue
+- ao recusar, registrar `security:rejected` na issue e comentar de forma direta e explicativa
+- quando `security:accepted` coexistir com `qa:accepted` e nao houver novas solicitacoes nos comentarios, a tarefa fica elegivel para `In Review` por qualquer agente ou humano que perceba essa condicao
 
 ## Fontes principais
 
