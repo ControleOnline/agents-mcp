@@ -599,7 +599,45 @@ async function updateProjectStatus(input) {
   const project = await getProjectMetadata(input.org, Number(input.project_number));
   const statusField = getStatusField(project);
   const statusOption = getStatusOption(statusField, input.target_status);
-  const item = getProjectItem(project, input.repo_full_name, input.issue_number, input.item_id);
+  let item = null;
+
+  try {
+    item = getProjectItem(project, input.repo_full_name, input.issue_number, input.item_id);
+  } catch (error) {
+    if (input.item_id || !input.repo_full_name || !input.issue_number) throw error;
+
+    const { owner, repo } = splitRepo(input.repo_full_name);
+    const issueData = await githubGraphQL(
+      `query($owner:String!, $repo:String!, $number:Int!) {
+        repository(owner:$owner, name:$repo) {
+          issue(number:$number) {
+            id
+            number
+            repository {
+              nameWithOwner
+            }
+          }
+        }
+      }`,
+      { owner, repo, number: Number(input.issue_number) }
+    );
+    const issue = issueData?.repository?.issue;
+    if (!issue?.id) throw new Error(`Issue not found: ${input.repo_full_name}#${input.issue_number}`);
+
+    const added = await githubGraphQL(
+      `mutation($projectId:ID!, $contentId:ID!) {
+        addProjectV2ItemById(input:{projectId:$projectId, contentId:$contentId}) {
+          item {
+            id
+          }
+        }
+      }`,
+      { projectId: project.id, contentId: issue.id }
+    );
+    const itemId = added?.addProjectV2ItemById?.item?.id;
+    if (!itemId) throw new Error(`Could not add issue to project: ${input.repo_full_name}#${input.issue_number}`);
+    item = { id: itemId, content: issue };
+  }
 
   await githubGraphQL(
     `mutation($projectId:ID!, $itemId:ID!, $fieldId:ID!, $optionId:String!) {
