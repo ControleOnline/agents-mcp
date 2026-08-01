@@ -45,8 +45,8 @@ jobs:
 
       - name: Run GitHub manager
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ''
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           GITHUB_OPS_DRY_RUN: ${{ github.event_name == 'schedule' && 'true' || github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run || 'false' }}
           OPERATIONS_JSON: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.operations_json || '' }}
           OPERATIONS_FILE: ${{ (github.event_name == 'push' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !github.event.inputs.operations_json)) && 'automate/requests/github-manager.json' || '' }}
