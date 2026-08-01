@@ -33,6 +33,7 @@ Nesse modo ele:
 - `schedule`
 - `workflow_dispatch`
 - `issue_comment` no proprio repositorio `agents-mcp`, usando `/github-manager` ou `/github-ops`
+- `push` em `automate/requests/github-manager.json`, para requisicoes versionadas quando a integracao de origem nao dispara eventos de comentario
 
 ## Formato do comando por comentario
 
@@ -58,6 +59,8 @@ Exemplo:
 ```
 
 Sem JSON, o comentario-comando apenas dispara a auditoria gerencial.
+
+O arquivo `automate/requests/github-manager.json` aceita o mesmo payload. Ele pode incluir `report_to` com `repo_full_name` e `issue_number` para publicar o resumo verificavel da execucao.
 
 ## Operacoes suportadas
 
