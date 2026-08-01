@@ -207,6 +207,15 @@ function readOperationsPayload() {
     return { payload: JSON.parse(inline), source: 'OPERATIONS_JSON', commandOnly: false };
   }
 
+  const operationsFile = env('OPERATIONS_FILE');
+  if (operationsFile && fs.existsSync(operationsFile)) {
+    return {
+      payload: JSON.parse(fs.readFileSync(operationsFile, 'utf8')),
+      source: `OPERATIONS_FILE:${operationsFile}`,
+      commandOnly: false,
+    };
+  }
+
   const fromComment = readIssueCommentCommand();
   if (fromComment.ignored) {
     return { payload: null, source: fromComment.source, ignored: true, commandOnly: false };
@@ -1047,7 +1056,12 @@ async function main() {
   };
   const outPath = writeOutput(summary);
   const sourceMatch = loaded.source.match(/^issue_comment:(.+)#(\d+)$/);
-  if (sourceMatch) {
+  const reportTo = payload.report_to || (
+    sourceMatch
+      ? { repo_full_name: sourceMatch[1], issue_number: Number(sourceMatch[2]) }
+      : null
+  );
+  if (reportTo?.repo_full_name && reportTo?.issue_number) {
     const failedRefs = results
       .filter((entry) => entry.ok === false)
       .map((entry) => {
@@ -1065,8 +1079,8 @@ async function main() {
       ...(failedRefs.length > 0 ? ['', 'Itens com falha:', ...failedRefs] : []),
     ].join('\n');
     await addIssueComment({
-      repo_full_name: sourceMatch[1],
-      issue_number: Number(sourceMatch[2]),
+      repo_full_name: reportTo.repo_full_name,
+      issue_number: Number(reportTo.issue_number),
       body,
     });
   }
