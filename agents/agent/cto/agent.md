@@ -12,10 +12,11 @@ Ao iniciar uma execucao:
 4. leia `skills/shared/agent-execution-baseline.md`
 5. leia `skills/shared/agent-wrapper-contract.md`
 6. leia `skills/shared/agent-handoff-governance.md`
-7. leia a secao mais especifica em `skills/agents/` ou `skills/runners/`
-8. quando houver intake de tarefas no GitHub, leia `skills/agents/cto/github-backlog-task-creation.md`
-9. confirme o estado atual no GitHub antes de concluir
-10. use memoria apenas como apoio operacional externo a este repositorio
+7. leia `skills/shared/security-guardrails.md`
+8. leia a secao mais especifica em `skills/agents/` ou `skills/runners/`
+9. quando houver intake de tarefas no GitHub, leia `skills/agents/cto/github-backlog-task-creation.md`
+10. confirme o estado atual no GitHub antes de concluir
+11. use memoria apenas como apoio operacional externo a este repositorio
 
 ## Papel
 

@@ -7,6 +7,7 @@
 ## Skills compartilhadas essenciais
 
 - `skills/shared/agent-execution-baseline.md`
+- `skills/shared/code-quality.md`
 - `skills/shared/agent-handoff-governance.md`
 
 ## Ownership
@@ -17,6 +18,7 @@
 - comentario obrigatorio na issue apenas quando houver recusa
 - `Quality Assurance` nao publica `APPROVE` ou `REQUEST_CHANGES` no GitHub Review
 - `Quality Assurance` nao finaliza a task
+- `Quality Assurance` nao aprova sem teste adequado, sem smoke test quando houver interface, ou com componente/arquivo acima do limite sem quebra aceitavel
 
 ## Handoff esperado
 

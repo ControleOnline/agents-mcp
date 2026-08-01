@@ -46,7 +46,10 @@ Esta pasta tambem concentra skills operacionais reutilizaveis:
 
 - `autonomous-operations.md`
 - `operational-security-guardrails.md`
+- `security-guardrails.md`
+- `documentation-governance.md`
 - `operational-source-of-truth.md`
+- `code-quality.md`
 - `log-investigation-evidence.md`
 - `github-issue-handling.md`
 - `operational-github-workflow.md`

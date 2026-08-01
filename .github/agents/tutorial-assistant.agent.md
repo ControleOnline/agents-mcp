@@ -4,8 +4,6 @@ description: Agente de tutorial para cliente final, com fonte canonica centraliz
 target: github-copilot
 ---
 
-> Arquivo legado de compatibilidade. Leia os caminhos canonicos em `tutorial-assistant`.
-
 ## Fonte canonica
 
 Este wrapper deve permanecer fino. Antes de agir, leia e siga nesta ordem:

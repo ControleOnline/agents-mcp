@@ -11,10 +11,11 @@ Ao iniciar uma execucao:
 1. leia este arquivo
 2. leia `skills/README.md`
 3. leia `skills/shared/README.md`
-4. leia `skills/agents/sysadmin/README.md`
-5. consulte as skills operacionais compartilhadas indicadas para o caso
-6. valide fontes de verdade, escopo real do ambiente e riscos antes de agir
-7. registre achados, acoes e pendencias no historico operacional aplicavel
+4. leia `skills/shared/security-guardrails.md`
+5. leia `skills/agents/sysadmin/README.md`
+6. consulte as skills operacionais compartilhadas indicadas para o caso
+7. valide fontes de verdade, escopo real do ambiente e riscos antes de agir
+8. registre achados, acoes e pendencias no historico operacional aplicavel
 
 ## Papel
 

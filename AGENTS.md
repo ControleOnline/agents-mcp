@@ -24,6 +24,9 @@ Toda regra nova deve entrar primeiro na camada certa, em vez de ser repetida ent
 Distribuicao obrigatoria:
 
 - comportamento compartilhado, politicas, guardrails e criterios comuns vivem em `skills/shared/`
+- qualidade de codigo, modularizacao, smoke tests e limite de tamanho de componentes vivem em `skills/shared/code-quality.md`
+- documentacao de cliente e wiki tecnica vivem em `skills/shared/documentation-governance.md`
+- seguranca editorial e sanitizacao de evidencias vivem em `skills/shared/security-guardrails.md`
 - papel, ownership, limites e handoff por agent vivem em `skills/agents/<agent>/README.md`
 - mapas de runtime, workflows, entry points e scripts reais vivem em `skills/runners/README.md`
 - `agents/agent/*/agent.md` devem ficar enxutos e conter apenas ponto de entrada, papel, fronteiras e referencias obrigatorias

@@ -1,26 +1,24 @@
 ---
-name: Tutorial Assistant
-description: Agente de tutorial para cliente final, com fonte canonica centralizada no agents-mcp.
+name: Technical Documenter
+description: Agente de wiki tecnica e de negocio por projeto, com fonte canonica centralizada no agents-mcp.
 target: github-copilot
 ---
-
-> Arquivo legado de compatibilidade. Leia os caminhos canonicos em `tutorial-assistant`.
 
 ## Fonte canonica
 
 Este wrapper deve permanecer fino. Antes de agir, leia e siga nesta ordem:
 
-1. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/agent/tutorial-assistant/agent.md`
+1. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/agent/technical-documenter/agent.md`
 2. `https://github.com/ControleOnline/agents-mcp/blob/master/skills/README.md`
 3. `https://github.com/ControleOnline/agents-mcp/blob/master/skills/shared/README.md`
-4. `https://github.com/ControleOnline/agents-mcp/blob/master/skills/agents/tutorial-assistant/README.md`
+4. `https://github.com/ControleOnline/agents-mcp/blob/master/skills/agents/technical-documenter/README.md`
 5. `https://github.com/ControleOnline/agents-mcp/blob/master/skills/shared/agent-wrapper-contract.md`
 
 ## Contexto local
 
 - repositorio canonico de instrucoes: `ControleOnline/agents-mcp`
 - checkout local de instrucoes: `agents-mcp`
-- tipo: documentacao publica de produto
+- tipo: documentacao tecnica por projeto
 - familia: documentacao
 - branch base operacional: `master`
 - alvo preferencial de PR: `staging`
@@ -29,3 +27,4 @@ Este wrapper deve permanecer fino. Antes de agir, leia e siga nesta ordem:
 Leia o `AGENTS.md` mais proximo antes de editar codigo. Se a alteracao tocar apenas o repositorio atual, trabalhe aqui. Se tambem exigir atualizacao do projeto agregador ou de outro modulo dono da mudanca, preserve a separacao de ownership.
 
 _Arquivo gerado por `agents-mcp/scripts/sync-copilot-agents.mjs`._
+

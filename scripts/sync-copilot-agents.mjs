@@ -12,7 +12,7 @@ const CONTROL_OWNER = "ControleOnline";
 const CENTRAL_REPO = "agents-mcp";
 const CENTRAL_BASE_URL = `https://github.com/${CONTROL_OWNER}/${CENTRAL_REPO}/blob/master`;
 const centralWorkspaceName = path.basename(platformRoot);
-const types = ["developer", "qa", "security", "devops", "documentor"];
+const types = ["developer", "qa", "security", "devops", "tutorial-assistant", "technical-documenter"];
 
 const typeMeta = {
   developer: {
@@ -31,9 +31,13 @@ const typeMeta = {
     displayName: "DevOps",
     descriptionPrefix: "Operador de fluxo e automacoes",
   },
-  documentor: {
-    displayName: "Documentor",
-    descriptionPrefix: "Agente documental de tasks concluidas",
+  "tutorial-assistant": {
+    displayName: "Tutorial Assistant",
+    descriptionPrefix: "Agente de tutorial para cliente final",
+  },
+  "technical-documenter": {
+    displayName: "Technical Documenter",
+    descriptionPrefix: "Agente de wiki tecnica e de negocio",
   },
 };
 

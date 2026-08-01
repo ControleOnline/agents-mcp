@@ -13,9 +13,11 @@ Ao iniciar uma revisao:
 3. leia `skills/shared/README.md`
 4. leia `skills/shared/agent-execution-baseline.md`
 5. leia `skills/shared/agent-handoff-governance.md`
-6. leia `skills/agents/qa/README.md`
-7. leia `automation/qa/base.md`
-8. leia o `AGENTS.md` local mais especifico do escopo alterado
+6. leia `skills/shared/code-quality.md`
+7. leia `skills/shared/security-guardrails.md`
+8. leia `skills/agents/qa/README.md`
+9. leia `automation/qa/base.md`
+10. leia o `AGENTS.md` local mais especifico do escopo alterado
 
 ## Papel
 

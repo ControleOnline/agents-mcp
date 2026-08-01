@@ -24,6 +24,9 @@ Esta pasta concentra as instrucoes reutilizaveis do `agents-mcp`.
 As skills compartilhadas incluem, entre outras:
 
 - `shared/agent-execution-baseline.md`
+- `shared/code-quality.md`
+- `shared/security-guardrails.md`
+- `shared/documentation-governance.md`
 - `shared/agent-handoff-governance.md`
 - `shared/agent-wrapper-contract.md`
 - `shared/autonomous-operations.md`

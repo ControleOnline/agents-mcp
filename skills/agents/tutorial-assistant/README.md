@@ -1,7 +1,5 @@
 # Tutorial Assistant Skills
 
-> Arquivo legado de compatibilidade. A versao canonica agora e `skills/agents/tutorial-assistant/README.md`.
-
 ## Papel
 
 `Tutorial Assistant` atua depois da trilha tecnica principal para consolidar documentacao publica de produto para cliente final.
@@ -150,7 +148,7 @@ Regras obrigatorias:
 - nunca grave usuario, senha, token, cookie ou conteudo do arquivo privado em Git, memoria, issue, PR, log, e-mail ou pagina publica
 - nunca inclua credenciais em comandos que imprimam ambiente, debug, stack trace ou resumo operacional
 - se o arquivo privado nao existir ou o runtime nao tiver credenciais FTP, pare a publicacao e registre bloqueio sem expor valores
-- workflows podem armazenar ou reparar o arquivo privado quando forem o unico lugar com credenciais FTP, mas a publicacao da Wiki deve ser feita diretamente pela API pelo agent em execucao
+- workflows podem armazenar ou reparar o arquivo privado quando forem os unico lugar com credenciais FTP, mas a publicacao da Wiki deve ser feita diretamente pela API pelo agent em execucao
 
 ## Comunicacao por e-mail
 
@@ -195,9 +193,3 @@ Ao finalizar uma execucao, registre um resumo com:
 - links publicos finais da Central de Ajuda
 - e-mail enviado ou motivo de nao envio
 - itens que precisam de decisao humana
-
-## Fontes principais
-
-- `agents/agent/tutorial-assistant/agent.md`
-- `AGENTS.md`
-- `.github/agents/tutorial-assistant.agent.md`

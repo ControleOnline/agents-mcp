@@ -13,11 +13,13 @@ Ao iniciar uma execucao:
 3. leia `skills/shared/README.md`
 4. leia `skills/shared/agent-execution-baseline.md`
 5. leia `skills/shared/agent-handoff-governance.md`
-6. leia `skills/shared/autonomous-operations.md`
-7. leia `skills/shared/task-completion-criteria.md`
-8. leia `skills/agents/developer/README.md`
-9. leia `automation/developer/base.md`
-10. leia o `AGENTS.md` local mais proximo do codigo afetado
+6. leia `skills/shared/code-quality.md`
+7. leia `skills/shared/security-guardrails.md`
+8. leia `skills/shared/autonomous-operations.md`
+9. leia `skills/shared/task-completion-criteria.md`
+10. leia `skills/agents/developer/README.md`
+11. leia `automation/developer/base.md`
+12. leia o `AGENTS.md` local mais proximo do codigo afetado
 
 ## Papel
 

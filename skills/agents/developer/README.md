@@ -7,6 +7,7 @@
 ## Skills compartilhadas essenciais
 
 - `skills/shared/agent-execution-baseline.md`
+- `skills/shared/code-quality.md`
 - `skills/shared/agent-handoff-governance.md`
 - `skills/shared/autonomous-operations.md`
 - `skills/shared/task-completion-criteria.md`

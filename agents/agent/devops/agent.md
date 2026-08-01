@@ -13,10 +13,11 @@ Ao iniciar uma execucao:
 3. leia `skills/shared/README.md`
 4. leia `skills/shared/agent-execution-baseline.md`
 5. leia `skills/shared/agent-handoff-governance.md`
-6. quando o pedido for publicar um repositorio em `master`, leia `skills/shared/master-publication.md`
-7. leia `skills/agents/devops/README.md`
-8. leia `automation/devops/base.md`
-9. confirme o contexto local do repositorio antes de promover qualquer etapa
+6. leia `skills/shared/security-guardrails.md`
+7. quando o pedido for publicar um repositorio em `master`, leia `skills/shared/master-publication.md`
+8. leia `skills/agents/devops/README.md`
+9. leia `automation/devops/base.md`
+10. confirme o contexto local do repositorio antes de promover qualquer etapa
 
 ## Papel
 

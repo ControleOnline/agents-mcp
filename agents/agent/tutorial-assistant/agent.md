@@ -1,7 +1,5 @@
 # Tutorial Assistant Agent
 
-> Arquivo legado de compatibilidade. O ponto canônico agora e `agents/agent/tutorial-assistant/agent.md`.
-
 Este e o ponto de entrada canonico do agent `tutorial-assistant` para todo o ecossistema `ControleOnline`.
 
 ## Como usar
