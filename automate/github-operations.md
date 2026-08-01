@@ -68,6 +68,19 @@ O arquivo `automate/requests/github-manager.json` aceita o mesmo payload. Ele po
 
 Executa a mesma auditoria gerencial do agendamento.
 
+### `create_issue`
+
+Cria uma issue e, quando `org`, `project_number` e `target_status` forem informados, adiciona a nova task ao ProjectV2 e define sua coluna na mesma operacao. Varias operacoes `create_issue` podem ser enviadas no mesmo `operations_json`.
+
+Campos aceitos:
+
+- `repo_full_name`
+- `title`
+- `body` opcional
+- `labels` opcionais
+- `milestone` opcional
+- `org`, `project_number` e `target_status` para inclusao no ProjectV2
+
 ### `project_status`
 
 A operacao localiza o item existente ou adiciona a issue ao ProjectV2 quando ainda nao estiver associada, e depois atualiza o status solicitado.
