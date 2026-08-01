@@ -680,6 +680,38 @@ async function updateProjectStatus(input) {
   };
 }
 
+async function createIssue(input) {
+  const { owner, repo } = splitRepo(input.repo_full_name);
+  const issue = await githubRest(`/repos/${owner}/${repo}/issues`, {
+    method: 'POST',
+    body: JSON.stringify({
+      title: input.title,
+      body: input.body || '',
+      labels: input.labels || [],
+      milestone: input.milestone || undefined,
+    }),
+  });
+
+  let projectStatus = null;
+  if (input.org && input.project_number && input.target_status) {
+    projectStatus = await updateProjectStatus({
+      org: input.org,
+      project_number: input.project_number,
+      repo_full_name: input.repo_full_name,
+      issue_number: issue.number,
+      target_status: input.target_status,
+    });
+  }
+
+  return {
+    repo_full_name: input.repo_full_name,
+    issue_number: issue.number,
+    title: issue.title,
+    url: issue.html_url,
+    project_status: projectStatus,
+  };
+}
+
 async function addIssueComment(input) {
   const { owner, repo } = splitRepo(input.repo_full_name);
   const body = await githubRest(`/repos/${owner}/${repo}/issues/${Number(input.issue_number)}/comments`, {
@@ -748,6 +780,8 @@ async function executeOperation(operation) {
   if (!type) throw new Error('Operation is missing type.');
 
   switch (type) {
+    case 'create_issue':
+      return createIssue(operation);
     case 'project_status':
       return updateProjectStatus(operation);
     case 'issue_comment':
