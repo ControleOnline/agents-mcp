@@ -42,7 +42,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_OPS_DRY_RUN: ${{ github.event_name != 'workflow_dispatch' && 'true' || github.event.inputs.dry_run || 'false' }}
+          GITHUB_OPS_DRY_RUN: ${{ github.event_name == 'schedule' && 'true' || github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run || 'false' }}
           OPERATIONS_JSON: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.operations_json || '' }}
           GITHUB_MANAGER_ALLOWED_LOGINS: luizkim,github-copilot[bot],copilot-swe-agent,copilot
           GITHUB_MANAGER_PROJECT_ORG: ControleOnline
