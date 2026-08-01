@@ -161,7 +161,7 @@ Campos aceitos:
 
 - o runner so executa comentario-comando de logins permitidos
 - o token preferencial e `GH_TOKEN`; `GITHUB_TOKEN` fica como fallback
-- o job precisa de permissao `projects: write` para ler e alterar ProjectV2
+- o token usado pelo job precisa ter permissao `projects: write` para ler e alterar ProjectV2
 - `dry_run` deve ser usado quando a operacao ainda estiver sendo validada
 - o output precisa deixar rastreavel o que foi pedido, o que foi executado e o que falhou
 
