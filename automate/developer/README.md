@@ -13,7 +13,7 @@ Ele:
 - ignora tasks que estejam exclusivamente com pessoas
 - distingue execucao recente, execucao stale e override manual antes de decidir a proxima captura
 - prioriza a retomada automatica de uma trilha stale do proprio `Developer` antes de capturar task nova
-- prioriza antes de tudo as tasks devolvidas por `QA` ou `Security` com `qa:rejected` ou `security:rejected`, porque retrabalho iniciado vem antes de trabalho novo
+- prioriza antes de tudo bugs, depois as tasks devolvidas por `QA` ou `Security` com `qa:rejected` ou `security:rejected`, depois `enhancement` e por fim `feature`
 - nao congela a fila apenas porque existe outra issue com `agent:developer`; o bloqueio so vale para execucao tecnica realmente ativa e recente
 - atribui preferencialmente `github-copilot[bot]` com instrucoes de `Developer` para a proxima task elegivel
 - pode operar com fallback de `AGENT_ASSIGNEE_OVERRIDE` quando o Copilot cloud agent nao estiver disponivel no repositorio alvo

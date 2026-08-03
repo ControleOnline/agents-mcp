@@ -15,6 +15,7 @@
 ## Ownership
 
 - leitura de backlog: primeiro issues devolvidas por `Q.A.` ou `Security` com `qa:rejected` ou `security:rejected`; depois issue aberta de membro da equipe sem pendencia ativa de `Q.A.` ou `Security`
+- prioridade interna da fila: `bug` primeiro, depois issues recusadas por `Q.A.` ou `Security`, depois `enhancement`, e por fim `feature`
 - branch permitida: apenas a branch da propria tarefa, contendo o numero da issue
 - branch de trabalho derivada de `master`
 - branches proibidas para trabalho direto: `master`, `main`, `staging` e qualquer branch fora da branch da tarefa

@@ -20,6 +20,7 @@ Toda solicitacao precisa estar vinculada a pelo menos uma task ou issue valida n
 
 - se a solicitacao entrar sem task, primeiro acione a skill de criacao de backlog do CTO em `skills/agents/cto/github-backlog-task-creation.md`
 - crie uma ou mais issues conforme cada escopo independente, sem agrupar trabalho que precise de follow-up separado
+- toda task nova precisa sair com uma label de tipo (`bug`, `enhancement` ou `feature`)
 - confirme a criacao e o status da task antes de iniciar qualquer execucao
 - nunca execute implementacao, analise operacional, ajuste estrutural ou handoff sem uma task valida
 - se o pedido envolver mais de um escopo independente, cada escopo deve ganhar sua propria task antes da execucao
@@ -113,6 +114,7 @@ Regras centrais:
 - `Security` e `QA` atuam sobre a mesma task pela label `agent:*` esperada para o proprio papel, sem depender de coluna
 - `Q.A.` so registra `qa:accepted` ou `qa:rejected`, copia o checklist de QA para a task e remove `agent:qa`
 - `Security` so registra `security:accepted` ou `security:rejected`, copia o checklist de Security para a task e remove `agent:security`
+- na fila do `Developer`, bugs entram primeiro, depois tasks recusadas por `QA` ou `Security`, depois `enhancement` e por fim `feature`
 - quando houver recusa, o runner deve comentar a issue com orientacao direta, checklist nao atendido e motivo objetivo para a proxima execucao do responsavel atual
 - `Security` e `QA` nao aprovam por review do GitHub e nao finalizam task
 - quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, `DevOps` assume a tarefa para preparar a release tecnica e aguarda a aprovacao humana em `Deploy`

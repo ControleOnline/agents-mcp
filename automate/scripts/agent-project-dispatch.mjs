@@ -196,6 +196,20 @@ function hasAgentLabel(issue, label) {
   return issueLabels(issue).includes(label);
 }
 
+function hasRejectedReview(issue) {
+  const labels = new Set(issueLabels(issue));
+  return labels.has('qa:rejected') || labels.has('security:rejected');
+}
+
+function issuePriority(issue) {
+  const labels = new Set(issueLabels(issue));
+  if (labels.has('bug')) return 0;
+  if (hasRejectedReview(issue)) return 1;
+  if (labels.has('enhancement')) return 2;
+  if (labels.has('feature')) return 3;
+  return 4;
+}
+
 function sortByCreatedAt(items) {
   return [...items].sort((left, right) => {
     const leftTs = Date.parse(left.content?.createdAt || '') || 0;
@@ -269,6 +283,16 @@ async function main() {
 
   const items = sortByCreatedAt(project.items?.nodes || []);
   const candidateItems = items.filter((item) => isEligibleForRole(item, role, workStatuses, deployStatuses));
+  if (role === 'developer') {
+    candidateItems.sort((left, right) => {
+      const leftPriority = issuePriority(left.content);
+      const rightPriority = issuePriority(right.content);
+      if (leftPriority !== rightPriority) return leftPriority - rightPriority;
+      const leftTs = Date.parse(left.content?.createdAt || '') || 0;
+      const rightTs = Date.parse(right.content?.createdAt || '') || 0;
+      return leftTs - rightTs;
+    });
+  }
 
   const result = {
     generatedAt: new Date().toISOString(),

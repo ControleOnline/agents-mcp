@@ -23,6 +23,9 @@ const QA_ACCEPTED_LABEL = 'qa:accepted';
 const QA_REJECTED_LABEL = 'qa:rejected';
 const SECURITY_ACCEPTED_LABEL = 'security:accepted';
 const SECURITY_REJECTED_LABEL = 'security:rejected';
+const BUG_LABEL = 'bug';
+const IMPROVEMENT_LABEL = 'enhancement';
+const FEATURE_LABEL = 'feature';
 
 function env(name, fallback = '') {
   return (process.env[name] || fallback).trim();
@@ -248,10 +251,13 @@ function hasRejectedReview(issue) {
   return labels.has(QA_REJECTED_LABEL) || labels.has(SECURITY_REJECTED_LABEL);
 }
 
-function candidatePriority(issue) {
-  if (hasRejectedReview(issue)) return 0;
-  if (currentAgentLabels(issue).includes(DEVELOPER_LABEL)) return 1;
-  return 2;
+function issuePriority(issue) {
+  const labels = new Set(issueLabels(issue));
+  if (labels.has(BUG_LABEL)) return 0;
+  if (hasRejectedReview(issue)) return 1;
+  if (labels.has(IMPROVEMENT_LABEL)) return 2;
+  if (labels.has(FEATURE_LABEL)) return 3;
+  return 4;
 }
 
 function issueBelongsToDeveloper(issue) {
@@ -342,8 +348,8 @@ async function main() {
   const candidateItems = items
     .filter((item) => isDeveloperCandidate(item, allowedAssociations, workStatuses))
     .sort((left, right) => {
-      const leftPriority = candidatePriority(left.content);
-      const rightPriority = candidatePriority(right.content);
+      const leftPriority = issuePriority(left.content);
+      const rightPriority = issuePriority(right.content);
       if (leftPriority !== rightPriority) return leftPriority - rightPriority;
       const leftTs = Date.parse(left.content?.createdAt || '') || 0;
       const rightTs = Date.parse(right.content?.createdAt || '') || 0;

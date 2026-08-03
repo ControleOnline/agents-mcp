@@ -87,8 +87,16 @@ Use a coluna `Ready` ou `Working` quando houver:
 - incidente operacional que precise acompanhamento tecnico
 - indicio de problema de seguranca, vulnerabilidade, exposicao indevida, comportamento suspeito, acesso anomalo ou possivel incidente
 - bloqueio de infraestrutura que precise acompanhamento do `Sysadmin`
+- melhoria
+- novo recurso
 
 Em casos de seguranca, mantenha a issue em `Ready`, mas reduza detalhes exploraveis e preserve somente o contexto seguro necessario.
+
+Toda issue criada para trabalho tecnico deve receber uma label de tipo correspondente:
+
+- `bug` para bug, regressao, falha, erro recorrente ou comportamento incorreto
+- `enhancement` para melhoria
+- `feature` para novo recurso
 
 ### In Review
 
@@ -103,6 +111,7 @@ Use a coluna `In Review` quando houver:
 Ao criar ou atualizar issues:
 
 - use tags compativeis com o papel responsavel pela proxima etapa
+- use uma label de tipo obrigatoria (`bug`, `enhancement` ou `feature`) em toda task nova
 - para bloqueio de infraestrutura, prefira `agent:sysadmin`
 - combine labels de papel com labels de tipo de problema quando isso ajudar a triagem
 - nao invente labels que nao existam
