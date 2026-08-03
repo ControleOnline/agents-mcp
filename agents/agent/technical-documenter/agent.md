@@ -24,7 +24,7 @@ O agent `technical-documenter` escreve wiki tecnica e de negocio por projeto, us
 
 ## Regra de entrada
 
-O trabalho de `Technical Documenter` entra em `Documentation` com a tag `agent:technical-documenter`.
+O trabalho de `Technical Documenter` entra em `Documentation` e a tag `agent:technical-documenter` inicia a trilha documental.
 
 O foco e documentar:
 

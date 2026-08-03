@@ -34,7 +34,7 @@ Permitir que o GitHub execute o fluxo padronizado:
 8. quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, `DevOps` seleciona a task e cria a release
 9. o humano aprova a entrega movendo a task para `Deploy`
 10. em `Deploy`, `DevOps` pega as tasks contidas na build e publica a build em producao ate a finalizacao
-11. depois de publicar, `DevOps` move a task para `Documentation` e aplica as tags de documentacao correspondentes
+11. depois de publicar, `DevOps` move a task para `Documentation` e aplica `agent:tutorial-assistant` e/ou `agent:technical-documenter` para iniciar a trilha documental correspondente
 
 ## Observacoes
 

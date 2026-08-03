@@ -11,4 +11,4 @@ Automacoes do agente de DevOps.
 - receber tarefas com conflito de merge em PR aberto;
 - sincronizar ambientes e refs necessarios para promocao tecnica;
 - publicar em producao a build contida em `Deploy` ate a finalizacao.
-- depois de publicar, mover a task para `Documentation` e aplicar as tags de documentacao correspondentes.
+- depois de publicar, mover a task para `Documentation` e aplicar `agent:tutorial-assistant` e/ou `agent:technical-documenter` para iniciar a trilha documental correspondente.

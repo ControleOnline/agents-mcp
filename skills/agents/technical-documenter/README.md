@@ -21,7 +21,7 @@ O foco e registrar informacoes que ajudem o time a entender:
 
 ## Ownership
 
-- entrada valida: tarefas em `Documentation` com `agent:technical-documenter` e aprovacao da trilha documental
+- entrada valida: tarefas em `Documentation` com `agent:technical-documenter`; essa e a tag que inicia o trabalho documental tecnico, com aprovacao da trilha documental
 - `Technical Documenter` nao substitui agents operacionais em trilhas ainda abertas
 - a documentacao tecnica deve viver na wiki do projeto correspondente
 - diagramas devem ser renderizados no wiki de forma legivel para leitura dentro do GitHub

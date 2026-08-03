@@ -29,7 +29,7 @@ O foco e criar paginas de ajuda que ensinem o usuario a executar uma acao real n
 
 ## Regra de entrada
 
-O trabalho de `Tutorial Assistant` entra em `Documentation` com a tag `agent:tutorial-assistant`.
+O trabalho de `Tutorial Assistant` entra em `Documentation` e a tag `agent:tutorial-assistant` inicia a trilha documental.
 
 ## Regras especificas
 

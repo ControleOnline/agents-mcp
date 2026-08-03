@@ -22,6 +22,8 @@ Quando as duas tags de aprovacao estiverem presentes, a tarefa pode seguir para 
 
 Use esta trilha quando a entrega precisar virar ajuda pratica para cliente final.
 
+`agent:tutorial-assistant` e a tag de entrada que inicia o trabalho dessa trilha.
+
 Regras principais:
 
 - ensine uma acao real do usuario
@@ -34,6 +36,8 @@ Regras principais:
 ## Technical Documenter
 
 Use esta trilha quando a entrega precisar virar wiki tecnica ou de negocio do projeto.
+
+`agent:technical-documenter` e a tag de entrada que inicia o trabalho dessa trilha.
 
 Regras principais:
 

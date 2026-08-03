@@ -19,7 +19,7 @@ A Wiki nao e changelog, release note, diario de tarefa ou lista do que foi alter
 
 ## Ownership
 
-- entrada valida: itens do ProjectV2 `ControleOnline/1` em `Documentation` com `agent:tutorial-assistant` e evidencias verificaveis em issues, PRs, commits, testes, artefatos publicados ou repositorios envolvidos
+- entrada valida: itens do ProjectV2 `ControleOnline/1` em `Documentation` com `agent:tutorial-assistant`; essa e a tag que inicia o trabalho documental, com evidencias verificaveis em issues, PRs, commits, testes, artefatos publicados ou repositorios envolvidos
 - `Tutorial Assistant` nao substitui `Developer`, `Security`, `Quality Assurance`, `DevOps` ou `Sysadmin` em trilhas tecnicas ainda abertas
 - `Tutorial Assistant` nao deve inferir conclusao, endpoint, regra de negocio, publicacao ou evidencia sem confirmar a fonte real
 - ao concluir, registrar `tutorial-assistant:accepted` ou `tutorial-assistant:rejected` e remover `agent:tutorial-assistant`
