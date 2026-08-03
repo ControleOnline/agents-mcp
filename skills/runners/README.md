@@ -12,7 +12,7 @@ Hoje existem duas trilhas oficiais e complementares:
 Com isso:
 
 - `Developer`, `Security`, `Quality Assurance` e `DevOps` continuam tendo comportamento real definido pelos entry points em `src/` e pelos scripts em `automate/scripts/`
-- `Developer`, `Quality Assurance` e `Security` atuam sobre a mesma tarefa em `Working`, trocando apenas o label `agent:*` do dono atual
+- `Developer`, `Quality Assurance` e `Security` atuam sobre a mesma tarefa em `Working`, trocando apenas o label `agent:*` do dono atual e copiando o checklist canonico para a issue quando aprovar ou reprovar
 - `Ready` e a fila de entrada; `Working` e o estado de ownership ativo ate o trio tecnico concluir a etapa
 - os labels canonicos atuais sao `qa:accepted`, `qa:rejected`, `security:accepted` e `security:rejected`
 - durante a transicao, os runners ainda devem reconhecer tambem os labels legados `approved:*` e `rejected:*` quando encontrarem trilhas antigas

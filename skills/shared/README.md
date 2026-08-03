@@ -74,9 +74,9 @@ Essa trilha existe para:
 Guardrails desta trilha:
 
 - a auditoria recorrente do `GitHub Manager Runner` deve permanecer em leitura ou `dry_run` por padrao
-- mutacoes gerenciais automaticas nao substituem o criterio final de elegibilidade para `In Review`
-- promover task para `In Review` acontece quando `QA` e `Security` ja aprovaram e nao ha novas solicitacoes nos comentarios; qualquer agente ou humano pode fazer essa transicao
-- `In Review` e o passo humano em que uma pessoa cria a PR de `master` e move a tarefa para `Deploy`; `DevOps` executa a publicacao a partir de `Deploy`, aprova a PR e acompanha a liberacao ate a verificacao das URLs de producao
+- mutacoes gerenciais automaticas nao substituem a decisao final de `QA` e `Security`
+- quando `QA` e `Security` ja aprovaram e nao ha novas solicitacoes nos comentarios, a tarefa segue para a proxima etapa humana do fluxo
+- `DevOps` executa a publicacao a partir de `Deploy`, aprova a PR e acompanha a liberacao ate a verificacao das URLs de producao
 - use o `GitHub Manager Runner` para mutacao explicita autorizada ou manutencao gerencial compativel com essa fronteira
 
 ## Issue Flow Governance
@@ -85,21 +85,22 @@ Valide sempre:
 
 - se a issue continua aberta
 - se a issue foi criada por membro da equipe
-- se a tarefa continua em `Working` com a tag `agent:*` esperada
+- se a tarefa continua com a tag `agent:*` esperada
 - se `Q.A.` ja registrou `qa:accepted` ou `qa:rejected`
 - se `Security` ja registrou `security:accepted` ou `security:rejected`
-- se a tarefa ja esta pronta para `In Review`
+- se o checklist canonico de QA ou Security foi copiado para a task
+- se a tarefa ja esta pronta para a proxima etapa humana
 
 Regras centrais:
 
 - `Developer` le apenas issue aberta criada por membro da equipe e assume a primeira captura em `Working`
 - `Developer` trabalha somente na propria branch da tarefa, contendo o numero da issue, e nao encerra o fluxo com PR no caminho tecnico normal
 - `Ready` e apenas a fila de entrada; `Working` e o estado de ownership ativo ate o trio `Developer` -> `Q.A.` -> `Security` terminar
-- `Security` e `QA` atuam sobre a tarefa em `Working`, nao sobre a coluna do projeto
-- `Q.A.` so registra `qa:accepted` ou `qa:rejected` e repassa a propriedade para `Security`
-- `Security` so registra `security:accepted` ou `security:rejected` e, quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, a tarefa fica elegivel para `In Review`
-- quando houver recusa, o runner deve comentar a issue com orientacao direta para a proxima execucao do responsavel atual
+- `Security` e `QA` atuam sobre a tarefa pela label `agent:*` esperada
+- `Q.A.` so registra `qa:accepted` ou `qa:rejected`, copia o checklist de QA para a task e remove `agent:qa`
+- `Security` so registra `security:accepted` ou `security:rejected`, copia o checklist de Security para a task e remove `agent:security`
+- quando houver recusa, o runner deve comentar a issue com orientacao direta, checklist nao atendido e motivo objetivo para a proxima execucao do responsavel atual
 - `Security` e `QA` nao aprovam por review do GitHub e nao finalizam task
-- qualquer agente ou humano pode mover a task para `In Review` quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios; a passagem de `In Review` para `Deploy` e humana e a publicacao final em `Deploy` fica com `DevOps`
+- quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, a tarefa segue para a proxima etapa humana do fluxo; a publicacao final em `Deploy` fica com `DevOps`
 - nenhum agent fecha task; fechamento em `closed` continua pertencendo apenas a humanos
-- coluna do projeto nao entra no criterio de captura do backlog de `Developer`, `Security` e `QA`, mas `Ready` continua sendo a fila oficial de entrada e `Working` a fila de ownership ativo
+- `Ready` continua sendo a fila oficial de entrada para `Developer`, enquanto `QA` e `Security` dependem da label `agent:*` esperada

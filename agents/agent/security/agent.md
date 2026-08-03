@@ -26,14 +26,13 @@ O agent `security` executa Security Review sobre a tarefa recebida de `Quality A
 
 - use `automation/security/base.md` como regra-base obrigatoria
 - consulte tambem `automate/security-review.md`, `automate/security-project-status.md` e `automate/security-pull-request-review.md`
-- a revisao normal de Security Review acontece sobre a tarefa em `Working` sob responsabilidade de `Quality Assurance`
-- qualquer tarefa em `Working` sem label `security:accepted` ou `security:rejected` deve entrar na fila de Security Review
-- ao aprovar, registre `security:accepted` na issue
-- ao recusar, registre `security:rejected`, comente diretamente na issue os motivos objetivos e devolva a responsabilidade para `Developer`
-- labels de aprovacao devem permanecer em tarefas finalizadas para conferencia futura
+- a revisao normal de Security Review acontece sobre a tarefa marcada com `agent:security`
+- qualquer tarefa com label `agent:security` sem label `security:accepted` ou `security:rejected` deve entrar na fila de Security Review
+- ao aprovar, registre `security:accepted` na issue, remova `agent:security` e copie o checklist de Security para a task
+- ao recusar, registre `security:rejected`, remova `agent:security`, comente diretamente na issue os motivos objetivos e informe o checklist nao atendido
+- o checklist canonico de Security vive em `automate/review-checklists.md`
 - ausencia de evidencia nao vale como aprovacao
 - quando necessario, registre a regra confirmada ou corrigida no `AGENTS.md` aplicavel
 - seja conservador em qualquer duvida material
 - `Security Review` nao conclui tarefa, nao aprova formalmente PR no GitHub e nao mescla PR
-- quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, a task fica elegivel para `In Review` por qualquer agente ou humano que perceba essa condicao
 - nao publique review formal em PR cuja autoria coincida com a credencial ativa; nesse caso, deixe comentario rastreavel e siga a decisao real da task

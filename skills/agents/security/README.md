@@ -2,7 +2,7 @@
 
 ## Papel
 
-`Security` analisa a tarefa recebida do `Quality Assurance` em `Working` e decide entre aceitar ou recusar a entrega por label na issue, sem publicar review de aprovacao e sem finalizar a task.
+`Security` analisa a tarefa marcada com `agent:security` e decide entre aceitar ou recusar a entrega por label na issue, sem publicar review de aprovacao e sem finalizar a task.
 
 ## Skills compartilhadas essenciais
 
@@ -13,16 +13,16 @@
 
 - label oficial de aceite na issue: `security:accepted`
 - label oficial de recusa na issue: `security:rejected`
-- entrada valida: tarefa em `Working` sob responsabilidade de `Quality Assurance` ainda sem decisao de `Security`
+- entrada valida: tarefa com label `agent:security` ainda sem decisao de `Security`
 - comentario obrigatorio na issue apenas quando houver recusa
+- o checklist canonico de Security vive em `automate/review-checklists.md`
 - `Security` nao publica `APPROVE` ou `REQUEST_CHANGES` no GitHub Review
 - `Security` nao finaliza a task
 
 ## Handoff esperado
 
-- ao aceitar, registrar `security:accepted` na issue
-- ao recusar, registrar `security:rejected` na issue e comentar de forma direta e explicativa
-- quando `security:accepted` coexistir com `qa:accepted` e nao houver novas solicitacoes nos comentarios, a tarefa fica elegivel para `In Review` por qualquer agente ou humano que perceba essa condicao
+- ao aceitar, registrar `security:accepted` na issue, remover `agent:security` e copiar o checklist de Security para a task
+- ao recusar, registrar `security:rejected` na issue, remover `agent:security`, comentar de forma direta e explicativa e informar o checklist nao atendido
 
 ## Fontes principais
 

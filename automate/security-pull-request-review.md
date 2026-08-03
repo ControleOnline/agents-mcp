@@ -2,7 +2,7 @@
 
 ## Escopo
 
-Estas regras definem como `Security` deve agir sobre PRs do `Developer`.
+Estas regras definem como `Security` deve agir sobre PRs do `Developer`, sem alterar coluna do projeto e mantendo o checklist de aprovacao copiado na task.
 
 ## Regras de aceite
 
@@ -11,6 +11,7 @@ Quando a PR estiver operacionalmente valida para a etapa de seguranca, `Security
 - registrar `security:accepted` na propria PR
 - nao publicar `APPROVE` no GitHub Review
 - deixar a aprovacao final da PR para o `CTO`
+- copiar o checklist de Security para a issue vinculada
 
 ## Regras de recusa
 
@@ -34,10 +35,12 @@ Ao recusar, o comentario deve informar:
 
 - qual PR foi recusada
 - por que ela foi recusada
-- que a proxima execucao do `Developer` deve corrigir a branch da tarefa e seguir com nova PR para `staging`
+- o checklist nao atendido
+- que a proxima execucao do `Developer` deve corrigir a tarefa e seguir com nova PR para `staging`
 
 ## Restricao de ownership
 
 - `Security` nao aprova PR no GitHub Review
 - `Security` nao finaliza task
 - somente `CTO` aprova a PR e move a task para `In Review`
+- `Security` nao mexe na coluna do projeto

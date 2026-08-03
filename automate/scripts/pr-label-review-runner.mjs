@@ -28,26 +28,39 @@ const REVIEWER_META = {
     acceptedLabel: 'qa:accepted',
     rejectedLabel: 'qa:rejected',
     expectedIssueLabel: 'agent:qa',
-    nextIssueLabel: 'agent:qa',
+    legacyAcceptedLabel: 'approved:qa',
+    legacyRejectedLabel: 'rejected:qa',
+    checklist: [
+      'o escopo ficou dentro do limite de linhas e nao gerou arquivos inchados sem necessidade',
+      'componentes, hooks, services e helpers foram reaproveitados quando existiam na base',
+      'smoke tests foram executados ou atualizados sempre que a interface foi tocada',
+      'testes unitarios relevantes em PHP e JS foram adicionados ou atualizados',
+      'helpers da pasta `ui-commun` foram usados quando aplicavel',
+      'a issue e o `AGENTS.md` mais especifico foram consultados antes do aceite',
+    ],
   },
   security: {
     displayName: 'Security Review',
     acceptedLabel: 'security:accepted',
     rejectedLabel: 'security:rejected',
     expectedIssueLabel: 'agent:security',
-    nextIssueLabel: 'agent:qa',
+    legacyAcceptedLabel: 'approved:security',
+    legacyRejectedLabel: 'rejected:security',
+    checklist: [
+      'autorizacao e controle de acesso foram validados no fluxo alterado',
+      'exposicao de dados e leituras indevidas foram revisadas',
+      'IDOR, mass assignment e alteracao indevida de status foram considerados',
+      'o `securityFilter` do service equivalente protege leitura e escrita quando aplicavel',
+      'as regras sensiveis do dominio e o `AGENTS.md` do escopo foram conferidos',
+    ],
   },
 };
 
-const ALL_REVIEW_LABELS = [
-  REVIEWER_META.qa.acceptedLabel,
-  REVIEWER_META.qa.rejectedLabel,
-  REVIEWER_META.security.acceptedLabel,
-  REVIEWER_META.security.rejectedLabel,
-  'approved:qa',
-  'rejected:qa',
-  'approved:security',
-  'rejected:security',
+const LEGACY_REVIEW_LABELS = [
+  REVIEWER_META.qa.legacyAcceptedLabel,
+  REVIEWER_META.qa.legacyRejectedLabel,
+  REVIEWER_META.security.legacyAcceptedLabel,
+  REVIEWER_META.security.legacyRejectedLabel,
 ];
 
 function env(name, fallback = '') {
@@ -309,17 +322,17 @@ function isBlockedHeadBranch(pr, blockedHeadBranches) {
 
 function issueAlreadyReviewed(issue, meta) {
   const labels = new Set(issueLabels(issue));
-  return labels.has(meta.acceptedLabel) || labels.has(meta.rejectedLabel);
+  return [
+    meta.acceptedLabel,
+    meta.rejectedLabel,
+    meta.legacyAcceptedLabel,
+    meta.legacyRejectedLabel,
+  ].some((label) => label && labels.has(label));
 }
 
 function hasLegacyDecisionLabel(issue, pr) {
   const labels = new Set([...issueLabels(issue), ...pullRequestLabels(pr)]);
-  return [
-    'approved:qa',
-    'rejected:qa',
-    'approved:security',
-    'rejected:security',
-  ].some((label) => labels.has(label));
+  return LEGACY_REVIEW_LABELS.some((label) => labels.has(label));
 }
 
 function candidatePullRequest(issue, stagingBranch, blockedHeadBranches) {
@@ -342,9 +355,12 @@ function sortByIssueCreatedAt(items) {
 }
 
 function issueInExpectedStage(item, meta, workStatuses) {
+  const labels = new Set(issueLabels(item.content));
+  if (meta.expectedIssueLabel === 'agent:qa' || meta.expectedIssueLabel === 'agent:security') {
+    return labels.has(meta.expectedIssueLabel);
+  }
   const status = (getProjectStatus(item) || '').trim();
   if (status && !workStatuses.has(status.toLowerCase())) return false;
-  const labels = new Set(issueLabels(item.content));
   return labels.has(meta.expectedIssueLabel);
 }
 
@@ -364,6 +380,23 @@ function getCandidate(items, role, allowedAssociations, stagingBranch, blockedHe
     return { item, issue, pr };
   }
   return null;
+}
+
+function roleDecisionLabels(meta) {
+  return [
+    meta.acceptedLabel,
+    meta.rejectedLabel,
+    meta.legacyAcceptedLabel,
+    meta.legacyRejectedLabel,
+  ].filter(Boolean);
+}
+
+function roleIssueLabelsToClear(meta) {
+  return [...new Set([meta.expectedIssueLabel, ...roleDecisionLabels(meta)])];
+}
+
+function rolePrLabelsToClear(meta) {
+  return [...new Set(roleDecisionLabels(meta))];
 }
 
 async function addLabelsToIssue(repoFullName, issueNumber, labels) {
@@ -402,13 +435,20 @@ async function addIssueComment(repoFullName, issueNumber, body) {
   });
 }
 
-async function syncIssueStage(issue, meta) {
-  for (const label of ALL_AGENT_LABELS) {
+async function syncIssueStage(issue, pr, meta, decision) {
+  for (const label of roleIssueLabelsToClear(meta)) {
     await removeLabelFromIssue(issue.repository.nameWithOwner, issue.number, label);
   }
 
-  const nextLabels = [meta.acceptedLabel, meta.nextIssueLabel].filter(Boolean);
-  await addLabelsToIssue(issue.repository.nameWithOwner, issue.number, nextLabels);
+  for (const label of rolePrLabelsToClear(meta)) {
+    await removeLabelFromIssue(pr.repository.nameWithOwner, pr.number, label);
+  }
+
+  const decisionLabel = decision === 'accepted' ? meta.acceptedLabel : meta.rejectedLabel;
+  const issueLabelsToApply = [decisionLabel];
+
+  await addLabelsToIssue(issue.repository.nameWithOwner, issue.number, issueLabelsToApply);
+  await addLabelsToPullRequest(pr.repository.nameWithOwner, pr.number, [decisionLabel]);
 }
 
 function serializeCandidate(item, issue, pr) {
@@ -432,21 +472,27 @@ function serializeCandidate(item, issue, pr) {
   };
 }
 
-function buildComment(meta, issueRef, prRef) {
-  const closingLine =
-    meta.nextIssueLabel === 'agent:qa'
-      ? 'A trilha foi entregue para `agent:qa` com o aceite de Security registrado.'
-      : 'A trilha segue pronta para a aprovação exclusiva do CTO, mantendo `agent:qa` como ownership atual.';
-
-  return [
-    `### ${meta.displayName} concluído`,
+function buildComment(meta, issueRef, prRef, decision, reasons = []) {
+  const approved = decision === 'accepted';
+  const decisionLabel = approved ? meta.acceptedLabel : meta.rejectedLabel;
+  const lines = [
+    `### ${meta.displayName} ${approved ? 'aprovado' : 'reprovado'}`,
     '',
     `Issue: ${issueRef}`,
     `PR: ${prRef}`,
     '',
-    `Resultado: foram registrados os labels \`${meta.acceptedLabel}\` na issue e na PR correspondente.`,
-    closingLine,
-  ].join('\n');
+    'Ação: a task foi tratada apenas por labels; a coluna do projeto nao foi alterada.',
+    `Label de decisão aplicado: \`${decisionLabel}\`.`,
+    '',
+    'Checklist obrigatorio para aprovacao:',
+    ...meta.checklist.map((item) => `- ${item}`),
+  ];
+
+  if (!approved) {
+    lines.push('', 'Motivos objetivos da recusa:', ...reasons.map((reason) => `- ${reason}`));
+  }
+
+  return lines.join('\n');
 }
 
 function writeOutputFile(payload) {
@@ -520,21 +566,16 @@ async function main() {
     issue: issueRef,
     pullRequest: prRef,
     labelsApplied: [meta.acceptedLabel],
-    nextIssueLabel: meta.nextIssueLabel,
-    legacyLabelsStillRecognized: ['approved:qa', 'rejected:qa', 'approved:security', 'rejected:security'],
+    legacyLabelsStillRecognized: LEGACY_REVIEW_LABELS,
   };
 
   if (!dryRun) {
-    for (const label of ALL_REVIEW_LABELS) {
-      await removeLabelFromIssue(candidate.issue.repository.nameWithOwner, candidate.issue.number, label);
-      await removeLabelFromIssue(candidate.pr.repository.nameWithOwner, candidate.pr.number, label);
-    }
-    await syncIssueStage(candidate.issue, meta);
+    await syncIssueStage(candidate.issue, candidate.pr, meta, 'accepted');
     await addLabelsToPullRequest(candidate.pr.repository.nameWithOwner, candidate.pr.number, [meta.acceptedLabel]);
     await addIssueComment(
       candidate.issue.repository.nameWithOwner,
       candidate.issue.number,
-      buildComment(meta, issueRef, prRef)
+      buildComment(meta, issueRef, prRef, 'accepted')
     );
   }
 
@@ -549,7 +590,6 @@ async function main() {
         issue: issueRef,
         pullRequest: prRef,
         label: meta.acceptedLabel,
-        nextIssueLabel: meta.nextIssueLabel,
         outPath,
       },
       null,

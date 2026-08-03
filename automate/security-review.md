@@ -2,14 +2,14 @@
 
 ## Objetivo
 
-Centralizar a lógica operacional do analista de segurança para que agents, automações e workflows do GitHub apliquem a mesma decisão ao revisar tasks associadas ao agent `Security` do ecossistema `ControleOnline`.
+Centralizar a lógica operacional do analista de segurança para que agents, automações e workflows do GitHub apliquem a mesma decisão ao revisar tasks associadas ao agent `Security` do ecossistema `ControleOnline`, sempre por labels e comentário na issue.
 
 ## Resultado final obrigatório
 
 Toda revisão de segurança deve terminar em exatamente um destes resultados:
 
-- repassar para `Quality Assurance` quando a task estiver aprovada
-- repassar para `Developer` quando a task estiver reprovada
+- registrar `security:accepted` quando a task estiver aprovada
+- registrar `security:rejected` quando a task estiver reprovada
 
 Não encerrar a análise de outra forma. Só deixe de mover quando houver bloqueio real de ferramenta, acesso ou indisponibilidade operacional do GitHub. Mesmo nesse caso, a decisão final pretendida deve ficar explícita.
 
@@ -115,6 +115,7 @@ Antes da decisão final, validar:
 - as regras de negócio sensíveis foram confirmadas ou definidas
 - o `agents.md` do módulo foi atualizado quando necessário
 - a evidência disponível sustenta revisão humana posterior sem esconder risco relevante
+- o checklist canonico de Security em `automate/review-checklists.md` foi copiado para a task
 
 ## Regras de decisão
 
@@ -134,9 +135,10 @@ Reprovar quando houver qualquer situação de gravidade equivalente a:
 
 Ao reprovar:
 
-- deixar comentário final objetivo com escopo, evidências e motivo
+- deixar comentário final objetivo com escopo, evidências, checklist e motivo
 - solicitar `REQUEST_CHANGES` no PR quando houver PR revisável
-- repassar a task para `Developer`
+- remover `agent:security` da task
+- repassar a task para `agent:developer`
 
 ### Mover para `Quality Assurance`
 
@@ -153,7 +155,8 @@ Ao aprovar:
 
 - comentar com rastreabilidade do escopo revisado
 - aprovar o PR quando houver PR revisável
-- repassar a task para `Quality Assurance`
+- remover `agent:security` da task
+- copiar o checklist de Security para a task
 
 ## Regra de comentário final
 
@@ -164,6 +167,7 @@ O comentário final da revisão deve informar:
 - principais riscos encontrados ou validados
 - situação do `securityFilter`
 - regras de negócio confirmadas ou definidas
+- checklist aplicado na decisao
 - se houve atualização em `agents.md`
 - próximo agent responsável e o motivo
 
