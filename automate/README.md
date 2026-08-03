@@ -7,7 +7,7 @@ Esta pasta concentra a politica e a base executavel dos runners operacionais do 
 - `Developer`: seleciona issue aberta de membro da equipe com prioridade em `Ready`, executa a mudanca na propria branch e mantém a task em `Working` ate o handoff para `Quality Assurance`
 - `Quality Assurance`: valida a entrega recebida do `Developer`, registra `qa:accepted` ou `qa:rejected` na issue e remove `agent:qa`
 - `Security`: valida a entrega recebida de `Quality Assurance`, registra `security:accepted` ou `security:rejected` na issue e remove `agent:security`
-- `DevOps`: continua com a fila propria de deploy, aprova a PR de `master` quando a task entra em `Deploy`, publica a liberacao e acompanha a estabilizacao ate as URLs de producao estarem verificadas
+- `DevOps`: seleciona tarefas com `qa:accepted` e `security:accepted`, cria a release, abre a PR para `master`, move a task de `Working` para `In Review` e acompanha a conferência humana
 - `GitHub Operations Runner`: executa mutacoes de GitHub a partir do proprio GitHub Actions quando o runtime local dos agents nao consegue concluir a operacao
 
 ## Arquivos principais
@@ -31,14 +31,14 @@ Permitir que o GitHub execute o fluxo padronizado:
 5. `Quality Assurance` registra `qa:accepted` ou `qa:rejected` na issue, copia o checklist de aprovacao para a task e remove `agent:qa`
 6. `Security` registra `security:accepted` ou `security:rejected` na issue, copia o checklist de seguranca para a task e remove `agent:security`
 7. quando houver recusa, o runner comenta a issue de forma direta e explicativa, informando o motivo objetivo e o checklist que nao foi atendido
-8. quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, a tarefa segue para a proxima etapa humana do fluxo
-9. a etapa humana seguinte cuida da PR para `master` e da migracao para `Deploy`
-10. em `Deploy`, o `DevOps` aprova a PR, publica a liberacao e acompanha a entrega ate a verificacao das URLs de producao
+8. quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, `DevOps` seleciona a task, cria a release, abre a PR para `master` e move a task de `Working` para `In Review`
+9. `In Review` e a etapa de conferencia humana da entrega
+10. depois da conferencia humana, o fluxo de publicacao segue pela trilha operacional definida para `DevOps`
 
 ## Observacoes
 
 - `Quality Assurance` e `Security` nao publicam `APPROVE` ou `REQUEST_CHANGES` no GitHub Review.
 - `Quality Assurance` e `Security` operam por labels e comentario na issue.
 - a fila oficial de entrada e `Ready`; `Working` e o estado de ownership ativo ate `Developer`, `Quality Assurance` e `Security` concluirem a trilha tecnica
-- quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, a tarefa segue para a proxima etapa humana do fluxo
+- quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, `DevOps` assume a task e move para `In Review`
 - quando houver conflito entre script e politica, siga os arquivos `.md` desta pasta.

@@ -75,8 +75,8 @@ Guardrails desta trilha:
 
 - a auditoria recorrente do `GitHub Manager Runner` deve permanecer em leitura ou `dry_run` por padrao
 - mutacoes gerenciais automaticas nao substituem a decisao final de `QA` e `Security`
-- quando `QA` e `Security` ja aprovaram e nao ha novas solicitacoes nos comentarios, a tarefa segue para a proxima etapa humana do fluxo
-- `DevOps` executa a publicacao a partir de `Deploy`, aprova a PR e acompanha a liberacao ate a verificacao das URLs de producao
+- quando `QA` e `Security` ja aprovaram e nao ha novas solicitacoes nos comentarios, `DevOps` assume a tarefa para criar a release e abrir a PR para `master`
+- `In Review` e a etapa humana de conferencia da entrega
 - use o `GitHub Manager Runner` para mutacao explicita autorizada ou manutencao gerencial compativel com essa fronteira
 
 ## Issue Flow Governance
@@ -101,6 +101,6 @@ Regras centrais:
 - `Security` so registra `security:accepted` ou `security:rejected`, copia o checklist de Security para a task e remove `agent:security`
 - quando houver recusa, o runner deve comentar a issue com orientacao direta, checklist nao atendido e motivo objetivo para a proxima execucao do responsavel atual
 - `Security` e `QA` nao aprovam por review do GitHub e nao finalizam task
-- quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, a tarefa segue para a proxima etapa humana do fluxo; a publicacao final em `Deploy` fica com `DevOps`
+- quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, `DevOps` assume a tarefa, move para `In Review` e entrega para conferencia humana
 - nenhum agent fecha task; fechamento em `closed` continua pertencendo apenas a humanos
 - `Ready` continua sendo a fila oficial de entrada para `Developer`, enquanto `QA` e `Security` dependem da label `agent:*` esperada

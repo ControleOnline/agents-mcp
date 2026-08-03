@@ -2,11 +2,11 @@
 
 ## Regra geral
 
-No fluxo normal de task, somente o runner de `CTO` pode aprovar a PR do developer e promover a mudanca para `staging`.
+No fluxo normal de task, somente o runner de `DevOps` pode promover a entrega quando a release do fluxo ja estiver pronta.
 
 ## Quando a aprovacao exclusiva do CTO e obrigatoria
 
-Quando o runner de `CTO` encontrar simultaneamente na mesma PR:
+Quando o runner de `DevOps` encontrar simultaneamente na mesma entrega:
 
 - `qa:accepted`
 - `security:accepted`
@@ -15,9 +15,9 @@ Quando o runner de `CTO` encontrar simultaneamente na mesma PR:
 
 nessa situacao ele deve:
 
-- aprovar a PR no GitHub Review
-- promover a mudanca para `staging`
-- mover a task correspondente para `In Review` no ProjectV2
+- criar a release
+- abrir a PR para `master`
+- mover a task correspondente de `Working` para `In Review`
 
 ## Bloqueios
 
@@ -33,4 +33,4 @@ Trate como bloqueio operacional quando:
 ## Restricao de ownership
 
 - `Developer`, `Security`, `QA`, `DevOps` e `GitHub Manager` nao podem aprovar a PR do fluxo normal
-- somente `CTO` faz a aprovacao final e o movimento para `In Review`
+- somente `DevOps` faz a transferencia para `In Review` depois da release e da PR para `master`

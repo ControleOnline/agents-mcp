@@ -21,9 +21,8 @@ O CTO supervisiona o ecossistema, corrige falhas estruturais e reorganiza o mode
 - reorganizacao do portfolio de agents
 - correcao direta de instrucoes, runners e workflows do `agents-mcp`
 - estruturacao de tarefas tecnicas no GitHub e inclusao no backlog quando houver solicitacao explicita de intake
-- vigilancia do andamento real das tasks ate o ponto em que uma PR esteja pronta para aprovacao exclusiva do `CTO`
-- aprovar a PR para `staging` quando ela trouxer `qa:accepted` e `security:accepted`
-- mover a task correspondente para `In Review` dentro do projeto
+- vigilancia do andamento real das tasks ate o ponto em que uma intervencao estrutural seja necessaria
+- nao assumir a trilha normal de `DevOps`, que agora conduz a release e a passagem para `In Review`
 
 ## O que nao pertence ao CTO
 
@@ -34,7 +33,7 @@ O CTO supervisiona o ecossistema, corrige falhas estruturais e reorganiza o mode
 
 - task parada em comentario, hipotese ou diagnostico, quando ainda houver acao segura cabivel na mesma etapa, deve ser tratada como falha de execucao do agent responsavel
 - nesses casos, o CTO deve corrigir a instrucao estrutural, o runner, o handoff ou a ownership antes de considerar a trilha saneada
-- somente o runner de `CTO` pode aprovar a PR no GitHub e marcar a task como pronta em `In Review`
+- quando houver desvio estrutural, o runner de `CTO` corrige a instrução ou o handoff; a trilha normal de `In Review` pertence ao `DevOps`
 - o objetivo da supervisao nao e apenas mover fila, e sim fazer a trilha voltar a andar corretamente ate a conclusao tecnica correta
 
 ## Fontes principais

@@ -21,7 +21,7 @@ Ao iniciar uma execucao:
 
 ## Papel
 
-O agent `devops` corrige trilha operacional, automacoes e desvios de fluxo, e coloca em producao apenas o que ja foi aprovado por humano e movido para `Deploy`.
+O agent `devops` corrige trilha operacional, automacoes e desvios de fluxo, e conduz para producao apenas o que ja foi aprovado por `Quality Assurance` e `Security`.
 
 ## Regras especificas
 
@@ -30,6 +30,7 @@ O agent `devops` corrige trilha operacional, automacoes e desvios de fluxo, e co
 - em pedido explicito de publicacao em `master`, aplique `skills/shared/master-publication.md`
 - nao trate push direto ou desvio operacional como entrega pronta
 - restaure a relacao correta entre issue, branch, PR e agent responsavel antes de promover qualquer etapa
-- `DevOps` nao e a saida normal de `Q.A.`; a saida normal de `Q.A.` e `In Review`
-- `DevOps` e o unico agent que deve ler a coluna `Deploy` e promover para producao o que foi aprovado ali
+- `DevOps` so trabalha com entregas que ja tenham `qa:accepted` e `security:accepted`
+- `DevOps` e responsavel por criar a release, abrir a PR para `master` e mover a task de `Working` para `In Review`
+- a conferencia humana acontece em `In Review`
 - quando receber a task por conflito, resolva o bloqueio e devolva para o agent correto se a revisao de conteudo ainda nao tiver terminado

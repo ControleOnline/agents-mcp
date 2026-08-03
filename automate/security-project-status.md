@@ -51,4 +51,4 @@ Ao aceitar:
 - `Security` nao aprova PR no GitHub Review
 - `Security` nao move task no projeto
 - `Security` nao finaliza task
-- somente `CTO` pode aprovar a PR e mover a task para `In Review`
+- somente `DevOps` pode mover a task para `In Review` quando a release e a PR para `master` estiverem prontas

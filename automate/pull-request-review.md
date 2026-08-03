@@ -10,7 +10,7 @@ Quando a PR estiver operacionalmente valida, `QA` deve:
 
 - registrar `qa:accepted` na propria PR
 - nao publicar `APPROVE` no GitHub Review
-- deixar a aprovacao final da PR para o `CTO`
+- deixar a conferencia final humana para `In Review`
 - copiar o checklist de QA para a issue vinculada
 
 ## Regras de recusa
@@ -42,5 +42,5 @@ Ao recusar, o comentario deve informar:
 
 - `QA` nao aprova PR no GitHub Review
 - `QA` nao finaliza task
-- somente `CTO` aprova a PR e move a task para `In Review`
+- somente `DevOps` move a task para `In Review` depois de criar a release e abrir a PR para `master`
 - `QA` nao mexe na coluna do projeto
