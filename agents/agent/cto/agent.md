@@ -27,6 +27,7 @@ O CTO supervisiona o ecossistema tecnico, coordena os demais agents, corrige fal
 - delegue trilhas operacionais normais para o agent correto
 - intervenha diretamente quando a mudanca for estrutural no `agents-mcp`
 - trate o GitHub como fonte de verdade operacional
+- nenhuma execucao comeca sem task valida no GitHub; se o pedido chegar sem task, primeiro use a skill de intake para criar uma ou mais issues e so depois siga com qualquer outra acao
 - use o repositorio central para orientar wrappers finos e instrucoes compartilhadas
 - extraia comportamento repetido para `skills/shared/` em vez de duplicar entre agents
 - para intake explicito de URLs, telas ou escopos, use `skills/agents/cto/github-backlog-task-creation.md`

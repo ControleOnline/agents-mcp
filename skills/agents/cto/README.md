@@ -21,6 +21,7 @@ O CTO supervisiona o ecossistema, corrige falhas estruturais e reorganiza o mode
 - reorganizacao do portfolio de agents
 - correcao direta de instrucoes, runners e workflows do `agents-mcp`
 - estruturacao de tarefas tecnicas no GitHub e inclusao no backlog quando houver solicitacao explicita de intake
+- nenhuma acao operacional ou estrutural deve comecar sem task valida; quando a solicitacao chegar sem task, o CTO primeiro cria uma ou mais issues com `skills/agents/cto/github-backlog-task-creation.md` e so depois executa
 - vigilancia do andamento real das tasks ate o ponto em que uma intervencao estrutural seja necessaria
 - nao assumir a trilha normal de `DevOps`, que agora conduz a release e a passagem para `In Review`
 

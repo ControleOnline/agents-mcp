@@ -14,6 +14,16 @@ Trate `ControleOnline/agents-mcp` como a fonte primaria para:
 
 Quando a pergunta for sobre orquestracao, ownership, handoff ou runtime, comece por este repositorio antes de concluir com base em repositorios consumidores.
 
+## Task-First Policy
+
+Toda solicitacao precisa estar vinculada a pelo menos uma task ou issue valida no GitHub.
+
+- se a solicitacao entrar sem task, primeiro acione a skill de criacao de backlog do CTO em `skills/agents/cto/github-backlog-task-creation.md`
+- crie uma ou mais issues conforme cada escopo independente, sem agrupar trabalho que precise de follow-up separado
+- confirme a criacao e o status da task antes de iniciar qualquer execucao
+- nunca execute implementacao, analise operacional, ajuste estrutural ou handoff sem uma task valida
+- se o pedido envolver mais de um escopo independente, cada escopo deve ganhar sua propria task antes da execucao
+
 ## Skill Layering Policy
 
 Use esta ordem para evitar duplicacao:

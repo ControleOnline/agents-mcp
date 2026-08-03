@@ -4,9 +4,11 @@
 
 Use esta skill quando o CTO receber uma solicitacao explicita para transformar URLs, telas ou escopos de produto em tarefas tecnicas no GitHub e organiza-las no backlog do ProjectV2.
 
+Se a solicitacao chegar sem task, esta skill deve ser disparada primeiro: o CTO cria uma ou mais issues conforme o escopo independente e so depois libera a execucao.
+
 ## Ownership
 
-Esta e uma atribuicao direta do CTO apenas para intake e estruturacao de trabalho:
+Esta e uma atribuicao direta do CTO apenas para intake e estruturacao de trabalho, e tambem a porta obrigatoria de entrada quando ainda nao existir task:
 
 - converter cada tela ou escopo independente em uma issue tecnica
 - identificar o repositorio correto com evidencia do codigo, rota ou produto
