@@ -112,7 +112,7 @@ Ao criar ou atualizar issues:
 
 - use tags compativeis com o papel responsavel pela proxima etapa
 - use uma label de tipo obrigatoria (`bug`, `enhancement` ou `feature`) em toda task nova
-- para bloqueio de infraestrutura, prefira `agent:sysadmin`
+- no backlog novo, use `agent:developer` como classificador de entrada;
 - combine labels de papel com labels de tipo de problema quando isso ajudar a triagem
 - nao invente labels que nao existam
 - se a lista de labels disponivel nao estiver clara, siga sem label adicional em vez de presumir uma label inexistente
