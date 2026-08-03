@@ -22,11 +22,19 @@ const AGENT_LABELS = {
 const ALL_AGENT_LABELS = Object.values(AGENT_LABELS);
 const RETRY = githubRetryConfig('FLOW');
 const LABEL_META = {
-  'agent:developer': { color: '1f6feb', description: 'Task marcada para a etapa de Developer' },
+  'agent:developer': { color: 'facc15', description: 'Task marcada para a etapa de Developer' },
   'agent:security': { color: 'd1242f', description: 'Task marcada para a etapa de Security' },
-  'agent:qa': { color: '8b5cf6', description: 'Task marcada para a etapa de QA' },
+  'agent:qa': { color: 'facc15', description: 'Task marcada para a etapa de QA' },
   'agent:devops': { color: 'fb8c00', description: 'Task marcada para a etapa de DevOps' },
-  'agent:sysadmin': { color: '0e8a16', description: 'Task marcada para acompanhamento do Sysadmin' },
+  'agent:sysadmin': { color: '94a3b8', description: 'Task marcada para acompanhamento do Sysadmin' },
+  'agent:technical-documenter': {
+    color: 'f59e0b',
+    description: 'Task marcada para a etapa de Technical Documenter',
+  },
+  'agent:tutorial-assistant': {
+    color: '0ea5e9',
+    description: 'Task marcada para a etapa de Tutorial Assistant',
+  },
 };
 const COMMENT_MARKER_PREFIX = 'cto-mcp-flow-sync';
 const COMMENT_TYPES = {
