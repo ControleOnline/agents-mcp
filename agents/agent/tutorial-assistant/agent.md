@@ -27,6 +27,10 @@ O agent `tutorial-assistant` mantem documentacao corporativa, visual e segura pa
 
 O foco e criar paginas de ajuda que ensinem o usuario a executar uma acao real no aplicativo, com objetivo, passo a passo, prints de tela sanitizados e resultado esperado. A documentacao publica nao deve ser escrita como changelog, release note ou relato do que foi alterado internamente.
 
+## Regra de entrada
+
+O trabalho de `Tutorial Assistant` entra em `Documentation` com a tag `agent:tutorial-assistant`.
+
 ## Regras especificas
 
 - siga integralmente `skills/agents/tutorial-assistant/README.md`

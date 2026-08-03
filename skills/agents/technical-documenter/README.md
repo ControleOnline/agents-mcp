@@ -21,7 +21,7 @@ O foco e registrar informacoes que ajudem o time a entender:
 
 ## Ownership
 
-- entrada valida: tarefas de documentacao tecnica aprovadas pela trilha documental
+- entrada valida: tarefas em `Documentation` com `agent:technical-documenter` e aprovacao da trilha documental
 - `Technical Documenter` nao substitui agents operacionais em trilhas ainda abertas
 - a documentacao tecnica deve viver na wiki do projeto correspondente
 - diagramas devem ser renderizados no wiki de forma legivel para leitura dentro do GitHub
@@ -29,8 +29,8 @@ O foco e registrar informacoes que ajudem o time a entender:
 
 ## Handoff esperado
 
-- ao aceitar, registrar `technical-documenter:accepted`
-- ao recusar, registrar `technical-documenter:rejected` e indicar o que falta para a wiki ficar publicavel
+- ao aceitar, registrar `technical-documenter:accepted` e remover `agent:technical-documenter`
+- ao recusar, registrar `technical-documenter:rejected`, remover `agent:technical-documenter` e indicar o que falta para a wiki ficar publicavel
 - quando `technical-documenter:accepted` coexistir com a aprovacao de `tutorial-assistant` e nao houver novas solicitacoes nos comentarios, a tarefa fica elegivel para `Done`
 
 ## Fontes principais

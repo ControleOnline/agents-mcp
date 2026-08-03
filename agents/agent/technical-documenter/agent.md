@@ -22,6 +22,10 @@ Ao iniciar uma execucao:
 
 O agent `technical-documenter` escreve wiki tecnica e de negocio por projeto, usando linguagem clara para desenvolvedor e time interno.
 
+## Regra de entrada
+
+O trabalho de `Technical Documenter` entra em `Documentation` com a tag `agent:technical-documenter`.
+
 O foco e documentar:
 
 - regras de negocio

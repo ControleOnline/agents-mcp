@@ -10,4 +10,5 @@ Automacoes do agente de DevOps.
 - receber tarefas aprovadas por humano e movidas para `Deploy`;
 - receber tarefas com conflito de merge em PR aberto;
 - sincronizar ambientes e refs necessarios para promocao tecnica;
-- colocar em producao o que estiver aprovado em `Deploy`.
+- publicar em producao a build contida em `Deploy` ate a finalizacao.
+- depois de publicar, mover a task para `Documentation` e aplicar as tags de documentacao correspondentes.

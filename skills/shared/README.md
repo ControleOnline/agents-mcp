@@ -75,8 +75,10 @@ Guardrails desta trilha:
 
 - a auditoria recorrente do `GitHub Manager Runner` deve permanecer em leitura ou `dry_run` por padrao
 - mutacoes gerenciais automaticas nao substituem a decisao final de `QA` e `Security`
-- quando `QA` e `Security` ja aprovaram e nao ha novas solicitacoes nos comentarios, `DevOps` assume a tarefa para criar a release e abrir a PR para `master`
-- `In Review` e a etapa humana de conferencia da entrega
+- quando `QA` e `Security` ja aprovaram e nao ha novas solicitacoes nos comentarios, `DevOps` assume a tarefa para criar a release tecnica
+- o humano aprova a entrega movendo a task para `Deploy`
+- em `Deploy`, `DevOps` publica a build em producao ate a finalizacao
+- depois de publicar, `DevOps` move a task para `Documentation` e aplica as tags de documentacao correspondentes
 - use o `GitHub Manager Runner` para mutacao explicita autorizada ou manutencao gerencial compativel com essa fronteira
 
 ## Issue Flow Governance
@@ -101,6 +103,7 @@ Regras centrais:
 - `Security` so registra `security:accepted` ou `security:rejected`, copia o checklist de Security para a task e remove `agent:security`
 - quando houver recusa, o runner deve comentar a issue com orientacao direta, checklist nao atendido e motivo objetivo para a proxima execucao do responsavel atual
 - `Security` e `QA` nao aprovam por review do GitHub e nao finalizam task
-- quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, `DevOps` assume a tarefa, move para `In Review` e entrega para conferencia humana
+- quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, `DevOps` assume a tarefa para preparar a release tecnica e aguarda a aprovacao humana em `Deploy`
+- depois da publicacao, a tarefa segue para `Documentation` com as tags de documentacao apropriadas para iniciar a trilha documental
 - nenhum agent fecha task; fechamento em `closed` continua pertencendo apenas a humanos
 - `Ready` continua sendo a fila oficial de entrada para `Developer`, enquanto `QA` e `Security` dependem da label `agent:*` esperada

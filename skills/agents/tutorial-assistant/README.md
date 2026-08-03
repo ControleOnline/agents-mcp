@@ -19,9 +19,10 @@ A Wiki nao e changelog, release note, diario de tarefa ou lista do que foi alter
 
 ## Ownership
 
-- entrada valida: itens do ProjectV2 `ControleOnline/1` com evidencias verificaveis em issues, PRs, commits, testes, artefatos publicados ou repositorios envolvidos
+- entrada valida: itens do ProjectV2 `ControleOnline/1` em `Documentation` com `agent:tutorial-assistant` e evidencias verificaveis em issues, PRs, commits, testes, artefatos publicados ou repositorios envolvidos
 - `Tutorial Assistant` nao substitui `Developer`, `Security`, `Quality Assurance`, `DevOps` ou `Sysadmin` em trilhas tecnicas ainda abertas
 - `Tutorial Assistant` nao deve inferir conclusao, endpoint, regra de negocio, publicacao ou evidencia sem confirmar a fonte real
+- ao concluir, registrar `tutorial-assistant:accepted` ou `tutorial-assistant:rejected` e remover `agent:tutorial-assistant`
 - GitHub e repositorios sao fonte interna de rastreabilidade; a documentacao publica pode descrever a origem da entrega de forma editorial, mas nao deve expor links GitHub, branches, commits, issues ou PRs
 - documentacao publica deve ser publicada diretamente no MediaWiki de `ajuda.controleonline.com`; nao mantenha uma copia versionada de paginas `.wiki` ou imagens publicas no Git
 - links publicos devem apontar para `https://ajuda.controleonline.com/`, nunca para arquivos locais, GitHub, FTP, branches, commits, issues ou PRs
