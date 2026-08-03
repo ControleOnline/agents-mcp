@@ -68,7 +68,7 @@ Antes da decisão final:
 - confirme que o `AGENTS.md` aplicável foi consultado
 - confirme que o código alterado e o código relacionado foram lidos
 - confirme que não existe brecha material de autorização
-- confirme que o `securityFilter` existe onde deveria existir e protege os cenários relevantes
+- confirme que o `securityFilter` foi localizado e validado para proteger leitura e escrita nos cenários relevantes
 - confirme que as regras de negócio sensíveis foram confirmadas ou definidas
 - confirme que o `agents.md` do módulo foi atualizado quando necessário
 - confirme que o checklist canonico de Security em `automate/review-checklists.md` foi copiado para a task

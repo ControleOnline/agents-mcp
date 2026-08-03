@@ -63,13 +63,13 @@ Quando o agent precisar de mutacoes reais no GitHub, a trilha oficial passa a se
 
 Essa trilha existe para:
 
-- mover item entre colunas do ProjectV2
+- ajustar o estado do item no ProjectV2
 - comentar em issue ou PR
 - trocar labels
 - ajustar assignees
 - publicar reviews
 - executar mutacoes REST ou GraphQL autorizadas
-- corrigir inconsistencias operacionais de coluna e labels
+- corrigir inconsistencias operacionais de estado e labels
 
 Guardrails desta trilha:
 

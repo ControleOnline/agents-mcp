@@ -16,5 +16,5 @@ Estas listas sao o criterio de aprovacao que deve ser copiado para a task quando
 - autorizacao e controle de acesso foram validados
 - exposicao de dados e leituras indevidas foram revisadas
 - IDOR, mass assignment e alteracao indevida de status foram considerados
-- o `securityFilter` do service equivalente protege leitura e escrita quando aplicavel
+- o `securityFilter` do service equivalente foi localizado e validado para proteger leitura e escrita quando aplicavel
 - as regras sensiveis do dominio e o `AGENTS.md` do escopo foram conferidos
