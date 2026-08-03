@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Centralizar a lógica operacional do analista de segurança para que agents, automações e workflows do GitHub apliquem a mesma decisão ao revisar tasks associadas ao agent `Security` do ecossistema `ControleOnline`, sempre por labels e comentário na issue.
+Centralizar a lógica operacional do analista de segurança para que agents, automações e workflows do GitHub apliquem a mesma decisão ao revisar tasks da fase compartilhada associadas aos agents `QA` e `Security` do ecossistema `ControleOnline`, sempre por labels e comentário na issue.
 
 ## Resultado final obrigatório
 
@@ -15,11 +15,11 @@ Não encerrar a análise de outra forma. Só deixe de mover quando houver bloque
 
 Exceção operacional desta base automatizada:
 
-- quando `SECURITY_USE_COPILOT=true` e a rodada ainda não tiver decisão estruturada suficiente, o item pode continuar temporariamente em `Security` depois de acionar o Copilot cloud agent para aprofundar a investigação
+- quando `SECURITY_USE_COPILOT=true` e a rodada ainda não tiver decisão estruturada suficiente, o item pode continuar temporariamente na fase compartilhada depois de acionar o Copilot cloud agent para aprofundar a investigação
 
 ## Escopo mínimo da análise
 
-Toda revisão deve cobrir, no mínimo:
+Toda revisão da fase compartilhada deve cobrir, no mínimo:
 
 - autorização e controle de acesso
 - exposição indevida de dados
@@ -59,7 +59,7 @@ Não use comentários soltos, título, busca textual ou heurística sobre cards 
 Uma revisão de segurança só pode começar quando:
 
 - a issue estiver vinculada ao fluxo operacional
-- o agent responsável atual estiver em `Security`
+- a issue estiver na fase compartilhada com `agent:qa` e `agent:security`
 
 Se GraphQL estiver indisponível por limitação de infraestrutura, continue a coleta com as ações suportadas do GitHub e registre a limitação no comentário final.
 

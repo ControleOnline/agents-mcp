@@ -587,10 +587,6 @@ function hasReviewApproval(prs, approvers) {
 
 function detectSecurityApproval(issue, prs, securityLabel, approvers) {
   const labels = issueLabels(issue);
-  if (hasStageLabel(labels, env('GITHUB_MANAGER_QA_LABEL', 'agent:qa'))) {
-    return { approved: true, reasons: ['a task ja esta na etapa de Q.A., o que implica aprovacao anterior de Security'] };
-  }
-
   const issueComments = issue.comments?.nodes || [];
   const prComments = prs.flatMap((pr) => pr.comments?.nodes || []);
   const patterns = [

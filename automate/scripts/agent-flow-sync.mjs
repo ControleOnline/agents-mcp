@@ -32,6 +32,7 @@ const COMMENT_MARKER_PREFIX = 'cto-mcp-flow-sync';
 const COMMENT_TYPES = {
   seedDeveloper: 'seed-developer',
   routeConflictToDevops: 'route-conflict-to-devops',
+  syncReviewPair: 'sync-review-pair',
   cleanupAssignees: 'cleanup-assignees',
   cleanupReview: 'cleanup-review',
 };
@@ -260,6 +261,16 @@ function currentAgentLabel(issue) {
   return issueLabels(issue).find((label) => ALL_AGENT_LABELS.includes(label)) || null;
 }
 
+function hasReviewDecisionLabel(labels) {
+  const decisionLabels = new Set([
+    'qa:accepted',
+    'qa:rejected',
+    'security:accepted',
+    'security:rejected',
+  ]);
+  return labels.some((label) => decisionLabels.has(label));
+}
+
 function assigneeLogins(issue) {
   return (issue.assignees?.nodes || [])
     .map((assignee) => (assignee?.login || '').trim())
@@ -390,6 +401,18 @@ function buildConflictComment(issueRef, signature) {
     'Ação: a responsabilidade atual foi marcada com `agent:devops`; a captura deve acontecer pela tag e pela coluna `Deploy`, sem assignee.',
     '',
     buildCommentMarker(COMMENT_TYPES.routeConflictToDevops, signature),
+  ].join('\n');
+}
+
+function buildReviewPairComment(issueRef, signature, nextLabels) {
+  return [
+    '### Sincronizacao da fase compartilhada',
+    '',
+    `Issue: ${issueRef}`,
+    `Ação: a task estava em revisão com apenas parte das labels esperadas; o fluxo completou a fase compartilhada com ${nextLabels.map((label) => `\`${label}\``).join(' e ')}.`,
+    'Próximo passo: QA e Security continuam a atuar apenas por labels e comentario na issue.',
+    '',
+    buildCommentMarker(COMMENT_TYPES.syncReviewPair, signature),
   ].join('\n');
 }
 
@@ -543,6 +566,44 @@ async function main() {
         }
       }
       continue;
+    }
+
+    if (
+      statusMatches(status, workStatuses) &&
+      !hasConflictingPullRequestInSameRepository(issue) &&
+      (labels.includes(AGENT_LABELS.qa) || labels.includes(AGENT_LABELS.security))
+    ) {
+      const hasQaLabel = labels.includes(AGENT_LABELS.qa);
+      const hasSecurityLabel = labels.includes(AGENT_LABELS.security);
+      const missingLabels = [];
+      if (!hasQaLabel) missingLabels.push(AGENT_LABELS.qa);
+      if (!hasSecurityLabel) missingLabels.push(AGENT_LABELS.security);
+
+      if (missingLabels.length > 0 && !hasReviewDecisionLabel(labels)) {
+        const nextLabels = [...new Set([...labels, ...missingLabels])];
+        const signature = commentSignature({
+          type: COMMENT_TYPES.syncReviewPair,
+          issueRef,
+          nextLabels: [...nextLabels].sort(),
+          status,
+        });
+        const duplicateComment = hasRecentCommentMarker(issue, COMMENT_TYPES.syncReviewPair, signature);
+        const action = {
+          type: 'sync-review-pair',
+          issue: record.issue,
+          previewLabels: nextLabels,
+          skippedDuplicateComment: duplicateComment,
+        };
+        result.actions.push(action);
+        if (!dryRun) {
+          await ensureLabelExists(issue.repository.nameWithOwner, AGENT_LABELS.qa);
+          await ensureLabelExists(issue.repository.nameWithOwner, AGENT_LABELS.security);
+          await replaceIssueLabels(issue.repository.nameWithOwner, issue.number, nextLabels);
+          if (!duplicateComment) {
+            await addIssueComment(issue.id, buildReviewPairComment(issueRef, signature, missingLabels));
+          }
+        }
+      }
     }
 
     if (

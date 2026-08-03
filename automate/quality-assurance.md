@@ -2,13 +2,13 @@
 
 ## Objetivo
 
-Centralizar a logica operacional de `Quality Assurance` para revisar a task marcada com `agent:qa`, registrar a decisao em labels na issue e copiar o checklist canonico para a task.
+Centralizar a logica operacional de `Quality Assurance` para revisar a task da fase compartilhada marcada com `agent:qa` e `agent:security`, registrar a decisao em labels na issue e copiar o checklist canonico para a task.
 
 ## Escopo
 
 Esta logica cobre:
 
-- localizar issue aberta criada por membro da equipe com a task marcada com `agent:qa`
+- localizar issue aberta criada por membro da equipe com a task da fase compartilhada marcada com `agent:qa` e `agent:security`
 - validar a disciplina operacional do trabalho entregue pelo `Developer`
 - decidir entre `qa:accepted` e `qa:rejected`
 - comentar a issue quando houver recusa
@@ -17,7 +17,7 @@ Esta logica cobre:
 
 ## Regras centrais
 
-`QA` deve agir apenas sobre a task com label `agent:qa`, usando labels e comentario na issue.
+`QA` deve agir apenas sobre a task da fase compartilhada com label `agent:qa`, usando labels e comentario na issue.
 
 Ao revisar:
 

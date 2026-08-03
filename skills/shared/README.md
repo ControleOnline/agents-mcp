@@ -108,7 +108,9 @@ Regras centrais:
 - `Developer` le apenas issue aberta criada por membro da equipe e assume a primeira captura em `Working`
 - `Developer` trabalha somente na propria branch da tarefa, contendo o numero da issue, e nao encerra o fluxo com PR no caminho tecnico normal
 - `Ready` e apenas a fila de entrada; `Working` e o estado de ownership ativo ate o trio `Developer` -> `Q.A.` -> `Security` terminar
-- `Security` e `QA` atuam sobre a tarefa pela label `agent:*` esperada
+- a fase de revisao compartilha a mesma task e deve carregar sempre as duas labels de entrada `agent:qa` e `agent:security` enquanto ainda nao houver decisao estruturada
+- se a task entrar com apenas uma dessas labels e ainda nao existir `qa:accepted`, `qa:rejected`, `security:accepted` ou `security:rejected`, a sincronizacao de fluxo deve completar a segunda label antes da revisao
+- `Security` e `QA` atuam sobre a mesma task pela label `agent:*` esperada para o proprio papel, sem depender de coluna
 - `Q.A.` so registra `qa:accepted` ou `qa:rejected`, copia o checklist de QA para a task e remove `agent:qa`
 - `Security` so registra `security:accepted` ou `security:rejected`, copia o checklist de Security para a task e remove `agent:security`
 - quando houver recusa, o runner deve comentar a issue com orientacao direta, checklist nao atendido e motivo objetivo para a proxima execucao do responsavel atual
@@ -117,3 +119,4 @@ Regras centrais:
 - depois da publicacao, a tarefa segue para `Documentation` com as tags de documentacao apropriadas para iniciar a trilha documental
 - nenhum agent fecha task; fechamento em `closed` continua pertencendo apenas a humanos
 - `Ready` continua sendo a fila oficial de entrada para `Developer`, enquanto `QA` e `Security` dependem da label `agent:*` esperada
+- quando `qa:rejected` ou `security:rejected` existir, `Developer` deve dar prioridade ao retrabalho dessa task antes de capturar uma task nova com `agent:developer`

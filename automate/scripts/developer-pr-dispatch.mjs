@@ -243,6 +243,17 @@ function currentAgentLabels(issue) {
   return issueLabels(issue).filter((label) => ALL_AGENT_LABELS.includes(label));
 }
 
+function hasRejectedReview(issue) {
+  const labels = new Set(issueLabels(issue));
+  return labels.has(QA_REJECTED_LABEL) || labels.has(SECURITY_REJECTED_LABEL);
+}
+
+function candidatePriority(issue) {
+  if (hasRejectedReview(issue)) return 0;
+  if (currentAgentLabels(issue).includes(DEVELOPER_LABEL)) return 1;
+  return 2;
+}
+
 function issueBelongsToDeveloper(issue) {
   const agentLabels = currentAgentLabels(issue);
   if (agentLabels.length === 0) return true;
@@ -328,7 +339,16 @@ async function main() {
   if (!project) throw new Error(`Project not found: ${org}/projects/${projectNumber}`);
 
   const items = sortByCreatedAt(project.items?.nodes || []);
-  const candidateItems = items.filter((item) => isDeveloperCandidate(item, allowedAssociations, workStatuses));
+  const candidateItems = items
+    .filter((item) => isDeveloperCandidate(item, allowedAssociations, workStatuses))
+    .sort((left, right) => {
+      const leftPriority = candidatePriority(left.content);
+      const rightPriority = candidatePriority(right.content);
+      if (leftPriority !== rightPriority) return leftPriority - rightPriority;
+      const leftTs = Date.parse(left.content?.createdAt || '') || 0;
+      const rightTs = Date.parse(right.content?.createdAt || '') || 0;
+      return leftTs - rightTs;
+    });
 
   const result = {
     generatedAt: new Date().toISOString(),

@@ -2,7 +2,7 @@
 
 ## Papel
 
-`Quality Assurance` analisa a tarefa marcada com `agent:qa` e decide entre aceitar ou recusar a entrega por label na issue, sem publicar review de aprovacao e sem finalizar a task.
+`Quality Assurance` analisa a task da fase compartilhada marcada com `agent:qa` e `agent:security`, decide entre aceitar ou recusar a entrega por label na issue, sem publicar review de aprovacao e sem finalizar a task.
 
 ## Skills compartilhadas essenciais
 
@@ -14,7 +14,7 @@
 
 - label oficial de aceite na issue: `qa:accepted`
 - label oficial de recusa na issue: `qa:rejected`
-- entrada valida: tarefa com label `agent:qa` ainda sem decisao de `QA`
+- entrada valida: tarefa da fase compartilhada com `agent:qa` e `agent:security`, ainda sem decisao de `QA`
 - comentario obrigatorio na issue apenas quando houver recusa
 - o checklist canonico de QA vive em `automate/review-checklists.md`
 - `Quality Assurance` nao publica `APPROVE` ou `REQUEST_CHANGES` no GitHub Review

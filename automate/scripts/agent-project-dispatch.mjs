@@ -192,6 +192,10 @@ function currentAgentLabel(issue) {
   return issueLabels(issue).find((label) => ALL_AGENT_LABELS.includes(label)) || null;
 }
 
+function hasAgentLabel(issue, label) {
+  return issueLabels(issue).includes(label);
+}
+
 function sortByCreatedAt(items) {
   return [...items].sort((left, right) => {
     const leftTs = Date.parse(left.content?.createdAt || '') || 0;
@@ -220,7 +224,7 @@ function isEligibleForRole(item, role, workStatuses, deployStatuses) {
     return statusMatches(status, deployStatuses) && stageLabel === ROLE_META.devops.label;
   }
 
-  return statusMatches(status, workStatuses) && stageLabel === ROLE_META[role].label;
+  return statusMatches(status, workStatuses) && hasAgentLabel(issue, ROLE_META[role].label);
 }
 
 function serializeItem(item) {

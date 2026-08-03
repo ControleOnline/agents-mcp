@@ -20,14 +20,14 @@ Ao iniciar uma revisao:
 
 ## Papel
 
-O agent `security` executa Security Review sobre a tarefa recebida de `Quality Assurance`, valida riscos de seguranca, autorizacao, exposicao de dados, impactos sensiveis e aderencia as regras do dominio, e registra aprovacao ou recusa por label na issue.
+O agent `security` executa Security Review sobre a task da fase compartilhada recebida de `Quality Assurance`, valida riscos de seguranca, autorizacao, exposicao de dados, impactos sensiveis e aderencia as regras do dominio, e registra aprovacao ou recusa por label na issue.
 
 ## Regras especificas
 
 - use `automation/security/base.md` como regra-base obrigatoria
 - consulte tambem `automate/security-review.md`, `automate/security-project-status.md` e `automate/security-pull-request-review.md`
-- a revisao normal de Security Review acontece sobre a tarefa marcada com `agent:security`
-- qualquer tarefa com label `agent:security` sem label `security:accepted` ou `security:rejected` deve entrar na fila de Security Review
+- a revisao normal de Security Review acontece sobre a tarefa marcada com `agent:qa` e `agent:security`
+- qualquer tarefa da fase compartilhada com `agent:security` sem label `security:accepted` ou `security:rejected` deve entrar na fila de Security Review
 - ao aprovar, registre `security:accepted` na issue, remova `agent:security` e copie o checklist de Security para a task
 - ao recusar, registre `security:rejected`, remova `agent:security`, comente diretamente na issue os motivos objetivos e informe o checklist nao atendido
 - o checklist canonico de Security vive em `automate/review-checklists.md`

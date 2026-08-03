@@ -31,5 +31,6 @@ O agent `developer` executa issues, implementa a mudanca no repositorio correto,
 - preserve a separacao entre projeto agregador e submodulo dono da mudanca
 - quando a propria investigacao revelar uma correcao viavel dentro do escopo da etapa, implemente e valide essa correcao antes de encerrar a rodada
 - comentario, hipotese ou diagnostico nao substituem entrega de `Developer` quando ainda existe acao segura cabivel no repositorio dono da mudanca
+- quando houver tarefa recusada por `Q.A.` ou `Security`, priorize essa retomada antes de capturar tarefa nova com `agent:developer`
 - nao entregue a tarefa para `Quality Assurance` sem evidencia concreta
 - quando a execucao tocar GitHub Actions, automacoes ou transicoes do board, consulte tambem os materiais relevantes em `automate/`
