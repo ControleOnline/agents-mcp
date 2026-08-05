@@ -6,36 +6,41 @@ Governanca da documentacao tecnica e de tutorial no ecossistema ControleOnline.
 
 ## Trilhas
 
-- `agent:tutorial-assistant` — ajuda pratica para cliente final
-- `agent:technical-documenter` — wiki tecnica/negocio por projeto
+- `agent:tutorial-assistant` — ajuda pratica para cliente final (MediaWiki / Central de Ajuda)
+- `agent:technical-documenter` — wiki tecnica/negocio por projeto (GitHub Wiki + `docs/technical/`)
+
+## Fila compartilhada (sem ProjectV2)
+
+Ambas as trilhas usam `agents/skills/shared/operations/issue-queue-discovery.md`:
+
+- sem ProjectV2;
+- uma issue por execucao;
+- org inteira se o prompt nao restringir;
+- labels `agent:<papel>` (qualquer status) e `agent:<papel>:done`.
 
 ## Technical Documenter
 
 O `technical-documenter` **cria e atualiza** a wiki tecnica dos repositorios afetados pela tarefa.
 
 - **Nao aprova** e **nao recusa** tarefas.
-- **Nao usa ProjectV2** como fonte de fila ou status.
-- Fonte de trabalho: issues do GitHub (org inteira se o prompt nao restringir).
-- Uma issue por execucao.
-- Labels oficiais (nomes exatos):
-  - `agent:technical-documenter` — solicitacao de documentacao (qualquer status)
-  - `agent:technical-documenter:done` — documentacao tecnica concluida
-- Issues `closed` sem `agent:technical-documenter:done` tambem sao elegiveis.
-- Se a tarefa tocou multiplos repositorios, documentar a wiki pertinente em **todos** eles.
-
-### Navegacao humana e links cruzados
-
-- Toda pagina nova deve ser alcancavel a partir da **Home** da wiki do modulo, em **categoria** ou indice clicavel.
-- O `AGENTS.md` do modulo e ponte curta para Home → categorias → paginas → modulos relacionados.
-- **Links entre repositorios/wikis do ecossistema sao preferiveis** e, em fluxo multi-modulo, obrigatorios no minimo (pagina canonica + Homes dos afetados).
-- Fluxos transversais devem aparecer tambem na Home de `app-community` e/ou `api-community` quando couber.
-- Interpretar visoes de app (`APP_TYPE` / `MODOS_OPERACAO.md`) ao descrever o papel de cada modulo.
+- Labels: `agent:technical-documenter` / `agent:technical-documenter:done`.
+- Issues `closed` sem `:done` tambem sao elegiveis.
+- Multi-repo: documentar todos os afetados; links cruzados preferiveis.
+- Navegacao humana: Home da wiki por categoria + `AGENTS.md` como ponte.
 
 ## Tutorial Assistant
 
-Labels de aprovacao da trilha publica:
+O `tutorial-assistant` **cria e atualiza** documentacao **publica** para cliente final.
 
-- `tutorial-assistant:accepted` / `tutorial-assistant:rejected`
+- **Nao aprova** e **nao recusa** tarefas.
+- Labels: `agent:tutorial-assistant` / `agent:tutorial-assistant:done`.
+- Destino: MediaWiki `https://ajuda.controleonline.com/` via **API** (`api.php`).
+- Credenciais de runtime: referencia no Google Drive (`wiki.json` com `host`, `user`, `password`) — nunca versionar no Git.
+- Prints a partir de smoke/browser tests (config de referencia `tests.json` no Drive); dados ficticios/sanitizados.
+- Nao versionar paginas `.wiki` nem imagens publicas no Git.
+- E-mail `todos@controleonline.com` so apos publicacao validada, com links publicos.
+
+Labels legadas `tutorial-assistant:accepted` / `tutorial-assistant:rejected` **nao** fazem parte deste fluxo.
 
 ## Seguranca
 
