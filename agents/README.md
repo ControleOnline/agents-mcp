@@ -29,7 +29,8 @@ agents/
 - `agents/roles/sysadmin/agent.md`
 - `agents/roles/tutorial-assistant/agent.md`
 - `agents/roles/technical-documenter/agent.md`
-- `agents/roles/documentor/agent.md`
+
+Documentação pública e técnica ficam em `tutorial-assistant` e `technical-documenter` (não existe mais o papel `documentor`).
 
 Os wrappers locais em `.github/agents/*.agent.md` devem apontar para exatamente um desses arquivos centrais por tipo.
 
