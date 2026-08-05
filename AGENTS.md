@@ -8,15 +8,32 @@ Tudo o que nao for memoria persistente deve estar disponivel aqui.
 
 Entradas principais:
 
-- `skills/README.md`
-- `skills/shared/README.md`
-- `skills/shared/github-flow.md`
-- `skills/agents/*/README.md`
-- `skills/runners/README.md`
-- `agents/agent/*/agent.md`
+- `agents/skills/README.md`
+- `agents/skills/shared/README.md`
+- `agents/skills/shared/github/github-flow.md`
+- `agents/skills/by-role/*/README.md`
+- `agents/skills/runners/README.md`
+- `agents/roles/*/agent.md`
 - `.github/agents/*.agent.md`
-- `automation/`
-- `automate/`
+- `workers/automation/`
+- `workers/automate/`
+
+## Estrutura do repositorio
+
+```
+agents/
+├── roles/          # definição canônica de cada papel
+└── skills/         # biblioteca de skills
+    ├── shared/     # regras transversais (por categoria)
+    ├── by-role/    # skills por papel
+    └── runners/    # mapas de runtime
+
+workers/            # tudo que executa
+├── automate/
+├── automation/
+├── src/
+└── scripts/
+```
 
 ## Regra central de skills
 
@@ -24,14 +41,14 @@ Toda regra nova deve entrar primeiro na camada certa, em vez de ser repetida ent
 
 Distribuicao obrigatoria:
 
-- comportamento compartilhado, politicas, guardrails e criterios comuns vivem em `skills/shared/`
-- qualidade de codigo, modularizacao, smoke tests e limite de tamanho de componentes vivem em `skills/shared/code-quality.md`
-- documentacao de cliente e wiki tecnica vivem em `skills/shared/documentation-governance.md`
-- seguranca editorial e sanitizacao de evidencias vivem em `skills/shared/security-guardrails.md`
-- fluxo de branches e entrega (GitHub Flow adaptado) vive em `skills/shared/github-flow.md`
-- papel, ownership, limites e handoff por agent vivem em `skills/agents/<agent>/README.md`
-- mapas de runtime, workflows, entry points e scripts reais vivem em `skills/runners/README.md`
-- `agents/agent/*/agent.md` devem ficar enxutos e conter apenas ponto de entrada, papel, fronteiras e referencias obrigatorias
+- comportamento compartilhado, politicas, guardrails e criterios comuns vivem em `agents/skills/shared/`
+- qualidade de codigo, modularizacao, smoke tests e limite de tamanho de componentes vivem em `agents/skills/shared/quality/code-quality.md`
+- documentacao de cliente e wiki tecnica vivem em `agents/skills/shared/documentation/documentation-governance.md`
+- seguranca editorial e sanitizacao de evidencias vivem em `agents/skills/shared/security/security-guardrails.md`
+- fluxo de branches e entrega (GitHub Flow adaptado) vive em `agents/skills/shared/github/github-flow.md`
+- papel, ownership, limites e handoff por agent vivem em `agents/skills/by-role/<agent>/README.md`
+- mapas de runtime, workflows, entry points e scripts reais vivem em `agents/skills/runners/README.md`
+- `agents/roles/*/agent.md` devem ficar enxutos e conter apenas ponto de entrada, papel, fronteiras e referencias obrigatorias
 - wrappers locais em `.github/agents/*.agent.md` devem ser finos e apontar para a fonte canonica e para o contexto local minimo
 
 ## Canal de execucao
@@ -52,7 +69,7 @@ Ao consultar ou operar no GitHub, os agents podem usar qualquer busca, API, list
 
 ## GitHub Flow (resumo)
 
-Fonte completa: `skills/shared/github-flow.md`.
+Fonte completa: `agents/skills/shared/github/github-flow.md`.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em `staging` por **merge** da task branch (sem PR)
@@ -90,4 +107,4 @@ O CTO supervisiona o ecossistema e corrige diretamente o `agents-mcp` quando hou
 
 O CTO nao deve substituir a execucao normal de `Developer`, `Security`, `Quality Assurance`, `DevOps` ou `Sysadmin` quando a trilha ja pertence claramente a um desses agents.
 
-Quando `qa:accepted` e `security:accepted` coexistirem, a trilha de release/RC e promocao `staging` -> `master` pertence ao `DevOps`, conforme `skills/shared/github-flow.md` e `skills/shared/master-publication.md`.
+Quando `qa:accepted` e `security:accepted` coexistirem, a trilha de release/RC e promocao `staging` -> `master` pertence ao `DevOps`, conforme `agents/skills/shared/github/github-flow.md` e `agents/skills/shared/github/master-publication.md`.
