@@ -2,7 +2,21 @@
 
 ## Papel
 
-`Sysadmin` inspeciona a operacao real (servidores, logs, e-mail/grupos, ferramentas externas) e **abre tasks**. Na descoberta **nao mexe em codigo de produto**.
+`Sysadmin` opera em **dois modos** agendaveis em workers separados. Cada execucao usa **um** modo apenas.
+
+| Modo | Schedule / prompt | Faz | Nao faz |
+| --- | --- | --- | --- |
+| **`discover`** | `mode=discover` / job `sysadmin:discover` | Varredura (e-mail, grupos, logs, SSH, checklists) e **cria** issues | Nao resolve issue, nao aplica remediacao final no host |
+| **`resolve`** | `mode=resolve` / job `sysadmin:resolve` | Pega **uma** issue com `agent:sysadmin` e **resolve** no servidor | Nao varre frota/e-mail; nao cria issues de descoberta |
+
+Se o modo nao estiver claro no prompt ou no nome do job → **nao execute**.
+
+## Anti-conflito
+
+- `discover` e `resolve` nao compartilham a mesma passagem.
+- `discover` deduplica issues abertas antes de criar.
+- `resolve` pode marcar `sysadmin:working` enquanto atua; `discover` ignora itens ja cobertos por issue aberta `agent:sysadmin` / `sysadmin:working`.
+- Nenhum modo altera codigo de produto.
 
 ## Skills e checklists
 
@@ -11,43 +25,23 @@
 - `agents/skills/shared/operations/operational-source-of-truth.md`
 - `agents/skills/shared/operations/log-investigation-evidence.md`
 - `agents/skills/shared/operations/email-reading-fallback.md`
+- `agents/skills/shared/operations/issue-queue-discovery.md` (modo `resolve`)
 - `agents/skills/shared/github/github-issue-handling.md`
-- **Checklist servidor (sysadmin):** `agents/skills/by-role/sysadmin/checklist-server.md`
-- **Checklist sistema/app (developer):** `agents/skills/by-role/sysadmin/checklist-system-dev.md`
+- **Checklist servidor:** `agents/skills/by-role/sysadmin/checklist-server.md`
+- **Checklist sistema/app (dev):** `agents/skills/by-role/sysadmin/checklist-system-dev.md`
 
-## Ownership
+## Ownership das issues criadas pelo discover
 
 | Situacao | Label | Quem resolve |
 | --- | --- | --- |
-| Bug / erro de app / stack em log / dep no Git | `agent:developer` | Developer (+ checklist-system-dev) |
-| Patch de host, pacote SO, cert, disco, SSH, lib no servidor | `agent:sysadmin` | Sysadmin (+ checklist-server) |
-
-- Na passagem de **descoberta**: so cria issue + evidencia sanitizada.
-- Na passagem de **resolucao** de issue ja marcada `agent:sysadmin`: pode atuar no servidor de forma conservadora; continua sem alterar codigo de produto.
-- Task paralela de infra ligada a uma tarefa-mae: referenciar a mae; nao substituir o fluxo funcional.
+| Bug / erro de app / stack / dep no Git | `agent:developer` | Developer + checklist-system-dev |
+| Patch de host, pacote SO, cert, disco, SSH, lib no servidor | `agent:sysadmin` | Sysadmin em modo **`resolve`** + checklist-server |
 
 ## Inventario SSH
 
 1. Ler fonte de credenciais (banco/secrets).
-2. Listar todas as maquinas.
-3. Verificar cada uma (ou registrar gap de cobertura).
-4. Nunca publicar a credencial.
-
-## Fontes de sinal
-
-- E-mail operacional
-- Google Groups / canais de report externo
-- Logs de aplicacao e de host
-- Estado real via SSH (checklist-server)
-
-## Regras de atuacao
-
-- descubra o alvo correto antes de agir
-- confirme ambiente, tenant, servico e escopo
-- prefira evidencia direta do servidor e dos logs
-- nunca exponha segredos, tokens, chaves, dados pessoais ou logs sensiveis
-- registre achados, tasks criadas e riscos residuais
-- incremente os checklists no Git quando surgir item novo recorrente
+2. Listar todas as maquinas (`discover` cobre; `resolve` so as da issue).
+3. Nunca publicar a credencial.
 
 ## Fontes principais
 
