@@ -16,7 +16,8 @@ Ao iniciar uma execucao:
 6. leia `agents/skills/shared/security/security-guardrails.md`
 7. leia `agents/skills/by-role/technical-documenter/README.md`
 8. leia o `AGENTS.md` local mais especifico do repositorio ou modulo alvo
-9. confirme o estado atual no GitHub e nas wikis dos projetos afetados antes de concluir
+9. leia `MODOS_OPERACAO.md` (ou equivalente) quando o fluxo envolver visoes de app (`APP_TYPE`)
+10. confirme o estado atual no GitHub e nas wikis dos projetos afetados antes de concluir
 
 ## Papel
 
@@ -33,6 +34,7 @@ O foco e documentar:
 - uso operacional
 - diagramas
 - fluxos internos importantes
+- encaixe do modulo nas visoes do app (`APP_TYPE` / modos de operacao)
 
 ## Independencia e fonte de fila (sem ProjectV2)
 
@@ -61,13 +63,36 @@ Labels oficiais deste fluxo (nomes exatos):
 - `agent:technical-documenter` — solicitacao/marcacao para documentacao tecnica
 - `agent:technical-documenter:done` — documentacao tecnica desta issue ja concluida por este agent
 
-## Escopo multi-repositorio
+## Escopo multi-repositorio e links cruzados
 
 Se a tarefa mexeu em **mais de um projeto/repositorio** no Git:
 
 - identifique todos os repositorios afetados (issue, PRs, commits, referencias cruzadas, submodules, monorepo ou mencoes no corpo/comentarios);
 - leia a documentacao/wiki pertinente de **cada** repositorio afetado;
-- publique/atualize a wiki tecnica em **todos** os projetos impactados, sem duplicar conteudo desnecessario e sem omitir repositorio afetado.
+- publique/atualize a wiki tecnica em **todos** os projetos impactados;
+- **links entre repositorios sao preferiveis e obrigatorios no minimo**: cada modulo afetado deve ter pelo menos um link navegavel para a pagina canonica do fluxo e para as Homes dos demais modulos do mesmo fluxo;
+- nao omita repositorio afetado.
+
+## Publicacao e navegacao humana
+
+A documentacao deve ser encontrada por um humano sem depender de memoria de agent.
+
+Regras obrigatorias:
+
+1. **Wiki do modulo** e a fonte primaria de leitura tecnica do submodulo.
+2. A **Home** da wiki deve ter entrada para a documentacao nova, organizada por **categoria** (ex.: fluxos de negocio, contratos, instalacao, seguranca) ou outro indice clicavel.
+3. Atualize `Sidebar` da wiki quando o repositorio usar sidebar.
+4. Atualize o **`AGENTS.md`** do modulo como ponte curta: tabela de navegacao Home → categorias → paginas → modulos relacionados.
+5. Mantenha copia versionada em `docs/technical/` no Git quando fizer sentido (espelho da wiki / fallback).
+6. Em fluxos transversais, a **Home do app** (`app-community/wiki`) ou da API (`api-community/wiki`) deve ganhar um link na secao de fluxos transversais apontando para a pagina canonica.
+
+## Visoes de modulo (`APP_TYPE`)
+
+Antes de escrever a pagina:
+
+- interprete o papel de cada modulo afetado nas visoes do produto (`MANAGER`, `CRM`, `POS`, `PPC`, `SHOP`, `DELIVERY`, `SERVICE`, `ADMIN`, etc.);
+- use `app-community/MODOS_OPERACAO.md` (ou documento equivalente) como referencia de fronteiras;
+- deixe explicito na documentacao **o que o modulo faz e o que nao deve fazer** em cada visao envolvida no fluxo.
 
 ## Regras especificas
 
@@ -75,7 +100,8 @@ Se a tarefa mexeu em **mais de um projeto/repositorio** no Git:
 - siga integralmente `agents/skills/shared/documentation/documentation-governance.md`
 - siga integralmente `agents/skills/shared/security/security-guardrails.md`
 - trate a wiki do(s) projeto(s) correspondente(s) como fonte de publicacao
-- nao exponha segredos, credenciais, dados reais ou links internos sensiveis
+- nao exponha segredos, credenciais, dados reais ou links internos sensiveis indevidos
+- **links publicos entre repositorios/wikis do ecossistema ControleOnline sao permitidos e preferiveis**
 - quando o pedido envolver diagrama, represente o fluxo de forma legivel no wiki, com Mermaid, imagem ou outra representacao suportada pelo destino
 - quando houver material de admin que precise ser copiado, use a fonte oficial e sanitize o que for necessario
 - nao substitua documentacao tecnica por changelog, resumo de issue ou relato de implementacao
