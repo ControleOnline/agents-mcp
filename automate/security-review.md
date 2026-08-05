@@ -4,6 +4,8 @@
 
 Centralizar a lógica operacional do analista de segurança para que agents, automações e workflows do GitHub apliquem a mesma decisão ao revisar tasks da fase compartilhada associadas aos agents `QA` e `Security` do ecossistema `ControleOnline`, sempre por labels e comentário na issue.
 
+Fonte de branches/entrega: `skills/shared/github-flow.md`.
+
 ## Resultado final obrigatório
 
 Toda revisão de segurança deve terminar em exatamente um destes resultados:
@@ -47,12 +49,14 @@ Use sempre, nesta ordem:
 
 1. associação real do agent responsável da task por GraphQL, quando disponível
 2. issue principal ligada à entrega
-3. PRs vinculados à issue
-4. commits, checks, arquivos alterados e diff
+3. branch `task-{id}`, commits e merge em `staging`
+4. checks, arquivos alterados e diff
 5. `AGENTS.md` mais específico do escopo alterado
 6. `agents.md` do módulo quando houver regra de negócio ou autorização registrada
 
 Não use comentários soltos, título, busca textual ou heurística sobre cards como substituto da associação real do agent responsável.
+
+Não existe PR do Developer no fluxo normal. A única PR formal é a de promoção `staging` -> `master` do `DevOps`.
 
 ## Regra de entrada
 
@@ -107,7 +111,8 @@ Sempre que a análise exigir definição, refinamento, correção ou explicitaç
 
 Antes da decisão final, validar:
 
-- a issue e os PRs certos foram analisados
+- a issue e a branch `task-{id}` corretas foram analisadas
+- o merge em `staging` foi confirmado ou o bloqueio ficou explícito
 - o `AGENTS.md` aplicável foi consultado
 - o código alterado e o código relacionado foram lidos
 - não existe brecha material de autorização
@@ -119,7 +124,7 @@ Antes da decisão final, validar:
 
 ## Regras de decisão
 
-### Mover para `Developer`
+### Devolver para `Developer`
 
 Reprovar quando houver qualquer situação de gravidade equivalente a:
 
@@ -135,12 +140,12 @@ Reprovar quando houver qualquer situação de gravidade equivalente a:
 
 Ao reprovar:
 
-- deixar comentário final objetivo com escopo, evidências, checklist e motivo
-- solicitar `REQUEST_CHANGES` no PR quando houver PR revisável
+- deixar comentário final objetivo na issue com escopo, evidências, checklist e motivo
 - remover `agent:security` da task
 - repassar a task para `agent:developer`
+- **não** publicar review formal de PR de produto
 
-### Mover para `Quality Assurance`
+### Aprovar na task
 
 Aprovar apenas quando houver evidência suficiente de que:
 
@@ -153,10 +158,11 @@ Aprovar apenas quando houver evidência suficiente de que:
 
 Ao aprovar:
 
-- comentar com rastreabilidade do escopo revisado
-- aprovar o PR quando houver PR revisável
+- comentar na issue com rastreabilidade do escopo revisado
+- registrar `security:accepted`
 - remover `agent:security` da task
 - copiar o checklist de Security para a task
+- **não** publicar review formal de PR de produto
 
 ## Regra de comentário final
 
@@ -198,6 +204,6 @@ Essa delegação não substitui a decisão final do analista de segurança. A ap
 
 - `automate/security-review.md`: política e regras
 - `automate/security-project-status.md`: roteamento de agents e transições
-- `automate/security-pull-request-review.md`: critérios de review
+- `automate/security-pull-request-review.md`: critérios de review da entrega (sem PR de produto)
 - `automate/scripts/security-project-review.mjs`: coleta de evidência e execução do fluxo
 - `automate/workflows/security-project-review.yml`: workflow base no GitHub Actions

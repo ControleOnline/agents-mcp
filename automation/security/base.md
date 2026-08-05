@@ -12,8 +12,9 @@ Antes de agir:
 
 1. leia este arquivo
 2. leia `agents/agent/security/agent.md`
-3. leia o `AGENTS.md` mais específico do escopo alterado
-4. use também as políticas detalhadas já consolidadas em:
+3. leia `skills/shared/github-flow.md`
+4. leia o `AGENTS.md` mais específico do escopo alterado
+5. use também as políticas detalhadas já consolidadas em:
    - `automate/security-review.md`
    - `automate/security-project-status.md`
    - `automate/security-pull-request-review.md`
@@ -29,9 +30,12 @@ A análise de segurança não pode ficar cega ao restante do sistema: considere 
 Use GitHub para confirmar:
 
 - a issue correta
-- o diff revisado
+- a branch `task-{id}` e o diff revisado
+- o merge da entrega em `staging`
 - checks e comentários de apoio, quando existirem
 - o estado real atual da entrega
+
+Não existe PR do Developer no fluxo normal. A única PR formal é `staging` -> `master`, aberta pelo `DevOps` no RC. Ver `skills/shared/github-flow.md`.
 
 Prefira GraphQL. Se GraphQL falhar por limitação técnica comprovada, use REST ou ações equivalentes do GitHub como fallback operacional.
 
@@ -64,7 +68,8 @@ Quando o repositório for backend ou contiver serviços equivalentes:
 
 Antes da decisão final:
 
-- confirme que a issue e os PRs certos foram analisados
+- confirme que a issue e a branch `task-{id}` corretas foram analisadas
+- confirme merge em `staging` (ou bloqueio explícito)
 - confirme que o `AGENTS.md` aplicável foi consultado
 - confirme que o código alterado e o código relacionado foram lidos
 - confirme que não existe brecha material de autorização
@@ -95,20 +100,19 @@ Ao concluir sua etapa:
 - remova o assignee `Copilot`
 - preserve assignees humanos
 
-## Pull requests
+## Proibição de PR
 
-Quando houver PR de apoio:
-
-- trate a issue como fonte de verdade para a decisão de segurança
-- não condicione o handoff a PR
-- se a credencial ativa coincidir com a autoria do PR, não publique `APPROVE` nem `REQUEST_CHANGES`; registre comentário rastreável e mantenha a decisão da task com base na evidência real
+- `Security` **não abre PR**
+- `Security` **não aprova nem recusa por review formal de PR de produto**
+- a decisão de Security é sempre por label e comentário na **issue/task**
+- a única PR do fluxo normal pertence ao `DevOps` (`staging` -> `master` no RC)
 
 ## Registro obrigatório
 
 Quando a revisão exigir explicitação, refinamento ou correção de regra de negócio ou autorização:
 
 - registre a decisão no `AGENTS.md` aplicável
-- deixe comentário final objetivo na issue e no PR, quando houver
+- deixe comentário final objetivo na issue
 
 ## Comentário final
 

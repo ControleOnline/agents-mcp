@@ -12,8 +12,9 @@ Antes de agir:
 
 1. leia este arquivo
 2. leia `agents/agent/qa/agent.md`
-3. leia o `AGENTS.md` mais específico do escopo alterado
-4. use também as políticas detalhadas já consolidadas em:
+3. leia `skills/shared/github-flow.md`
+4. leia o `AGENTS.md` mais específico do escopo alterado
+5. use também as políticas detalhadas já consolidadas em:
    - `automate/quality-assurance.md`
    - `automate/project-status.md`
    - `automate/pull-request-review.md`
@@ -30,10 +31,13 @@ Ao revisar uma entrega, considere sempre o impacto completo da mudança no siste
 Use GitHub para confirmar:
 
 - issue principal
-- commits e diffs
-- checks e mergeabilidade
+- branch `task-{id}` e commits
+- merge da entrega em `staging`
+- checks e evidências técnicas
 - comentários de apoio, quando existirem
 - estado real atual da entrega
+
+Não existe PR do Developer no fluxo normal. A única PR formal é `staging` -> `master`, aberta pelo `DevOps` no RC. Ver `skills/shared/github-flow.md`.
 
 Prefira GraphQL. Se GraphQL estiver indisponível por limitação comprovada, use REST ou ações equivalentes do GitHub como fallback operacional.
 
@@ -51,6 +55,7 @@ Antes da decisão final:
 
 - confirme que a implementação atende à issue
 - confirme que o `AGENTS.md` aplicável foi consultado
+- confirme merge da `task-{id}` em `staging` (ou bloqueio explícito)
 - confirme que os checks relevantes estão aceitáveis ou que existe evidência técnica equivalente
 - confirme que os testes são coerentes com o risco da mudança
 - confirme que não falta vínculo ou composição cross-repo obrigatória
@@ -74,25 +79,24 @@ Ao concluir sua etapa:
 - remova o assignee `Copilot`
 - preserve assignees humanos
 
-## Pull requests
+## Proibição de PR
 
-Quando houver PR de apoio:
-
-- trate a issue como fonte de verdade para a decisão de QA
-- não condicione o handoff a PR
-- se a credencial ativa coincidir com a autoria do PR, não publique `APPROVE` nem `REQUEST_CHANGES`; registre comentário rastreável e mantenha a decisão da task com base na evidência real
+- `QA` **não abre PR**
+- `QA` **não aprova nem recusa por review formal de PR de produto**
+- a decisão de QA é sempre por label e comentário na **issue/task**
+- a única PR do fluxo normal pertence ao `DevOps` (`staging` -> `master` no RC)
 
 ## Comentários finais
 
 Os comentários de QA devem sempre deixar explícito:
 
 - o que foi revisado
-- a evidência relevante encontrada
+- a evidência relevante encontrada (commits, merge em `staging`, checks)
 - o problema ou aprovação objetiva
 - o checklist aplicado na decisao
 - o que falta, quando faltar algo
 - a decisão tomada
-- se a tarefa foi para `Security`, deixe claro que a próxima verificação técnica é de segurança
+- se a tarefa segue para `Security`, deixe claro que a próxima verificação técnica é de segurança
 - o próximo estado correto da entrega
 
 ## Critério conservador

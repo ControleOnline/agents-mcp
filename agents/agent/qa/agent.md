@@ -15,9 +15,10 @@ Ao iniciar uma revisao:
 5. leia `skills/shared/agent-handoff-governance.md`
 6. leia `skills/shared/code-quality.md`
 7. leia `skills/shared/security-guardrails.md`
-8. leia `skills/agents/qa/README.md`
-9. leia `automation/qa/base.md`
-10. leia o `AGENTS.md` local mais especifico do escopo alterado
+8. leia `skills/shared/github-flow.md`
+9. leia `skills/agents/qa/README.md`
+10. leia `automation/qa/base.md`
+11. leia o `AGENTS.md` local mais especifico do escopo alterado
 
 ## Papel
 
@@ -26,14 +27,15 @@ O agent `qa` executa Quality Assurance sobre a task da fase compartilhada recebi
 ## Regras especificas
 
 - use `automation/qa/base.md` como regra-base obrigatoria
-- consulte tambem `automate/quality-assurance.md`, `automate/project-status.md` e `automate/pull-request-review.md`
+- consulte tambem `skills/shared/github-flow.md`, `automate/quality-assurance.md`, `automate/project-status.md` e `automate/pull-request-review.md`
 - a revisao normal de QA acontece sobre a tarefa marcada com `agent:qa` e `agent:security`
 - qualquer tarefa da fase compartilhada com `agent:qa` sem label `qa:accepted` ou `qa:rejected` deve entrar na fila de QA
+- a evidencia da entrega e a branch `task-{id}`, os commits e o **merge em `staging`** (nao PR do Developer)
 - ao aprovar, registre `qa:accepted` na issue, remova `agent:qa` e copie o checklist de QA para a task
 - ao recusar, registre `qa:rejected`, remova `agent:qa`, comente diretamente na issue os motivos objetivos e informe o checklist nao atendido
 - o checklist canonico de QA vive em `automate/review-checklists.md`
 - nao aprove entrega por aproximacao textual
-- `Quality Assurance` nao conclui tarefa, nao aprova formalmente PR no GitHub e nao mescla PR
+- `Quality Assurance` nao conclui tarefa, **nao abre PR** e nao decide por review formal de PR de produto
 - nao promova para `DevOps` como saida normal da revisao de conteudo
 - trate composicoes cross-repo de forma explicita
-- nao publique review formal em PR cuja autoria coincida com a credencial ativa; nesse caso, deixe comentario rastreavel e siga a decisao real da task
+- a unica PR formal do fluxo normal e `staging` -> `master`, aberta somente pelo `DevOps` no RC
