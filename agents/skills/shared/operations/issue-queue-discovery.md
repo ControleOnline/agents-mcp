@@ -1,6 +1,6 @@
 # Issue Queue Discovery (sem ProjectV2)
 
-Skill compartilhada pelos agents documentais (`technical-documenter`, `tutorial-assistant`) e reutilizavel por outros papeis que precisem da mesma fila.
+Skill compartilhada pelos agents documentais (`technical-documenter`, `tutorial-assistant`), de revisao (`qa`, `security`) e reutilizavel por outros papeis que precisem da mesma fila.
 
 ## Objetivo
 
@@ -26,42 +26,72 @@ Selecionar **exatamente uma** issue elegivel por execucao, sem depender de Proje
    - escolha **exatamente uma**;
    - priorize por `updated` mais recente, salvo ordem explicita no prompt.
 
-## Template de elegibilidade por papel
-
-Cada papel define o prefixo de label. Padrao:
+## Template de elegibilidade — papeis documentais
 
 | Label | Significado |
 | --- | --- |
-| `agent:<papel>` | Solicitacao/marcacao para o papel (**qualquer status**: open ou closed) |
+| `agent:<papel>` | Solicitacao/marcacao para o papel (**qualquer status**) |
 | `agent:<papel>:done` | Trabalho deste papel ja concluido nesta issue |
 
 Candidata se **qualquer** for verdadeira:
 
 - possui `agent:<papel>`;
-- esta `closed` e **nao** possui `agent:<papel>:done` (quando o papel documentar entregas fechadas por padrao).
+- esta `closed` e **nao** possui `agent:<papel>:done`.
 
-Papel documentais atuais:
+Papeis: `technical-documenter`, `tutorial-assistant`.
 
-- `technical-documenter` → `agent:technical-documenter` / `agent:technical-documenter:done`
-- `tutorial-assistant` → `agent:tutorial-assistant` / `agent:tutorial-assistant:done`
+Conclusao documental: comentar + `agent:<papel>:done` + remover `agent:<papel>`. Sem `accepted`/`rejected`.
 
-## Conclusao padrao (sem approve/reject)
+## Template de elegibilidade — papeis de revisao (`qa`, `security`)
 
-Ao concluir com sucesso o trabalho do papel na issue:
+Estes papeis **nao alteram codigo**, branches, PRs nem arquivos de produto. So analisam e **notificam por labels + comentarios**.
 
-1. Comente com resumo e links/artefatos publicos ou internos conforme o papel.
-2. Adicione `agent:<papel>:done`.
-3. Remova `agent:<papel>` se estiver presente.
-4. **Nao** use labels `:<papel>:accepted` / `:<papel>:rejected` nestas trilhas documentais.
+| Label | Significado |
+| --- | --- |
+| `agent:qa` / `agent:security` | Solicitacao explicita de revisao (**qualquer status**) |
+| `qa:accepted` / `security:accepted` | Revisao aprovada; trabalho daquele papel **encerrado** nesta passagem |
+| `qa:rejected` / `security:rejected` | Revisao recusada; trabalho daquele papel **encerrado** nesta passagem |
 
-Se houver bloqueio:
+Candidata para o papel se **qualquer** for verdadeira:
 
-- comente o bloqueio;
-- **nao** adicione `:done`;
-- mantenha ou recoloque `agent:<papel>`.
+1. possui `agent:<papel>` e **ainda nao** tem decisao final daquele papel (`:accepted` ou `:rejected`);
+2. esta `closed` e **ainda nao** possui a aprovacao daquele papel (`qa:accepted` ou `security:accepted` respectivamente).
+
+Notas:
+
+- `rejected` **encerra** o trabalho do revisor naquela passagem (nao fica em loop infinito na mesma evidencia).
+- Issue `closed` **sem** `qa:accepted` **e** `security:accepted` e ilegal no fluxo: o revisor que a capturar deve **reabrir** a issue antes ou durante a analise.
+- Uma tarefa so pode permanecer `closed` com as **duas** aprovacoes: `qa:accepted` **e** `security:accepted`.
+
+### Gate dual (fechamento)
+
+| Estado da issue | Labels de aprovacao | Acao do revisor |
+| --- | --- | --- |
+| `closed` | falta `qa:accepted` e/ou `security:accepted` | **Reabrir** a issue, analisar, decidir por labels |
+| `closed` | tem `qa:accepted` **e** `security:accepted` | Nao e candidata por fechamento indevido |
+| `open` | tem `agent:qa` / `agent:security` sem decisao | Analisar e decidir |
+
+### Conclusao da revisao
+
+Ao **aprovar**:
+
+1. Comente resumo objetivo + checklist atendido (quando couber).
+2. Adicione `qa:accepted` ou `security:accepted`.
+3. Remova `agent:qa` ou `agent:security` se presente.
+4. Remova eventual `:rejected` anterior do **mesmo** papel se estiver reavaliando apos correcao.
+
+Ao **recusar**:
+
+1. Comente motivos objetivos + checklist nao atendido.
+2. Adicione `qa:rejected` ou `security:rejected`.
+3. Remova `agent:qa` ou `agent:security` se presente.
+4. Garanta que a issue fique **open** (reabra se estiver closed) para o Developer atuar.
+
+Em ambos os casos o trabalho **daquele agent** naquela passagem termina. Nao mexa em codigo.
 
 ## Output minimo da descoberta
 
 - criterio usado (prompt explicito vs busca org)
 - issue escolhida (`owner/repo#n`)
-- labels presentes no momento da captura
+- labels e estado (`open`/`closed`) no momento da captura
+- se reabriu a issue (sim/nao)
