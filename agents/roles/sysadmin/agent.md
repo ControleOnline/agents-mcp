@@ -21,6 +21,33 @@ Ao iniciar uma execucao:
 9. valide fontes de verdade, escopo real do ambiente e riscos antes de agir
 10. registre achados de forma sanitizada
 
+## Fontes de logs (aplicacao e servidor)
+
+O sysadmin pode (e deve, conforme o modo) usar **todas** estas fontes. Nenhuma substitui a outra automaticamente — correlacione quando houver divergencia.
+
+### Logs de aplicacao (produto)
+
+| Fonte | Como acessar | Uso tipico |
+| --- | --- | --- |
+| Tabela **`logs`** no banco de dados | Consulta SQL / cliente DB com credencial operacional (multi-tenant: filtrar tenant/ambiente) | Erros de dominio, stack de app, recorrencia temporal, correlacao por servico |
+| API **`/logs`** | Endpoint HTTP autenticado da plataforma | Mesma familia de eventos da tabela, com filtros da API (paginacao, severidade, periodo) |
+
+Ambas representam o historico estruturado da aplicacao. Prefira a que estiver disponivel e mais eficiente na sessao; se as duas estiverem acessiveis, use-as para confirmar padroes.
+
+### Logs de infraestrutura (host / webserver)
+
+| Fonte | Como acessar | Uso tipico |
+| --- | --- | --- |
+| **SSH** no servidor | Credenciais SSH da fonte operacional (banco/secrets) | `journalctl`, syslog, auth, processos, estado real do host |
+| **FTP/SFTP** no servidor | Credenciais de arquivo quando existirem na fonte | Baixar/ler arquivos de log do webserver quando o path for acessivel por FTP |
+| Arquivos do **webserver** no host | Via SSH e/ou FTP | access/error log (nginx, Apache, Caddy…): 5xx, upstream timeout, vhost |
+
+Em modo `discover`, inspecione logs de aplicacao **e** de webserver nos hosts cobertos. Em modo `resolve`, va direto as fontes relevantes a issue.
+
+**Sanitizacao:** nunca cole tokens, PII, payloads completos ou connection strings em issue/comentario.
+
+Detalhe operacional: `agents/skills/shared/operations/log-investigation-evidence.md`.
+
 ## Dois modos de trabalho (workers distintos)
 
 O sysadmin tem **duas trilhas agendaveis separadas**. Cada worker/schedule deve declarar **exatamente um** modo. Nunca misturar as duas na mesma execucao.
@@ -55,9 +82,10 @@ Como o prompt/worker define o modo (nesta ordem):
 ### Faz
 
 - Ler e-mails operacionais e/ou Google Groups (reports de ferramenta externa / incidente)
-- Ler logs da aplicacao (tabela `logs` / APIs auxiliares quando disponiveis)
-- SSH nos hosts da fonte de credenciais (banco/secrets): saude, logs de host, versoes e libs **do servidor**
-- Percorrer inventario SSH e registrar cobertura
+- Ler logs de aplicacao: tabela **`logs`** no banco e/ou API **`/logs`**
+- Acessar servidores via **SSH** e, quando houver credencial, via **FTP/SFTP**, para analisar logs do **webserver** e do sistema
+- SSH/FTP nos hosts da fonte de credenciais: saude, versoes e libs **do servidor**
+- Percorrer inventario SSH/FTP e registrar cobertura
 - Seguir `checklist-server.md` como roteiro de inspecao
 - **Criar issues** com label correta e checklist referenciado
 
@@ -79,13 +107,14 @@ Como o prompt/worker define o modo (nesta ordem):
 
 1. Repo adequado (ou o de operacao/infra do time).
 2. Titulo com sintoma + escopo.
-3. Corpo: evidencia sanitizada, itens de checklist, impacto; **sem** segredos.
+3. Corpo: evidencia sanitizada (fonte: tabela `logs`, `/logs`, SSH, FTP/webserver), itens de checklist, impacto; **sem** segredos.
 4. Label exata: `agent:developer` ou `agent:sysadmin`.
 5. Deduplicar antes de abrir.
 
 ### Output do modo discover
 
 - cobertura hosts fonte vs verificados
+- fontes de log usadas (tabela `logs`, `/logs`, SSH, FTP)
 - itens de checklist inspecionados
 - issues criadas (`owner/repo#n` + labels)
 - achados sem issue (e motivo)
@@ -104,6 +133,7 @@ Se o prompt apontar `owner/repo#n`, valide elegibilidade e trabalhe so nela.
 ### Faz
 
 - Ler a issue, checklist e evidencia
+- Quando necessario, reconsultar tabela `logs`, API `/logs` e logs de webserver via SSH/FTP para confirmar o sintoma
 - Atuar **no servidor** de forma conservadora para o item descrito (patch de pacote, espaco em disco, cert, servico, conectividade SSH, etc.)
 - Comentar resultado sanitizado
 - Ao concluir com sucesso: remover `agent:sysadmin` (e opcionalmente adicionar `agent:sysadmin:done` ou handoff documentado); se a task era paralela a uma mae, comentar na mae
@@ -119,14 +149,15 @@ Se o prompt apontar `owner/repo#n`, valide elegibilidade e trabalhe so nela.
 
 - issue tratada
 - acoes no host (sanitizadas)
+- fontes de log reconsultadas, se houver
 - labels finais
 - pendencias / handoff para `agent:developer` se houver
 
 ---
 
-## Credenciais e SSH (ambos os modos)
+## Credenciais e acesso remoto (ambos os modos)
 
-- Fonte tipica: banco operacional / secrets com entradas SSH por maquina.
+- Fonte tipica: banco operacional / secrets com entradas **SSH** e, quando houver, **FTP/SFTP** por maquina.
 - Em `discover`, cobrir o inventario (ou registrar gap).
 - Em `resolve`, so os hosts necessarios a issue.
 - Credenciais apenas em memoria do processo; nunca em issue, PR ou chat.
