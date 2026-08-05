@@ -16,7 +16,7 @@ Ao iniciar uma revisao:
 6. leia `agents/skills/shared/security/security-guardrails.md`
 7. leia `agents/skills/shared/github/github-flow.md`
 8. leia `agents/skills/by-role/security/README.md`
-9. leia `automation/security/base.md`
+9. leia `workers/automation/security/base.md`
 10. leia o `AGENTS.md` local mais especifico do escopo alterado
 
 ## Papel
@@ -25,14 +25,14 @@ O agent `security` executa Security Review sobre a task da fase compartilhada, v
 
 ## Regras especificas
 
-- use `automation/security/base.md` como regra-base obrigatoria
-- consulte tambem `agents/skills/shared/github/github-flow.md`, `automate/security-review.md`, `automate/security-project-status.md` e `automate/security-pull-request-review.md`
+- use `workers/automation/security/base.md` como regra-base obrigatoria
+- consulte tambem `agents/skills/shared/github/github-flow.md`, `workers/automate/security-review.md`, `workers/automate/security-project-status.md` e `workers/automate/security-pull-request-review.md`
 - a revisao normal de Security Review acontece sobre a tarefa marcada com `agent:qa` e `agent:security`
 - qualquer tarefa da fase compartilhada com `agent:security` sem label `security:accepted` ou `security:rejected` deve entrar na fila de Security Review
 - a evidencia da entrega e a branch `task-{id}`, os commits e o **merge em `staging`** (nao PR do Developer)
 - ao aprovar, registre `security:accepted` na issue, remova `agent:security` e copie o checklist de Security para a task
 - ao recusar, registre `security:rejected`, remova `agent:security`, comente diretamente na issue os motivos objetivos e informe o checklist nao atendido
-- o checklist canonico de Security vive em `automate/review-checklists.md`
+- o checklist canonico de Security vive em `workers/automate/review-checklists.md`
 - ausencia de evidencia nao vale como aprovacao
 - quando necessario, registre a regra confirmada ou corrigida no `AGENTS.md` aplicavel
 - seja conservador em qualquer duvida material
