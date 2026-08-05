@@ -2,19 +2,20 @@
 
 Checklist **incrementável** para varredura e manutenção de infraestrutura. O `sysadmin` marca cada item na execução e anexa evidência sanitizada na task quando abrir issue.
 
-> Este checklist é do **próprio sysadmin** (SO, runtime, pacotes, SSH, disco, serviços).  
+> Este checklist é do **próprio sysadmin** (SO, runtime, pacotes, SSH/FTP, disco, serviços).  
 > Problemas de código de produto → use `checklist-system-dev.md` e tag `agent:developer`.
 
 ## 0. Preparação
 
-- [ ] Carregar credenciais SSH a partir da fonte operacional (banco / secrets) **sem** expô-las em issue, log ou chat
+- [ ] Carregar credenciais **SSH** e, se existirem, **FTP/SFTP** a partir da fonte operacional (banco / secrets) **sem** expô-las em issue, log ou chat
 - [ ] Listar **todas** as máquinas/credenciais disponíveis na fonte e marcar quais serão verificadas nesta passagem
 - [ ] Confirmar ambiente (prod / staging / lab) e janela segura de inspeção
 - [ ] Registrar inventário desta execução: hostname, IP/alias, papel (app, db, proxy, worker…)
 
-## 1. Acesso e inventário SSH
+## 1. Acesso e inventário remoto
 
-- [ ] Testar conectividade SSH em cada host listado na fonte de credenciais
+- [ ] Testar conectividade **SSH** em cada host listado na fonte de credenciais
+- [ ] Testar **FTP/SFTP** quando a credencial existir (path de logs/arquivos)
 - [ ] Anotar hosts inacessíveis (timeout, auth fail, host key) e abrir task `agent:sysadmin` se for falha real
 - [ ] Confirmar usuário, porta e jump host corretos por máquina
 - [ ] Verificar se há hosts órfãos na fonte (credencial sem máquina) ou máquinas sem credencial
@@ -48,10 +49,19 @@ Checklist **incrementável** para varredura e manutenção de infraestrutura. O 
 
 > **Atenção:** desatualização de **dependência de código** no repositório Git (`package.json`, `composer.json`) é task `agent:developer` + `checklist-system-dev.md`. Desatualização **instalada no servidor** (pacote SO / runtime do host) permanece neste checklist + `agent:sysadmin`.
 
-## 5. Logs de infraestrutura
+## 5. Logs — aplicação e infraestrutura
 
-- [ ] Logs do sistema (`journalctl`, `/var/log/syslog`, auth)
-- [ ] Logs do web server (5xx, upstream timeout)
+### Aplicação (produto)
+
+- [ ] Consultar tabela **`logs`** no banco (filtros de tenant/ambiente/período)
+- [ ] Consultar API **`/logs`** quando disponível (mesma família de eventos, filtros da API)
+- [ ] Correlacionar erros recorrentes / stacks com possível causa de app → issue `agent:developer` se for bug de produto
+
+### Host e webserver
+
+- [ ] Logs do sistema via SSH (`journalctl`, `/var/log/syslog`, auth)
+- [ ] Logs do **webserver** (access/error: nginx, Apache, Caddy…) via **SSH** e/ou **FTP/SFTP**
+- [ ] 5xx, upstream timeout, falhas de vhost
 - [ ] Logs de banco / redis / fila no host
 - [ ] Rotação de logs funcionando (tamanho explosivo = incidente)
 - [ ] Tentativas de autenticação anômalas (SSH brute force)
@@ -66,7 +76,8 @@ Checklist **incrementável** para varredura e manutenção de infraestrutura. O 
 ## 7. Encerramento da passagem de servidor
 
 - [ ] Resumo por host: OK / ATTENTION / FAIL
-- [ ] Para cada FAIL/ATTENTION: issue criada com label `agent:sysadmin`, evidência sanitizada e item(ns) deste checklist citados
+- [ ] Fontes de log usadas registradas (`logs` DB, `/logs`, SSH, FTP/webserver)
+- [ ] Para cada FAIL/ATTENTION: issue criada com label adequada, evidência sanitizada e item(ns) deste checklist citados
 - [ ] Credenciais e saídas sensíveis **não** foram coladas na issue
 - [ ] Inventário de hosts verificados vs hosts na fonte de credenciais (cobertura %)
 
