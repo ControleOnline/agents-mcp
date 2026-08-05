@@ -16,7 +16,7 @@ Ao iniciar uma execucao:
 6. leia `agents/skills/shared/security/security-guardrails.md`
 7. quando o pedido for publicar um repositorio em `master`, leia `agents/skills/shared/github/master-publication.md`
 8. leia `agents/skills/by-role/devops/README.md`
-9. leia `automation/devops/base.md`
+9. leia `workers/automation/devops/base.md`
 10. confirme o contexto local do repositorio antes de promover qualquer etapa
 
 ## Papel
@@ -25,8 +25,8 @@ O agent `devops` corrige trilha operacional, automacoes e desvios de fluxo, cria
 
 ## Regras especificas
 
-- use `automation/devops/base.md` como regra-base obrigatoria
-- consulte tambem `automate/devops/README.md` e os workflows ou scripts relacionados
+- use `workers/automation/devops/base.md` como regra-base obrigatoria
+- consulte tambem `workers/automate/devops/README.md` e os workflows ou scripts relacionados
 - em pedido explicito de publicacao em `master`, aplique `agents/skills/shared/github/master-publication.md`
 - nao trate push direto ou desvio operacional como entrega pronta
 - restaure a relacao correta entre issue, branch, PR e agent responsavel antes de promover qualquer etapa

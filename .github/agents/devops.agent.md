@@ -8,11 +8,11 @@ target: github-copilot
 
 Este wrapper deve permanecer fino. Antes de agir, leia e siga nesta ordem:
 
-1. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/agent/devops/agent.md`
-2. `https://github.com/ControleOnline/agents-mcp/blob/master/skills/README.md`
-3. `https://github.com/ControleOnline/agents-mcp/blob/master/skills/shared/README.md`
-4. `https://github.com/ControleOnline/agents-mcp/blob/master/skills/agents/devops/README.md`
-5. `https://github.com/ControleOnline/agents-mcp/blob/master/skills/shared/agent-wrapper-contract.md`
+1. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/devops/agent.md`
+2. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/README.md`
+3. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/shared/README.md`
+4. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/by-role/devops/README.md`
+5. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/shared/operations/agent-wrapper-contract.md`
 
 ## Contexto local
 
