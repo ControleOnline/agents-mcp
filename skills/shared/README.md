@@ -63,10 +63,22 @@ Esta pasta tambem concentra skills operacionais reutilizaveis:
 - `code-quality.md`
 - `log-investigation-evidence.md`
 - `github-issue-handling.md`
+- `github-flow.md`
 - `operational-github-workflow.md`
 - `master-publication.md`
 - `email-reading-fallback.md`
 - `task-completion-criteria.md`
+
+## GitHub Flow (branches e entrega)
+
+A skill `github-flow.md` e a fonte canonica de:
+
+- branch `task-{id_issue}` derivada de `master`
+- entrega do Developer em `staging` **sem PR**
+- proibicao de PR para `Developer`, `QA` e `Security` no fluxo normal
+- unica PR formal do fluxo: `staging` -> `master`, aberta pelo `DevOps` no RC/deploy
+
+Todo agent que toque em branch, integracao ou promocao deve seguir essa skill.
 
 ## GitHub Mutation Channel
 
@@ -99,7 +111,7 @@ Valide sempre:
 - se a issue continua aberta
 - se a issue foi criada por membro da equipe
 - se a tarefa continua com a tag `agent:*` esperada
-- se `Q.A.` ja registrou `qa:accepted` ou `qa:rejected`
+- se `QA` ja registrou `qa:accepted` ou `qa:rejected`
 - se `Security` ja registrou `security:accepted` ou `security:rejected`
 - se o checklist canonico de QA ou Security foi copiado para a task
 - se a tarefa ja esta pronta para a proxima etapa humana
@@ -107,17 +119,17 @@ Valide sempre:
 Regras centrais:
 
 - `Developer` le apenas issue aberta criada por membro da equipe e assume a primeira captura em `Working`
-- `Developer` trabalha somente na propria branch da tarefa, contendo o numero da issue, e nao encerra o fluxo com PR no caminho tecnico normal
-- `Ready` e apenas a fila de entrada; `Working` e o estado de ownership ativo ate o trio `Developer` -> `Q.A.` -> `Security` terminar
+- `Developer` trabalha somente na propria branch da tarefa, contendo o numero da issue, entrega em `staging` sem PR e nao encerra o fluxo com PR
+- `Ready` e apenas a fila de entrada; `Working` e o estado de ownership ativo ate o trio `Developer` -> `QA` -> `Security` terminar
 - a fase de revisao compartilha a mesma task e deve carregar sempre as duas labels de entrada `agent:qa` e `agent:security` enquanto ainda nao houver decisao estruturada
 - se a task entrar com apenas uma dessas labels e ainda nao existir `qa:accepted`, `qa:rejected`, `security:accepted` ou `security:rejected`, a sincronizacao de fluxo deve completar a segunda label antes da revisao
 - `Security` e `QA` atuam sobre a mesma task pela label `agent:*` esperada para o proprio papel, sem depender de coluna
-- `Q.A.` so registra `qa:accepted` ou `qa:rejected`, copia o checklist de QA para a task e remove `agent:qa`
+- `QA` so registra `qa:accepted` ou `qa:rejected`, copia o checklist de QA para a task e remove `agent:qa`
 - `Security` so registra `security:accepted` ou `security:rejected`, copia o checklist de Security para a task e remove `agent:security`
 - na fila do `Developer`, bugs entram primeiro, depois tasks recusadas por `QA` ou `Security`, depois `enhancement` e por fim `feature`
 - quando houver recusa, o runner deve comentar a issue com orientacao direta, checklist nao atendido e motivo objetivo para a proxima execucao do responsavel atual
 - `Security` e `QA` nao aprovam por review do GitHub e nao finalizam task
-- quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, `DevOps` assume a tarefa para preparar a release tecnica e aguarda a aprovacao humana em `Deploy`
+- quando `qa:accepted` e `security:accepted` coexistirem sem novas solicitacoes nos comentarios, `DevOps` assume a tarefa para preparar a release tecnica / RC e, no ponto certo, abrir a PR `staging` -> `master`
 - depois da publicacao, a tarefa segue para `Documentation` com as tags de documentacao apropriadas para iniciar a trilha documental
 - nenhum agent fecha task; fechamento em `closed` continua pertencendo apenas a humanos
 - `Ready` continua sendo a fila oficial de entrada para `Developer`, enquanto `QA` e `Security` dependem da label `agent:*` esperada

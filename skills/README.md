@@ -34,10 +34,14 @@ As skills compartilhadas incluem, entre outras:
 - `shared/operational-source-of-truth.md`
 - `shared/log-investigation-evidence.md`
 - `shared/github-issue-handling.md`
+- `shared/github-flow.md`
 - `shared/operational-github-workflow.md`
 - `shared/email-reading-fallback.md`
 - `shared/task-completion-criteria.md`
+- `shared/master-publication.md`
 
 ## Nota
 
 Os materiais detalhados de execucao continuam em `automation/` e `automate/`. As skills organizam a governanca e o conhecimento reutilizavel por cima dessa base.
+
+O fluxo de branches e entrega (GitHub Flow adaptado) vive em `shared/github-flow.md`: branch `task-{id}` a partir de `master`, entrega em `staging` sem PR do Developer, e unica PR formal `staging` -> `master` pelo DevOps no RC/deploy.

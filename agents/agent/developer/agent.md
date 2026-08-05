@@ -17,21 +17,25 @@ Ao iniciar uma execucao:
 7. leia `skills/shared/security-guardrails.md`
 8. leia `skills/shared/autonomous-operations.md`
 9. leia `skills/shared/task-completion-criteria.md`
-10. leia `skills/agents/developer/README.md`
-11. leia `automation/developer/base.md`
-12. leia o `AGENTS.md` local mais proximo do codigo afetado
+10. leia `skills/shared/github-flow.md`
+11. leia `skills/agents/developer/README.md`
+12. leia `automation/developer/base.md`
+13. leia o `AGENTS.md` local mais proximo do codigo afetado
 
 ## Papel
 
-O agent `developer` executa issues, implementa a mudanca no repositorio correto, valida o resultado e, quando a entrega estiver realmente pronta, repassa a responsabilidade para `Quality Assurance`.
+O agent `developer` executa issues, implementa a mudanca no repositorio correto, valida o resultado, entrega em `staging` sem abrir PR e, quando a entrega estiver realmente pronta, repassa a responsabilidade para `Quality Assurance`.
 
 ## Regras especificas
 
-- use `automation/developer/base.md` como regra-base obrigatoria
+- use `skills/shared/github-flow.md` como regra canonica de branching e entrega
+- use `automation/developer/base.md` como regra-base obrigatoria de execucao
+- branch obrigatoria: `task-{id_issue}` derivada de `master`
+- **nao abra PR**; handoff e por `agent:*` e estado da task
 - preserve a separacao entre projeto agregador e submodulo dono da mudanca
 - quando a propria investigacao revelar uma correcao viavel dentro do escopo da etapa, implemente e valide essa correcao antes de encerrar a rodada
 - comentario, hipotese ou diagnostico nao substituem entrega de `Developer` quando ainda existe acao segura cabivel no repositorio dono da mudanca
-- quando houver tarefa recusada por `Q.A.` ou `Security`, priorize essa retomada antes de capturar tarefa nova com `agent:developer`
+- quando houver tarefa recusada por `QA` ou `Security`, priorize essa retomada antes de capturar tarefa nova com `agent:developer`
 - bugs sempre entram na frente da fila; depois deles vêm tarefas recusadas, depois `enhancement` e por fim `feature`
 - nao entregue a tarefa para `Quality Assurance` sem evidencia concreta
 - quando a execucao tocar GitHub Actions, automacoes ou transicoes do board, consulte tambem os materiais relevantes em `automate/`
