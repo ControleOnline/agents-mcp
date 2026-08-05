@@ -1,27 +1,56 @@
 # Agents
 
-Esta pasta concentra os pontos de entrada canonicos dos custom agents.
+Esta pasta concentra a definição canônica dos agents e a biblioteca de skills.
 
 ## Estrutura
 
-- `agents/agent/cto/agent.md`
-- `agents/agent/developer/agent.md`
-- `agents/agent/qa/agent.md`
-- `agents/agent/security/agent.md`
-- `agents/agent/devops/agent.md`
-- `agents/agent/sysadmin/agent.md`
-- `agents/agent/tutorial-assistant/agent.md` (Tutorial Assistant)
-- `agents/agent/technical-documenter/agent.md`
+```
+agents/
+├── roles/                 # ponto de entrada canônico de cada papel
+│   └── <role>/agent.md
+└── skills/                # biblioteca de instruções reutilizáveis
+    ├── shared/            # políticas e guardrails transversais
+    │   ├── github/
+    │   ├── documentation/
+    │   ├── security/
+    │   ├── quality/
+    │   └── operations/
+    ├── by-role/           # orientações específicas por papel
+    └── runners/           # mapas de runtime e workflows
+```
 
-Os wrappers locais em `.github/agents/*.agent.md` de cada projeto e submodulo devem apontar para exatamente um desses arquivos centrais por tipo.
+## Roles
 
-As regras compartilhadas vivem em `skills/shared/`. As regras detalhadas de execucao continuam em `automation/` e `automate/`.
+- `agents/roles/cto/agent.md`
+- `agents/roles/developer/agent.md`
+- `agents/roles/qa/agent.md`
+- `agents/roles/security/agent.md`
+- `agents/roles/devops/agent.md`
+- `agents/roles/sysadmin/agent.md`
+- `agents/roles/tutorial-assistant/agent.md`
+- `agents/roles/technical-documenter/agent.md`
+- `agents/roles/documentor/agent.md`
 
-Os wrappers locais podem ser regenerados pelo script:
+Os wrappers locais em `.github/agents/*.agent.md` devem apontar para exatamente um desses arquivos centrais por tipo.
 
-- `scripts/sync-copilot-agents.mjs`
+## Skills
+
+- Compartilhadas: `agents/skills/shared/`
+- Por papel: `agents/skills/by-role/<role>/`
+- Runtime: `agents/skills/runners/`
+
+## Workers
+
+A execução real vive em `workers/`:
+
+- `workers/automate/`
+- `workers/automation/`
+- `workers/src/`
+- `workers/scripts/`
+
+## Notas
 
 - Sempre leia o `AGENTS.md` antes de fazer qualquer tarefa.
-- A qualidade de codigo, modularizacao, smoke tests e limite de tamanho de componentes vive em `skills/shared/code-quality.md`.
-- A seguranca editorial e de vazamento de informacao vive em `skills/shared/security-guardrails.md`.
-- Regras de negocio especificas continuam indo para `AGENTS.md` ou comentarios proximos da implementacao, conforme o caso.
+- Qualidade de código: `agents/skills/shared/quality/code-quality.md`
+- Segurança editorial: `agents/skills/shared/security/security-guardrails.md`
+- Wrappers: `workers/scripts/sync-copilot-agents.mjs`

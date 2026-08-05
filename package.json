@@ -4,15 +4,15 @@
   "private": true,
   "type": "module",
   "description": "ControleOnline orchestration repository for GitHub agents, runners, and project automation.",
-  "main": "src/index.js",
+  "main": "workers/src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "developer": "node src/developer-runner.js",
-    "security": "node src/security-runner.js",
-    "qa": "node src/qa-runner.js",
-    "devops": "node src/devops-runner.js",
-    "flow-sync": "node src/agent-flow-sync-runner.js",
-    "cto": "node src/cto-runner.js",
-    "direct-push-ingest": "node src/direct-push-ingest-runner.js"
+    "start": "node workers/src/index.js",
+    "developer": "node workers/src/developer-runner.js",
+    "security": "node workers/src/security-runner.js",
+    "qa": "node workers/src/qa-runner.js",
+    "devops": "node workers/src/devops-runner.js",
+    "flow-sync": "node workers/src/agent-flow-sync-runner.js",
+    "cto": "node workers/src/cto-runner.js",
+    "direct-push-ingest": "node workers/src/direct-push-ingest-runner.js"
   }
 }
