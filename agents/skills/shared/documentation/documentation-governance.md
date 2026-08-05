@@ -23,6 +23,14 @@ O `technical-documenter` **cria e atualiza** a wiki tecnica dos repositorios afe
 - Issues `closed` sem `agent:technical-documenter:done` tambem sao elegiveis.
 - Se a tarefa tocou multiplos repositorios, documentar a wiki pertinente em **todos** eles.
 
+### Navegacao humana e links cruzados
+
+- Toda pagina nova deve ser alcancavel a partir da **Home** da wiki do modulo, em **categoria** ou indice clicavel.
+- O `AGENTS.md` do modulo e ponte curta para Home → categorias → paginas → modulos relacionados.
+- **Links entre repositorios/wikis do ecossistema sao preferiveis** e, em fluxo multi-modulo, obrigatorios no minimo (pagina canonica + Homes dos afetados).
+- Fluxos transversais devem aparecer tambem na Home de `app-community` e/ou `api-community` quando couber.
+- Interpretar visoes de app (`APP_TYPE` / `MODOS_OPERACAO.md`) ao descrever o papel de cada modulo.
+
 ## Tutorial Assistant
 
 Labels de aprovacao da trilha publica:
