@@ -1,54 +1,30 @@
-# QA Routing Rules
+# Project Status (QA)
 
-## Fonte de verdade
+## Escopo
 
-A leitura operacional de `QA` agora acontece pela PR aberta do `Developer`, nao por coluna do projeto.
+A leitura operacional de `QA` acontece pela **task/issue** e pela evidencia da entrega (commits na `task-{id}` e merge em `staging`), nao por coluna do projeto e nao por PR do Developer.
 
-## Entrada de QA
+PR do Developer **nao existe** no fluxo normal. Ver `skills/shared/github-flow.md`.
 
-A automacao de `QA` so pode capturar uma PR quando:
+## Captura
 
-- a issue vinculada continua aberta
-- a issue foi criada por membro da equipe
-- existe PR aberta do `Developer` para `staging`
-- essa PR ainda nao recebeu `qa:accepted` nem `qa:rejected`
+A automacao de `QA` so pode capturar uma task quando:
 
-## Saidas validas
+- a issue esta aberta
+- existe label `agent:qa` (ou a fase compartilhada de revisao equivalente)
+- ha evidencia de entrega na task branch e/ou merge em `staging`
 
-As unicas saidas validas ao final da revisao de `QA` sao:
-
-- `qa:accepted`
-- `qa:rejected`
-
-## Regras de transicao
-
-### `QA` -> `qa:rejected`
+## Desvios
 
 Use quando houver qualquer desvio operacional objetivo, incluindo:
 
-- PR fora de `staging`
+- entrega sem merge em `staging`
 - branch da tarefa sem o numero da issue
-- uso direto de branch proibida
-- PR em draft
-- PR com conflito de merge
+- uso direto de branch proibida (`master`, `main`, `staging`)
+- tentativa de PR do Developer no fluxo normal
 
-Ao recusar:
+## Decisao
 
-- registre `qa:rejected` na PR
-- comente a issue de forma direta para orientar a proxima execucao do `Developer`
-
-### `QA` -> `qa:accepted`
-
-Use quando a PR estiver operacionalmente valida para seguir no fluxo.
-
-Ao aceitar:
-
-- registre `qa:accepted` na PR
-- nao publique review de aprovacao no GitHub
-
-## Restricoes
-
-- `QA` nao aprova PR no GitHub Review
-- `QA` nao move task no projeto
-- `QA` nao finaliza task
-- somente `DevOps` pode mover a task para `In Review` quando a release e a PR para `master` estiverem prontas
+- registre apenas `qa:accepted` ou `qa:rejected` na task
+- comente na issue com motivo objetivo
+- nao abra PR, nao aprove PR de produto e nao finalize task

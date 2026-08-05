@@ -1,46 +1,29 @@
-# Security Pull Request Review Rules
+# Review Rules (Security)
 
 ## Escopo
 
-Estas regras definem como `Security` deve agir sobre PRs do `Developer`, sem alterar coluna do projeto e mantendo o checklist de aprovacao copiado na task.
+No fluxo normal **nao ha PR do Developer**. A revisao de `Security` e sobre a task/issue e a evidencia mergeada em `staging`.
 
-## Regras de aceite
+A unica PR formal do fluxo e `staging` -> `master`, aberta pelo `DevOps` no RC. Essa PR de promocao nao e a superficie principal de revisao de conteudo de `Security`.
 
-Quando a PR estiver operacionalmente valida para a etapa de seguranca, `Security` deve:
+Fonte: `skills/shared/github-flow.md`.
 
-- registrar `security:accepted` na propria PR
-- nao publicar `APPROVE` no GitHub Review
-- deixar a conferencia final humana para `In Review`
-- copiar o checklist de Security para a issue vinculada
+## Quando a entrega estiver operacionalmente valida, `Security` deve
 
-## Regras de recusa
+- aplicar o checklist canonico
+- registrar `security:accepted` ou `security:rejected` na task
+- comentar na issue com evidencia e motivo
+- remover `agent:security` apos a decisao
 
-Quando a PR estiver fora da politica operacional, `Security` deve:
+## Quando a entrega estiver fora da politica, `Security` deve
 
-- registrar `security:rejected` na propria PR
-- comentar a issue de forma direta e explicativa
-- nao publicar `REQUEST_CHANGES` no GitHub Review
+- registrar `security:rejected`
+- comentar o desvio (branch incorreta, ausencia de merge em `staging`, etc.)
+- orientar o `Developer` a corrigir na `task-{id}` e refazer o **merge** em `staging`
 
-Motivos minimos de recusa operacional:
+## Restricoes
 
-- PR nao aponta para `staging`
-- branch do developer nao contem o numero da issue
-- branch proibida foi usada diretamente
-- PR esta em draft
-- PR esta com conflito de merge
-
-## Comentario obrigatorio na issue
-
-Ao recusar, o comentario deve informar:
-
-- qual PR foi recusada
-- por que ela foi recusada
-- o checklist nao atendido
-- que a proxima execucao do `Developer` deve corrigir a tarefa e seguir com nova PR para `staging`
-
-## Restricao de ownership
-
-- `Security` nao aprova PR no GitHub Review
 - `Security` nao finaliza task
-- somente `DevOps` move a task para `In Review` depois de criar a release e abrir a PR para `master`
-- `Security` nao mexe na coluna do projeto
+- `Security` nao abre PR
+- `Security` nao mexe na coluna do projeto como substituto da decisao por label
+- somente `DevOps` abre a PR para `master` depois do RC

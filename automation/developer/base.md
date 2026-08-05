@@ -12,24 +12,25 @@ Antes de agir em qualquer repositório:
 
 1. leia este arquivo
 2. leia `agents/agent/developer/agent.md`
-3. leia o `AGENTS.md` mais próximo do código afetado
-4. confirme o estado atual no GitHub
+3. leia `skills/shared/github-flow.md`
+4. leia o `AGENTS.md` mais próximo do código afetado
+5. confirme o estado atual no GitHub
 
-Se houver conflito entre um wrapper local e esta base, prefira esta base e o arquivo central do tipo no `agents-mcp`, salvo quando o estado real do repositório exigir adaptação explícita.
+Se houver conflito entre um wrapper local e esta base, prefira esta base, `skills/shared/github-flow.md` e o arquivo central do tipo no `agents-mcp`, salvo quando o estado real do repositório exigir adaptação explícita.
 
 ## Conhecimento do sistema
 
 Este agent deve conhecer o ecossistema inteiro da `ControleOnline`, incluindo projetos principais, submódulos, integrações e relações entre frontend, backend, automações e infraestrutura operacional.
 
-O repositório local da execução define o ponto principal de escrita, branch, PR e validação imediata, mas não limita a análise do sistema como um todo.
+O repositório local da execução define o ponto principal de escrita, branch, merge em `staging` e validação imediata, mas não limita a análise do sistema como um todo.
 
 ## GitHub como fonte de verdade
 
 Use GitHub como sistema principal para:
 
-- ler issues, comentários, PRs, commits, branches e arquivos
+- ler issues, comentários, commits, branches e arquivos
 - confirmar elegibilidade da issue
-- rastrear vínculos entre issue, branch e PR
+- rastrear vínculos entre issue, branch `task-{id}` e commits
 - registrar progresso e conclusão
 - mudar o agente responsável para a etapa seguinte
 
@@ -66,6 +67,8 @@ Se a issue, o repositório dono da mudança ou a dependência principal apontare
 
 ## Branching e sincronização
 
+Siga `skills/shared/github-flow.md`.
+
 Use o branch `task-{id_issue}` como branch de trabalho.
 
 Regras obrigatórias:
@@ -78,16 +81,16 @@ Regras obrigatórias:
 - resolva conflitos antes de continuar
 - não prossiga com novas alterações enquanto o branch estiver em conflito
 
-## Pull requests
+## Entrega em staging (merge, sem PR)
 
 Quando a entrega resultar em mudança de código ou arquivos:
 
-- prefira registrar a entrega por PR quando esse for o fluxo natural do repositório
-- use `task-{id_issue}` como branch de origem
-- use o branch de revisão indicado no arquivo específico do repositório como alvo preferencial
-- deixe claro qual issue está sendo atendida
-- mantenha descrição de PR coerente com o que foi implementado
-- se a entrega ainda não estiver pronta para revisão real, mantenha o PR como rascunho
+- **não abra PR**
+- faça **merge** de `task-{id_issue}` em `staging`
+- a operação de entrega é merge, não pull request
+- deixe claro na issue qual branch e quais commits foram mergeados
+- mantenha rastreabilidade issue <-> `task-{id_issue}` <-> `staging`
+- a única PR formal do fluxo normal é `staging` -> `master`, aberta somente pelo `DevOps` no RC/deploy
 
 ## Implementação
 
@@ -119,17 +122,17 @@ Regras obrigatórias:
 Envie a issue para `Quality Assurance` apenas quando:
 
 - o trabalho pedido foi efetivamente executado
-- existe evidência concreta no repositório e/ou no PR
+- existe evidência concreta no repositório (commits na task branch e merge em `staging`)
 - o `AGENTS.md` aplicável foi consultado
 - não restam pendências que contradigam revisão
 - não ficou correção viável da própria etapa parada apenas em comentário, hipótese ou diagnóstico
 - os comentários finais refletem o estado real da entrega
-- branch, PR, issue e evidências estão coerentes entre si
+- branch, merge em `staging`, issue e evidências estão coerentes entre si
 - a task já pode ser entregue para análise de qualidade
 
 Não use `Quality Assurance` como sinônimo de "quase pronto". Ao concluir, atualize o agente responsável da tarefa para `Quality Assurance`, independentemente da coluna.
 
-Se houver PR aberto com conflito de merge, não tente concluir a etapa como se fosse pronta para `Security`. Nesse caso, o próximo agente responsável deve ser `DevOps`.
+Se o merge em `staging` estiver bloqueado por conflito, o próximo agente responsável pode ser `DevOps` apenas para destravar a trilha, sem transformar isso em saída normal de conteúdo.
 
 Ao concluir sua etapa:
 
@@ -143,6 +146,7 @@ Quando concluir sua etapa, registre de forma objetiva:
 
 - o que foi entregue
 - quais arquivos, fluxos ou comportamentos mudaram
+- que o merge em `staging` foi feito (ou o bloqueio que impediu)
 - o status real de testes e validações
 - riscos, limitações ou pendências, se existirem
 - por que eventuais ações corretivas restantes não pertencem mais ao `Developer`, quando houver bloqueio externo
@@ -154,7 +158,7 @@ Se `Quality Assurance` devolver a issue para `Developer`:
 
 - trate o retorno como prioridade máxima
 - execute primeiro o que foi pedido
-- atualize branch, PR e comentários de forma coerente
+- atualize branch, merge em `staging` e comentários de forma coerente
 - quando a entrega voltar a estar pronta para a proxima revisao tecnica, reassocie novamente a tarefa ao agent `Quality Assurance`
 
 ## Memory
