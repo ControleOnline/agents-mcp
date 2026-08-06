@@ -72,9 +72,12 @@ Ao consultar ou operar no GitHub, os agents podem usar qualquer busca, API, list
 Fonte completa: `agents/skills/shared/github/github-flow.md`.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
-- `Developer` entrega em `staging` por **merge** da task branch (sem PR)
-- `QA` e `Security` decidem por labels na task; nao abrem PR
-- unica PR formal do fluxo normal: `staging` -> `master`, aberta **somente pelo DevOps** no RC/deploy
+- `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
+- `QA` e `Security` decidem por labels na task; evidencia em `dev`; nao abrem PR
+- `DevOps` empacota **todas** as tasks com `qa:accepted` + `security:accepted` em um **RC semver**, coloca o pacote em **`staging`** (pai + submodulos), cria **task pai de deploy** com as demais como **subtasks**, move pai e filhas para **`In Review`**
+- **um RC por vez**; freeze — nenhuma task nova entra no RC aberto; nao ha novo RC ate publicar o atual
+- humano confere staging e move a task pai para **`Deploy`**
+- `DevOps` mescla **`staging` → `master`** e move para **`Done`**
 
 ## Ownership operacional
 
@@ -90,16 +93,12 @@ Regras obrigatorias:
 - nenhuma task deve ser atribuida a pessoas, bots ou fallbacks tecnicos como mecanismo de captura de trabalho
 - assignees do GitHub nao participam do roteamento operacional e devem ser removidos quando aparecerem em tasks da fila
 - `Developer` seleciona trabalho apenas quando a issue ainda esta aberta, foi criada por membro da equipe e nao existe pendencia ativa de decisao por `QA` e `Security`
-- coluna do projeto, assignee e labels de etapa nao participam mais da leitura do backlog de `Developer`, `QA` e `Security`
-- `Developer` so pode trabalhar na propria branch da tarefa (`task-{id_issue}`) e entrega em `staging` por **merge**, sem abrir PR
-- `Developer` nao deve mexer diretamente em `master`, `main`, `staging` ou qualquer outra branch fora da branch da tarefa
-- `Security` analisa a entrega do developer e registra apenas `security:accepted` ou `security:rejected` na task
-- `QA` analisa a entrega do developer e registra apenas `qa:accepted` ou `qa:rejected` na task
-- quando `Security` ou `QA` recusarem, o runner deve comentar de forma direta e explicativa na issue para orientar a proxima execucao do `Developer`
-- `Security` e `QA` nao aprovam por review formal de PR de produto e nao finalizam task
-- somente o `DevOps` abre a PR `staging` -> `master` no ponto do RC e conduz o deploy apos aprovacao humana
-- nenhum outro agent pode finalizar a tarefa ou promover para `master`
-- agents nao fecham tasks; so humanos podem mover uma issue para `closed`
+- `Developer` so trabalha na `task-{id_issue}` e entrega em **`dev`** por merge, sem abrir PR
+- `Developer` nao mexe diretamente em `master`, `main`, `dev`, `staging`
+- `Security` e `QA` registram apenas labels de aceite/recusa na task
+- quando `Security` ou `QA` recusarem, comentam de forma objetiva para o `Developer`
+- somente o `DevOps` monta RC em `staging`, cria a task pai de deploy e promove `staging` → `master` apos coluna `Deploy`
+- agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
 
 ## Fronteira do CTO
 
@@ -107,4 +106,4 @@ O CTO supervisiona o ecossistema e corrige diretamente o `agents-mcp` quando hou
 
 O CTO nao deve substituir a execucao normal de `Developer`, `Security`, `Quality Assurance`, `DevOps` ou `Sysadmin` quando a trilha ja pertence claramente a um desses agents.
 
-Quando `qa:accepted` e `security:accepted` coexistirem, a trilha de release/RC e promocao `staging` -> `master` pertence ao `DevOps`, conforme `agents/skills/shared/github/github-flow.md` e `agents/skills/shared/github/master-publication.md`.
+Quando `qa:accepted` e `security:accepted` coexistirem, a trilha de RC/`staging`/`master` pertence ao `DevOps`, conforme `agents/skills/shared/github/github-flow.md` e `agents/skills/shared/github/master-publication.md`.
