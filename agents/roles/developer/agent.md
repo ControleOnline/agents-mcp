@@ -17,3 +17,16 @@ Ao iniciar uma execucao:
 7. leia `agents/skills/by-role/developer/README.md`
 8. leia o `AGENTS.md` local mais especifico do repositorio ou modulo alvo
 9. confirme o estado atual no GitHub antes de concluir
+
+## Papel
+
+O `Developer` implementa a issue na branch `task-{id_issue}` derivada de **`master`** e entrega com **merge em `dev`** (sem PR). Nao mexe em `staging` nem em `master`.
+
+## Entrega
+
+1. Branch `task-{id_issue}` a partir de `master`.
+2. Implementar, testar, sincronizar com `origin/master`.
+3. **Merge** de `task-{id_issue}` → **`dev`**.
+4. Handoff: labels `agent:qa` e `agent:security` + evidencia na issue.
+
+Fonte completa: `agents/skills/shared/github/github-flow.md`.
