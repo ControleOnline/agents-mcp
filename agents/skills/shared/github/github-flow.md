@@ -28,13 +28,30 @@ master
                                           └─ DevOps merge staging → master → coluna Done
 ```
 
+## Etapas ja concluidas (pular com justificativa)
+
+Se o estado real do GitHub mostrar que o passo da etapa **ja foi feito** (por qualquer motivo — merge manual, reexecucao, trabalho previo, hotfix operacional), o agent **nao precisa refazer** o passo. Deve:
+
+1. **Confirmar** a evidencia no Git (commits, merge-base, branch atualizada, labels, coluna).
+2. **Pular** apenas o que ja estiver concluido.
+3. **Avancar** a task para o **proximo estagio** do fluxo (labels `agent:*`, handoff, coluna quando couber ao papel).
+4. **Comentar na issue** com justificativa objetiva: o que ja estava feito, como foi verificado, e qual estagio passa a valer.
+
+Exemplos:
+
+- `task-{id}` ja mergeada em `dev` → Developer nao re-mergeia; aplica `agent:qa` + `agent:security` e comenta a justificativa.
+- Conteudo do RC ja esta em `staging` nos repos do pacote → DevOps nao reconstrói o mesmo delta; segue task pai / coluna `In Review` (ou o proximo passo faltante) com comentario.
+- `staging` ja esta em `master` para o RC da task pai em `Deploy` → DevOps nao re-mergeia; move para `Done` com comentario da evidencia.
+
+**Nao** pule etapas por intuicao ou titulo da issue. So com evidencia verificavel. **Nao** use o atalho para omitir QA/Security quando a entrega ainda nao foi revisada por labels.
+
 ## Developer
 
 1. Captura issue elegivel.
 2. Cria ou reutiliza `task-{id_issue}` **a partir de `master`** atualizado.
 3. Implementa e valida na branch da tarefa.
 4. Sincroniza com `origin/master` antes de continuar/encerrar.
-5. **Faz merge de `task-{id_issue}` em `dev`** (sem abrir PR).
+5. **Faz merge de `task-{id_issue}` em `dev`** (sem abrir PR) — ou **pula** se ja estiver mergeada (com comentario de justificativa).
 6. Registra evidencia na issue e handoff por labels (`agent:qa` e `agent:security`).
 
 ### Proibicoes do Developer
@@ -75,7 +92,7 @@ master
 
 1. Coletar **todas** as tasks elegiveis no momento da abertura do RC.
 2. Definir **versionamento semantico** do pacote (ex.: `vX.Y.Z` / tag RC coerente com o monorepo/repos).
-3. Consolidar as mudancas aprovadas (vindas de `dev` / commits das tasks) no branch **`staging`**.
+3. Consolidar as mudancas aprovadas (vindas de `dev` / commits das tasks) no branch **`staging`** — pule consolidacao ja presente com evidencia + comentario.
 4. Fazer isso nos **repositorios pai e nos submodulos** afetados (ordem: submodulos primeiro, depois pai; pins/gitlinks coerentes).
 5. O push/atualizacao de `staging` **dispara o deploy** do ambiente de staging para **conferencia humana**.
 
@@ -92,9 +109,10 @@ master
 1. Humano confere o ambiente de staging.
 2. Quando aprovar o pacote, move a task pai para a coluna **`Deploy`**.
 3. Em `Deploy`, o DevOps:
-   - **mescla o pacote (`staging`) em `master`** (pai + submodulos na ordem correta);
+   - **mescla o pacote (`staging`) em `master`** (pai + submodulos na ordem correta) — ou confirma que ja esta em `master` e avanca;
    - confirma push remoto e tags/versao quando aplicavel;
-   - move a task pai (e filhas, conforme governanca do board) para a coluna **`Done`**.
+   - move a task pai (e filhas, conforme governanca do board) para a coluna **`Done`**;
+   - se pulou merge por ja estar feito, **comente a justificativa** na task pai.
 
 Detalhes de publicacao: `agents/skills/shared/github/master-publication.md`.
 
@@ -117,6 +135,9 @@ Detalhes de publicacao: `agents/skills/shared/github/master-publication.md`.
 | Criar task pai RC + subtasks | nao | nao | nao | **sim** |
 | Merge `staging` → `master` | **nao** | **nao** | **nao** | **sim** (apos coluna Deploy) |
 | Deploy / publicacao | nao | nao | nao | sim |
+| Pular passo ja evidenciado + comentar | sim | sim* | sim* | sim |
+
+\*QA/Security podem reconhecer merge ja feito em `dev` como evidencia, mas **nao** pulam a propria decisao de aceite/recusa sem analisar.
 
 ## Relacao com outras skills
 
@@ -131,4 +152,6 @@ Detalhes de publicacao: `agents/skills/shared/github/master-publication.md`.
 - nao entregue Developer em `staging` (destino e `dev`)
 - nao promova para `master` sem task pai em coluna `Deploy` e RC freezeado
 - nao abra segundo RC em paralelo
+- nao refaca merge/passo ja concluido sem necessidade; documente o pulo com comentario
+- nao pule etapa sem evidencia verificavel no GitHub
 - nao feche issue; `closed`/Done operacional segue o board e humanos conforme governanca
