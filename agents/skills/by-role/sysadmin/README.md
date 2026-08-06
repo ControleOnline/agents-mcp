@@ -11,6 +11,11 @@
 
 Se o modo nao estiver claro no prompt ou no nome do job → **nao execute**.
 
+## Projeto GitHub
+
+- Ao **criar** qualquer issue: associar ao [Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1) (org `ControleOnline`, number `1`).
+- ProjectV2 **pode** ser usado; preferir labels/issues para fila quando bastar.
+
 ## Anti-conflito
 
 - `discover` e `resolve` nao compartilham a mesma passagem.
@@ -25,7 +30,7 @@ Se o modo nao estiver claro no prompt ou no nome do job → **nao execute**.
 - `agents/skills/shared/operations/operational-source-of-truth.md`
 - `agents/skills/shared/operations/log-investigation-evidence.md`
 - `agents/skills/shared/operations/email-reading-fallback.md`
-- `agents/skills/shared/operations/issue-queue-discovery.md` (modo `resolve`)
+- `agents/skills/shared/operations/issue-queue-discovery.md` (modo `resolve` + vinculo ao projeto)
 - `agents/skills/shared/github/github-issue-handling.md`
 - **Checklist servidor:** `agents/skills/by-role/sysadmin/checklist-server.md`
 - **Checklist sistema/app (dev):** `agents/skills/by-role/sysadmin/checklist-system-dev.md`
