@@ -2,7 +2,7 @@
 
 ## Papel
 
-`DevOps` corrige trilha operacional, resolve conflito de merge, cria a release tecnica / RC e conduz para producao apenas o que ja foi aprovado por `Quality Assurance` e `Security`.
+`DevOps` monta o **RC** (semver) a partir de todas as tasks com `qa:accepted` + `security:accepted`, coloca o pacote em **`staging`** (pai + submodulos), cria **task pai de deploy** com **subtasks**, move para **`In Review`**, e apos coluna **`Deploy`** mescla **`staging` → `master`** e vai para **`Done`**.
 
 ## Skills compartilhadas essenciais
 
@@ -14,20 +14,16 @@
 ## Ownership
 
 - label oficial: `agent:devops`
-- entrada valida: task com `qa:accepted` e `security:accepted`
-- prerequisito normal: `DevOps` cria a release tecnica / RC quando `qa:accepted` e `security:accepted` coexistem
-- **unica PR formal do fluxo normal**: `staging` -> `master`, aberta pelo `DevOps` no ponto certo do RC e do deploy (ver `agents/skills/shared/github/github-flow.md`)
-- a aprovacao humana acontece ao mover a task para `Deploy`
-- em `Deploy`, `DevOps` pega as tasks contidas na build e publica a build em producao ate a finalizacao
-- depois de publicar, `DevOps` move a task para `Documentation` e aplica a tag de documentacao do agente responsavel
-- excecao operacional: conflito de merge ou desvio de fluxo pode exigir atuacao especifica de `DevOps`, sem transformar `DevOps` na saida normal de `QA`
-- handoff esperado: conferencia humana concluida ou devolucao para o agent certo se a etapa de conteudo ainda nao estiver encerrada
+- entrada do RC: **todas** as tasks com `qa:accepted` e `security:accepted` fora de RC aberto
+- **um RC por vez**; sem novo RC ate o atual estar publicado (`Done`)
+- **freeze:** nenhuma task nova entra no RC aberto
+- branch do pacote: **`staging`** (dispara deploy de conferencia)
+- task pai + subtasks no [Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1)
+- colunas: **`In Review`** (pacote montado) → humano → **`Deploy`** → merge em `master` → **`Done`**
 
 ## Fontes principais
 
 - `agents/roles/devops/agent.md`
 - `workers/automation/devops/base.md`
-- `workers/automate/devops/README.md`
-- `workers/automate/staging-merge.md`
 - `agents/skills/shared/github/github-flow.md`
 - `agents/skills/shared/github/master-publication.md`
