@@ -2,11 +2,9 @@
 
 ## Escopo
 
-No fluxo normal **nao ha PR do Developer**. A revisao de `QA` e sobre a task/issue e a evidencia mergeada em `staging`.
+No fluxo normal **nao ha PR do Developer**. A revisao de `QA` e sobre a task/issue e a evidencia mergeada em **`dev`**.
 
-A unica PR formal do fluxo e `staging` -> `master`, aberta pelo `DevOps` no RC. Essa PR de promocao nao e a superficie principal de revisao de conteudo de `QA`.
-
-Fonte: `agents/skills/shared/github/github-flow.md`.
+`staging` e exclusivo do pacote RC do `DevOps`. Fonte: `agents/skills/shared/github/github-flow.md`.
 
 ## Quando a entrega estiver operacionalmente valida, `QA` deve
 
@@ -18,12 +16,11 @@ Fonte: `agents/skills/shared/github/github-flow.md`.
 ## Quando a entrega estiver fora da politica, `QA` deve
 
 - registrar `qa:rejected`
-- comentar o desvio (branch incorreta, ausencia de merge em `staging`, etc.)
-- orientar o `Developer` a corrigir na `task-{id}` e refazer o **merge** em `staging`
+- comentar o desvio (branch incorreta, ausencia de merge em **`dev`**, etc.)
+- orientar o `Developer` a corrigir na `task-{id}` e refazer o **merge em `dev`**
 
 ## Restricoes
 
 - `QA` nao finaliza task
 - `QA` nao abre PR
-- `QA` nao mexe na coluna do projeto como substituto da decisao por label
-- somente `DevOps` abre a PR para `master` depois do RC
+- `QA` nao exige merge em `staging` do Developer
