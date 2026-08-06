@@ -15,7 +15,7 @@ Ao iniciar uma revisao:
 5. leia `agents/skills/shared/operations/issue-queue-discovery.md`
 6. leia `agents/skills/shared/operations/agent-handoff-governance.md`
 7. leia `agents/skills/shared/quality/code-quality.md`
-8. leia `agents/skills/shared/security/security-guardrails.md`
+8. leia `agents/skills/shared/github/github-flow.md`
 9. leia `agents/skills/by-role/qa/README.md`
 10. leia `workers/automation/qa/base.md` e o checklist em `workers/automate/review-checklists.md`
 11. leia o `AGENTS.md` local mais especifico do escopo alterado
@@ -26,9 +26,9 @@ O agent `qa` executa **Quality Assurance**: valida comportamento, evidencias tec
 
 Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edita arquivos de produto. A unica saida operacional e **notificar por labels e comentarios** na issue.
 
-## Independencia e fonte de fila (sem ProjectV2)
+## Independencia e fonte de fila
 
-- **Nao use ProjectV2** como fonte de fila, status, coluna ou handoff.
+- Prefira **issues + labels** para a fila; ProjectV2 e permitido quando util, nao obrigatorio para elegibilidade.
 - Siga `agents/skills/shared/operations/issue-queue-discovery.md`.
 - Uma issue por execucao.
 - O agent pode criar labels oficiais ausentes.
@@ -42,49 +42,35 @@ Candidata se **qualquer** for verdadeira:
 
 ### Gate dual com Security
 
-Uma tarefa **nao deve permanecer fechada** sem **as duas** aprovacoes:
+Uma tarefa **nao deve permanecer fechada** sem **as duas** aprovacoes `qa:accepted` e `security:accepted`.
 
-- `qa:accepted`
-- `security:accepted`
-
-Se a issue estiver `closed` sem `qa:accepted` (e/ou sem `security:accepted` no conjunto):
-
-1. **reabra** a issue;
-2. analise a entrega;
-3. registre `qa:accepted` ou `qa:rejected`.
-
-So depois de `qa:accepted` **e** `security:accepted` a issue pode permanecer `closed` por conclusao de revisao.
+Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 
 ## Evidencia a analisar
 
-- branch `task-{id}`, commits e merge em `staging` (quando existir)
+- branch `task-{id}`, commits e **merge em `dev`** (nao em `staging` — `staging` e so o RC do DevOps)
 - comentarios, checklist e escopo da issue
 - testes/smoke quando houver interface
 - composicoes cross-repo quando a entrega atravessar modulos
 
 Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao.
 
-## Conclusao (trabalho do QA encerra em ambos os casos)
+## Conclusao
 
 ### Aprovar
 
-1. Comente resumo + checklist de QA atendido.
+1. Comente resumo + checklist atendido.
 2. Adicione `qa:accepted`.
 3. Remova `agent:qa` se presente.
-4. Remova `qa:rejected` anterior se estiver reavaliando apos correcao.
+4. Remova `qa:rejected` anterior se estiver reavaliando.
 
 ### Recusar
 
-1. Comente motivos objetivos + checklist nao atendido (obrigatorio).
+1. Comente motivos + checklist nao atendido (obrigatorio).
 2. Adicione `qa:rejected`.
 3. Remova `agent:qa` se presente.
-4. Garanta issue **open** (reabra se closed) para o Developer.
+4. Garanta issue **open** para o Developer.
 
-Em **aprovar** ou **recusar**, o trabalho desta passagem do QA **termina**. Nao continue editando codigo.
+Em ambos os casos o trabalho desta passagem **termina**.
 
-## Regras especificas
-
-- use `workers/automation/qa/base.md` e `workers/automate/review-checklists.md`
-- nao publique review GitHub `APPROVE` / `REQUEST_CHANGES` como substituto das labels
-- nao promova para DevOps como saida da revisao de conteudo
-- a unica PR formal do fluxo normal continua sendo `staging` → `master` pelo DevOps no RC
+Apos o par QA+Security aceitar, o **DevOps** empacota o RC (nao o QA).
