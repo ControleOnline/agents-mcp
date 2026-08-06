@@ -36,13 +36,13 @@ Checklist **incrementável** usado quando o `sysadmin` (ou a operação) detecta
 - [ ] Corrigir no repositório correto (multi-repo: listar módulos suspeitos)
 - [ ] Atualizar versão de biblioteca **no código** (manifest + lock) quando for o caso
 - [ ] Testes / smoke do fluxo afetado
-- [ ] Branch `task-{id}`, merge em `staging` conforme fluxo do `developer`
+- [ ] Branch `task-{id}`, **merge em `dev`** conforme fluxo do `developer` (não em `staging`)
 - [ ] Não commitar segredos; não logar PII
 
 ## 4. Critério de pronto (para o dev marcar na issue)
 
 - [ ] Causa raiz descrita em comentário (sem dados sensíveis)
-- [ ] Correção merged em `staging` (ou justificativa)
+- [ ] Correção merged em **`dev`** (ou justificativa)
 - [ ] Como validar em um passo
 - [ ] Riscos residuais
 
