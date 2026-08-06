@@ -1,27 +1,45 @@
-# Issue Queue Discovery (sem ProjectV2)
+# Issue Queue Discovery
 
-Skill compartilhada pelos agents documentais (`technical-documenter`, `tutorial-assistant`), de revisao (`qa`, `security`) e reutilizavel por outros papeis que precisem da mesma fila.
+Skill compartilhada pelos agents documentais (`technical-documenter`, `tutorial-assistant`), de revisao (`qa`, `security`), `sysadmin` (modo `resolve`) e reutilizavel por outros papeis que precisem da mesma fila.
 
 ## Objetivo
 
-Selecionar **exatamente uma** issue elegivel por execucao, sem depender de ProjectV2.
+Selecionar **exatamente uma** issue elegivel por execucao. A fonte primaria da fila sao **issues + labels** (e estado open/closed).
 
-## Proibicoes
+## ProjectV2
 
-- Nao use ProjectV2 como fonte de fila, status, coluna ou handoff.
-- Nao processe mais de uma issue na mesma execucao.
+- **Nao e proibido** usar GitHub Projects (ProjectV2).
+- **Prefira nao usar** ProjectV2 quando labels e busca de issues bastarem (fila, elegibilidade, handoff).
+- Use ProjectV2 quando for preciso: associar issue recem-criada ao board, ler status/coluna complementar, ou quando o prompt pedir explicitamente.
+- Projeto operacional padrao da org: [ControleOnline Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1) (`organization` `ControleOnline`, `number` `1`).
 
-## Fonte de verdade
+## Associacao obrigatoria ao criar task
+
+Sempre que um agent **criar** uma issue/task nova:
+
+1. Crie a issue no repositorio adequado.
+2. **Associe-a ao projeto** `https://github.com/orgs/ControleOnline/projects/1/views/1` (ProjectV2 da org, number `1`).
+3. Aplique as labels `agent:*` necessarias.
+
+Falha ao associar ao projeto deve ser registrada no comentario da issue e tentada de novo quando houver permissao/API; a issue em si nao deve ficar “solta” sem tentativa de vinculo.
+
+## Outras regras
+
+- Nao processe mais de uma issue na mesma execucao (salvo prompt que ordene explicitamente o contrario).
+- O agent pode **criar labels** oficiais ausentes no repositorio.
+
+## Fonte de verdade da fila
 
 - Issues do GitHub na org `ControleOnline` (ou escopo restrito pelo prompt).
 - Labels oficiais do papel + estado da issue + comentarios.
-- O agent pode **criar labels** oficiais ausentes no repositorio.
+- ProjectV2 como complemento (board), nao como unico criterio quando labels bastam.
 
 ## Descoberta
 
 1. Se o prompt definir `owner/repo` + numero da issue → trabalhe **somente** nela (ainda assim valide elegibilidade do papel).
 2. Se o prompt **nao** definir issue/repositorio:
-   - busque issues em **todos** os repositorios da org `ControleOnline`;
+   - busque issues em **todos** os repositorios da org `ControleOnline` (preferencialmente por label/estado);
+   - se util, complemente com itens do Project #1;
    - filtre pelas regras de elegibilidade do papel;
    - escolha **exatamente uma**;
    - priorize por `updated` mais recente, salvo ordem explicita no prompt.
@@ -91,7 +109,8 @@ Em ambos os casos o trabalho **daquele agent** naquela passagem termina. Nao mex
 
 ## Output minimo da descoberta
 
-- criterio usado (prompt explicito vs busca org)
+- criterio usado (prompt explicito vs busca org; se usou ProjectV2)
 - issue escolhida (`owner/repo#n`)
 - labels e estado (`open`/`closed`) no momento da captura
 - se reabriu a issue (sim/nao)
+- se a issue foi associada ao Project #1 (ao criar)
