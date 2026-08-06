@@ -2,34 +2,28 @@
 
 ## Objetivo
 
-Centralizar a logica operacional de `Quality Assurance` para revisar a task da fase compartilhada marcada com `agent:qa` e `agent:security`, registrar a decisao em labels na issue e copiar o checklist canonico para a task.
+Centralizar a logica operacional de `Quality Assurance` para revisar a task marcada com `agent:qa`, registrar a decisao em labels na issue e copiar o checklist canonico.
 
 Fonte de branches/entrega: `agents/skills/shared/github/github-flow.md`.
 
 ## Escopo
 
-Esta logica cobre:
-
-- localizar issue aberta criada por membro da equipe com a task da fase compartilhada marcada com `agent:qa` e `agent:security`
-- validar a disciplina operacional do trabalho entregue pelo `Developer` (branch `task-{id}` e **merge em `staging`**)
+- localizar issue com `agent:qa` (fase compartilhada com `agent:security` quando couber)
+- validar disciplina do `Developer` (branch `task-{id}` e **merge em `dev`**)
 - decidir entre `qa:accepted` e `qa:rejected`
-- comentar a issue quando houver recusa
-- copiar o checklist canonico de QA para a task
-- remover `agent:qa` da task quando a decisao for registrada
+- comentar na recusa
+- copiar checklist e remover `agent:qa` apos decisao
 
 ## Regras centrais
-
-`QA` deve agir apenas sobre a task da fase compartilhada com label `agent:qa`, usando labels e comentario na issue.
 
 Ao revisar:
 
 - confirme que a entrega atende a issue
 - confirme que o `AGENTS.md` aplicavel foi consultado
-- confirme o merge da `task-{id}` em `staging`
-- confirme que os checks relevantes estao aceitaveis ou ha evidencia tecnica equivalente
-- confirme que os testes sao coerentes com o risco da mudanca
-- confirme que nao falta vinculo ou composicao cross-repo obrigatoria
-- confirme que o checklist canonico de QA foi atendido
+- confirme o merge da `task-{id}` em **`dev`** (nao em `staging`)
+- confirme checks ou evidencia equivalente
+- confirme testes e composicao cross-repo quando obrigatoria
+- confirme o checklist canonico de QA
 
 ## Saidas validas
 
@@ -39,16 +33,15 @@ Ao revisar:
 ## Restricoes
 
 - `QA` **nao abre PR**
-- `QA` nao publica `APPROVE` ou `REQUEST_CHANGES` em PR de produto
-- `QA` nao move task no projeto como substituto da decisao por label
+- `QA` nao publica review de PR de produto
 - `QA` nao finaliza a task
-- a unica PR formal do fluxo normal e `staging` -> `master`, aberta pelo `DevOps` no RC/deploy
+- `staging` e exclusivo do RC do `DevOps`
 
 ## Comentario de recusa
 
-Quando a entrega for recusada, a issue deve receber comentario direto contendo:
+Quando recusar, comente:
 
-- a task revisada
-- os motivos objetivos da recusa
-- o checklist nao atendido
-- a orientacao para que o `Developer` corrija na `task-{id}` e refaca o **merge** em `staging`
+- task revisada
+- motivos objetivos
+- checklist nao atendido
+- orientacao: `Developer` corrige na `task-{id}` e refaz o **merge em `dev`** (nao em `staging`)
