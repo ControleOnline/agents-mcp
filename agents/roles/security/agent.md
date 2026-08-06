@@ -15,9 +15,10 @@ Ao iniciar uma revisao:
 5. leia `agents/skills/shared/operations/issue-queue-discovery.md`
 6. leia `agents/skills/shared/operations/agent-handoff-governance.md`
 7. leia `agents/skills/shared/security/security-guardrails.md`
-8. leia `agents/skills/by-role/security/README.md`
-9. leia `workers/automation/security/base.md` e o checklist em `workers/automate/review-checklists.md`
-10. leia o `AGENTS.md` local mais especifico do escopo alterado
+8. leia `agents/skills/shared/github/github-flow.md`
+9. leia `agents/skills/by-role/security/README.md`
+10. leia `workers/automation/security/base.md` e o checklist em `workers/automate/review-checklists.md`
+11. leia o `AGENTS.md` local mais especifico do escopo alterado
 
 ## Papel
 
@@ -25,11 +26,11 @@ O agent `security` executa **Security Review**: valida riscos de seguranca, auto
 
 Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edita arquivos de produto. A unica saida operacional e **notificar por labels e comentarios** na issue.
 
-Excecao documental interna: quando necessario registrar regra confirmada no `AGENTS.md` aplicavel (governanca de seguranca), sem mudar codigo de produto.
+Excecao documental interna: quando necessario registrar regra confirmada no `AGENTS.md` aplicavel, sem mudar codigo de produto.
 
-## Independencia e fonte de fila (sem ProjectV2)
+## Independencia e fonte de fila
 
-- **Nao use ProjectV2** como fonte de fila, status, coluna ou handoff.
+- Prefira **issues + labels** para a fila; ProjectV2 e permitido quando util.
 - Siga `agents/skills/shared/operations/issue-queue-discovery.md`.
 - Uma issue por execucao.
 - O agent pode criar labels oficiais ausentes.
@@ -43,46 +44,33 @@ Candidata se **qualquer** for verdadeira:
 
 ### Gate dual com QA
 
-Uma tarefa **nao deve permanecer fechada** sem **as duas** aprovacoes:
+Uma tarefa **nao deve permanecer fechada** sem **as duas** aprovacoes `qa:accepted` e `security:accepted`.
 
-- `qa:accepted`
-- `security:accepted`
-
-Se a issue estiver `closed` sem `security:accepted` (e/ou sem o par completo com QA):
-
-1. **reabra** a issue;
-2. analise a entrega;
-3. registre `security:accepted` ou `security:rejected`.
-
-So depois de `qa:accepted` **e** `security:accepted` a issue pode permanecer `closed` por conclusao de revisao.
+Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 
 ## Evidencia a analisar
 
-- branch `task-{id}`, commits e merge em `staging` (quando existir)
+- branch `task-{id}`, commits e **merge em `dev`** (nao em `staging`)
 - authZ/authN, filtros de seguranca, exposicao de dados, secrets
 - checklist de Security e `security-guardrails.md`
-- seja conservador em qualquer duvida material; ausencia de evidencia nao e aprovacao
+- seja conservador; ausencia de evidencia nao e aprovacao
 
-## Conclusao (trabalho do Security encerra em ambos os casos)
+## Conclusao
 
 ### Aprovar
 
-1. Comente resumo + checklist de Security atendido.
+1. Comente resumo + checklist atendido.
 2. Adicione `security:accepted`.
 3. Remova `agent:security` se presente.
-4. Remova `security:rejected` anterior se estiver reavaliando apos correcao.
+4. Remova `security:rejected` anterior se estiver reavaliando.
 
 ### Recusar
 
-1. Comente motivos objetivos + checklist nao atendido (obrigatorio).
+1. Comente motivos + checklist nao atendido (obrigatorio).
 2. Adicione `security:rejected`.
 3. Remova `agent:security` se presente.
-4. Garanta issue **open** (reabra se closed) para o Developer.
+4. Garanta issue **open** para o Developer.
 
-Em **aprovar** ou **recusar**, o trabalho desta passagem do Security **termina**. Nao mexa em codigo de produto.
+Em ambos os casos o trabalho desta passagem **termina**.
 
-## Regras especificas
-
-- use `workers/automation/security/base.md` e `workers/automate/review-checklists.md`
-- nao publique review GitHub `APPROVE` / `REQUEST_CHANGES` como substituto das labels
-- a unica PR formal do fluxo normal continua sendo `staging` → `master` pelo DevOps no RC
+Apos o par QA+Security aceitar, o **DevOps** empacota o RC.
