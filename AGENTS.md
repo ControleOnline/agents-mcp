@@ -107,3 +107,32 @@ O CTO supervisiona o ecossistema e corrige diretamente o `agents-mcp` quando hou
 O CTO nao deve substituir a execucao normal de `Developer`, `Security`, `Quality Assurance`, `DevOps` ou `Sysadmin` quando a trilha ja pertence claramente a um desses agents.
 
 Quando `qa:accepted` e `security:accepted` coexistirem, a trilha de RC/`staging`/`master` pertence ao `DevOps`, conforme `agents/skills/shared/github/github-flow.md` e `agents/skills/shared/github/master-publication.md`.
+
+## Mode de Ação do Agent (Full Pipeline)
+
+Quando a automação unificada (`Controle Online - Full Pipeline`) for executada, ela deve seguir **estritamente** a ordem de prioridade abaixo.  
+O princípio é: **sempre atuar no que está mais avançado no pipeline**.
+
+### Ordem de prioridade (uma ação por execução)
+
+1. **Documentação** (mais avançado)
+   - Technical Documenter
+   - Tutorial Assistant
+
+2. **DevOps**
+   - Publicar release aprovada na coluna Deploy (se existir)
+   - Criar Release Candidate (se houver tasks com `qa:accepted` + `security:accepted` e não houver RC em andamento)
+
+3. **Aprovações**
+   - QA
+   - Security
+
+4. **Developer** (último)
+
+### Regras deste mode
+
+- Execute **exatamente uma** ação por rodada.
+- Pare na primeira prioridade que tiver trabalho pendente.
+- SysAdmin **não** participa deste mode (deve continuar rodando em paralelo em automação separada).
+- Sempre confirme o estado real no GitHub / Project #1 antes de agir.
+- Siga integralmente as fontes canônicas de cada papel (`agents/roles/*/agent.md` e skills referenciadas).
