@@ -21,10 +21,6 @@ Esse conjunto de arquivos e as referências que eles mandam ler definem todas as
 6. **Developer**  
    https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/developer/agent.md
 
-### Credenciais
-Se precisar de alguma credencial, elas se encontram aqui:  
-https://drive.google.com/drive/u/1/folders/1oAb6nRTyotkDxHaPQ8TV7rsJ7gzD7YFu
-
 ---
 
 ### Regras de execução (uma única ação por rodada)
