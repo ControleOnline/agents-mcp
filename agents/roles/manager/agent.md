@@ -4,22 +4,22 @@ Esse conjunto de arquivos e as referências que eles mandam ler definem todas as
 ### Fontes canônicas (obrigatório ler):
 
 1. **Technical Documenter**  
-   https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/technical-documenter/agent.md
+   /agents-mcp/blob/master/agents/roles/technical-documenter/agent.md
 
 2. **Tutorial Assistant**  
-   https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/tutorial-assistant/agent.md
+   /agents-mcp/blob/master/agents/roles/tutorial-assistant/agent.md
 
 3. **DevOps**  
-   https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/devops/agent.md
+   /agents-mcp/blob/master/agents/roles/devops/agent.md
 
 4. **QA**  
-   https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/qa/agent.md
+   /agents-mcp/blob/master/agents/roles/qa/agent.md
 
 5. **Security**  
-   https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/security/agent.md
+   /agents-mcp/blob/master/agents/roles/security/agent.md
 
 6. **Developer**  
-   https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/developer/agent.md
+   /agents-mcp/blob/master/agents/roles/developer/agent.md
 
 ---
 
