@@ -48,6 +48,14 @@ Em modo `discover`, inspecione logs de aplicacao **e** de webserver nos hosts co
 
 Detalhe operacional: `agents/skills/shared/operations/log-investigation-evidence.md`.
 
+## ProjectV2 e board oficial
+
+- **ProjectV2 nao e proibido.** Pode ser usado para associar issues ao board, complementar leitura de status ou quando o prompt pedir.
+- **Prefira labels + issues** para fila e elegibilidade quando isso bastar (ver `issue-queue-discovery.md`).
+- Projeto operacional padrao: [ControleOnline Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1) (org `ControleOnline`, project `number` = `1`).
+
+**Obrigatoriedade:** toda issue **criada** pelo sysadmin deve ser **associada a esse projeto** logo apos a criacao.
+
 ## Dois modos de trabalho (workers distintos)
 
 O sysadmin tem **duas trilhas agendaveis separadas**. Cada worker/schedule deve declarar **exatamente um** modo. Nunca misturar as duas na mesma execucao.
@@ -87,7 +95,7 @@ Como o prompt/worker define o modo (nesta ordem):
 - SSH/FTP nos hosts da fonte de credenciais: saude, versoes e libs **do servidor**
 - Percorrer inventario SSH/FTP e registrar cobertura
 - Seguir `checklist-server.md` como roteiro de inspecao
-- **Criar issues** com label correta e checklist referenciado
+- **Criar issues** com label correta, checklist referenciado e **vinculo ao Project #1**
 
 ### Nao faz
 
@@ -109,16 +117,17 @@ Como o prompt/worker define o modo (nesta ordem):
 2. Titulo com sintoma + escopo.
 3. Corpo: evidencia sanitizada (fonte: tabela `logs`, `/logs`, SSH, FTP/webserver), itens de checklist, impacto; **sem** segredos.
 4. Label exata: `agent:developer` ou `agent:sysadmin`.
-5. Deduplicar antes de abrir.
+5. **Associar a issue ao projeto** [ControleOnline #1](https://github.com/orgs/ControleOnline/projects/1/views/1) (ProjectV2 org, number `1`).
+6. Deduplicar antes de abrir.
 
 ### Output do modo discover
 
 - cobertura hosts fonte vs verificados
 - fontes de log usadas (tabela `logs`, `/logs`, SSH, FTP)
 - itens de checklist inspecionados
-- issues criadas (`owner/repo#n` + labels)
+- issues criadas (`owner/repo#n` + labels + **confirmacao de vinculo ao Project #1**)
 - achados sem issue (e motivo)
-- bloqueios (credencial, host offline, sem e-mail/grupo)
+- bloqueios (credencial, host offline, sem e-mail/grupo, falha ao adicionar ao projeto)
 
 ---
 
@@ -142,7 +151,7 @@ Se o prompt apontar `owner/repo#n`, valide elegibilidade e trabalhe so nela.
 ### Nao faz
 
 - Nao varre e-mail/grupos/frota inteira “por precaucao”
-- Nao cria issue nova de descoberta (exceto bloqueio critico inesperado sem issue mae — preferivel comentar e escalar)
+- Nao cria issue nova de descoberta (exceto bloqueio critico inesperado sem issue mae — preferivel comentar e escalar; se criar, **tambem** associar ao Project #1)
 - Nao altera codigo de produto
 
 ### Output do modo resolve
@@ -177,6 +186,6 @@ Arquivos sensiveis de apoio (quando existirem no runtime), sem exposicao: `.env`
 - `agents/skills/shared/operations/operational-source-of-truth.md`
 - `agents/skills/shared/operations/log-investigation-evidence.md`
 - `agents/skills/shared/operations/email-reading-fallback.md`
-- `agents/skills/shared/operations/issue-queue-discovery.md` (fila de uma issue no modo `resolve`)
+- `agents/skills/shared/operations/issue-queue-discovery.md` (fila no modo `resolve` + regra de projeto ao criar)
 - `agents/skills/shared/github/github-issue-handling.md`
 - `agents/skills/shared/security/operational-security-guardrails.md`
