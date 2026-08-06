@@ -1,48 +1,61 @@
-# Manager Agent
+Leia e siga a fonte canônica de TODOS os papéis abaixo (nesta ordem de prioridade).  
+Esse conjunto de arquivos e as referências que eles mandam ler definem todas as atribuições, escopo, validações, publicação e critérios de conclusão desta automação.
 
-Este é o ponto de entrada canônico do agent `manager` para o ecossistema ControleOnline.
+### Fontes canônicas (obrigatório ler):
 
-## Como usar
+1. **Technical Documenter**  
+   https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/technical-documenter/agent.md
 
-Todo wrapper local ou automação do Manager deve apontar para este arquivo.
+2. **Tutorial Assistant**  
+   https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/tutorial-assistant/agent.md
 
-Ao iniciar uma execução:
+3. **DevOps**  
+   https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/devops/agent.md
 
-1. leia este arquivo
-2. leia `agents/skills/README.md`
-3. leia `agents/skills/shared/README.md`
-4. leia `agents/skills/shared/operations/agent-execution-baseline.md`
-5. leia as fontes canônicas dos papéis envolvidos (conforme a prioridade abaixo)
-6. confirme o estado real no GitHub / Project #1 antes de agir
+4. **QA**  
+   https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/qa/agent.md
 
-## Princípio
+5. **Security**  
+   https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/security/agent.md
 
-**Sempre atuar no que está mais avançado no pipeline.**
+6. **Developer**  
+   https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/developer/agent.md
 
-Execute **exatamente uma** ação por rodada.  
-Pare na primeira prioridade que tiver trabalho pendente.
+### Credenciais
+Se precisar de alguma credencial, elas se encontram aqui:  
+https://drive.google.com/drive/u/1/folders/1oAb6nRTyotkDxHaPQ8TV7rsJ7gzD7YFu
 
-## Ordem de prioridade
+---
 
-### 1. Documentação (mais avançado)
-- Technical Documenter → `agents/roles/technical-documenter/agent.md`
-- Tutorial Assistant → `agents/roles/tutorial-assistant/agent.md`
+### Regras de execução (uma única ação por rodada)
 
-### 2. DevOps
-- Publicar release aprovada na coluna **Deploy** (se existir)
-- Criar Release Candidate (se houver tasks com `qa:accepted` + `security:accepted` e não houver RC em andamento)
+Execute **exatamente uma** das ações abaixo, respeitando a ordem de prioridade.  
+Pare assim que completar a primeira ação possível.
 
-Fonte: `agents/roles/devops/agent.md`
+#### Prioridade 1 – Documentação (mais avançado)
+- Execute **uma** tarefa de **Technical Documenter** (documentação técnica).
+- Se não houver → execute **uma** tarefa de **Tutorial Assistant** (documentação para o cliente final na Central de Ajuda).
+- Se não houver nenhuma documentação pendente → prossiga.
 
-### 3. Aprovações
-- QA → `agents/roles/qa/agent.md`
-- Security → `agents/roles/security/agent.md`
+#### Prioridade 2 – DevOps (Deploy / RC)
+- Se existir release aprovada na coluna **Deploy** → publique-a (staging → master + move para Done).
+- Se não existir release para publicar, mas existirem tarefas com `qa:accepted` + `security:accepted` e **não** houver RC em andamento → crie a Release Candidate.
+- Só crie nova RC se a última já estiver em produção.
+- Se não houver nada de DevOps → prossiga.
 
-### 4. Developer (último)
-- Fonte: `agents/roles/developer/agent.md`
+#### Prioridade 3 – Aprovações (QA + Security)
+- Execute **uma** tarefa que precisa de verificação de qualidade (QA).
+- Se não houver → execute **uma** tarefa que precisa de análise de segurança (Security).
+- Se não houver nenhuma aprovação pendente → prossiga.
 
-## Regras
+#### Prioridade 4 – Developer (último)
+- Execute **uma** das tarefas pendentes do Developer, respeitando a prioridade das issues.
 
-- SysAdmin **não** participa deste mode (deve continuar rodando em paralelo em automação separada).
+---
+
+### Regras gerais
+- Nunca execute mais de uma ação por rodada.
+- Sempre confirme o estado real no GitHub / Project #1 antes de agir.
 - Siga integralmente as regras de cada fonte canônica (especialmente gates de QA + Security, freeze de RC e sanitização de evidências).
 - Se nenhuma das prioridades acima tiver trabalho pendente, encerre a execução sem fazer nada.
+- **SysAdmin fica de fora** desta automação (deve continuar rodando em paralelo separadamente).
