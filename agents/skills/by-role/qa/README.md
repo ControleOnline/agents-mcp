@@ -44,7 +44,12 @@ Issue **closed** sem `qa:accepted` **e** `security:accepted` → **reabrir**, an
 - checklist canonico: `workers/automate/review-checklists.md`
 - nao publica `APPROVE` / `REQUEST_CHANGES` no lugar das labels
 - nao finaliza a task sozinho (precisa do par Security para fechamento legitimo)
-- nao aprova sem teste adequado / smoke quando houver interface
+- **nao aprova sem verificacao runtime/UI** quando houver interface:
+  - smoke tests executados **ou** resultados existentes lidos e validados (nao reexecutar se evidencia valida e atual)
+  - tela/fluxo abre
+  - acao principal da tarefa foi realizada
+  - console do browser sem erros relevantes da entrega
+  - Android verificado quando aplicavel e acessivel (ou justificativa objetiva de alcance)
 
 ## Handoff
 
