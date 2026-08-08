@@ -53,13 +53,21 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 - testes/smoke quando houver interface
 - composicoes cross-repo quando a entrega atravessar modulos
 
-Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao.
+### Verificacoes runtime/UI obrigatorias (quando houver interface ou fluxo visual)
+
+1. **Smoke tests**: execute se ainda nao houver evidencia valida e atual; se ja rodaram, leia prompts + resultados e valide. Nao reexecute sem necessidade.
+2. **Tela abre**: confirme que a tela/fluxo afetado carrega sem erro bloqueante.
+3. **Acao da tarefa realizada**: verifique o comportamento esperado da issue (nao apenas o codigo).
+4. **Console do browser**: nao deve haver erros/warnings relevantes ligados a entrega.
+5. **Android** (quando aplicavel e houver build/artefato acessivel): verifique bugs obvios de runtime ou justifique explicitamente o que ficou fora de alcance.
+
+Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao. Falta de qualquer item acima em entrega com interface bloqueia `qa:accepted`.
 
 ## Conclusao
 
 ### Aprovar
 
-1. Comente resumo + checklist atendido.
+1. Comente resumo + checklist atendido (incluindo os itens runtime/UI quando aplicavel).
 2. Adicione `qa:accepted`.
 3. Remova `agent:qa` se presente.
 4. Remova `qa:rejected` anterior se estiver reavaliando.
