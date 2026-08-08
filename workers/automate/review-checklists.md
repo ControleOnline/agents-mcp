@@ -10,6 +10,7 @@ Estas listas sao o criterio de aprovacao que deve ser copiado para a task quando
 - a tela / fluxo afetado abre corretamente
 - a acao principal da tarefa foi realizada com sucesso (comportamento observado, nao apenas codigo)
 - nao ha erros/warnings relevantes no console do browser relacionados a entrega
+- nao ha loops, re-renders desnecessarios ou chamadas duplicadas (API/requests) em cada tela/fluxo revisado
 - quando a entrega afetar app Android (ou houver build/artefato disponivel), bugs obvios de runtime Android foram verificados ou explicitamente justificados como fora de alcance
 - testes unitarios relevantes em PHP e JS foram adicionados ou atualizados
 - helpers da pasta `ui-commun` foram usados quando aplicavel
