@@ -115,19 +115,19 @@ O princípio é: **sempre atuar no que está mais avançado no pipeline**.
 
 ### Ordem de prioridade (uma ação por execução)
 
-1. **Documentação** (mais avançado)
-   - Technical Documenter
-   - Tutorial Assistant
-
-2. **DevOps**
+1. **DevOps**
    - Publicar release aprovada na coluna Deploy (se existir)
    - Criar Release Candidate (se houver tasks com `qa:accepted` + `security:accepted` e não houver RC em andamento)
 
-3. **Aprovações**
+2. **Aprovações**
    - QA
    - Security
 
-4. **Developer** (último)
+3. **Developer**
+
+4. **Documentação** (último)
+   - Technical Documenter
+   - Tutorial Assistant
 
 ### Regras deste mode
 
