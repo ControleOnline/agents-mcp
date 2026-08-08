@@ -59,7 +59,8 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 2. **Tela abre**: confirme que a tela/fluxo afetado carrega sem erro bloqueante.
 3. **Acao da tarefa realizada**: verifique o comportamento esperado da issue (nao apenas o codigo).
 4. **Console do browser**: nao deve haver erros/warnings relevantes ligados a entrega.
-5. **Android** (quando aplicavel e houver build/artefato acessivel): verifique bugs obvios de runtime ou justifique explicitamente o que ficou fora de alcance.
+5. **Loops e chamadas duplicadas**: em cada tela/fluxo revisado, nao deve haver loops, re-renders desnecessarios ou requests/API duplicados.
+6. **Android** (quando aplicavel e houver build/artefato acessivel): verifique bugs obvios de runtime ou justifique explicitamente o que ficou fora de alcance.
 
 Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao. Falta de qualquer item acima em entrega com interface bloqueia `qa:accepted`.
 
