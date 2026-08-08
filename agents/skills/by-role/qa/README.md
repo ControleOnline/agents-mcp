@@ -49,6 +49,7 @@ Issue **closed** sem `qa:accepted` **e** `security:accepted` → **reabrir**, an
   - tela/fluxo abre
   - acao principal da tarefa foi realizada
   - console do browser sem erros relevantes da entrega
+  - **sem loops, re-renders desnecessarios ou chamadas/API duplicadas** em cada tela revisada
   - Android verificado quando aplicavel e acessivel (ou justificativa objetiva de alcance)
 
 ## Handoff
