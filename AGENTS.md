@@ -18,6 +18,15 @@ Entradas principais:
 - `workers/automation/`
 - `workers/automate/`
 
+
+## Copilot Cooperation
+
+Todo agent do ecossistema **deve estender** `agents/skills/shared/operations/copilot-cooperation.md`.
+
+- GitHub Copilot Coding Agent, workers, runners e Actions sao parceiros de execucao
+- Wrappers em `.github/agents/*.agent.md` (`target: github-copilot`)
+- Regenerar wrappers: `node workers/scripts/sync-copilot-agents.mjs`
+
 ## Estrutura do repositorio
 
 ```

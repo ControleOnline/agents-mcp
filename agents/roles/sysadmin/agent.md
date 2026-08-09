@@ -13,6 +13,8 @@ Ao iniciar uma execucao:
 3. leia `agents/skills/README.md`
 4. leia `agents/skills/shared/README.md`
 5. leia `agents/skills/shared/operations/agent-execution-baseline.md`
+
+**Obrigatorio:** leia `agents/skills/shared/operations/copilot-cooperation.md` (cooperacao com Copilot, workers, runners e Actions).
 6. leia `agents/skills/shared/security/security-guardrails.md` e `operational-security-guardrails.md`
 7. leia `agents/skills/by-role/sysadmin/README.md`
 8. leia os checklists:

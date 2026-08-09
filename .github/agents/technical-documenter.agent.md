@@ -13,6 +13,7 @@ Este wrapper deve permanecer fino. Antes de agir, leia e siga nesta ordem:
 3. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/shared/README.md`
 4. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/by-role/technical-documenter/README.md`
 5. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/shared/operations/agent-wrapper-contract.md`
+6. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/shared/operations/copilot-cooperation.md`
 
 ## Contexto local
 

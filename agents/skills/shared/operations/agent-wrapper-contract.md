@@ -8,3 +8,11 @@ Wrappers locais em `.github/agents/*.agent.md` devem permanecer finos.
 2. listar apenas o contexto local mínimo (repo, branch base, AGENTS.md)
 3. não duplicar biblioteca operacional que vive em `agents/skills/`
 4. regenerar via `workers/scripts/sync-copilot-agents.mjs` quando a estrutura canônica mudar
+
+
+## Copilot
+
+1. wrappers usam `target: github-copilot` no frontmatter
+2. todo papel estende `agents/skills/shared/operations/copilot-cooperation.md`
+3. nao omita a cooperacao com workers/runners/Actions quando forem uteis
+4. apos mudanca estrutural, rode `workers/scripts/sync-copilot-agents.mjs`

@@ -8,6 +8,7 @@ Use esta skill quando um agent precisar executar uma trilha normal de produto, r
 
 1. leia o `agents/roles/<agent>/agent.md` canonico do papel atual
 2. leia `agents/skills/README.md` e `agents/skills/shared/README.md`
+2b. leia `agents/skills/shared/operations/copilot-cooperation.md` (obrigatoria para todos os papeis)
 3. leia a referencia mais especifica em `agents/skills/by-role/` ou `agents/skills/runners/`
 4. leia o `AGENTS.md` local mais proximo quando houver codigo, modulo ou repositorio afetado
 5. trate o repositorio local como ponto principal de execucao, nao como limite de entendimento do ecossistema

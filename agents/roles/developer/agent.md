@@ -12,6 +12,8 @@ Ao iniciar uma execucao:
 2. leia `agents/skills/README.md`
 3. leia `agents/skills/shared/README.md`
 4. leia `agents/skills/shared/operations/agent-execution-baseline.md`
+
+**Obrigatorio:** leia `agents/skills/shared/operations/copilot-cooperation.md` (cooperacao com Copilot, workers, runners e Actions).
 5. leia `agents/skills/shared/quality/code-quality.md`
 6. leia `agents/skills/shared/github/github-flow.md`
 7. leia `agents/skills/by-role/developer/README.md`

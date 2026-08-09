@@ -55,3 +55,8 @@ Pare assim que completar a primeira ação possível.
 - Siga integralmente as regras de cada fonte canônica (especialmente gates de QA + Security, freeze de RC e sanitização de evidências).
 - Se nenhuma das prioridades acima tiver trabalho pendente, encerre a execução sem fazer nada.
 - **SysAdmin fica de fora** desta automação (deve continuar rodando em paralelo separadamente).
+
+
+## Copilot Cooperation
+
+**Obrigatorio:** todo agent deve estender `agents/skills/shared/operations/copilot-cooperation.md`.

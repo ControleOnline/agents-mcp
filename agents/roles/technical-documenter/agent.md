@@ -12,6 +12,8 @@ Ao iniciar uma execucao:
 2. leia `agents/skills/README.md`
 3. leia `agents/skills/shared/README.md`
 4. leia `agents/skills/shared/operations/agent-execution-baseline.md`
+
+**Obrigatorio:** leia `agents/skills/shared/operations/copilot-cooperation.md` (cooperacao com Copilot, workers, runners e Actions).
 5. leia `agents/skills/shared/operations/issue-queue-discovery.md`
 6. leia `agents/skills/shared/documentation/documentation-governance.md`
 7. leia `agents/skills/shared/security/security-guardrails.md`
