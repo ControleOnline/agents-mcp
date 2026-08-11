@@ -63,6 +63,10 @@ Exemplos:
 
 ### Entrega = merge em `dev`
 
+- **Nunca** faça merge de `dev` inteiro em `staging`. Merge sempre **apenas** `task-{id}`.
+- O único merge de ambiente completo é `staging` (RC) → `master`.
+
+
 - Origem: apenas `task-{id_issue}`.
 - Destino: `dev`.
 - Operacao: merge (nao PR, nao commits soltos em `dev`).
@@ -92,7 +96,7 @@ Exemplos:
 
 1. Coletar **todas** as tasks elegiveis no momento da abertura do RC.
 2. Definir **versionamento semantico** do pacote (ex.: `vX.Y.Z` / tag RC coerente com o monorepo/repos).
-3. Consolidar as mudancas aprovadas (vindas de `dev` / commits das tasks) no branch **`staging`** — pule consolidacao ja presente com evidencia + comentario.
+3. Consolidar as mudancas aprovadas no branch **`staging`** fazendo merge **somente de cada `task-{id}`** aprovada (nunca merge de `dev` inteiro). Pule consolidacao ja presente com evidencia + comentario.
 4. Fazer isso nos **repositorios pai e nos submodulos** afetados (ordem: submodulos primeiro, depois pai; pins/gitlinks coerentes).
 5. O push/atualizacao de `staging` **dispara o deploy** do ambiente de staging para **conferencia humana**.
 
@@ -154,6 +158,7 @@ Hotfixes são correções urgentes em produção (ou risco crítico iminente) qu
 ### Identificação
 
 - Label obrigatória: `hotfix` (criar no repositório se ausente).
+- **Sempre** aplicar a label `hotfix` ao criar uma task pedida como hotfix.
 - Pode coexistir com `bug` / `enhancement`.
 - Qualquer agent (Manager, Developer, QA, Security, DevOps) deve tratar issues com `hotfix` como **prioridade 1**.
 
@@ -162,32 +167,40 @@ Hotfixes são correções urgentes em produção (ou risco crítico iminente) qu
 ```text
 master
   └─ task-{id}                         (Developer cria a partir de master)
-       └─ merge em dev                 (Developer; SEM PR) — prioridade máxima
-            └─ QA + Security           (labels; prioridade máxima; mesma passagem se possível)
-                 └─ DevOps promove     (pode montar RC de item único ou promover direto
-                                        o delta do hotfix para staging → Deploy → master
-                                        sem esperar freeze de outras tasks, desde que
-                                        qa:accepted + security:accepted existam)
+       └─ merge task-{id} → dev        (Developer; SEM PR) — prioridade máxima
+            └─ QA + Security           (labels; prioridade máxima)
+                 └─ DevOps promove
+                      └─ merge **somente** task-{id} → staging
+                           (NUNCA merge de `dev` inteiro em staging)
+                            └─ humano / Deploy → merge staging → master (RC/pacote)
 ```
+
+### Regra crítica de merge (hotfix e fluxo normal)
+
+- **Sempre** faça merge **apenas da branch `task-{id}`** para o destino (`dev` ou, no caminho de promoção prioritária, `staging`).
+- **Nunca** faça merge de um ambiente inteiro (`dev` → `staging`).
+- O **único** merge de ambiente completo permitido é o **RC em `staging` → `master`** (após coluna Deploy).
+- `dev` pode conter tarefas ainda quebradas / incompletas e **não pode** ir para `staging`.
+- `staging` deve permanecer **estável** (somente deltas de tasks já aprovadas e selecionadas no pacote ou no hotfix prioritário).
 
 ### Regras
 
-1. **Developer**: captura e implementa hotfix antes de qualquer outra issue; branch `task-{id}` a partir de `master`; merge em `dev`; handoff imediato `agent:qa` + `agent:security`.
+1. **Developer**: captura e implementa hotfix antes de qualquer outra issue; branch `task-{id}` a partir de `master`; merge **somente** `task-{id}` → `dev`; handoff imediato `agent:qa` + `agent:security`.
 2. **QA / Security**: revisam hotfixes antes de qualquer outra fila; registram `qa:accepted`/`security:accepted` (ou rejected) com prioridade.
 3. **DevOps**:
-   - Com `hotfix` + `qa:accepted` + `security:accepted`, pode:
-     - montar RC de **um único item** (semver patch) e colocar em `staging`, **ou**
-     - promover o delta já mergeado em `dev` para `staging` de forma prioritária (sem aguardar outras tasks do freeze).
-   - Após humano em coluna `Deploy`, merge `staging` → `master` e `Done` com prioridade.
+   - Com `hotfix` + `qa:accepted` + `security:accepted`, promove com prioridade:
+     - merge **somente** `task-{id}` → `staging` (nunca `dev` inteiro);
+     - ou monta RC de item único (semver patch) a partir desse delta;
+   - Após humano em coluna `Deploy`, merge `staging` → `master` e `Done`.
 4. **Manager**: prioridade 1 = qualquer ação relacionada a issue com label `hotfix`.
-5. Não se abre segundo RC paralelo só por causa de hotfix; se já existir RC aberto, o DevOps pode incluir o hotfix no pacote atual **apenas se ainda não estiver freezeado** ou documentar RC paralelo excepcional de hotfix com comentário na issue pai.
-6. Após publicação, o hotfix deve ser mergeado de volta / refletido em `dev` e `master` para não regredir.
+5. Não se abre segundo RC paralelo só por causa de hotfix; se já existir RC aberto, o DevOps pode incluir o delta da `task-{id}` no pacote atual **apenas se ainda não estiver freezeado**, ou documentar RC paralelo excepcional de hotfix com comentário na issue pai.
+6. Após publicação, o hotfix deve permanecer refletido em `dev` e `master` para não regredir.
 
 ### Quality bar de hotfix
 
 - Mudança mínima e focada no problema crítico.
 - Testes/smoke do escopo afetado (mesmo sob urgência).
-- Evidência clara na issue (commits, merge em `dev`, labels).
+- Evidência clara na issue (commits da `task-{id}`, merge em `dev`, labels).
 - Não usar `hotfix` para feature ou melhoria não urgente.
 
 ## Quality Bar
