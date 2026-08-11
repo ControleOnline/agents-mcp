@@ -1,31 +1,33 @@
 # agents-mcp
 
-Base oficial de automacao do ecossistema `ControleOnline` para agents que rodam no GitHub.
+Repositório de orquestração dos agents, skills e workers do ecossistema ControleOnline.
 
-## Organizacao
+## Estrutura
 
-Este repositorio concentra a biblioteca central de skills operacionais usada pelos agents.
+```
+agents/
+├── roles/          # definição canônica de cada papel
+└── skills/         # biblioteca de skills
+    ├── shared/     # regras transversais (github, documentation, security, quality, operations)
+    ├── by-role/    # skills por papel
+    └── runners/    # mapas de runtime
 
-Com isso:
+workers/            # execução (scripts, runners, automações)
+├── automate/
+├── automation/
+├── src/
+└── scripts/
+```
 
-- wrappers ficam finos
-- instrucoes compartilhadas vivem em `skills/`
-- conhecimentos por agent vivem em `skills/agents/`
-- mapas de runtime vivem em `skills/runners/`
-- materiais exclusivos do CTO ficam separados dos compartilhados
-- memoria continua fora do repositorio, como apoio persistente
+## Entradas principais
 
-## Estrutura principal
+- `agents/skills/README.md` — mapa da biblioteca
+- `agents/skills/shared/README.md` — políticas compartilhadas
+- `agents/skills/by-role/*/README.md` — orientação por agent
+- `agents/roles/*/agent.md` — entradas canônicas
+- `AGENTS.md` — regras operacionais centrais
+- `workers/scripts/sync-copilot-agents.mjs` — sync dos wrappers
 
-- `skills/README.md`: mapa da biblioteca
-- `skills/shared/README.md`: politicas, governanca e evidencias compartilhadas
-- `skills/agents/*/README.md`: orientacao por tipo de agent
-- `skills/runners/README.md`: mapa dos workflows, entry points e trilhas reais
-- `agents/agent/*/agent.md`: entradas canonicas por agent
-- `.github/agents/*.agent.md`: wrappers finos
-- `.github/workflows/*.yml`: runners oficiais de execucao remota no GitHub
-- `scripts/sync-copilot-agents.mjs`: sincronizacao dos wrappers locais
+## Nota
 
-## Estado operacional
-
-O canal oficial de execucao voltou a incluir os runners em `.github/workflows/` para `Developer`, `Security`, `Q.A.`, `DevOps` e `Agent Flow Sync`, com apoio do `GitHub Operations Runner` para mutacoes pontuais no GitHub quando a etapa exigir apenas comentario, coluna, label, assignee, review ou chamada autorizada a API.
+Este repositório é a fonte canônica. Wrappers em `.github/agents/` devem permanecer finos e apontar para `agents/roles/*/agent.md`.

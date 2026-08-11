@@ -8,11 +8,12 @@ target: github-copilot
 
 Este wrapper deve permanecer fino. Antes de agir, leia e siga nesta ordem:
 
-1. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/agent/security/agent.md`
-2. `https://github.com/ControleOnline/agents-mcp/blob/master/skills/README.md`
-3. `https://github.com/ControleOnline/agents-mcp/blob/master/skills/shared/README.md`
-4. `https://github.com/ControleOnline/agents-mcp/blob/master/skills/agents/security/README.md`
-5. `https://github.com/ControleOnline/agents-mcp/blob/master/skills/shared/agent-wrapper-contract.md`
+1. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/security/agent.md`
+2. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/README.md`
+3. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/shared/README.md`
+4. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/by-role/security/README.md`
+5. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/shared/operations/agent-wrapper-contract.md`
+6. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/shared/operations/copilot-cooperation.md`
 
 ## Contexto local
 
@@ -21,7 +22,7 @@ Este wrapper deve permanecer fino. Antes de agir, leia e siga nesta ordem:
 - tipo: projeto raiz
 - familia: automacao
 - branch base operacional: `master`
-- alvo preferencial de PR: `dev`
+- alvo preferencial de PR: `staging`
 - `AGENTS.md` local: presente
 
 Leia o `AGENTS.md` mais proximo antes de editar codigo. Se a alteracao tocar apenas o repositorio atual, trabalhe aqui. Se tambem exigir atualizacao do projeto agregador ou de outro modulo dono da mudanca, preserve a separacao de ownership.

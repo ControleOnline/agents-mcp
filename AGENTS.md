@@ -8,14 +8,41 @@ Tudo o que nao for memoria persistente deve estar disponivel aqui.
 
 Entradas principais:
 
-- `skills/README.md`
-- `skills/shared/README.md`
-- `skills/agents/*/README.md`
-- `skills/runners/README.md`
-- `agents/agent/*/agent.md`
+- `agents/skills/README.md`
+- `agents/skills/shared/README.md`
+- `agents/skills/shared/github/github-flow.md`
+- `agents/skills/by-role/*/README.md`
+- `agents/skills/runners/README.md`
+- `agents/roles/*/agent.md`
 - `.github/agents/*.agent.md`
-- `automation/`
-- `automate/`
+- `workers/automation/`
+- `workers/automate/`
+
+
+## Copilot Cooperation
+
+Todo agent do ecossistema **deve estender** `agents/skills/shared/operations/copilot-cooperation.md`.
+
+- GitHub Copilot Coding Agent, workers, runners e Actions sao parceiros de execucao
+- Wrappers em `.github/agents/*.agent.md` (`target: github-copilot`)
+- Regenerar wrappers: `node workers/scripts/sync-copilot-agents.mjs`
+
+## Estrutura do repositorio
+
+```
+agents/
+├── roles/          # definição canônica de cada papel
+└── skills/         # biblioteca de skills
+    ├── shared/     # regras transversais (por categoria)
+    ├── by-role/    # skills por papel
+    └── runners/    # mapas de runtime
+
+workers/            # tudo que executa
+├── automate/
+├── automation/
+├── src/
+└── scripts/
+```
 
 ## Regra central de skills
 
@@ -23,21 +50,19 @@ Toda regra nova deve entrar primeiro na camada certa, em vez de ser repetida ent
 
 Distribuicao obrigatoria:
 
-- comportamento compartilhado, politicas, guardrails e criterios comuns vivem em `skills/shared/`
-- papel, ownership, limites e handoff por agent vivem em `skills/agents/<agent>/README.md`
-- mapas de runtime, workflows, entry points e scripts reais vivem em `skills/runners/README.md`
-- `agents/agent/*/agent.md` devem ficar enxutos e conter apenas ponto de entrada, papel, fronteiras e referencias obrigatorias
+- comportamento compartilhado, politicas, guardrails e criterios comuns vivem em `agents/skills/shared/`
+- qualidade de codigo, modularizacao, smoke tests e limite de tamanho de componentes vivem em `agents/skills/shared/quality/code-quality.md`
+- documentacao de cliente e wiki tecnica vivem em `agents/skills/shared/documentation/documentation-governance.md`
+- seguranca editorial e sanitizacao de evidencias vivem em `agents/skills/shared/security/security-guardrails.md`
+- fluxo de branches e entrega (GitHub Flow adaptado) vive em `agents/skills/shared/github/github-flow.md`
+- papel, ownership, limites e handoff por agent vivem em `agents/skills/by-role/<agent>/README.md`
+- mapas de runtime, workflows, entry points e scripts reais vivem em `agents/skills/runners/README.md`
+- `agents/roles/*/agent.md` devem ficar enxutos e conter apenas ponto de entrada, papel, fronteiras e referencias obrigatorias
 - wrappers locais em `.github/agents/*.agent.md` devem ser finos e apontar para a fonte canonica e para o contexto local minimo
-
-Regras de deduplicacao:
-
-- se uma regra aparecer em mais de um agent ou wrapper, extraia para uma skill compartilhada e substitua a duplicacao por referencia
-- nao mantenha biblioteca operacional paralela fora dessa estrutura
-- nao replique instrucoes centrais em prompts locais quando o repositorio central puder ser referenciado
 
 ## Canal de execucao
 
-Os runners do GitHub deste repositorio estao desativados como canal operacional.
+Os runners do GitHub deste repositorio estao desativados como canal operacional principal.
 
 A execucao por papel deve acontecer pelos agentes pares no ChatGPT.
 
@@ -47,44 +72,83 @@ Com isso:
 - nenhuma rotina por `push` ou `schedule` deve ser reativada sem decisao estrutural explicita
 - ownership, handoff e criterios de execucao continuam definidos pelas skills centrais e pelos agents canonicos
 
-## Regra de nomenclatura
-
-Nao use prefixo `cto-` em materiais compartilhados. Reserve referencias explicitas a `cto` apenas para papeis, runners e automacoes exclusivas do proprio CTO.
-
 ## GitHub
 
-Ao consultar ou operar no GitHub, os agents podem usar qualquer busca, API, listagem, ferramenta, mutacao ou superficie que estiver disponivel na sessao. Nao existe restricao artificial de consulta no GitHub dentro do `agents-mcp`; a escolha do caminho deve seguir apenas o que melhor produz a evidência correta para a tarefa atual.
+Ao consultar ou operar no GitHub, os agents podem usar qualquer busca, API, listagem, ferramenta, mutacao ou superficie que estiver disponivel na sessao. Nao existe restricao artificial de consulta no GitHub dentro do `agents-mcp`; a escolha do caminho deve seguir apenas o que melhor produz a evidencia correta para a tarefa atual.
+
+## GitHub Flow (resumo)
+
+Fonte completa: `agents/skills/shared/github/github-flow.md`.
+
+- branch de trabalho: `task-{id_issue}` derivada de `master`
+- `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
+- `QA` e `Security` decidem por labels na task; evidencia em `dev`; nao abrem PR
+- `DevOps` empacota **todas** as tasks com `qa:accepted` + `security:accepted` em um **RC semver**, coloca o pacote em **`staging`** (pai + submodulos), cria **task pai de deploy** com as demais como **subtasks**, move pai e filhas para **`In Review`**
+- **um RC por vez**; freeze — nenhuma task nova entra no RC aberto; nao ha novo RC ate publicar o atual
+- humano confere staging e move a task pai para **`Deploy`**
+- `DevOps` mescla **`staging` → `master`** e move para **`Done`**
 
 ## Ownership operacional
 
-Labels validos:
+Labels oficiais de review na task:
 
-- `agent:developer`
-- `agent:security`
-- `agent:qa`
-- `agent:devops`
-- `agent:sysadmin`
+- `qa:accepted`
+- `qa:rejected`
+- `security:accepted`
+- `security:rejected`
 
 Regras obrigatorias:
 
 - nenhuma task deve ser atribuida a pessoas, bots ou fallbacks tecnicos como mecanismo de captura de trabalho
 - assignees do GitHub nao participam do roteamento operacional e devem ser removidos quando aparecerem em tasks da fila
-- todos os agents devem descobrir trabalho lendo a tag esperada para sua etapa e a coluna correta da issue, nunca assignees
-- agentes nao fecham tasks; so humanos podem mover uma issue para `closed`
-- para os agents, conclusao operacional significa avancar a task para a proxima coluna ou trocar a tag da proxima etapa, sem usar `open` ou `closed` como gate de trabalho
-- o fluxo tecnico padrao e sequencial: `agent:developer` -> `agent:security` -> `agent:qa`
-- task em `Work` ou `Working` sem `agent:*` entra por `agent:developer`
-- `Developer` pega tasks sem tag de etapa ou com `agent:developer` em `Work` ou `Working`, executa o trabalho e troca a tag para `agent:security`
-- `Security` pega apenas tasks com `agent:security` em `Work` ou `Working`, revisa e troca a tag para `agent:qa` ou devolve para `agent:developer` quando houver correção necessária
-- `Quality Assurance` pega apenas tasks com `agent:qa` em `Work` ou `Working`, valida a trilha completa e decide entre mover para `In Review` ou devolver para `agent:security` ou `agent:developer`
-- qualquer etapa pode abrir uma task paralela de infraestrutura com tag `agent:sysadmin` em `Work`, sempre separada da tarefa-mãe e com referência explícita para ela
-- `Sysadmin` verifica apenas tasks com `agent:sysadmin` em `Work` ou `Working`, resolve ou diagnostica o impedimento e, ao concluir, troca a task paralela para `agent:security` e comenta na tarefa-mãe que o impedimento foi resolvido
-- `DevOps` verifica apenas tasks com `agent:devops` na coluna `Deploy`
-- agents documentais fora do nucleo, como `Documentor`, verificam apenas tasks na coluna `Done`
-- nenhuma etapa deve capturar task com tag aleatoria fora do fluxo esperado do proprio papel
+- `Developer` seleciona trabalho apenas quando a issue ainda esta aberta, foi criada por membro da equipe e nao existe pendencia ativa de decisao por `QA` e `Security`
+- `Developer` so trabalha na `task-{id_issue}` e entrega em **`dev`** por merge, sem abrir PR
+- `Developer` nao mexe diretamente em `master`, `main`, `dev`, `staging`
+- `Security` e `QA` registram apenas labels de aceite/recusa na task
+- quando `Security` ou `QA` recusarem, comentam de forma objetiva para o `Developer`
+- somente o `DevOps` monta RC em `staging`, cria a task pai de deploy e promove `staging` → `master` apos coluna `Deploy`
+- agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
 
 ## Fronteira do CTO
 
 O CTO supervisiona o ecossistema e corrige diretamente o `agents-mcp` quando houver falha estrutural de instrucao, runner, workflow, ownership ou automacao.
 
 O CTO nao deve substituir a execucao normal de `Developer`, `Security`, `Quality Assurance`, `DevOps` ou `Sysadmin` quando a trilha ja pertence claramente a um desses agents.
+
+Quando `qa:accepted` e `security:accepted` coexistirem, a trilha de RC/`staging`/`master` pertence ao `DevOps`, conforme `agents/skills/shared/github/github-flow.md` e `agents/skills/shared/github/master-publication.md`.
+
+## Mode de Ação do Agent (Full Pipeline)
+
+Quando a automação unificada (`Controle Online - Full Pipeline`) for executada, ela deve seguir **estritamente** a ordem de prioridade abaixo.  
+O princípio é: **sempre atuar no que está mais avançado no pipeline**.
+
+### Ordem de prioridade (uma ação por execução)
+
+1. **Hotfix**
+   - Qualquer issue com label `hotfix` (implementar, validar QA/Security, promover/deploy) tem prioridade absoluta
+   - Ao criar task hotfix: **sempre** aplicar a label `hotfix`
+   - Ver seção Hotfix em `agents/skills/shared/github/github-flow.md`
+   - Merge sempre **somente** da `task-{id}` (nunca `dev` inteiro → `staging`)
+
+2. **DevOps**
+   - Publicar release aprovada na coluna Deploy (se existir)
+   - Criar Release Candidate (se houver tasks com `qa:accepted` + `security:accepted` e não houver RC em andamento)
+   - No RC: merge **somente** das `task-{id}` aprovadas em `staging` (nunca `dev` inteiro)
+
+3. **Documentação** (Documentadores)
+   - Technical Documenter
+   - Tutorial Assistant
+
+4. **Validadores**
+   - QA
+   - Security
+
+5. **Developer**
+
+### Regras deste mode
+
+- Execute **exatamente uma** ação por rodada.
+- Pare na primeira prioridade que tiver trabalho pendente.
+- SysAdmin **não** participa deste mode (deve continuar rodando em paralelo em automação separada).
+- Sempre confirme o estado real no GitHub / Project #1 antes de agir.
+- Siga integralmente as fontes canônicas de cada papel (`agents/roles/*/agent.md` e skills referenciadas).

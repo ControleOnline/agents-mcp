@@ -1,0 +1,20 @@
+{
+  "requested_at": "2026-08-01T18:14:00Z",
+  "requested_by": "CTO",
+  "purpose": "Adicionar app-community#298 ao Backlog do ProjectV2 ControleOnline#1",
+  "dry_run": false,
+  "report_to": {
+    "repo_full_name": "ControleOnline/agents-mcp",
+    "issue_number": 92
+  },
+  "operations": [
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 298,
+      "target_status": "Backlog"
+    }
+  ]
+}
