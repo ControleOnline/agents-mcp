@@ -146,6 +146,50 @@ Detalhes de publicacao: `agents/skills/shared/github/master-publication.md`.
 - criterios de conclusao: `agents/skills/shared/quality/task-completion-criteria.md`
 - board / Project #1: `agents/skills/shared/operations/issue-queue-discovery.md`
 
+
+## Hotfix (prioridade absoluta)
+
+Hotfixes são correções urgentes em produção (ou risco crítico iminente) que **não esperam** o ciclo normal de RC.
+
+### Identificação
+
+- Label obrigatória: `hotfix` (criar no repositório se ausente).
+- Pode coexistir com `bug` / `enhancement`.
+- Qualquer agent (Manager, Developer, QA, Security, DevOps) deve tratar issues com `hotfix` como **prioridade 1**.
+
+### Fluxo acelerado
+
+```text
+master
+  └─ task-{id}                         (Developer cria a partir de master)
+       └─ merge em dev                 (Developer; SEM PR) — prioridade máxima
+            └─ QA + Security           (labels; prioridade máxima; mesma passagem se possível)
+                 └─ DevOps promove     (pode montar RC de item único ou promover direto
+                                        o delta do hotfix para staging → Deploy → master
+                                        sem esperar freeze de outras tasks, desde que
+                                        qa:accepted + security:accepted existam)
+```
+
+### Regras
+
+1. **Developer**: captura e implementa hotfix antes de qualquer outra issue; branch `task-{id}` a partir de `master`; merge em `dev`; handoff imediato `agent:qa` + `agent:security`.
+2. **QA / Security**: revisam hotfixes antes de qualquer outra fila; registram `qa:accepted`/`security:accepted` (ou rejected) com prioridade.
+3. **DevOps**:
+   - Com `hotfix` + `qa:accepted` + `security:accepted`, pode:
+     - montar RC de **um único item** (semver patch) e colocar em `staging`, **ou**
+     - promover o delta já mergeado em `dev` para `staging` de forma prioritária (sem aguardar outras tasks do freeze).
+   - Após humano em coluna `Deploy`, merge `staging` → `master` e `Done` com prioridade.
+4. **Manager**: prioridade 1 = qualquer ação relacionada a issue com label `hotfix`.
+5. Não se abre segundo RC paralelo só por causa de hotfix; se já existir RC aberto, o DevOps pode incluir o hotfix no pacote atual **apenas se ainda não estiver freezeado** ou documentar RC paralelo excepcional de hotfix com comentário na issue pai.
+6. Após publicação, o hotfix deve ser mergeado de volta / refletido em `dev` e `master` para não regredir.
+
+### Quality bar de hotfix
+
+- Mudança mínima e focada no problema crítico.
+- Testes/smoke do escopo afetado (mesmo sob urgência).
+- Evidência clara na issue (commits, merge em `dev`, labels).
+- Não usar `hotfix` para feature ou melhoria não urgente.
+
 ## Quality Bar
 
 - nao derive task branch de `dev`/`staging` (sempre de `master`)
