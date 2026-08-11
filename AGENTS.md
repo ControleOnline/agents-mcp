@@ -124,19 +124,26 @@ O princípio é: **sempre atuar no que está mais avançado no pipeline**.
 
 ### Ordem de prioridade (uma ação por execução)
 
-1. **DevOps**
+1. **Hotfix**
+   - Qualquer issue com label `hotfix` (implementar, validar QA/Security, promover/deploy) tem prioridade absoluta
+   - Ao criar task hotfix: **sempre** aplicar a label `hotfix`
+   - Ver seção Hotfix em `agents/skills/shared/github/github-flow.md`
+   - Merge sempre **somente** da `task-{id}` (nunca `dev` inteiro → `staging`)
+
+2. **DevOps**
    - Publicar release aprovada na coluna Deploy (se existir)
    - Criar Release Candidate (se houver tasks com `qa:accepted` + `security:accepted` e não houver RC em andamento)
+   - No RC: merge **somente** das `task-{id}` aprovadas em `staging` (nunca `dev` inteiro)
 
-2. **Aprovações**
+3. **Documentação** (Documentadores)
+   - Technical Documenter
+   - Tutorial Assistant
+
+4. **Validadores**
    - QA
    - Security
 
-3. **Developer**
-
-4. **Documentação** (último)
-   - Technical Documenter
-   - Tutorial Assistant
+5. **Developer**
 
 ### Regras deste mode
 
