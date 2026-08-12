@@ -44,6 +44,37 @@ Falha ao associar ao projeto deve ser registrada no comentario da issue e tentad
    - escolha **exatamente uma**;
    - priorize por `updated` mais recente, salvo ordem explicita no prompt.
 
+## Template de elegibilidade — `Developer`
+
+O `Developer` deve descobrir trabalho sozinho quando a issue nao vier no prompt. Nao peca ao usuario para escolher uma issue se o GitHub/Project #1 puder ser consultado.
+
+Este template e exclusivo do fluxo paralelo do `Developer`. O Full Pipeline / Manager nao usa esta fila para capturar implementacao; ele apenas corrige desvios de governanca quando chegar na etapa de higiene.
+
+Fonte primaria:
+
+- issues `open` na org `ControleOnline`;
+- labels de ownership/estado;
+- Project #1 como complemento para coluna/status (`Ready` e `Working`).
+
+Candidata se **qualquer** for verdadeira:
+
+1. possui `agent:developer`;
+2. esta em `Ready` sem nenhum `agent:*` (entrada padrao do fluxo);
+3. esta em `Working` sem nenhum `agent:*`, quando nao houver evidencia de ownership humano exclusivo;
+4. possui `qa:rejected` ou `security:rejected` e ainda precisa de correcao pelo Developer.
+
+Nao candidata se houver decisao/revisao ativa que ainda pertenca a `QA`, `Security` ou `DevOps` (por exemplo, aguardando aceite/recusa com `agent:qa`, `agent:security` ou pacote de RC).
+
+Ordem de prioridade do `Developer`:
+
+1. `hotfix`
+2. `qa:rejected` ou `security:rejected`
+3. `bug`
+4. `enhancement`
+5. `feature`
+
+Dentro da mesma prioridade, escolha a issue elegivel com `updated` mais recente, salvo ordem explicita no prompt. Se nenhuma issue elegivel existir, registre o criterio de busca e pare com bloqueio objetivo.
+
 ## Template de elegibilidade — papeis documentais
 
 | Label | Significado |

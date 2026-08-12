@@ -117,16 +117,25 @@ O CTO nao deve substituir a execucao normal de `Developer`, `Security`, `Quality
 
 Quando `qa:accepted` e `security:accepted` coexistirem, a trilha de RC/`staging`/`master` pertence ao `DevOps`, conforme `agents/skills/shared/github/github-flow.md` e `agents/skills/shared/github/master-publication.md`.
 
-## Mode de Ação do Agent (Full Pipeline)
+## Fluxos operacionais paralelos
+
+Existem dois fluxos independentes que rodam em paralelo:
+
+1. **Full Pipeline / Manager**: governa Hotfix ja implementado, DevOps, Documentacao, Validadores e higiene de board. Este fluxo **nao captura nem implementa trabalho de Developer**.
+2. **Developer**: captura autonomamente a propria fila, implementa em `task-{id_issue}` a partir de `master`, faz merge da task em `dev` e entrega para QA/Security.
+
+O Manager pode corrigir labels/status que devolvam uma task ao `Developer`, mas nao deve executar a implementacao, escolher uma task para implementar dentro do seu ciclo, nem bloquear a propria rodada porque existe trabalho novo de Developer.
+
+## Mode de Acao do Agent (Full Pipeline / Manager)
 
 Quando a automação unificada (`Controle Online - Full Pipeline`) for executada, ela deve seguir **estritamente** a ordem de prioridade abaixo.  
-O princípio é: **sempre atuar no que está mais avançado no pipeline**.
+O princípio é: **sempre atuar no que está mais avançado no pipeline do Manager**, sem incluir a fila paralela do `Developer`.
 
 ### Ordem de prioridade (uma ação por execução)
 
 1. **Hotfix**
    - Qualquer issue com label `hotfix` (validar QA/Security, promover/deploy) tem prioridade absoluta
-   - **Implementação (Developer) de hotfix roda à parte** e não faz parte desta automação do Manager por enquanto
+   - **Implementação (Developer) de hotfix roda à parte** no fluxo paralelo do `Developer` e não faz parte desta automação do Manager
    - Ao criar task hotfix: **sempre** aplicar a label `hotfix`
    - Ver seção Hotfix em `agents/skills/shared/github/github-flow.md`
    - Merge sempre **somente** da `task-{id}` (nunca `dev` inteiro → `staging`)
@@ -149,6 +158,6 @@ O princípio é: **sempre atuar no que está mais avançado no pipeline**.
 - Execute **exatamente uma** ação por rodada.
 - Pare na primeira prioridade que tiver trabalho pendente.
 - SysAdmin **não** participa deste mode (deve continuar rodando em paralelo em automação separada).
-- **Developer** **não** participa deste mode por enquanto (deve continuar rodando em paralelo em automação separada).
+- **Developer** **não** participa deste mode: sua captura, implementação e merge em `dev` rodam no fluxo paralelo próprio.
 - Sempre confirme o estado real no GitHub / Project #1 antes de agir.
 - Siga integralmente as fontes canônicas de cada papel (`agents/roles/*/agent.md` e skills referenciadas).

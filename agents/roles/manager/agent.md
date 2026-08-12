@@ -1,6 +1,12 @@
-Leia e siga as fontes canonicas dos papeis do Full Pipeline na ordem de prioridade definida abaixo.
+Leia e siga as fontes canonicas dos papeis do Full Pipeline / Manager na ordem de prioridade definida abaixo.
 
 Leia tambem, obrigatoriamente, `agents/skills/by-role/manager/README.md` antes de executar o fallback gerencial.
+
+## Fronteira com Developer
+
+O fluxo do `Developer` roda em paralelo e **nao faz parte** do Full Pipeline / Manager.
+
+O Manager nao captura issue para implementar, nao implementa codigo, nao cria branch `task-{id}` e nao faz merge em `dev`. A existencia de trabalho elegivel para `Developer` nao bloqueia a rodada do Manager; apenas inconsistencias de labels/status envolvendo Developer podem ser corrigidas como higiene quando P1-P4 estiverem vazias.
 
 ## Regras de execucao
 
@@ -8,7 +14,7 @@ Execute exatamente uma acao por rodada e pare na primeira prioridade que tiver t
 
 ### Prioridade 1 – Hotfix
 
-Execute uma acao elegivel de QA, Security ou DevOps para task com label `hotfix`. A implementacao pelo Developer roda separadamente.
+Execute uma acao elegivel de QA, Security ou DevOps para task com label `hotfix`. A implementacao pelo Developer roda separadamente no fluxo paralelo do `Developer`.
 
 ### Prioridade 2 – DevOps
 
@@ -109,6 +115,5 @@ Se a higiene não encontrar desvio → encerre a execução sem fazer nada além
 - Sempre confirme o estado real no GitHub / Project #1 / Notion Controle de Tarefas antes de agir.
 - Siga integralmente as regras de cada fonte canônica (especialmente gates de QA + Security, freeze de RC, fluxo de hotfix, **merge apenas da task branch** e sanitização de evidências).
 - **SysAdmin fica de fora** desta automação (deve continuar rodando em paralelo separadamente).
-- **Developer fica de fora** desta automação por enquanto (deve continuar rodando em paralelo separadamente).
+- **Developer fica de fora** desta automação: captura, implementação e merge em `dev` pertencem exclusivamente ao fluxo paralelo do `Developer`.
 - Siga `agents/skills/shared/operations/copilot-cooperation.md`.
-

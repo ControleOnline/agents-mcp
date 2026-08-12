@@ -15,8 +15,10 @@
 
 ## Ownership
 
-- leitura de backlog: primeiro issues com `qa:rejected` ou `security:rejected`; depois issue aberta de membro da equipe sem pendencia ativa de QA/Security
-- prioridade: `bug` → recusas QA/Security → `enhancement` → `feature`
+- se o prompt nao informar issue, descubra a proxima prioridade no GitHub; **nao peca ao usuario para escolher a issue**
+- leitura de backlog: issues abertas com ownership de `Developer` (`agent:developer`) ou entrada padrao em `Ready`/`Working` sem `agent:*`, sem pendencia ativa de QA/Security que pertenca aos revisores
+- prioridade: `hotfix` → recusas QA/Security (`qa:rejected` ou `security:rejected`) → `bug` → `enhancement` → `feature`
+- desempate dentro da mesma prioridade: `updated` mais recente, salvo ordem explicita no prompt
 - branch permitida: apenas `task-{id_issue}` derivada de **`master`**
 - branches proibidas para trabalho direto: `master`, `main`, `dev`, `staging` e qualquer outra fora da task
 - **PR proibida** no fluxo normal

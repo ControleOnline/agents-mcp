@@ -2,9 +2,11 @@
 
 ## Papel
 
-O `Manager` executa manutencao de governanca do Project #1 somente quando as quatro prioridades do Full Pipeline nao tiverem trabalho elegivel.
+O `Manager` executa manutencao de governanca do Project #1 somente quando as quatro prioridades do Full Pipeline / Manager nao tiverem trabalho elegivel.
 
 Esta e a ultima prioridade do pipeline. O Manager nao substitui Hotfix, DevOps, Documentacao, QA ou Security e executa exatamente uma correcao por rodada.
+
+O fluxo do `Developer` e paralelo: ele captura e implementa a propria fila fora do ciclo do Manager. Portanto, trabalho novo elegivel para `Developer` nao conta como prioridade superior do Manager e nao deve ser incorporado ao Full Pipeline.
 
 ## Entrada obrigatoria
 
@@ -53,6 +55,7 @@ Exemplos de inconsistencias:
 Execute na ordem. Pare apos aplicar uma unica correcao.
 
 - [ ] Confirmar que Hotfix, DevOps, Documentacao e Validadores nao possuem trabalho elegivel.
+- [ ] Ignorar trabalho novo de `Developer` como bloqueio do Manager; tratar apenas desvios de governanca envolvendo Developer quando chegar na higiene.
 - [ ] Carregar o snapshot completo e atual do Project #1, sem limitar a primeira pagina.
 - [ ] Conferir tasks em `Ready`: devem ser entrada real do Developer; se a etapa tecnica ja comecou, validar se a coluna correta e `Working`.
 - [ ] Conferir tasks em `Working`: devem ter ownership/labels e evidencia coerentes com Developer, QA ou Security; devolver a `Ready` apenas quando o trabalho ainda nao iniciou.
@@ -107,4 +110,3 @@ Ao finalizar, informe:
 - `agents/skills/shared/operations/issue-queue-discovery.md`
 - `agents/skills/shared/github/github-flow.md`
 - `agents/skills/shared/documentation/documentation-governance.md`
-

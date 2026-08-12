@@ -12,9 +12,10 @@ Antes de agir em qualquer repositório:
 
 1. leia este arquivo
 2. leia `agents/roles/developer/agent.md`
-3. leia `agents/skills/shared/github/github-flow.md`
-4. leia o `AGENTS.md` mais próximo do código afetado
-5. confirme o estado atual no GitHub
+3. leia `agents/skills/shared/operations/issue-queue-discovery.md`
+4. leia `agents/skills/shared/github/github-flow.md`
+5. leia o `AGENTS.md` mais próximo do código afetado
+6. confirme o estado atual no GitHub
 
 Se houver conflito entre um wrapper local e esta base, prefira esta base, `github-flow.md` e o arquivo central do tipo no `agents-mcp`.
 
@@ -33,7 +34,8 @@ Use GitHub como sistema principal para issues, commits, branches, labels `agent:
 - issue `open`
 - agente responsável `Developer`, ou task em `Working` sem `agent:*`
 - sem bloqueio prioritário de Security que impeça retomada
-- priorize recusas (`qa:rejected` / `security:rejected`) sobre trabalho novo
+- se o prompt nao informar issue, descubra a proxima issue elegivel no GitHub em vez de pedir escolha ao usuario
+- prioridade: `hotfix` → recusas (`qa:rejected` / `security:rejected`) → `bug` → `enhancement` → `feature`
 
 ## Escolha do repositório correto
 

@@ -15,15 +15,32 @@ Ao iniciar uma execucao:
 5. leia `agents/skills/shared/operations/copilot-cooperation.md`
 
 **Obrigatorio:** leia `agents/skills/shared/operations/copilot-cooperation.md` (cooperacao com Copilot, workers, runners e Actions).
-5. leia `agents/skills/shared/quality/code-quality.md`
-6. leia `agents/skills/shared/github/github-flow.md`
-7. leia `agents/skills/by-role/developer/README.md`
-8. leia o `AGENTS.md` local mais especifico do repositorio ou modulo alvo
-9. confirme o estado atual no GitHub antes de concluir
+6. leia `agents/skills/shared/operations/issue-queue-discovery.md`
+7. leia `agents/skills/shared/quality/code-quality.md`
+8. leia `agents/skills/shared/github/github-flow.md`
+9. leia `agents/skills/by-role/developer/README.md`
+10. leia o `AGENTS.md` local mais especifico do repositorio ou modulo alvo
+11. confirme o estado atual no GitHub antes de concluir
 
 ## Papel
 
 O `Developer` implementa a issue na branch `task-{id_issue}` derivada de **`master`** e entrega com **merge em `dev`** (sem PR). Nao mexe em `staging` nem em `master`.
+
+## Captura autonoma
+
+Se o prompt nao informar `owner/repo#issue`, o `Developer` **nao deve pedir a issue ao usuario**. Deve descobrir a proxima prioridade no GitHub seguindo `agents/skills/shared/operations/issue-queue-discovery.md` e `agents/skills/by-role/developer/README.md`.
+
+Esta captura pertence somente ao fluxo paralelo do `Developer`; ela nao faz parte do Full Pipeline / Manager.
+
+A selecao deve escolher exatamente uma issue elegivel, nesta ordem:
+
+1. `hotfix`
+2. retomada/correcao de entrega devolvida por `qa:rejected` ou `security:rejected`
+3. `bug`
+4. `enhancement`
+5. `feature`
+
+Dentro da mesma prioridade, prefira a issue elegivel com `updated` mais recente, salvo ordem explicita do prompt.
 
 ## Entrega
 
