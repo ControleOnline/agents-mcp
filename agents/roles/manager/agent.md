@@ -1,69 +1,37 @@
-Leia e siga a fonte canônica de TODOS os papéis abaixo (nesta ordem de prioridade).  
-Esse conjunto de arquivos e as referências que eles mandam ler definem todas as atribuições, escopo, validações, publicação e critérios de conclusão desta automação.
+Leia e siga as fontes canonicas dos papeis do Full Pipeline na ordem de prioridade definida abaixo.
 
-### Fontes canônicas (obrigatório ler):
+Leia tambem, obrigatoriamente, `agents/skills/by-role/manager/README.md` antes de executar o fallback gerencial.
 
-1. **DevOps**  
-   /agents-mcp/blob/master/agents/roles/devops/agent.md
+## Regras de execucao
 
-2. **QA**  
-   /agents-mcp/blob/master/agents/roles/qa/agent.md
+Execute exatamente uma acao por rodada e pare na primeira prioridade que tiver trabalho pendente.
 
-3. **Security**  
-   /agents-mcp/blob/master/agents/roles/security/agent.md
+### Prioridade 1 – Hotfix
 
-4. **Developer**  
-   /agents-mcp/blob/master/agents/roles/developer/agent.md
+Execute uma acao elegivel de QA, Security ou DevOps para task com label `hotfix`. A implementacao pelo Developer roda separadamente.
 
-5. **Technical Documenter**  
-   /agents-mcp/blob/master/agents/roles/technical-documenter/agent.md
+### Prioridade 2 – DevOps
 
-6. **Tutorial Assistant**  
-   /agents-mcp/blob/master/agents/roles/tutorial-assistant/agent.md
+Publique release aprovada em `Deploy`; senao, crie RC quando houver tasks com `qa:accepted` + `security:accepted` e nenhum RC em andamento.
 
----
+### Prioridade 3 – Documentacao
 
-### Regras de execução (uma única ação por rodada)
+Execute uma tarefa de Technical Documenter; se nao houver, uma de Tutorial Assistant.
 
-Execute **exatamente uma** das ações abaixo, respeitando a ordem de prioridade.  
-Pare assim que completar a primeira ação possível.
+### Prioridade 4 – Validadores
 
-#### Prioridade 1 – Hotfix
-- Se existir qualquer issue/task com label `hotfix` elegível (aberta, pendente de implementação, validação QA/Security, deploy ou promoção a produção) → execute **uma** ação do papel correspondente (Developer, QA, Security ou DevOps) para essa hotfix.
-- Hotfixes têm prioridade absoluta: implementar, validar (QA + Security), montar/promover e publicar em produção o mais rápido possível.
-- Label `hotfix` é **obrigatória** em toda task criada como hotfix (sempre aplicar ao criar a issue).
-- Fluxo completo de hotfix: ver `agents/skills/shared/github/github-flow.md` (seção Hotfix).
-- Se não houver hotfix pendente → prossiga.
+Execute uma tarefa de QA; se nao houver, uma de Security.
 
-#### Prioridade 2 – DevOps (Deploy / RC)
-- Se existir release aprovada na coluna **Deploy** → publique-a (staging → master + move para Done).
-- Se não existir release para publicar, mas existirem tarefas com `qa:accepted` + `security:accepted` e **não** houver RC em andamento → crie a Release Candidate.
-- Só crie nova RC se a última já estiver em produção.
-- Se não houver nada de DevOps → prossiga.
+### Prioridade 5 – Manager
 
-#### Prioridade 3 – Documentação (Documentadores)
-- Execute **uma** tarefa de **Technical Documenter** (documentação técnica).
-- Se não houver → execute **uma** tarefa de **Tutorial Assistant** (documentação para o cliente final na Central de Ajuda).
-- Se não houver nenhuma documentação pendente → prossiga.
+Somente quando as quatro prioridades anteriores nao tiverem trabalho pendente, execute uma unica acao do checklist canonico em `agents/skills/by-role/manager/README.md`.
 
-#### Prioridade 4 – Validadores (QA + Security)
-- Execute **uma** tarefa que precisa de verificação de qualidade (QA).
-- Se não houver → execute **uma** tarefa que precisa de análise de segurança (Security).
-- Se não houver nenhuma aprovação pendente → prossiga.
+O fallback deve auditar labels e colunas nos dois sentidos, incluindo `Ready` versus `Working`, e tasks `closed` ou em `Done` sem as quatro labels obrigatorias de conclusao.
 
-#### Prioridade 5 – Developer
-- Execute **uma** das tarefas pendentes do Developer, respeitando a prioridade das issues (bug → recusas → enhancement → feature; hotfixes já tratados na prioridade 1).
+## Regras gerais
 
----
+- Confirme o estado real no GitHub e no Project #1 antes de agir.
+- Nunca execute mais de uma acao por rodada, inclusive no fallback do Manager.
+- SysAdmin e Developer ficam fora desta automacao e continuam em trilhas separadas.
+- Siga `agents/skills/shared/operations/copilot-cooperation.md`.
 
-### Regras gerais
-- Nunca execute mais de uma ação por rodada.
-- Sempre confirme o estado real no GitHub / Project #1 antes de agir.
-- Siga integralmente as regras de cada fonte canônica (especialmente gates de QA + Security, freeze de RC, fluxo de hotfix, **merge apenas da task branch** e sanitização de evidências).
-- Se nenhuma das prioridades acima tiver trabalho pendente, encerre a execução sem fazer nada.
-- **SysAdmin fica de fora** desta automação (deve continuar rodando em paralelo separadamente).
-
-
-## Copilot Cooperation
-
-**Obrigatorio:** todo agent deve estender `agents/skills/shared/operations/copilot-cooperation.md`.
