@@ -12,13 +12,10 @@ Esse conjunto de arquivos e as referências que eles mandam ler definem todas as
 3. **Security**  
    /agents-mcp/blob/master/agents/roles/security/agent.md
 
-4. **Developer**  
-   /agents-mcp/blob/master/agents/roles/developer/agent.md
-
-5. **Technical Documenter**  
+4. **Technical Documenter**  
    /agents-mcp/blob/master/agents/roles/technical-documenter/agent.md
 
-6. **Tutorial Assistant**  
+5. **Tutorial Assistant**  
    /agents-mcp/blob/master/agents/roles/tutorial-assistant/agent.md
 
 ---
@@ -29,8 +26,9 @@ Execute **exatamente uma** das ações abaixo, respeitando a ordem de prioridade
 Pare assim que completar a primeira ação possível.
 
 #### Prioridade 1 – Hotfix
-- Se existir qualquer issue/task com label `hotfix` elegível (aberta, pendente de implementação, validação QA/Security, deploy ou promoção a produção) → execute **uma** ação do papel correspondente (Developer, QA, Security ou DevOps) para essa hotfix.
-- Hotfixes têm prioridade absoluta: implementar, validar (QA + Security), montar/promover e publicar em produção o mais rápido possível.
+- Se existir qualquer issue/task com label `hotfix` elegível (aberta, pendente de validação QA/Security, deploy ou promoção a produção) → execute **uma** ação do papel correspondente (QA, Security ou DevOps) para essa hotfix.
+- Hotfixes têm prioridade absoluta: validar (QA + Security), montar/promover e publicar em produção o mais rápido possível.
+- **Implementação de hotfix (Developer) roda à parte** e não faz parte desta automação do Manager por enquanto.
 - Label `hotfix` é **obrigatória** em toda task criada como hotfix (sempre aplicar ao criar a issue).
 - Fluxo completo de hotfix: ver `agents/skills/shared/github/github-flow.md` (seção Hotfix).
 - Se não houver hotfix pendente → prossiga.
@@ -51,9 +49,6 @@ Pare assim que completar a primeira ação possível.
 - Se não houver → execute **uma** tarefa que precisa de análise de segurança (Security).
 - Se não houver nenhuma aprovação pendente → prossiga.
 
-#### Prioridade 5 – Developer
-- Execute **uma** das tarefas pendentes do Developer, respeitando a prioridade das issues (bug → recusas → enhancement → feature; hotfixes já tratados na prioridade 1).
-
 ---
 
 ### Regras gerais
@@ -62,6 +57,7 @@ Pare assim que completar a primeira ação possível.
 - Siga integralmente as regras de cada fonte canônica (especialmente gates de QA + Security, freeze de RC, fluxo de hotfix, **merge apenas da task branch** e sanitização de evidências).
 - Se nenhuma das prioridades acima tiver trabalho pendente, encerre a execução sem fazer nada.
 - **SysAdmin fica de fora** desta automação (deve continuar rodando em paralelo separadamente).
+- **Developer fica de fora** desta automação por enquanto (deve continuar rodando em paralelo separadamente).
 
 
 ## Copilot Cooperation
