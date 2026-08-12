@@ -16,7 +16,7 @@ Execute exatamente uma acao por rodada e pare na primeira prioridade que tiver t
 
 Execute uma acao elegivel de QA, Security ou DevOps para task com label `hotfix`. A implementacao pelo Developer roda separadamente no fluxo paralelo do `Developer`.
 
-Hotfix tem prioridade absoluta e **pode entrar** em RC já freezeado. Ainda assim, a promoção **sempre** passa por `staging` → coluna **In Review** → ação humana em **Deploy** → só então `staging → master`. Nunca publicar hotfix direto em master nem pular In Review.
+Hotfix tem prioridade absoluta e **pode entrar** em RC já freezeado (ou seguir trilha própria). Ainda assim, a promoção **sempre** passa por `staging` → coluna **In Review** → ação humana em **Deploy**. Quando o humano coloca a task hotfix em **Deploy**, publica-se **somente o delta do hotfix** em master — **não** é obrigatório levar o RC inteiro. Nunca publicar hotfix direto em master nem pular In Review.
 
 ### Prioridade 2 – DevOps
 

@@ -127,7 +127,7 @@ Detalhes de publicacao: `agents/skills/shared/github/master-publication.md`.
 - Nao implementa feature de produto no lugar do Developer.
 - Nao abre RC novo com RC ainda aberto.
 - Nao inclui task sem o par `qa:accepted` + `security:accepted`.
-- Nao injeta tasks novas no RC ja freezeado.
+- Nao injeta tasks comuns novas no RC ja freezeado (exceção: `hotfix` com dual-gate).
 
 ## Quem pode o que
 
@@ -174,12 +174,15 @@ master
                  └─ DevOps promove
                       └─ merge **somente** task-{id} → staging
                            (NUNCA merge de `dev` inteiro em staging)
-                            └─ task/pai → coluna **In Review** (conferência humana no staging)
-                                 └─ humano move para **Deploy**
-                                      └─ DevOps merge staging → master → Done
+                            └─ task hotfix → coluna **In Review** (conferência humana no staging)
+                                 └─ humano move a task hotfix para **Deploy**
+                                      └─ DevOps promove **somente o delta do hotfix** → master → Done
+                                         (NÃO é obrigatório levar o RC inteiro junto)
 ```
 
-**Obrigatório:** mesmo em hotfix, o delta **não** vai direto para `master`. Após promoção a `staging`, a task (ou o RC de item único) **deve** passar pela coluna **In Review** para conferência humana no ambiente de staging. Só após o humano mover para **Deploy** o DevOps promove a `master`.
+**Obrigatório:** mesmo em hotfix, o delta **não** vai direto para `master`. Após promoção a `staging`, a task hotfix **deve** passar pela coluna **In Review** para conferência humana no ambiente de staging. Só após o **humano** mover a task hotfix (ou o RC de item único de hotfix) para **Deploy** o DevOps promove a `master`.
+
+**Publicação independente:** quando o humano aprova e coloca a **task hotfix** em **Deploy**, o DevOps promove **somente o delta da `task-{id}` do hotfix** para `master`. **Não** é necessário publicar o RC completo junto. O RC aberto continua no fluxo normal (In Review / Deploy) com o restante do pacote.
 
 ### Regra crítica de merge (hotfix e fluxo normal)
 
@@ -197,11 +200,16 @@ master
    - Com `hotfix` + `qa:accepted` + `security:accepted`, promove com prioridade:
      - merge **somente** `task-{id}` → `staging` (nunca `dev` inteiro);
      - ou monta RC de item único (semver patch) a partir desse delta;
-     - move a task (ou o pai do RC de hotfix) para a coluna **In Review** (nunca pula In Review);
+     - move a **task hotfix** (ou o pai do RC de item único de hotfix) para a coluna **In Review** (nunca pula In Review);
    - **Proibido** promover hotfix direto de `staging`/`dev` para `master` sem a coluna **Deploy** (aprovação humana).
-   - Após humano em coluna `Deploy`, merge `staging` → `master` e `Done`.
+   - Após o **humano** mover a task hotfix para **Deploy**: promove **somente o delta da `task-{id}` do hotfix** para `master` e move essa task para `Done`.
+   - **Não** é obrigatório levar o RC completo junto na publicação do hotfix. O RC aberto permanece no seu fluxo normal com as demais tasks.
 4. **Manager**: prioridade 1 = qualquer ação relacionada a issue com label `hotfix`.
-5. **Não se abre segundo RC paralelo** só por causa de hotfix. Se já existir RC aberto (mesmo freezeado), o DevOps **inclui** o delta da `task-{id}` (hotfix + dual-gate) no pacote atual — essa é a única quebra permitida da regra de freeze. O pacote atualizado (ou o caminho de promoção do hotfix) **continua obrigado** a ir para coluna **In Review**; só após o humano mover para **Deploy** o DevOps promove `staging → master`. Nunca pular In Review nem ir direto a master.
+5. **Não se abre segundo RC paralelo** só por causa de hotfix. Se já existir RC aberto (mesmo freezeado), o DevOps **pode** incluir o delta da `task-{id}` no pacote atual (única quebra de freeze) **ou** promover o hotfix em trilha própria (task-{id} → staging → In Review → Deploy → master). Em ambos os casos:
+   - a task hotfix **sempre** passa por **In Review**;
+   - só após o **humano** mover a task hotfix para **Deploy** o DevOps publica;
+   - a publicação do hotfix promove **somente o delta do hotfix** — **não** exige levar o RC inteiro para master.
+   - Nunca pular In Review nem ir direto a master.
 6. Após publicação, o hotfix deve permanecer refletido em `dev` e `master` para não regredir.
 
 ### Quality bar de hotfix
@@ -215,8 +223,9 @@ master
 
 - nao derive task branch de `dev`/`staging` (sempre de `master`)
 - nao entregue Developer em `staging` (destino e `dev`)
-- nao promova para `master` sem task pai (ou task de hotfix) em coluna `Deploy` e passagem prévia por **In Review** (hotfix também não pula In Review)
+- nao promova para `master` sem task (pai do RC **ou** task de hotfix) em coluna `Deploy` e passagem prévia por **In Review** (hotfix também não pula In Review)
 - nao promova hotfix direto para `master` sem conferência humana em staging
+- ao publicar hotfix em Deploy: promova **somente o delta do hotfix**; não é obrigatório publicar o RC completo junto
 - nao abra segundo RC em paralelo
 - nao refaca merge/passo ja concluido sem necessidade; documente o pulo com comentario
 - nao pule etapa sem evidencia verificavel no GitHub
