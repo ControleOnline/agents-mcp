@@ -42,7 +42,10 @@ Falha ao associar ao projeto deve ser registrada no comentario da issue e tentad
    - se util, complemente com itens do Project #1;
    - filtre pelas regras de elegibilidade do papel;
    - escolha **exatamente uma**;
-   - priorize por `updated` mais recente, salvo ordem explicita no prompt.
+   - aplique primeiro as prioridades funcionais definidas pelo pipeline e pelo papel;
+   - dentro da mesma prioridade, selecione a issue elegivel mais antiga por `createdAt` crescente;
+   - em empate de `createdAt`, selecione o menor numero da issue;
+   - nunca use `updatedAt` para reposicionar trabalho: comentarios, labels ou atividade recente nao fazem uma task ultrapassar outra mais antiga da mesma prioridade.
 
 ## Template de elegibilidade — `Developer`
 
