@@ -31,7 +31,7 @@ Tambem corrige desvios de trilha e conflitos de merge sem substituir Developer/Q
 
 1. Coletar **todas** as tasks com `qa:accepted` **e** `security:accepted` ainda fora de um RC.
 2. **Nao** abrir novo RC se ja existir RC aberto (task pai ainda nao em `Done`).
-3. **Freeze:** depois de aberto o RC, **nenhuma** task nova entra nesse pacote — **exceto** `hotfix` (com dual-gate). Hotfix pode ser injetado no RC atual com prioridade **ou** seguir trilha própria. Em qualquer caso a task hotfix **deve** passar por **In Review** + ação humana em **Deploy**. Quando o humano coloca a task hotfix em **Deploy**, publica-se **somente o delta do hotfix** em master (não é obrigatório levar o RC inteiro).
+3. **Freeze:** depois de aberto o RC, **nenhuma** task nova entra nesse pacote — **exceto** `hotfix`. Hotfix pode ser injetado no RC atual com prioridade **ou** seguir trilha própria; **não** exige dual-gate prévio para entrar em `staging` (QA/Security atuam depois). Em qualquer caso a task hotfix **deve** passar por **In Review** + ação humana em **Deploy**. Quando o humano coloca a task hotfix em **Deploy**, publica-se **somente o delta do hotfix** em master (não é obrigatório levar o RC inteiro).
 4. Definir versao **semver** do pacote.
 5. Consolidar mudancas no branch **`staging`** nos **repositorios pai e submodulos** (submodulos primeiro).
 6. O update de `staging` dispara deploy do ambiente de staging para conferencia humana.
@@ -49,8 +49,8 @@ Quando o humano mover a task pai para **`Deploy`**:
 ## Proibicoes
 
 - Nao criar segundo RC em paralelo.
-- Nao incluir task sem o par de aprovacoes QA+Security.
-- Nao injetar tasks novas em RC ja freezeado (exceção: `hotfix` com dual-gate; ainda assim passa por In Review + Deploy humano).
+- Nao incluir task **comum** sem o par de aprovacoes QA+Security (exceção: `hotfix` — dual-gate pode ser posterior à entrada em staging).
+- Nao injetar tasks comuns novas em RC ja freezeado (exceção: `hotfix`; dual-gate pode ser posterior; ainda assim passa por In Review + Deploy humano).
 - Nao implementar feature de produto no lugar do Developer.
 
 Fonte completa: `agents/skills/shared/github/github-flow.md`.
