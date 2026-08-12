@@ -89,8 +89,10 @@ Exemplos:
 ### Regras de exclusividade do RC
 
 - **Nao** se cria um novo RC enquanto existir um RC aberto (task pai de deploy ainda nao publicada / nao em `Done`).
-- **Nenhuma** task nova entra no RC ja aberto depois que ele foi criado (freeze do pacote).
-- Tasks aprovadas depois do freeze aguardam o **proximo** RC.
+- **Freeze:** depois de aberto o RC, **nenhuma** task nova entra nesse pacote — **exceto** issues com label `hotfix`.
+- **Exceção de freeze (hotfix):** um item com label `hotfix` (e dual-gate `qa:accepted` + `security:accepted`) **pode e deve** ser injetado no RC atual mesmo com freeze ativo. Hotfix tem prioridade absoluta e quebra **apenas** a regra de “não entrar no RC atual”.
+- Tasks comuns (sem `hotfix`) aprovadas depois do freeze aguardam o **próximo** RC.
+- **Inalterado:** mesmo com a injeção de hotfix, o pacote (ou o caminho de promoção do hotfix) **sempre** passa por coluna **In Review** e ação humana em **Deploy** antes de ir a `master`. Nunca direto a `master`.
 
 ### Montagem do pacote
 
@@ -199,7 +201,7 @@ master
    - **Proibido** promover hotfix direto de `staging`/`dev` para `master` sem a coluna **Deploy** (aprovação humana).
    - Após humano em coluna `Deploy`, merge `staging` → `master` e `Done`.
 4. **Manager**: prioridade 1 = qualquer ação relacionada a issue com label `hotfix`.
-5. Não se abre segundo RC paralelo só por causa de hotfix; se já existir RC aberto, o DevOps pode incluir o delta da `task-{id}` no pacote atual **apenas se ainda não estiver freezeado**, ou documentar RC paralelo excepcional de hotfix com comentário na issue pai.
+5. **Não se abre segundo RC paralelo** só por causa de hotfix. Se já existir RC aberto (mesmo freezeado), o DevOps **inclui** o delta da `task-{id}` (hotfix + dual-gate) no pacote atual — essa é a única quebra permitida da regra de freeze. O pacote atualizado (ou o caminho de promoção do hotfix) **continua obrigado** a ir para coluna **In Review**; só após o humano mover para **Deploy** o DevOps promove `staging → master`. Nunca pular In Review nem ir direto a master.
 6. Após publicação, o hotfix deve permanecer refletido em `dev` e `master` para não regredir.
 
 ### Quality bar de hotfix

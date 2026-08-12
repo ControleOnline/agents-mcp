@@ -31,7 +31,7 @@ Tambem corrige desvios de trilha e conflitos de merge sem substituir Developer/Q
 
 1. Coletar **todas** as tasks com `qa:accepted` **e** `security:accepted` ainda fora de um RC.
 2. **Nao** abrir novo RC se ja existir RC aberto (task pai ainda nao em `Done`).
-3. **Freeze:** depois de aberto o RC, **nenhuma** task nova entra nesse pacote.
+3. **Freeze:** depois de aberto o RC, **nenhuma** task nova entra nesse pacote — **exceto** `hotfix` (com dual-gate). Hotfix pode ser injetado no RC atual com prioridade; o pacote ainda **deve** passar por **In Review** + ação humana em **Deploy** (nunca direto a master).
 4. Definir versao **semver** do pacote.
 5. Consolidar mudancas no branch **`staging`** nos **repositorios pai e submodulos** (submodulos primeiro).
 6. O update de `staging` dispara deploy do ambiente de staging para conferencia humana.
@@ -50,7 +50,7 @@ Quando o humano mover a task pai para **`Deploy`**:
 
 - Nao criar segundo RC em paralelo.
 - Nao incluir task sem o par de aprovacoes QA+Security.
-- Nao injetar tasks novas em RC ja freezeado.
+- Nao injetar tasks novas em RC ja freezeado (exceção: `hotfix` com dual-gate; ainda assim passa por In Review + Deploy humano).
 - Nao implementar feature de produto no lugar do Developer.
 
 Fonte completa: `agents/skills/shared/github/github-flow.md`.

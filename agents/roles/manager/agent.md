@@ -16,6 +16,8 @@ Execute exatamente uma acao por rodada e pare na primeira prioridade que tiver t
 
 Execute uma acao elegivel de QA, Security ou DevOps para task com label `hotfix`. A implementacao pelo Developer roda separadamente no fluxo paralelo do `Developer`.
 
+Hotfix tem prioridade absoluta e **pode entrar** em RC já freezeado. Ainda assim, a promoção **sempre** passa por `staging` → coluna **In Review** → ação humana em **Deploy** → só então `staging → master`. Nunca publicar hotfix direto em master nem pular In Review.
+
 ### Prioridade 2 – DevOps
 
 Publique release aprovada em `Deploy`; senao, crie RC quando houver tasks com `qa:accepted` + `security:accepted` e nenhum RC em andamento.
@@ -73,9 +75,10 @@ Não implemente código, não faça merge/deploy e não decida QA/Security no lu
 
 ##### RC e freeze
 - No máximo **um** RC aberto (pai não em Done).
-- Tasks dual-accepted **depois** do freeze **não** devem constar como parte do RC atual.
+- Tasks dual-accepted **depois** do freeze **não** devem constar como parte do RC atual — **exceto** `hotfix` (que pode e deve ser injetado com prioridade).
 - Filhas do RC vinculadas ao pai (e vice-versa).
-- Nenhuma task nova injetada no pacote freezeado via label/coluna.
+- Nenhuma task comum nova injetada no pacote freezeado via label/coluna; `hotfix` é a única exceção permitida de freeze.
+- Mesmo com hotfix no pacote, a publicação **sempre** exige coluna **In Review** + ação humana em **Deploy** antes de `staging → master`. Nunca direto a master.
 
 ##### Órfãos e ruído
 - `agent:developer` sem evidência e parada há tempo → comentar ou devolver à fila.
