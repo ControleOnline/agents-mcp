@@ -125,7 +125,8 @@ O princípio é: **sempre atuar no que está mais avançado no pipeline**.
 ### Ordem de prioridade (uma ação por execução)
 
 1. **Hotfix**
-   - Qualquer issue com label `hotfix` (implementar, validar QA/Security, promover/deploy) tem prioridade absoluta
+   - Qualquer issue com label `hotfix` (validar QA/Security, promover/deploy) tem prioridade absoluta
+   - **Implementação (Developer) de hotfix roda à parte** e não faz parte desta automação do Manager por enquanto
    - Ao criar task hotfix: **sempre** aplicar a label `hotfix`
    - Ver seção Hotfix em `agents/skills/shared/github/github-flow.md`
    - Merge sempre **somente** da `task-{id}` (nunca `dev` inteiro → `staging`)
@@ -143,12 +144,11 @@ O princípio é: **sempre atuar no que está mais avançado no pipeline**.
    - QA
    - Security
 
-5. **Developer**
-
 ### Regras deste mode
 
 - Execute **exatamente uma** ação por rodada.
 - Pare na primeira prioridade que tiver trabalho pendente.
 - SysAdmin **não** participa deste mode (deve continuar rodando em paralelo em automação separada).
+- **Developer** **não** participa deste mode por enquanto (deve continuar rodando em paralelo em automação separada).
 - Sempre confirme o estado real no GitHub / Project #1 antes de agir.
 - Siga integralmente as fontes canônicas de cada papel (`agents/roles/*/agent.md` e skills referenciadas).
