@@ -77,7 +77,7 @@ Quando houver mais de uma inconsistencia, escolha a mais avancada no pipeline:
 4. `Ready`/`Working` divergentes da etapa real;
 5. assignees indevidos e demais higiene de labels.
 
-Dentro da mesma classe, corrija primeiro a task atualizada ha mais tempo.
+Dentro da mesma classe, corrija primeiro a task mais antiga por `createdAt` crescente; em empate, use o menor numero da issue. Nao use `updatedAt` para ordenar a fila.
 
 ## Guardrails
 

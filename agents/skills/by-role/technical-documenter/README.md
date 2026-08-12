@@ -35,7 +35,9 @@ O foco e registrar informacoes que ajudem o time a entender:
 2. Prompt sem issue/repositorio:
    - busque em **todos** os repositorios da org;
    - escolha **exatamente uma** issue elegivel por execucao;
-   - priorize por `updated` mais recente, salvo outra ordem no prompt.
+   - respeite primeiro as prioridades funcionais aplicaveis;
+   - dentro da mesma prioridade, escolha a issue mais antiga por `createdAt` crescente; em empate, use o menor numero da issue;
+   - nao use `updatedAt` para ordenar a fila.
 
 ## Elegibilidade
 

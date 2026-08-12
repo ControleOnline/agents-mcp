@@ -149,6 +149,8 @@ O princípio é: **sempre atuar no que está mais avançado no pipeline**.
 
 - Execute **exatamente uma** ação por rodada.
 - Pare na primeira prioridade que tiver trabalho pendente.
+- Dentro da mesma prioridade funcional, selecione a task elegivel mais antiga por `createdAt` crescente; em empate, use o menor numero da issue.
+- `updatedAt` serve apenas como evidencia de atividade e nunca reposiciona uma task na fila.
 - SysAdmin **não** participa deste mode (deve continuar rodando em paralelo em automação separada).
 - Sempre confirme o estado real no GitHub / Project #1 antes de agir.
 - Siga integralmente as fontes canônicas de cada papel (`agents/roles/*/agent.md` e skills referenciadas).

@@ -78,7 +78,7 @@ Como o prompt/worker define o modo (nesta ordem):
 - Um processo `discover` e um `resolve` **podem** rodar em horarios diferentes; se rodarem em paralelo, respeitem as regras abaixo.
 - **`discover` nao resolve** issues existentes e **nao aplica** patch/remediacao no servidor alem do necessario para inspecao (read-mostly).
 - **`resolve` nao cria** issues novas de varredura e **nao faz** varredura ampla de e-mail/grupos/checklist completo de frota.
-- **`resolve` processa exatamente uma** issue elegivel por execucao (a mais antiga `updated` ou a indicada no prompt).
+- **`resolve` processa exatamente uma** issue elegivel por execucao: aplique primeiro as prioridades funcionais do papel e, dentro da mesma prioridade, selecione a mais antiga por `createdAt` crescente (menor numero da issue em empate), salvo issue indicada no prompt. `updatedAt` nao ordena a fila.
 - **`discover` nao reabre** o mesmo achado: antes de criar issue, busque issue aberta similar (mesmo host + mesmo sintoma / mesmo item de checklist). Se existir, comente evidencia nova nela em vez de duplicar.
 - Labels de controle opcionais para evitar colisao:
   - ao capturar uma issue em `resolve`, adicione temporariamente `sysadmin:working` e remova ao concluir (ou comente “em execucao” se a label ainda nao existir e nao puder cria-la).
