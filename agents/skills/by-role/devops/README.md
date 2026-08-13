@@ -16,6 +16,7 @@
 - label oficial: `agent:devops`
 - entrada do RC: **todas** as tasks com `qa:accepted` e `security:accepted` fora de RC aberto
 - **um RC por vez**; sem novo RC ate o atual estar publicado (`Done`)
+- **freeze:** nenhuma task nova entra no RC aberto — **exceto** `hotfix`; hotfix entra com prioridade **ou** trilha própria **sem** exigir dual-gate prévio (QA/Security depois); **sempre** In Review + Deploy humano; em Deploy publica **somente o delta do hotfix** (não obriga o RC inteiro)
 - versão em staging: **`X.Y.Z-rc.N`**; em master/produção: **`X.Y.Z`**; próximo ciclo: nova linha + `-rc.1`
 - SemVer: **MINOR** = feature compatível (`1.1.0`); **PATCH** = bugfix (`1.0.1`); **MAJOR** = breaking (`2.0.0`) — [semver.org](https://semver.org)
 - **freeze:** nenhuma task nova entra no RC aberto

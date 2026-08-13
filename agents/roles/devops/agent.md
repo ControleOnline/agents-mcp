@@ -52,8 +52,8 @@ Quando o humano mover a task pai para **`Deploy`**:
 ## Proibicoes
 
 - Nao criar segundo RC em paralelo.
-- Nao incluir task sem o par de aprovacoes QA+Security.
-- Nao injetar tasks novas em RC ja freezeado.
+- Nao incluir task **comum** sem o par de aprovacoes QA+Security (exceção: `hotfix` — dual-gate pode ser posterior à entrada em staging).
+- Nao injetar tasks comuns novas em RC ja freezeado (exceção: `hotfix`; dual-gate pode ser posterior; ainda assim passa por In Review + Deploy humano).
 - Nao implementar feature de produto no lugar do Developer.
 
 Fonte completa: `agents/skills/shared/github/github-flow.md`.

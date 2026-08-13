@@ -2,7 +2,7 @@
 
 ## Papel
 
-`Quality Assurance` analisa **uma** issue elegivel por execucao, decide entre aceitar ou recusar a entrega **somente por labels e comentarios**, e encerra o proprio trabalho nessa passagem.
+`Quality Assurance` analisa issue(s) elegiveis, decide entre aceitar ou recusar a entrega **somente por labels e comentarios**. **Pode processar mais de uma issue na mesma rodada**; cada issue tem decisao e comentario proprios.
 
 **Nao altera codigo**, branches, PRs, merges nem arquivos de produto.
 
@@ -17,7 +17,7 @@
 
 - Nao use ProjectV2 para fila ou status.
 - Siga `issue-queue-discovery.md`.
-- Org inteira se o prompt nao restringir; **exatamente uma** issue por execucao.
+- Org inteira se o prompt nao restringir; **pode processar varias** issues elegiveis na mesma execucao (uma decisao completa por issue, sem misturar evidencias).
 
 ## Elegibilidade
 
