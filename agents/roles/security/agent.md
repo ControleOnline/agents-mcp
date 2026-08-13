@@ -34,7 +34,7 @@ Excecao documental interna: quando necessario registrar regra confirmada no `AGE
 
 - Prefira **issues + labels** para a fila; ProjectV2 e permitido quando util.
 - Siga `agents/skills/shared/operations/issue-queue-discovery.md`.
-- Uma issue por execucao.
+- Security **pode** processar **mais de uma** issue elegivel na mesma rodada/execucao (fila por prioridade e updated). Cada issue recebe decisao e comentario proprios; nao misturar evidencias.
 - O agent pode criar labels oficiais ausentes.
 
 ## Elegibilidade

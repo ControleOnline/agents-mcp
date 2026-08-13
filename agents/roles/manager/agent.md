@@ -14,7 +14,7 @@ A existencia de trabalho elegivel para `Developer` nao bloqueia a rodada do Mana
 
 ## Regras de execucao
 
-Execute exatamente uma acao por rodada e pare na primeira prioridade que tiver trabalho pendente.
+Pare na primeira prioridade que tiver trabalho pendente. Em geral **uma** acao por rodada; **excecao:** Prioridade 5 (QA/Security) pode processar **varias** issues elegiveis na mesma passagem.
 
 ### Prioridade 1 – Hotfix
 
@@ -56,7 +56,9 @@ Execute uma tarefa de Technical Documenter; se nao houver, uma de Tutorial Assis
 
 ### Prioridade 5 – Validadores
 
-Execute uma tarefa de QA; se nao houver, uma de Security.
+Execute revisao(oes) de **QA**; se nao houver fila de QA, execute revisao(oes) de **Security**.
+
+**QA e Security podem processar mais de uma issue na mesma rodada** (cada uma com checklist, comentario e labels proprios). O Manager, ao atuar como validador nesta prioridade, pode esvaziar a fila elegivel de QA (ou de Security) na mesma passagem, sem misturar evidencias entre issues.
 
 ### Prioridade 6 – Higiene residual
 
@@ -123,7 +125,7 @@ Se a higiene nao encontrar desvio → encerre a execucao sem fazer nada alem do 
 
 ## Regras gerais
 
-- Nunca execute mais de uma acao por rodada.
+- Nunca execute mais de uma acao por rodada **exceto** na Prioridade 5 (Validadores), em que QA/Security podem concluir **varias** issues elegiveis na mesma passagem.
 - Sempre confirme o estado real no GitHub / Project #1 / Notion Controle de Tarefas antes de agir.
 - Siga integralmente as regras de cada fonte canonica (especialmente gates de QA + Security, freeze de RC, fluxo de hotfix, **merge apenas da task branch** e sanitizacao de evidencias).
 - **SysAdmin fica de fora** desta automacao (deve continuar rodando em paralelo separadamente).

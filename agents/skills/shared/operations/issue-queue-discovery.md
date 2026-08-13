@@ -4,7 +4,10 @@ Skill compartilhada pelos agents documentais (`technical-documenter`, `tutorial-
 
 ## Objetivo
 
-Selecionar **exatamente uma** issue elegivel por execucao. A fonte primaria da fila sao **issues + labels** (e estado open/closed).
+A fonte primaria da fila sao **issues + labels** (e estado open/closed).
+
+- **QA e Security:** podem selecionar e processar **varias** issues elegiveis na mesma execucao/rodada (cada uma com decisao e comentario completos).
+- **Demais papeis** (Developer, DevOps, Manager board, Documentacao, etc.): selecionar **exatamente uma** issue elegivel por execucao, salvo prompt ou fonte canonica do papel que ordene o contrario.
 
 ## ProjectV2
 
@@ -25,7 +28,7 @@ Falha ao associar ao projeto deve ser registrada no comentario da issue e tentad
 
 ## Outras regras
 
-- Nao processe mais de uma issue na mesma execucao (salvo prompt que ordene explicitamente o contrario).
+- Nao processe mais de uma issue na mesma execucao **exceto QA e Security** (e salvo prompt ou fonte canonica do papel que ordene o contrario).
 - O agent pode **criar labels** oficiais ausentes no repositorio.
 
 ## Fonte de verdade da fila
@@ -41,7 +44,7 @@ Falha ao associar ao projeto deve ser registrada no comentario da issue e tentad
    - busque issues em **todos** os repositorios da org `ControleOnline` (preferencialmente por label/estado);
    - se util, complemente com itens do Project #1;
    - filtre pelas regras de elegibilidade do papel;
-   - escolha **exatamente uma**;
+   - **QA/Security:** pode escolher **varias** elegiveis (ordenar por prioridade e `updated`); demais papeis: escolha **exatamente uma**;
    - aplique primeiro as prioridades funcionais definidas pelo pipeline e pelo papel;
    - dentro da mesma prioridade, selecione a issue elegivel mais antiga por `createdAt` crescente;
    - em empate de `createdAt`, selecione o menor numero da issue;
