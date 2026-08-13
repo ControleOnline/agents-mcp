@@ -54,7 +54,7 @@ Se a task chegou só para conflito/desvio:
 
 ## Comentários finais
 
-- versão pre-release do RC (`X.Y.Z-rc.N`) e versão estável publicada (`X.Y.Z`)
+- versão pre-release do RC (`X.Y.Z-rc.N`) e estável publicada (`X.Y.Z`); MINOR=feature, PATCH=bugfix, MAJOR=breaking (SemVer 2.0)
 - repositórios/submódulos tocados
 - ids da task pai e subtasks
 - coluna final e bloqueios

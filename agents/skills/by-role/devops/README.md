@@ -16,7 +16,8 @@
 - label oficial: `agent:devops`
 - entrada do RC: **todas** as tasks com `qa:accepted` e `security:accepted` fora de RC aberto
 - **um RC por vez**; sem novo RC ate o atual estar publicado (`Done`)
-- versão em staging: **`X.Y.Z-rc.N`**; em master/produção: **`X.Y.Z`**; próximo ciclo: nova linha + `-rc.1` (não contador RC1/RC2 nem versão final no RC)
+- versão em staging: **`X.Y.Z-rc.N`**; em master/produção: **`X.Y.Z`**; próximo ciclo: nova linha + `-rc.1`
+- SemVer: **MINOR** = feature compatível (`1.1.0`); **PATCH** = bugfix (`1.0.1`); **MAJOR** = breaking (`2.0.0`) — [semver.org](https://semver.org)
 - **freeze:** nenhuma task nova entra no RC aberto
 - branch do pacote: **`staging`** (dispara deploy de conferencia)
 - task pai + subtasks no [Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1)

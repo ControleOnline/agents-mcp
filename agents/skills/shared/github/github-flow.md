@@ -99,9 +99,13 @@ Exemplos:
    - Em conferência (`staging`): **`X.Y.Z-rc.N`** (ex.: `1.5.0-rc.1`).
    - **Proibido** gravar a versão estável final (`X.Y.Z`) no pacote de staging/RC.
    - **Proibido** usar contador sequencial de RC como versão (ex.: `RC6`, `RC v1.4.20` como se “RC6” fosse a versão).
-   - Escolha de `MAJOR.MINOR.PATCH` pelo conteúdo do pacote (breaking → major; feature compatível → minor; só correção → patch), a partir da **última versão estável em `master`**.
-   - Após `X.Y.Z` estar em produção, o **próximo** ciclo começa em **nova** linha: tipicamente `(próximo).rc.1` (ex.: prod `1.0.0` → próximo RC `1.1.0-rc.1` ou `1.0.1-rc.1`).
-   - Vários candidatos da **mesma** versão alvo: `1.5.0-rc.1`, depois `1.5.0-rc.2` (só se o mesmo alvo for reempacotado antes de ir a produção).
+   - Escolha de `MAJOR.MINOR.PATCH` a partir da **última versão estável em `master`**, conforme [SemVer 2.0.0](https://semver.org):
+     - **MAJOR** (`X+1.0.0`): mudança **incompatível** / breaking na API ou no comportamento público.
+     - **MINOR** (`x.Y+1.0`): **nova funcionalidade** compatível com o que já existe (feature). Ex.: prod `1.0.0` + feature → alvo `1.1.0` → RC `1.1.0-rc.1`.
+     - **PATCH** (`x.y.Z+1`): **somente correção de bug** compatível, sem feature nova. Ex.: prod `1.0.0` + bugfix → alvo `1.0.1` → RC `1.0.1-rc.1`.
+     - Pacote misto (bugs + features compatíveis) → sobe **MINOR** (e zera PATCH). Breaking no pacote → sobe **MAJOR**.
+   - Após `X.Y.Z` estável em produção, o **próximo** RC é sempre de uma **nova** linha SemVer com `-rc.1` (nunca “próximo RC” com o mesmo `X.Y.Z` já publicado).
+   - Reempacotar a **mesma** versão alvo antes da produção: `1.1.0-rc.1`, depois `1.1.0-rc.2` (mesmo MINOR/PATCH; só incrementa o `N` do pre-release).
 3. Consolidar as mudancas aprovadas no branch **`staging`** fazendo merge **somente de cada `task-{id}`** aprovada (nunca merge de `dev` inteiro). Pule consolidacao ja presente com evidencia + comentario.
 4. Fazer isso nos **repositorios pai e nos submodulos** afetados (ordem: submodulos primeiro, depois pai; pins/gitlinks coerentes). Gravar a versão **`X.Y.Z-rc.N`** no `package.json` (ou equivalente) do pacote em `staging`.
 5. O push/atualizacao de `staging` **dispara o deploy** do ambiente de staging para **conferencia humana**.
