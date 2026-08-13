@@ -206,7 +206,7 @@ master
    - **Proibido** promover hotfix direto de `staging`/`dev` para `master` sem a coluna **Deploy** (aprovação humana).
    - Após o **humano** mover a task hotfix para **Deploy**: promove **somente o delta da `task-{id}` do hotfix** para `master` e move essa task para `Done`.
    - **Não** é obrigatório levar o RC completo junto na publicação do hotfix. O RC aberto permanece no seu fluxo normal com as demais tasks.
-4. **Manager**: prioridade 1 = qualquer ação relacionada a issue com label `hotfix`.
+4. **Manager**: prioridade 1 = executar somente uma ação elegível de **QA, Security ou DevOps** para issue com label `hotfix`. O Manager **nunca** captura ou implementa a task, **nunca** cria `task-{id}` e **nunca** faz merge em `dev`; essas ações permanecem exclusivas do fluxo paralelo do Developer.
 5. **Não se abre segundo RC paralelo** só por causa de hotfix. Se já existir RC aberto (mesmo freezeado), o DevOps **pode** incluir o delta da `task-{id}` no pacote atual (única quebra de freeze) **ou** promover o hotfix em trilha própria (task-{id} → staging → In Review → Deploy → master). Em ambos os casos:
    - a task hotfix **sempre** passa por **In Review**;
    - só após o **humano** mover a task hotfix para **Deploy** o DevOps publica em master;
