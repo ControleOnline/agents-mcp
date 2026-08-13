@@ -52,6 +52,8 @@ Uma task comum so pode permanecer `closed` ou na coluna `Done` quando possuir si
 
 As quatro labels formam um conjunto indivisivel para conclusao. Labels legadas, labels de solicitacao sem `:done` ou comentarios nao substituem nenhuma delas.
 
+**Dever do Manager (higiene):** issue `open` com o quarteto completo e evidencia → **fechar** e alinhar coluna **Done**. Pode fechar varias na mesma rodada. Nao deixar conclusao completa parada em `open`.
+
 Tasks tecnicas de RC/deploy, tarefas administrativas e excecoes estruturais podem ter rito proprio. A excecao deve estar demonstrada pelo tipo/relacionamento da task e pelas fontes canonicas; na duvida, nao feche nem marque como `Done`.
 
 ## Dupla validacao estado ↔ labels
@@ -70,7 +72,7 @@ Exemplos de inconsistencias:
 
 ## Checklist canonico (organizacao + higiene)
 
-Usar na Prioridade 2 (itens de RC/board) e na Prioridade 6 (higiene residual). Uma correcao por rodada.
+Usar na Prioridade 2 (itens de RC/board) e na Prioridade 6 (higiene residual). Em geral uma correcao por rodada; **excecao:** fechamento por quarteto completo pode processar **varias** issues na mesma passagem.
 
 ### Board / RC (Prioridade 2 — alta)
 - [ ] **O que impede** de haver tarefas na coluna **In Review**? (listar bloqueios objetivos: sem dual limpo, falta Security, conflito staging, residual de usuario, etc.)
@@ -86,8 +88,9 @@ Usar na Prioridade 2 (itens de RC/board) e na Prioridade 6 (higiene residual). U
 - [ ] Board vazio em In Review **sem** comentario de bloqueio = falha — corrigir ou documentar?
 
 ### Conclusao e labels (Prioridade 6 — residual)
-- [ ] Conferir tasks em `Done` e issues `closed`: exigir as quatro labels de conclusao ou registrar excecao estrutural comprovada.
-- [ ] Conferir o inverso: tasks com as quatro labels devem ter evidencia das quatro etapas e estado/coluna coerente.
+- [ ] **Fechar issues `open` com quarteto completo** (`qa:accepted` + `security:accepted` + `agent:technical-documenter:done` + `agent:tutorial-assistant:done`) e evidencia das quatro etapas: `state=closed` + coluna **Done** + comentario. **Lote permitido** (varias na mesma passagem). Responsabilidade exclusiva do Manager.
+- [ ] Conferir tasks em `Done` e issues `closed`: exigir as quatro labels de conclusao ou registrar excecao estrutural comprovada; sem quarteto → reabrir ou completar labels.
+- [ ] Conferir o inverso: tasks com as quatro labels e evidencia devem estar `closed` / **Done** (nao permanecer abertas em fila ativa).
 - [ ] Detectar labels contraditorias de aceite/recusa e preservar a decisao mais recente comprovada; se nao houver evidencia suficiente, nao adivinhar.
 - [ ] Detectar labels `agent:*` incompativeis com a coluna ou com labels `:done`.
 - [ ] Remover assignees usados indevidamente como mecanismo de fila.
@@ -101,17 +104,18 @@ Usar na Prioridade 2 (itens de RC/board) e na Prioridade 6 (higiene residual). U
 Quando houver mais de uma inconsistencia, escolha a mais avancada no pipeline:
 
 1. RC aberto com pacote fora de **In Review** (Prioridade 2);
-2. `closed`/`Done` sem requisitos de conclusao;
-3. `Deploy`/`In Review` incoerente com o RC;
-4. labels contraditorias ou handoff invalido em `Working`;
-5. `Ready`/`Working` divergentes da etapa real;
-6. assignees indevidos e demais higiene de labels.
+2. Issues `open` com quarteto completo → fechar (lote permitido na P6);
+3. `closed`/`Done` sem requisitos de conclusao;
+4. `Deploy`/`In Review` incoerente com o RC;
+5. labels contraditorias ou handoff invalido em `Working`;
+6. `Ready`/`Working` divergentes da etapa real;
+7. assignees indevidos e demais higiene de labels.
 
 Dentro da mesma classe, corrija primeiro a task mais antiga por `createdAt` crescente; em empate, use o menor numero da issue. Nao use `updatedAt` para ordenar a fila.
 
 ## Guardrails
 
-- Nao fechar issue nem mover para `Done` apenas porque as quatro labels existem; confirme a evidencia real.
+- Fechar issue com quarteto completo **e** evidencia real das quatro etapas; nao fechar so por label sem evidencia, e nao inventar label ausente.
 - Nao inventar label, coluna, excecao ou decisao ausente.
 - Nao apagar evidencia historica em comentarios.
 - Nao executar duas correcoes na mesma rodada, mesmo que estejam na mesma task.

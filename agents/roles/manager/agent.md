@@ -14,7 +14,7 @@ A existencia de trabalho elegivel para `Developer` nao bloqueia a rodada do Mana
 
 ## Regras de execucao
 
-Pare na primeira prioridade que tiver trabalho pendente. Em geral **uma** acao por rodada; **excecao:** Prioridade 5 (QA/Security) pode processar **varias** issues elegiveis na mesma passagem.
+Pare na primeira prioridade que tiver trabalho pendente. Em geral **uma** acao por rodada; **excecoes:** (a) Prioridade 5 (QA/Security) pode processar **varias** issues elegiveis na mesma passagem; (b) Prioridade 6, no item de **fechamento por quarteto completo**, pode fechar **varias** issues elegiveis na mesma passagem.
 
 ### Prioridade 1 – Hotfix
 
@@ -62,16 +62,33 @@ Execute revisao(oes) de **QA**; se nao houver fila de QA, execute revisao(oes) d
 
 ### Prioridade 6 – Higiene residual
 
-Somente quando as prioridades 1–5 nao tiverem trabalho pendente, execute uma unica acao do checklist canonico em `agents/skills/by-role/manager/README.md` (higiene de labels, Done sem quarteto, desync Notion↔GitHub, etc.).
+Somente quando as prioridades 1–5 nao tiverem trabalho pendente, execute o checklist canonico em `agents/skills/by-role/manager/README.md` (higiene de labels, Done sem quarteto, **fechamento por quarteto completo**, desync Notion↔GitHub, etc.).
 
 #### Higiene de board / labels (fallback)
 
-Quando as prioridades 1–5 nao tiverem trabalho pendente, execute **uma** acao de higiene.  
-Nao implemente codigo de produto, nao faca merge/deploy de produto e nao decida QA/Security no lugar dos validadores — apenas alinhe labels/status ja decididos, colunas e desync Notion↔GitHub.
+Quando as prioridades 1–5 nao tiverem trabalho pendente, execute higiene residual.  
+Nao implemente codigo de produto, nao faca merge/deploy de produto e nao decida QA/Security no lugar dos validadores — apenas alinhe labels/status ja decididos, colunas, fechamento por conclusao e desync Notion↔GitHub.
 
 ##### Pre-condicoes
 - Confirmar P1–P5 vazias antes de iniciar.
-- Uma rodada = no maximo **um** desvio corrigido (ou registro "higiene OK — sem desvios").
+- Em geral: no maximo **um** desvio corrigido por rodada (ou registro "higiene OK — sem desvios").
+- **Excecao — fechamento por quarteto:** na mesma passagem o Manager **pode e deve** fechar **todas** as issues `open` que ja tenham o **quarteto completo** de conclusao com evidencia (ver abaixo).
+
+##### Fechamento por quarteto completo (obrigatorio do Manager)
+
+Responsabilidade do Manager: issues `open` que ja possuem **simultaneamente**:
+
+1. `qa:accepted`
+2. `security:accepted`
+3. `agent:technical-documenter:done`
+4. `agent:tutorial-assistant:done`
+
+devem ser **fechadas** (`state=closed`) e alinhadas a coluna **Done** no Project #1, com comentario objetivo citando o quarteto e a evidencia.
+
+- Confirmar evidencia real das quatro etapas (nao inventar label).
+- Pode processar **varias** issues elegiveis na mesma rodada.
+- Tasks de RC/deploy com rito proprio: so fechar se a excecao estrutural estiver demonstrada nas fontes canonicas; na duvida, nao fechar.
+- O inverso continua valendo: `closed`/`Done` **sem** quarteto → reabrir ou completar labels (uma correcao por vez, salvo o lote de fechamento acima).
 
 ##### Labels obrigatorias por estagio
 
@@ -113,11 +130,12 @@ Nao implemente codigo de produto, nao faca merge/deploy de produto e nao decida 
 - Atualizar project memory com 1 linha do desvio corrigido **ou** "ciclo higiene sem achados".
 
 ##### Ordem sugerida de varredura (higiene residual)
-1. Done / Closed / Em Producao sem quarteto.
-2. `agent:security` sem `:accepted` com QA ja accepted (possivel desync).
-3. Dual-accepted residual ainda "Em andamento" ha tempo (nao confundir com pacote RC).
-4. Coluna Review sem ser RC pai/filha.
-5. Conflitos `accepted`+`rejected` / `agent:qa`+`qa:accepted`.
+1. Issues `open` com **quarteto completo** → fechar (lote permitido).
+2. Done / Closed / Em Producao sem quarteto.
+3. `agent:security` sem `:accepted` com QA ja accepted (possivel desync).
+4. Dual-accepted residual ainda "Em andamento" ha tempo (nao confundir com pacote RC).
+5. Coluna Review sem ser RC pai/filha.
+6. Conflitos `accepted`+`rejected` / `agent:qa`+`qa:accepted`.
 
 Se a higiene nao encontrar desvio → encerre a execucao sem fazer nada alem do registro.
 
@@ -125,7 +143,7 @@ Se a higiene nao encontrar desvio → encerre a execucao sem fazer nada alem do 
 
 ## Regras gerais
 
-- Nunca execute mais de uma acao por rodada **exceto** na Prioridade 5 (Validadores), em que QA/Security podem concluir **varias** issues elegiveis na mesma passagem.
+- Nunca execute mais de uma acao por rodada **exceto**: (1) Prioridade 5 (Validadores), em que QA/Security podem concluir **varias** issues elegiveis na mesma passagem; (2) Prioridade 6, fechamento de issues com **quarteto completo** de conclusao (varias na mesma passagem).
 - Sempre confirme o estado real no GitHub / Project #1 / Notion Controle de Tarefas antes de agir.
 - Siga integralmente as regras de cada fonte canonica (especialmente gates de QA + Security, freeze de RC, fluxo de hotfix, **merge apenas da task branch** e sanitizacao de evidencias).
 - **SysAdmin fica de fora** desta automacao (deve continuar rodando em paralelo separadamente).
