@@ -20,7 +20,7 @@ Use esta skill quando `DevOps` for promover o **pacote RC** de `staging` para `m
 5. faca merge somente sem conflito e com a task pai em `Deploy`
 6. depois do merge, confirme que `master` recebeu o commit esperado e que o push remoto aconteceu
 7. registre quais repositorios foram promovidos e quais ficaram bloqueados
-8. mova a task pai (e filhas, conforme board) para **`Done`**
+8. **obrigatório:** mova a **task pai e todas as filhas/subtasks** do inventário do RC para **`Done`** na mesma passagem (Project #1); não deixe filha atrás do pai
 9. se o projeto principal ficar com conflito, nao force update nem reescreva `master`; registre o bloqueio e pare na fronteira segura
 
 ## Front Rule
@@ -49,3 +49,4 @@ Ao concluir, informe:
 - nao publique o projeto principal antes dos subprojetos
 - nao force ref em `master` para contornar conflito
 - nao abra novo RC ate este estar em `Done`
+- nao marque só o pai em `Done` sem mover todas as filhas/subtasks do inventário do RC
