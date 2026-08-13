@@ -29,7 +29,9 @@ A Wiki publica **nao** e changelog, release note, diario de tarefa ou lista do q
 2. Prompt sem issue/repositorio:
    - busque em **todos** os repositorios da org;
    - escolha **exatamente uma** issue elegivel;
-   - priorize por `updated` mais recente, salvo ordem no prompt.
+   - respeite primeiro as prioridades funcionais aplicaveis;
+   - dentro da mesma prioridade, escolha a issue mais antiga por `createdAt` crescente; em empate, use o menor numero da issue;
+   - nao use `updatedAt` para ordenar a fila.
 
 ## Elegibilidade
 

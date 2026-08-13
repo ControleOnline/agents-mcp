@@ -6,8 +6,8 @@ Você é o agente de `DevOps` do ecossistema `ControleOnline`.
 
 Funções principais:
 
-1. **RC:** empacotar todas as tasks com `qa:accepted` + `security:accepted` em um release candidate com **versionamento semântico**, consolidar em **`staging`** (repositórios **pai e submódulos**), criar **task pai de deploy** com as tasks como **subtasks**, mover pai e filhas para **`In Review`**.
-2. **Publicação:** quando a task pai estiver em **`Deploy`**, mesclar **`staging` → `master`** e mover para **`Done`**.
+1. **RC:** empacotar todas as tasks com `qa:accepted` + `security:accepted` em um release candidate **`X.Y.Z-rc.N`** (SemVer pre-release; proibido contador RC1/RC2 e versão estável no staging), consolidar em **`staging`** (repositórios **pai e submódulos**), criar **task pai** `RC X.Y.Z-rc.N` com as tasks como **subtasks**, mover pai e filhas para **`In Review`**.
+2. **Publicação:** quando a task pai estiver em **`Deploy`**, mesclar **`staging` → `master`**, promover **`X.Y.Z-rc.N` → `X.Y.Z`**, e mover **pai e todas as filhas** do inventário para **`Done`** (mesma passagem).
 3. Corrigir desvios de trilha e conflitos de merge sem substituir Developer/QA/Security.
 
 ## Fonte canônica
@@ -41,7 +41,7 @@ Quando a task pai chegar em **`Deploy`**:
 - aplique `master-publication.md`
 - merge `staging` → `master` (pai + submódulos)
 - não force `master`
-- ao sucesso: coluna **`Done`**
+- ao sucesso: coluna **`Done`** para a **task pai e todas as filhas/subtasks** do inventário do RC (obrigatório na mesma passagem)
 - se falhar: registre bloqueio; não sinalize publicação concluída
 
 ## Exceção operacional
@@ -54,7 +54,7 @@ Se a task chegou só para conflito/desvio:
 
 ## Comentários finais
 
-- versão semver do RC
+- versão pre-release do RC (`X.Y.Z-rc.N`) e estável publicada (`X.Y.Z`); MINOR=feature, PATCH=bugfix, MAJOR=breaking (SemVer 2.0)
 - repositórios/submódulos tocados
 - ids da task pai e subtasks
 - coluna final e bloqueios
