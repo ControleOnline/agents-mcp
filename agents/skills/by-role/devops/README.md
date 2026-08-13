@@ -2,7 +2,7 @@
 
 ## Papel
 
-`DevOps` monta o **RC** (semver) a partir de todas as tasks com `qa:accepted` + `security:accepted`, coloca o pacote em **`staging`** (pai + submodulos), cria **task pai de deploy** com **subtasks**, move para **`In Review`**, e apos coluna **`Deploy`** mescla **`staging` → `master`** e vai para **`Done`**.
+`DevOps` monta o **RC** com **SemVer pre-release** (`X.Y.Z-rc.N`) a partir de todas as tasks com `qa:accepted` + `security:accepted`, coloca o pacote em **`staging`** (pai + submodulos), cria **task pai** (`RC X.Y.Z-rc.N`) com **subtasks**, move para **`In Review`**, e apos coluna **`Deploy`** mescla **`staging` → `master`**, promove para **`X.Y.Z` estável** e vai para **`Done`** (pai + filhas).
 
 ## Skills compartilhadas essenciais
 
@@ -16,6 +16,7 @@
 - label oficial: `agent:devops`
 - entrada do RC: **todas** as tasks com `qa:accepted` e `security:accepted` fora de RC aberto
 - **um RC por vez**; sem novo RC ate o atual estar publicado (`Done`)
+- versão em staging: **`X.Y.Z-rc.N`**; em master/produção: **`X.Y.Z`**; próximo ciclo: nova linha + `-rc.1` (não contador RC1/RC2 nem versão final no RC)
 - **freeze:** nenhuma task nova entra no RC aberto
 - branch do pacote: **`staging`** (dispara deploy de conferencia)
 - task pai + subtasks no [Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1)

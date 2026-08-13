@@ -95,14 +95,20 @@ Exemplos:
 ### Montagem do pacote
 
 1. Coletar **todas** as tasks elegiveis no momento da abertura do RC.
-2. Definir **versionamento semantico** do pacote (ex.: `vX.Y.Z` / tag RC coerente com o monorepo/repos).
+2. Definir a **versão alvo** com **Semantic Versioning** (https://semver.org) e o **identificador de pre-release do RC**:
+   - Em conferência (`staging`): **`X.Y.Z-rc.N`** (ex.: `1.5.0-rc.1`).
+   - **Proibido** gravar a versão estável final (`X.Y.Z`) no pacote de staging/RC.
+   - **Proibido** usar contador sequencial de RC como versão (ex.: `RC6`, `RC v1.4.20` como se “RC6” fosse a versão).
+   - Escolha de `MAJOR.MINOR.PATCH` pelo conteúdo do pacote (breaking → major; feature compatível → minor; só correção → patch), a partir da **última versão estável em `master`**.
+   - Após `X.Y.Z` estar em produção, o **próximo** ciclo começa em **nova** linha: tipicamente `(próximo).rc.1` (ex.: prod `1.0.0` → próximo RC `1.1.0-rc.1` ou `1.0.1-rc.1`).
+   - Vários candidatos da **mesma** versão alvo: `1.5.0-rc.1`, depois `1.5.0-rc.2` (só se o mesmo alvo for reempacotado antes de ir a produção).
 3. Consolidar as mudancas aprovadas no branch **`staging`** fazendo merge **somente de cada `task-{id}`** aprovada (nunca merge de `dev` inteiro). Pule consolidacao ja presente com evidencia + comentario.
-4. Fazer isso nos **repositorios pai e nos submodulos** afetados (ordem: submodulos primeiro, depois pai; pins/gitlinks coerentes).
+4. Fazer isso nos **repositorios pai e nos submodulos** afetados (ordem: submodulos primeiro, depois pai; pins/gitlinks coerentes). Gravar a versão **`X.Y.Z-rc.N`** no `package.json` (ou equivalente) do pacote em `staging`.
 5. O push/atualizacao de `staging` **dispara o deploy** do ambiente de staging para **conferencia humana**.
 
 ### Task pai de deploy + subtasks
 
-1. Criar **uma nova task pai** de deploy/RC (titulo com versao semver, ex.: `RC vX.Y.Z`).
+1. Criar **uma nova task pai** de deploy/RC (titulo com a pre-release, ex.: `RC 1.5.0-rc.1` — **não** `RC6 v1.4.20`).
 2. Associar ao [Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1).
 3. Colocar as tasks do pacote como **filhos/subtasks** da task pai (e/ou links bidirecionais claros issue pai ↔ filhas).
 4. Mover a **task pai e as filhas** para a coluna **`In Review`**.
@@ -114,8 +120,10 @@ Exemplos:
 2. Quando aprovar o pacote, move a task pai para a coluna **`Deploy`**.
 3. Em `Deploy`, o DevOps:
    - **mescla o pacote (`staging`) em `master`** (pai + submodulos na ordem correta) — ou confirma que ja esta em `master` e avanca;
+   - **promove a versão** de `X.Y.Z-rc.N` → **`X.Y.Z`** estável no `package.json` (e tags) em `master`; **não** publica pre-release como versão de produção;
    - confirma push remoto e tags/versao quando aplicavel;
-   - move a task pai (e filhas, conforme governanca do board) para a coluna **`Done`**;
+   - **obrigatório:** move a **task pai e todas as filhas/subtasks** do inventário do RC para a coluna **`Done`** na mesma passagem (Project #1);
+   - não deixar nenhuma filha do inventário em `Deploy` / `In Review` / `Working` após o pai estar em `Done`;
    - se pulou merge por ja estar feito, **comente a justificativa** na task pai.
 
 Detalhes de publicacao: `agents/skills/shared/github/master-publication.md`.
