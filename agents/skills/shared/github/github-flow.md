@@ -115,7 +115,8 @@ Exemplos:
 3. Em `Deploy`, o DevOps:
    - **mescla o pacote (`staging`) em `master`** (pai + submodulos na ordem correta) — ou confirma que ja esta em `master` e avanca;
    - confirma push remoto e tags/versao quando aplicavel;
-   - move a task pai (e filhas, conforme governanca do board) para a coluna **`Done`**;
+   - **obrigatório:** move a **task pai e todas as filhas/subtasks** do inventário do RC para a coluna **`Done`** na mesma passagem (Project #1);
+   - não deixar nenhuma filha do inventário em `Deploy` / `In Review` / `Working` após o pai estar em `Done`;
    - se pulou merge por ja estar feito, **comente a justificativa** na task pai.
 
 Detalhes de publicacao: `agents/skills/shared/github/master-publication.md`.
