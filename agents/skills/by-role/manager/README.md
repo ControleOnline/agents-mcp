@@ -28,15 +28,18 @@ Antes de atuar:
 
 Se surgir trabalho em uma prioridade superior durante a checagem, pare e execute **uma** unica acao daquela prioridade.
 
-## Prioridade 2 – In Review visual (RC)
+## Prioridade 2 – In Review visual (sempre)
 
-Regra canonica:
+**Principio:** o humano **sempre** precisa ter o que conferir. A coluna `In Review` e a pendencia visual de aprovacao humana.
+
+Regras:
 
 - **RC aberto (pai nao Done) ⇒ pai + filhas do pacote na coluna `In Review`.**
-- Objetivo: o humano ver visualmente no board o que aguarda Deploy.
-- Dual-accepted **incluidas no pacote** e ainda em Working/Ready → mover para **In Review**.
-- Dual-accepted **fora do pacote** (residual, conflito de staging, regressao reportada, exclusao deliberada do RC) → **nao** mover para In Review e **nao** injetar no RC.
-- Ao **criar** o RC (Prioridade 3), o DevOps/Manager deve deixar pai + filhas em **In Review** na mesma passagem ou na rodada seguinte de P2.
+- Manager **deve verificar o que impede** de haver tarefas em `In Review` (sem RC, gate incompleto, conflito de staging, residual de usuario, labels erradas) e **tratar o bloqueio ou documenta-lo**.
+- Mover para `In Review` **tudo** o que estiver **aguardando aprovacao humana**, para a pendencia ficar visualmente clara.
+- Dual-accepted **limpas** sem RC aberto → Prioridade 3 deve **criar RC** e colocar o pacote em `In Review` (preferencia: sempre haver RC quando houver pacote limpo).
+- Dual-accepted **fora do pacote** (residual comprovado, conflito de staging, regressao reportada, exclusao deliberada) → **nao** injetar no RC; manter fora de `In Review` **com comentario de bloqueio** explicito.
+- Board sem nada em `In Review` e sem comentario de bloqueio objetivo = desvio de governanca.
 
 ## Labels obrigatorias para conclusao
 
@@ -70,13 +73,17 @@ Exemplos de inconsistencias:
 Usar na Prioridade 2 (itens de RC/board) e na Prioridade 6 (higiene residual). Uma correcao por rodada.
 
 ### Board / RC (Prioridade 2 — alta)
+- [ ] **O que impede** de haver tarefas na coluna **In Review**? (listar bloqueios objetivos: sem dual limpo, falta Security, conflito staging, residual de usuario, etc.)
+- [ ] Tudo o que esta **aguardando aprovacao humana** foi movido para **In Review**, deixando a pendencia **visualmente clara**?
+- [ ] Existe RC aberto quando ha dual-accepted **limpo**? Se nao, por que DevOps/P3 nao abriu — bloqueio documentado?
 - [ ] Existe no maximo **um** RC aberto (pai nao em Done)?
 - [ ] Se existe RC aberto: **pai e filhas do pacote** estao na coluna **In Review**?
-- [ ] Humano consegue ver visualmente no board o que aguarda Deploy?
+- [ ] Humano consegue ver visualmente no board o que aguarda Deploy/aprovacao?
 - [ ] Dual-accepted **do pacote** nao ficaram presas em Working/Ready?
-- [ ] Dual-accepted **fora do pacote** (residual / conflito / regressao) **nao** foram injetadas em In Review nem no RC?
+- [ ] Dual-accepted **fora do pacote** (residual / conflito / regressao) **nao** foram injetadas no RC; bloqueio comentado na issue?
 - [ ] Filhas vinculadas ao pai do RC (e vice-versa)?
 - [ ] Nenhuma task nova injetada no freeze via label/coluna?
+- [ ] Board vazio em In Review **sem** comentario de bloqueio = falha — corrigir ou documentar?
 
 ### Conclusao e labels (Prioridade 6 — residual)
 - [ ] Conferir tasks em `Done` e issues `closed`: exigir as quatro labels de conclusao ou registrar excecao estrutural comprovada.
