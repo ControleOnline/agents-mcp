@@ -106,6 +106,8 @@ Exemplos:
 2. Associar ao [Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1).
 3. Colocar as tasks do pacote como **filhos/subtasks** da task pai (e/ou links bidirecionais claros issue pai ↔ filhas).
 4. Mover a **task pai e as filhas** para a coluna **`In Review`**.
+
+   Se o pacote ficar fora de `In Review` (pai/filhas ainda em Working/Ready), a **Prioridade 2 do Manager** (organizacao do board) corrige na proxima rodada — o humano precisa ver o pacote visualmente antes do Deploy. Dual-accepted **fora** do pacote (residual/conflito/regressao) **nao** vao para `In Review`.
 5. Label operacional tipica na pai: `agent:devops` (ou manter ownership de deploy no board).
 
 ### Aprovacao humana e publicacao
