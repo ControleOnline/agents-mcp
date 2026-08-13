@@ -33,6 +33,23 @@ Quando o pedido for "publicar o front":
 - publique os subprojetos do front antes do projeto principal
 - valide que os gitlinks do projeto principal apontam para commits ja publicados nos subprojetos
 
+
+## Hotfix / deploy: ponteiro + versão no projeto principal
+
+**Sem atualizar o gitlink do submódulo e a versão no projeto principal (`app-community`), o delta do subprojeto não entra no deploy** — mesmo que `ui-*` já esteja em `staging`/`master`.
+
+Em **todo** deploy (RC normal ou hotfix):
+
+1. Publique o delta nos **subprojetos** afetados (`staging` → `master` de cada um).
+2. No **pai** (`app-community`):
+   - atualize o **gitlink** (submodule pin) para o commit já publicado no subprojeto;
+   - faça **bump semver** em `package.json` (patch para hotfix);
+   - push em `staging` e em `master` (pai sempre depois dos filhos);
+   - crie/atualize a **tag** da versão no pai (`vX.Y.Z`).
+3. Confirme que o workflow de **Deploy** do `app-community` disparou no commit do pai.
+
+Publicar só o submódulo (ex.: `ui-people`) **não** publica o Manager em produção.
+
 ## Output Contract
 
 Ao concluir, informe:
