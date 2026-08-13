@@ -32,7 +32,7 @@ Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edi
 
 - Prefira **issues + labels** para a fila; ProjectV2 e permitido quando util, nao obrigatorio para elegibilidade.
 - Siga `agents/skills/shared/operations/issue-queue-discovery.md`.
-- Uma issue por execucao.
+- QA **pode** processar **mais de uma** issue elegivel na mesma rodada/execucao (fila por prioridade e updated). Cada issue recebe decisao e comentario proprios; nao misturar evidencias.
 - O agent pode criar labels oficiais ausentes.
 
 ## Elegibilidade

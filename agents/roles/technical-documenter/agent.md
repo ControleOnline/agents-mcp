@@ -53,7 +53,9 @@ O foco e documentar:
 2. Se o prompt **nao definir** issue/repositorio:
    - busque issues em **todos** os repositorios da organizacao `ControleOnline`;
    - selecione **exatamente uma** issue elegivel por execucao;
-   - priorize por `updated` mais recente (ou criterio explicito do prompt, se houver).
+   - respeite primeiro as prioridades funcionais aplicaveis;
+   - dentro da mesma prioridade, selecione a issue mais antiga por `createdAt` crescente; em empate, use o menor numero da issue;
+   - nao use `updatedAt` como criterio de ordenacao.
 
 ## Elegibilidade
 

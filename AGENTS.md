@@ -136,6 +136,7 @@ O princípio é: **sempre atuar no que está mais avançado no pipeline do Manag
 1. **Hotfix**
    - Qualquer issue com label `hotfix` (validar QA/Security, promover/deploy) tem prioridade absoluta
    - **Implementação (Developer) de hotfix roda à parte** no fluxo paralelo do `Developer` e não faz parte desta automação do Manager
+   - Hotfix **pode entrar** em RC já freezeado; ainda assim **sempre** passa por **In Review** + ação humana em **Deploy** (nunca direto a master)
    - Ao criar task hotfix: **sempre** aplicar a label `hotfix`
    - Ver seção Hotfix em `agents/skills/shared/github/github-flow.md`
    - Merge sempre **somente** da `task-{id}` (nunca `dev` inteiro → `staging`)
@@ -153,10 +154,14 @@ O princípio é: **sempre atuar no que está mais avançado no pipeline do Manag
    - QA
    - Security
 
+5. **Developer**
+
 ### Regras deste mode
 
 - Execute **exatamente uma** ação por rodada.
 - Pare na primeira prioridade que tiver trabalho pendente.
+- Dentro da mesma prioridade funcional, selecione a task elegivel mais antiga por `createdAt` crescente; em empate, use o menor numero da issue.
+- `updatedAt` serve apenas como evidencia de atividade e nunca reposiciona uma task na fila.
 - SysAdmin **não** participa deste mode (deve continuar rodando em paralelo em automação separada).
 - **Developer** **não** participa deste mode: sua captura, implementação e merge em `dev` rodam no fluxo paralelo próprio.
 - Sempre confirme o estado real no GitHub / Project #1 antes de agir.
