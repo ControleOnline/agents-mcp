@@ -160,7 +160,7 @@ Hotfixes são correções urgentes em produção (ou risco crítico iminente) qu
 - Label obrigatória: `hotfix` (criar no repositório se ausente).
 - **Sempre** aplicar a label `hotfix` ao criar uma task pedida como hotfix.
 - Pode coexistir com `bug` / `enhancement`.
-- Qualquer agent (Manager, Developer, QA, Security, DevOps) deve tratar issues com `hotfix` como **prioridade 1**.
+- Developer, QA, Security e DevOps devem tratar issues com `hotfix` como **prioridade 1**. O Manager trata como prioridade 1 somente as ações elegíveis de QA, Security ou DevOps; implementação continua exclusiva do Developer.
 
 ### Fluxo acelerado
 
@@ -198,7 +198,7 @@ master
      - move a task (ou o pai do RC de hotfix) para a coluna **In Review** (nunca pula In Review);
    - **Proibido** promover hotfix direto de `staging`/`dev` para `master` sem a coluna **Deploy** (aprovação humana).
    - Após humano em coluna `Deploy`, merge `staging` → `master` e `Done`.
-4. **Manager**: prioridade 1 = qualquer ação relacionada a issue com label `hotfix`.
+4. **Manager**: prioridade 1 = executar somente ação elegível de **QA, Security ou DevOps** relacionada a issue com label `hotfix`. O Manager nunca captura a issue para implementar, nunca cria `task-{id}`, não altera código como Developer e não faz merge `task-{id}` → `dev`.
 5. Não se abre segundo RC paralelo só por causa de hotfix; se já existir RC aberto, o DevOps pode incluir o delta da `task-{id}` no pacote atual **apenas se ainda não estiver freezeado**, ou documentar RC paralelo excepcional de hotfix com comentário na issue pai.
 6. Após publicação, o hotfix deve permanecer refletido em `dev` e `master` para não regredir.
 
