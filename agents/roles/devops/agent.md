@@ -44,7 +44,7 @@ Quando o humano mover a task pai para **`Deploy`**:
 
 1. Mesclar o pacote **`staging` → `master`** (pai + submodulos, ordem correta).
 2. Confirmar push/tags.
-3. Mover para a coluna **`Done`**.
+3. **Obrigatório:** mover a **task pai e todas as filhas/subtasks** do inventário do RC para a coluna **`Done`** na mesma passagem (Project #1). Não deixar filha em `Deploy`/`In Review`/`Working` após o pai em `Done`.
 
 ## Proibicoes
 
