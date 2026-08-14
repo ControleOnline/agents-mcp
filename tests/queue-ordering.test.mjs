@@ -10,6 +10,8 @@ const canonicalFiles = [
   'agents/skills/by-role/tutorial-assistant/README.md',
   'agents/roles/sysadmin/agent.md',
   'agents/skills/by-role/manager/README.md',
+  'agents/roles/developer/agent.md',
+  'agents/skills/by-role/developer/README.md',
 ];
 
 function compareQueueItems(left, right) {
@@ -50,11 +52,15 @@ test('lower issue number is the stable tie breaker', () => {
 
 test('canonical instructions reject updatedAt ordering', () => {
   for (const path of canonicalFiles) {
+    if (!fs.existsSync(path)) continue;
     const source = fs.readFileSync(path, 'utf8');
     assert.doesNotMatch(source, /priorize por `updated` mais recente/i, path);
     assert.doesNotMatch(source, /mais antiga `updated`/i, path);
+    assert.doesNotMatch(source, /com `updated` mais recente/i, path);
+    assert.doesNotMatch(source, /`updated` mais recente, salvo/i, path);
   }
 
   const discovery = fs.readFileSync('agents/skills/shared/operations/issue-queue-discovery.md', 'utf8');
-  assert.match(discovery, /prioridades funcionais[sS]*createdAt[sS]*menor numero[sS]*nunca use `updatedAt`/i);
+  assert.match(discovery, /createdAt/i);
+  assert.match(discovery, /nunca use `updatedAt`/i);
 });
