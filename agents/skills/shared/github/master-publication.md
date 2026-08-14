@@ -7,7 +7,7 @@ Use esta skill quando `DevOps` for promover o **pacote RC** de `staging` para `m
 ## Pre-requisitos
 
 1. Existe um RC aberto com task pai de deploy e subtasks.
-2. O pacote ja esta em **`staging`** (pai + submodulos) com versão **pre-release** `X.Y.Z-rc.N` (não a estável).
+2. O pacote ja esta em **`staging`** (pai + submodulos) com versão **numérica** `X.Y.N` no `package.json` / `app.json` (ex.: `1.5.1`; controle operacional pode ainda referir `RC X.Y.Z-rc.N`).
 3. A task pai foi movida por humano para a coluna **`Deploy`**.
 4. Nao ha segundo RC concorrente.
 
@@ -18,7 +18,7 @@ Use esta skill quando `DevOps` for promover o **pacote RC** de `staging` para `m
 3. publique **primeiro cada submodulo** obrigatorio com delta, depois o projeto pai (gitlinks coerentes)
 4. para cada repositorio com delta real entre `staging` e `master`, faça o merge/promocao autorizada (`staging` → `master`); use PR apenas se a politica do repo exigir — o rito operacional e a promocao do pacote RC, nao PR de task de produto
 5. faca merge somente sem conflito e com a task pai em `Deploy`
-6. depois do merge, **promova a versão** `X.Y.Z-rc.N` → **`X.Y.Z`** estável no pacote em `master` (package.json / tags)
+6. depois do merge, **confirme a versão numérica** já presente no pacote (`X.Y.N` em `package.json` e, se existir, `app.json` com `version` igual e `versionCode = MAJOR*10000 + MINOR*100 + PATCH`); **não** existe sufixo textual para remover; tags usam a mesma versão numérica
 7. confirme que `master` recebeu o commit esperado e que o push remoto aconteceu
 8. registre quais repositorios foram promovidos e quais ficaram bloqueados
 9. **obrigatório:** mova a **task pai e todas as filhas/subtasks** do inventário do RC para **`Done`** na mesma passagem (Project #1); não deixe filha atrás do pai
@@ -70,5 +70,6 @@ Ao concluir, informe:
 - nao abra novo RC ate este estar em `Done`
 - nao marque só o pai em `Done` sem mover todas as filhas/subtasks do inventário do RC
 - nao mover filhas de produto para `Done` no publish **sem** garantir labels de solicitação documental (`agent:technical-documenter` / `agent:tutorial-assistant`) quando `:done` ainda estiver ausente — handoff de docs é parte do rito de master
-- nao publique `X.Y.Z-rc.N` como versão de produção; sempre estabilize para `X.Y.Z` em `master`
-- nao use contador sequencial de RC (RC1/RC2) no lugar do SemVer
+- nao grave sufixo textual (`-rc.N`) em `package.json` / `app.json`; versão de arquivo é sempre somente números (`X.Y.N`)
+- nao use contador sequencial de RC (RC1/RC2) no lugar do SemVer nos arquivos de versão
+- em `app.json`: `version` = `package.json` version; `versionCode` = MAJOR*10000 + MINOR*100 + PATCH
