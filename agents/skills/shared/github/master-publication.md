@@ -22,7 +22,8 @@ Use esta skill quando `DevOps` for promover o **pacote RC** de `staging` para `m
 7. confirme que `master` recebeu o commit esperado e que o push remoto aconteceu
 8. registre quais repositorios foram promovidos e quais ficaram bloqueados
 9. **obrigatório:** mova a **task pai e todas as filhas/subtasks** do inventário do RC para **`Done`** na mesma passagem (Project #1); não deixe filha atrás do pai
-10. se o projeto principal ficar com conflito, nao force update nem reescreva `master`; registre o bloqueio e pare na fronteira segura
+10. **handoff de documentação (obrigatório no publish):** para **cada filha de produto** do inventário que ainda **não** tenha `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done`, aplique as labels de **solicitação** ausentes (`agent:technical-documenter` e/ou `agent:tutorial-assistant`). **Nunca** invente `:done`. Issues só de governança/docs (`agents-mcp` puro) e hotfixes sem delta de UI/API de produto podem ficar isentas com comentário de exceção estrutural. Comente no pai do RC a lista do que recebeu label de docs.
+11. se o projeto principal ficar com conflito, nao force update nem reescreva `master`; registre o bloqueio e pare na fronteira segura
 
 ## Front Rule
 
@@ -68,5 +69,6 @@ Ao concluir, informe:
 - nao force ref em `master` para contornar conflito
 - nao abra novo RC ate este estar em `Done`
 - nao marque só o pai em `Done` sem mover todas as filhas/subtasks do inventário do RC
+- nao mover filhas de produto para `Done` no publish **sem** garantir labels de solicitação documental (`agent:technical-documenter` / `agent:tutorial-assistant`) quando `:done` ainda estiver ausente — handoff de docs é parte do rito de master
 - nao publique `X.Y.Z-rc.N` como versão de produção; sempre estabilize para `X.Y.Z` em `master`
 - nao use contador sequencial de RC (RC1/RC2) no lugar do SemVer

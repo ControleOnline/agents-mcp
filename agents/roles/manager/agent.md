@@ -88,7 +88,10 @@ devem ser **fechadas** (`state=closed`) e alinhadas a coluna **Done** no Project
 - Confirmar evidencia real das quatro etapas (nao inventar label).
 - Pode processar **varias** issues elegiveis na mesma rodada.
 - Tasks de RC/deploy com rito proprio: so fechar se a excecao estrutural estiver demonstrada nas fontes canonicas; na duvida, nao fechar.
-- O inverso continua valendo: `closed`/`Done` **sem** quarteto → reabrir ou completar labels (uma correcao por vez, salvo o lote de fechamento acima).
+- O inverso continua valendo: `closed`/`Done` **sem** quarteto → **não inventar** labels `:done`. Ação correta (uma por rodada, salvo lote de fechamento):
+  - se faltam labels de **documentação**: aplicar `agent:technical-documenter` e/ou `agent:tutorial-assistant` (solicitação) para a fila documental processar;
+  - se faltam `qa:accepted`/`security:accepted` em issue indevidamente fechada: reabrir e restaurar handoff de validadores;
+  - nunca inventar `agent:technical-documenter:done` / `agent:tutorial-assistant:done` sem evidência real do documentador.
 
 ##### Labels obrigatorias por estagio
 

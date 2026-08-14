@@ -132,6 +132,7 @@ Exemplos:
    - confirma push remoto e tags/versao quando aplicavel;
    - **obrigatório:** move a **task pai e todas as filhas/subtasks** do inventário do RC para a coluna **`Done`** na mesma passagem (Project #1);
    - não deixar nenhuma filha do inventário em `Deploy` / `In Review` / `Working` após o pai estar em `Done`;
+   - **handoff de documentação:** em cada filha de produto sem `agent:technical-documenter:done` / `agent:tutorial-assistant:done`, aplicar labels de solicitação ausentes (`agent:technical-documenter` / `agent:tutorial-assistant`); nunca inventar `:done` (ver `master-publication.md`);
    - se pulou merge por ja estar feito, **comente a justificativa** na task pai.
 
 Detalhes de publicacao: `agents/skills/shared/github/master-publication.md`.

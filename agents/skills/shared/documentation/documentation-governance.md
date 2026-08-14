@@ -49,3 +49,11 @@ Toda publicacao documental deve obedecer `agents/skills/shared/security/security
 ## Fonte completa
 
 Detalhes operacionais por papel ficam em `agents/skills/by-role/*/README.md` e nos `agents/roles/*/agent.md` correspondentes.
+
+## Handoff apos dual-gate / publish (anti-furo)
+
+Para **nao furar** a documentacao no caminho ate `Done`/`master`:
+
+1. **DevOps** (publish `staging`→`master`): ao mover filhas de produto para `Done`, se ainda nao houver `:done` documental, **aplica** `agent:technical-documenter` e/ou `agent:tutorial-assistant` (solicitacao). Nunca inventa `:done`. Ver `master-publication.md`.
+2. **Manager** (P6 higiene): `Done`/`closed` sem quarteto → aplica labels de solicitacao documental ausentes (ou reabre se faltar dual-gate). So fecha com quarteto completo + evidencia. Ver `agents/roles/manager/agent.md` e checklist do README do Manager.
+3. Documentadores processam a fila por `agent:<papel>` (ou `closed` sem `:done`) conforme `issue-queue-discovery.md`.

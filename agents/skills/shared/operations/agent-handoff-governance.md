@@ -17,7 +17,7 @@ Use esta skill para padronizar tags, transicao de etapa, handoff tecnico e desvi
    - quando houver tasks com **ambas** as aprovacoes e **nao** existir RC aberto, `DevOps` monta o **RC** (semver), coloca o pacote em **`staging`** (pai + submodulos), cria **task pai de deploy** com as tasks como **subtasks**, move pai e filhas para **`In Review`**
    - humano confere staging e move a task pai para **`Deploy`**
    - `DevOps` mescla **`staging` → `master`** e move para **`Done`**
-   - documentacao (`tutorial-assistant` / `technical-documenter`) segue conforme labels nas tasks do pacote
+   - documentacao (`tutorial-assistant` / `technical-documenter`): **DevOps no publish** aplica labels de solicitação ausentes nas filhas de produto; **Manager na higiene** completa labels de solicitação se `Done`/`closed` ficou sem quarteto; documentadores só marcam `:done` com evidência real
 6. **Pulo de etapa ja concluida:** se merge ou passo tecnico **ja estiver feito** (evidencia no GitHub), o agent **pula** esse passo, avanca a task ao **proximo estagio** e **comenta na issue** a justificativa (o que ja estava feito, como verificou, para onde avanca). Nao pule por intuicao. QA/Security ainda precisam registrar aceite/recusa quando for a etapa deles.
 7. qualquer etapa pode abrir task paralela de infraestrutura com `agent:sysadmin`; nunca substitui a tarefa-mae
 8. quando o `Sysadmin` concluir a paralela, comenta na mae e aplica o handoff de seguranca/revisao cabivel

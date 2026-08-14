@@ -47,7 +47,8 @@ Quando o humano mover a task pai para **`Deploy`**:
 1. Mesclar o pacote **`staging` → `master`** (pai + submodulos, ordem correta).
 2. Promover versão **`X.Y.Z-rc.N` → `X.Y.Z`** estável; confirmar push/tags.
 3. **Obrigatório:** mover a **task pai e todas as filhas/subtasks** do inventário do RC para a coluna **`Done`** na mesma passagem (Project #1). Não deixar filha em `Deploy`/`In Review`/`Working` após o pai em `Done`.
-4. Próximo ciclo de RC, após produção em `X.Y.Z`, inicia **nova** linha SemVer com `-rc.1` (ex.: `1.1.0-rc.1`), nunca reutiliza o número estável já publicado como se fosse “próximo RC”.
+4. **Handoff de documentação (obrigatório):** em cada filha de **produto** sem `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done`, aplicar as labels de solicitação ausentes (`agent:technical-documenter` e/ou `agent:tutorial-assistant`). Nunca inventar `:done`. Isentar só governança pura / hotfix sem delta de produto, com comentário. Listar no comentário do pai do RC.
+5. Próximo ciclo de RC, após produção em `X.Y.Z`, inicia **nova** linha SemVer com `-rc.1` (ex.: `1.1.0-rc.1`), nunca reutiliza o número estável já publicado como se fosse “próximo RC”.
 
 ## Proibicoes
 

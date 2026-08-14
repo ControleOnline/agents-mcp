@@ -89,7 +89,7 @@ Usar na Prioridade 2 (itens de RC/board) e na Prioridade 6 (higiene residual). E
 
 ### Conclusao e labels (Prioridade 6 — residual)
 - [ ] **Fechar issues `open` com quarteto completo** (`qa:accepted` + `security:accepted` + `agent:technical-documenter:done` + `agent:tutorial-assistant:done`) e evidencia das quatro etapas: `state=closed` + coluna **Done** + comentario. **Lote permitido** (varias na mesma passagem). Responsabilidade exclusiva do Manager.
-- [ ] Conferir tasks em `Done` e issues `closed`: exigir as quatro labels de conclusao ou registrar excecao estrutural comprovada; sem quarteto → reabrir ou completar labels.
+- [ ] Conferir tasks em `Done` e issues `closed`: exigir as quatro labels de conclusao ou registrar excecao estrutural comprovada; sem quarteto → **não inventar `:done`**. Se faltar documentação: aplicar labels de **solicitação** ausentes (`agent:technical-documenter` e/ou `agent:tutorial-assistant`) para alimentar a fila dos documentadores; se faltar dual-gate e a issue estiver indevidamente `closed`/`Done`, reabrir e restaurar handoff de QA/Security. Uma correção atômica por rodada (exceto lote de fechamento por quarteto).
 - [ ] Conferir o inverso: tasks com as quatro labels e evidencia devem estar `closed` / **Done** (nao permanecer abertas em fila ativa).
 - [ ] Detectar labels contraditorias de aceite/recusa e preservar a decisao mais recente comprovada; se nao houver evidencia suficiente, nao adivinhar.
 - [ ] Detectar labels `agent:*` incompativeis com a coluna ou com labels `:done`.
