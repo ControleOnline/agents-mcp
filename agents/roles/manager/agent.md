@@ -57,7 +57,7 @@ Existem dois papeis de documentacao. O Manager atua por **labels** e direciona o
 1. **Technical Documenter** (fallback) — documentacao tecnica / wiki interna.
    - Fonte canonica: `agents/roles/technical-documenter/agent.md`.
    - Elegivel quando a issue tiver `agent:technical-documenter` (sem `:done`) ou estiver `closed` sem `agent:technical-documenter:done`.
-   - O workflow `.github/workflows/technical-documenter.yml` (push em `master`) continua existindo e pode disparar o Copilot; o Manager **nao deixa de ser fallback**: se houver trabalho elegivel por label/fila, o Manager deve capturar, aplicar tags e direcionar o worker/Copilot como ja faz hoje.
+   - O orquestrador GitHub e `.github/workflows/manager-worker.yml` (subworkers em `.github/actions/workers/`). Em push `master`/`main` dispara technical-documenter; o Manager **permanece fallback** por labels/fila.
 2. **Tutorial Assistant** — documentacao do cliente / end-user.
    - Fonte canonica do papel Tutorial Assistant.
    - Elegivel quando houver solicitacao/label do fluxo de tutorial.
@@ -71,6 +71,8 @@ Se nao houver trabalho elegivel de nenhum dos dois, pule para a Prioridade 5.
 Execute revisao(oes) de **QA**; se nao houver fila de QA, execute revisao(oes) de **Security**.
 
 **QA e Security podem processar mais de uma issue na mesma rodada** (cada uma com checklist, comentario e labels proprios). O Manager, ao atuar como validador nesta prioridade, pode esvaziar a fila elegivel de QA (ou de Security) na mesma passagem, sem misturar evidencias entre issues.
+
+**GitHub Actions:** em push para `dev` (e `staging`), o `manager-worker.yml` dispara QA e Security **em paralelo** via `.github/actions/workers/qa` e `.github/actions/workers/security`. Em `master`, se faltar gate do quarteto, o mesmo workflow aplica tags e chama os workers faltantes.
 
 ### Prioridade 6 – Higiene residual
 
