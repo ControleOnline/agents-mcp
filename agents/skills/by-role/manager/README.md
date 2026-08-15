@@ -34,12 +34,17 @@ Se surgir trabalho em uma prioridade superior durante a checagem, pare e execute
 
 Regras:
 
-- **RC aberto (pai nao Done) ⇒ pai + filhas do pacote na coluna `In Review`.**
+- **RC aberto (pai nao Done) ⇒ pai + filhas do pacote na coluna `In Review`**, **exceto** as que já estiverem em **`Deploy`**.
 - Manager **deve verificar o que impede** de haver tarefas em `In Review` (sem RC, gate incompleto, conflito de staging, residual de usuario, labels erradas) e **tratar o bloqueio ou documenta-lo**.
 - Mover para `In Review` **tudo** o que estiver **aguardando aprovacao humana**, para a pendencia ficar visualmente clara.
 - Dual-accepted **limpas** sem RC aberto → Prioridade 3 deve **criar RC** e colocar o pacote em `In Review` (preferencia: sempre haver RC quando houver pacote limpo).
 - Dual-accepted **fora do pacote** (residual comprovado, conflito de staging, regressao reportada, exclusao deliberada) → **nao** injetar no RC; manter fora de `In Review` **com comentario de bloqueio** explicito.
 - Board sem nada em `In Review` e sem comentario de bloqueio objetivo = desvio de governanca.
+
+**Regra crítica — nunca regredir Deploy:**
+- Se a task pai ou qualquer filha do RC já estiver na coluna **`Deploy`**, **não mover** de volta para `In Review` (nem Working/Ready).
+- `Deploy` = aprovação humana já realizada; próxima ação legítima é do DevOps (P3) → `Done`.
+- Só sair de `Deploy` para coluna anterior com **evidência explícita de rejeição humana** (comentário objetivo). Sem essa evidência, deixe em `Deploy`.
 
 ## Labels obrigatorias para conclusao
 
@@ -68,7 +73,8 @@ Exemplos de inconsistencias:
 - task em `Ready` com `agent:qa` ou `agent:security`, quando a entrega ja esta em validacao e deveria estar em `Working`;
 - task em `Working` sem ownership ou evidencia de trabalho iniciado, quando deveria estar em `Ready`;
 - RC aberto com pai/filhas dual-accepted ainda em Working (deveriam estar em **In Review**);
-- dual-accepted residual movida indevidamente para In Review sem fazer parte do RC.
+- dual-accepted residual movida indevidamente para In Review sem fazer parte do RC;
+- task do RC em **Deploy** sendo empurrada de volta para In Review (regressão proibida).
 
 ## Checklist canonico (organizacao + higiene)
 
@@ -79,7 +85,8 @@ Usar na Prioridade 2 (itens de RC/board) e na Prioridade 6 (higiene residual). E
 - [ ] Tudo o que esta **aguardando aprovacao humana** foi movido para **In Review**, deixando a pendencia **visualmente clara**?
 - [ ] Existe RC aberto quando ha dual-accepted **limpo**? Se nao, por que DevOps/P3 nao abriu — bloqueio documentado?
 - [ ] Existe no maximo **um** RC aberto (pai nao em Done)?
-- [ ] Se existe RC aberto: **pai e filhas do pacote** estao na coluna **In Review**?
+- [ ] Se existe RC aberto: **pai e filhas do pacote** estao na coluna **In Review** **ou já em Deploy**?
+- [ ] **Tasks do RC em `Deploy` NÃO foram movidas de volta para In Review** (regressão proibida).
 - [ ] Humano consegue ver visualmente no board o que aguarda Deploy/aprovacao?
 - [ ] Dual-accepted **do pacote** nao ficaram presas em Working/Ready?
 - [ ] Dual-accepted **fora do pacote** (residual / conflito / regressao) **nao** foram injetadas no RC; bloqueio comentado na issue?
@@ -103,10 +110,10 @@ Usar na Prioridade 2 (itens de RC/board) e na Prioridade 6 (higiene residual). E
 
 Quando houver mais de uma inconsistencia, escolha a mais avancada no pipeline:
 
-1. RC aberto com pacote fora de **In Review** (Prioridade 2);
+1. RC aberto com pacote fora de **In Review** e também fora de **Deploy** (Prioridade 2);
 2. Issues `open` com quarteto completo → fechar (lote permitido na P6);
 3. `closed`/`Done` sem requisitos de conclusao;
-4. `Deploy`/`In Review` incoerente com o RC;
+4. `Deploy`/`In Review` incoerente com o RC (nunca regredir Deploy → In Review);
 5. labels contraditorias ou handoff invalido em `Working`;
 6. `Ready`/`Working` divergentes da etapa real;
 7. assignees indevidos e demais higiene de labels.
@@ -120,6 +127,7 @@ Dentro da mesma classe, corrija primeiro a task mais antiga por `createdAt` cres
 - Nao apagar evidencia historica em comentarios.
 - Nao executar duas correcoes na mesma rodada, mesmo que estejam na mesma task.
 - Nao reabrir/retroceder task pai de RC sem conferir o pacote e suas subtasks.
+- **Nunca** mover task de **Deploy** de volta para **In Review** (ou qualquer coluna anterior) sem evidência explícita de rejeição humana.
 - Toda mutacao deve ser reversivel e explicada em comentario.
 - Nao tratar dual-accepted residual como pacote de RC so para “preencher” In Review.
 
