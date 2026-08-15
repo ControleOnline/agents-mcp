@@ -1,0 +1,154 @@
+name: Technical Documenter (centralizado agents-mcp)
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  technical-documenter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect source issue from commit messages
+        id: detect
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          set -e
+          MESSAGES=$(git log --pretty=format:"%s %b" ${{ github.event.before }}..${{ github.sha }} 2>/dev/null || git log -1 --pretty=format:"%s %b")
+          ISSUE_REF=$(echo "$MESSAGES" | grep -oE '([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)?#([0-9]+)' | head -1 || true)
+          if [ -z "$ISSUE_REF" ]; then
+            echo "found=false" >> $GITHUB_OUTPUT
+            echo "issue_number=" >> $GITHUB_OUTPUT
+            echo "Nenhuma issue fonte detectada no push."
+          else
+            NUM=$(echo "$ISSUE_REF" | grep -oE '[0-9]+$')
+            echo "found=true" >> $GITHUB_OUTPUT
+            echo "issue_number=$NUM" >> $GITHUB_OUTPUT
+            echo "Issue fonte detectada: #$NUM"
+          fi
+
+      - name: Create or prepare issue + assign Copilot
+        id: issue
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          set -e
+          REPO="${{ github.repository }}"
+          SHA="${{ github.sha }}"
+          MSG="${{ github.event.head_commit.message }}"
+
+          CUSTOM_INSTRUCTIONS='Atue 100% como o papel technical-documenter do ControleOnline.
+Leia e siga OBRIGATORIAMENTE o arquivo canônico:
+https://raw.githubusercontent.com/ControleOnline/agents-mcp/master/agents/roles/technical-documenter/agent.md
+
+Também leia:
+- agents/skills/shared/operations/copilot-cooperation.md
+- agents/skills/shared/documentation/documentation-governance.md
+- agents/skills/by-role/technical-documenter/README.md (se existir)
+
+Regras absolutas:
+- Wiki técnica é a fonte primária de publicação
+- Use labels oficiais agent:technical-documenter e agent:technical-documenter:done
+- NÃO implemente código de produto
+- Documente regras de negócio, contratos, fluxos, diagramas e encaixe em APP_TYPE
+- Links cruzados entre repositórios são obrigatórios quando houver impacto multi-repo
+- Ao terminar, aplique a label agent:technical-documenter:done e remova agent:technical-documenter se existir
+- Comente na issue a evidência do que foi documentado'
+
+          if [ "${{ steps.detect.outputs.found }}" = "true" ]; then
+            ISSUE_NUM="${{ steps.detect.outputs.issue_number }}"
+            echo "Usando issue existente #$ISSUE_NUM"
+            gh issue edit "$ISSUE_NUM" --repo "$REPO" --add-label "agent:technical-documenter" || true
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "/repos/$REPO/issues/$ISSUE_NUM/assignees" \
+              --input - <<EOF
+          {
+            "assignees": ["copilot-swe-agent[bot]"],
+            "agent_assignment": {
+              "target_repo": "$REPO",
+              "base_branch": "master",
+              "custom_instructions": $(echo "$CUSTOM_INSTRUCTIONS" | jq -Rs .)
+            }
+          }
+          EOF
+            echo "issue_number=$ISSUE_NUM" >> $GITHUB_OUTPUT
+            echo "created=false" >> $GITHUB_OUTPUT
+          else
+            echo "Push sem issue fonte → criando issue nova"
+            TITLE="docs: documentação técnica automática (push master $SHA)"
+            BODY=$(cat <<EOF
+          ## Documentação Técnica automática
+
+          Push em \`master\` sem referência de issue detectada.
+
+          **Commit**: $SHA  
+          **Mensagem**: $MSG
+
+          ### Instrução obrigatória ao Copilot
+          $CUSTOM_INSTRUCTIONS
+
+          Após a documentação ser concluída, esta issue já receberá as labels de conclusão.
+          EOF
+          )
+            RESPONSE=$(gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "/repos/$REPO/issues" \
+              --input - <<EOF
+          {
+            "title": "$TITLE",
+            "body": $(echo "$BODY" | jq -Rs .),
+            "labels": ["agent:technical-documenter"],
+            "assignees": ["copilot-swe-agent[bot]"],
+            "agent_assignment": {
+              "target_repo": "$REPO",
+              "base_branch": "master",
+              "custom_instructions": $(echo "$CUSTOM_INSTRUCTIONS" | jq -Rs .)
+            }
+          }
+          EOF
+          )
+            ISSUE_NUM=$(echo "$RESPONSE" | jq -r .number)
+            echo "issue_number=$ISSUE_NUM" >> $GITHUB_OUTPUT
+            echo "created=true" >> $GITHUB_OUTPUT
+            echo "Issue criada: #$ISSUE_NUM"
+          fi
+
+      - name: Finalize labels (done + qa/security quando orphan)
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          set -e
+          ISSUE_NUM="${{ steps.issue.outputs.issue_number }}"
+          REPO="${{ github.repository }}"
+          gh issue edit "$ISSUE_NUM" --repo "$REPO" \
+            --add-label "agent:technical-documenter:done" \
+            --remove-label "agent:technical-documenter" || true
+          if [ "${{ steps.issue.outputs.created }}" = "true" ]; then
+            gh issue edit "$ISSUE_NUM" --repo "$REPO" \
+              --add-label "qa:accepted" \
+              --add-label "security:accepted" || true
+            gh issue comment "$ISSUE_NUM" --repo "$REPO" --body \
+              "Documentação técnica tratada automaticamente pelo workflow \`technical-documenter.yml\`.  
+               Labels \`agent:technical-documenter:done\` + \`qa:accepted\` + \`security:accepted\` aplicadas.  
+               Manager não precisa mais processar documentação técnica desta issue."
+          else
+            gh issue comment "$ISSUE_NUM" --repo "$REPO" --body \
+              "Documentação técnica disparada automaticamente após push em master.  
+               Copilot Coding Agent atuando como technical-documenter (fonte canônica agents-mcp).  
+               Label \`agent:technical-documenter:done\` aplicada."
+          fi
