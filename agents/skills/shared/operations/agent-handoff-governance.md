@@ -25,6 +25,36 @@ Use esta skill para padronizar tags, transicao de etapa, handoff tecnico e desvi
 10. **um RC por vez**; freeze do pacote — tasks aprovadas depois do freeze aguardam o proximo RC
 11. nao faca handoff sem evidencia concreta do que foi validado, corrigido, bloqueado ou pulado
 
+
+## Sanitização de labels (obrigatória)
+
+**Sempre** que houver **movimentação de coluna** no Project #1 **ou** **reabertura** de issue (`state: closed` → `open`), o agent que mutar deve **sanitizar as labels** na mesma passagem — não deixar labels do estágio anterior contradizendo a nova coluna/estado.
+
+### Ao mover coluna
+
+1. Identificar o **estágio canônico** da coluna de destino (Ready / Working / In Review / Deploy / Done).
+2. Garantir as labels **mínimas** desse estágio (ver tabela em `agents/roles/manager/agent.md`).
+3. **Remover** labels incompatíveis com o destino, por exemplo:
+   - voltar de validação para implementação → remover `qa:accepted` / `security:accepted` **somente** se a evidência foi invalidada ou a entrega foi revertida; caso contrário documentar por que permanecem;
+   - sair de fila de QA/Security → remover `agent:qa` / `agent:security` se a decisão (`:accepted`/`:rejected`) já foi registrada;
+   - entrar em **Ready**/**Working** para retrabalho pós-`rejected` → garantir `agent:developer` ou `agent:sysadmin` (ownership) e manter `qa:rejected`/`security:rejected` até nova entrega;
+   - **Done** → exigir quarteto de conclusão (ou exceção estrutural documentada); não usar Done como atalho com labels de fila (`agent:qa` sem decisão, etc.).
+4. Comentar na issue: coluna antes → depois; labels removidas/adicionadas; motivo.
+
+### Ao reabrir issue
+
+1. Remover labels de **conclusão indevida** no novo contexto (ex.: `agent:*:done` sem evidência, ou dual-accepted se a entrega foi revertida/invalidada).
+2. Restaurar `agent:<papel>` do **próximo executor** real (Developer, Sysadmin, QA, Security, etc.).
+3. Alinhar coluna do Project #1 a **Ready** ou **Working** (nunca deixar reaberta em **Done**).
+4. Comentar: por que reabriu; labels sanitizadas; próximo handoff.
+
+### Proibido
+
+- Mover coluna **sem** tocar labels quando o estágio muda de papel.
+- Reabrir issue e deixá-la sem `agent:*` de ownership.
+- Manter `agent:qa` + `qa:accepted` juntos (decisão já tomada → remover `agent:qa`).
+- Usar assignee como substituto de label de handoff.
+
 ## Output Contract
 
 Ao concluir, informe objetivamente:
