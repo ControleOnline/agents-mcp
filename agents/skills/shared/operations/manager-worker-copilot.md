@@ -73,36 +73,38 @@ on:
 
 ## Como cada composite worker aciona o Copilot
 
-Todos seguem o mesmo padrão (exemplo real do QA):
+**Princípio:** nenhuma regra de negócio, checklist ou label de conclusão vive no `action.yml`.  
+Os workers só apontam para a fonte canônica no `agents-mcp`.
 
-```bash
-CUSTOM_INSTRUCTIONS='Atue 100% como QA do ControleOnline.
-Leia e siga OBRIGATORIAMENTE:
-https://raw.githubusercontent.com/ControleOnline/agents-mcp/master/agents/roles/qa/agent.md
+Padrão mínimo (idêntico em QA / Security / Technical Documenter):
 
-Também leia:
-- agents/skills/shared/operations/copilot-cooperation.md
-- agents/skills/by-role/qa/README.md
-...'
+```text
+CUSTOM_INSTRUCTIONS =
+  Atue 100% como <papel> do ControleOnline.
+  Leia e siga OBRIGATORIAMENTE (fonte canônica única):
+  https://raw.githubusercontent.com/ControleOnline/agents-mcp/master/agents/roles/<papel>/agent.md
 
-gh issue edit "$ISSUE" --add-label "agent:qa"
+  Também leia:
+  https://raw.githubusercontent.com/ControleOnline/agents-mcp/master/agents/skills/shared/operations/copilot-cooperation.md
+  https://raw.githubusercontent.com/ControleOnline/agents-mcp/master/agents/skills/by-role/<papel>/README.md
 
-gh api --method POST "/repos/${REPO}/issues/${ISSUE}/assignees" \
-  --input '{
-    "assignees": ["copilot-swe-agent[bot]"],
-    "agent_assignment": {
-      "target_repo": "...",
-      "base_branch": "dev|master|staging",
-      "custom_instructions": "..."
-    }
-  }'
+  Não use regras embutidas neste assignment; a fonte acima prevalece.
 ```
 
-- **Token**: secret `GH_TOKEN` (PAT com escopo de issues + agents; `GITHUB_TOKEN` padrão não permite o assignment de agent).
-- **Base branch** passado pelo Manager (já normalizado).
-- **Fonte canônica do papel**: sempre o `agent.md` do papel em `agents-mcp` (URL raw). O Copilot deve seguir esse arquivo + a skill de cooperação.
+Depois o worker:
 
-Mesmo padrão para `security` e `technical-documenter` (só muda o papel, as labels e a URL do `agent.md`).
+1. aplica apenas a label de estágio `agent:<papel>`;
+2. faz `POST .../assignees` com `copilot-swe-agent[bot]` + `agent_assignment` (base_branch + custom_instructions acima);
+3. comenta na issue apontando a fonte.
+
+- **Token**: secret `GH_TOKEN` (PAT com escopo de issues + agents; `GITHUB_TOKEN` padrão não permite agent_assignment).
+- **Base branch**: passado pelo Manager (já normalizado para `master` se veio `main`).
+- **Toda regra de checklist, labels de aceite/rejeição, proibições e evidências** mora exclusivamente em:
+  - `agents/roles/<papel>/agent.md`
+  - `agents/skills/by-role/<papel>/README.md`
+  - skills compartilhadas referenciadas por esses arquivos.
+
+Qualquer mudança de comportamento = editar só o `agents-mcp`. Não editar texto de regra nos `action.yml`.
 
 ---
 
@@ -122,6 +124,16 @@ Mesmo padrão para `security` e `technical-documenter` (só muda o papel, as lab
 O Manager **não** decide aceite de QA/Security no lugar dos validadores. Ele só aplica labels de estágio e invoca os workers.
 
 ---
+
+
+
+## Wrappers `.github/agents` (não usar em repos de produto)
+
+Regras **não** devem morar espalhadas em cada repositório.
+
+- Em repositórios de produto (`app-community`, `api-*`, `ui-*`, etc.): **remover** o diretório `.github/agents/`.
+- Os wrappers finos (se ainda necessários para o Copilot UI) devem ser gerados **somente** a partir do `agents-mcp` e apontar exclusivamente para `agents/roles/*/agent.md`.
+- O canal oficial de assignment em push é o Manager Worker + composite actions (este documento), não arquivos locais de wrapper.
 
 ## Separação de canais (não misturar)
 
