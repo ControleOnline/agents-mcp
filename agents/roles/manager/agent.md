@@ -2,6 +2,22 @@ Leia e siga as fontes canonicas dos papeis do Full Pipeline / Manager na ordem d
 
 Leia tambem, obrigatoriamente, `agents/skills/by-role/manager/README.md` antes de executar organizacao de board ou higiene residual.
 
+## Como os workers do Copilot funcionam (Actions)
+
+**Fonte canônica completa:** `agents/skills/shared/operations/manager-worker-copilot.md`
+
+Em todo repositório da org o workflow `.github/workflows/manager-worker.yml` é o orquestrador de push:
+
+1. Push em `master` / `dev` / `staging` → job Manager (composite `.github/actions/workers/manager`).
+2. Manager resolve a issue do commit (ou cria issue automática), normaliza `main`→`master`, aplica labels de estágio e define outputs `run_qa` / `run_security` / `run_docs` / `run_gates`.
+3. Jobs condicionais invocam os composites de QA, Security e/ou Technical Documenter.
+4. Cada composite aplica `agent:<papel>` e faz **agent_assignment** do `copilot-swe-agent[bot]` com `custom_instructions` apontando para `agents/roles/<papel>/agent.md` + `copilot-cooperation.md`.
+5. Em `master`, o job de gates verifica o quarteto e re-invoca workers faltantes.
+
+O Manager **não** implementa o checklist de QA/Security/Docs; ele **invoca** os workers que delegam ao Copilot. Labels continuam sendo a fonte de verdade (fallback por outros bots se o Copilot não atuar).
+
+O antigo `technical-documenter.yml` isolado foi substituído por este orquestrador.
+
 ## Fronteira com Developer
 
 O fluxo do `Developer` roda em paralelo e **nao faz parte** do Full Pipeline / Manager.
@@ -163,3 +179,4 @@ Se a higiene nao encontrar desvio → encerre a execucao sem fazer nada alem do 
 - **SysAdmin fica de fora** desta automacao (deve continuar rodando em paralelo separadamente).
 - **Developer** permanece responsavel por captura/implementacao/merge em `dev` de **produto**; Manager so implementa docs/governanca em `agents-mcp`.
 - Siga `agents/skills/shared/operations/copilot-cooperation.md`.
+- Siga `agents/skills/shared/operations/manager-worker-copilot.md` para o fluxo de push → workers Copilot (Actions).
