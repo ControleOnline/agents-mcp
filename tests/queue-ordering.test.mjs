@@ -5,13 +5,13 @@ import test from 'node:test';
 const canonicalFiles = [
   'AGENTS.md',
   'agents/skills/shared/operations/issue-queue-discovery.md',
+  'agents/roles/developer/agent.md',
+  'agents/skills/by-role/developer/README.md',
   'agents/roles/technical-documenter/agent.md',
   'agents/skills/by-role/technical-documenter/README.md',
   'agents/skills/by-role/tutorial-assistant/README.md',
   'agents/roles/sysadmin/agent.md',
   'agents/skills/by-role/manager/README.md',
-  'agents/roles/developer/agent.md',
-  'agents/skills/by-role/developer/README.md',
 ];
 
 function compareQueueItems(left, right) {
@@ -52,15 +52,19 @@ test('lower issue number is the stable tie breaker', () => {
 
 test('canonical instructions reject updatedAt ordering', () => {
   for (const path of canonicalFiles) {
-    if (!fs.existsSync(path)) continue;
     const source = fs.readFileSync(path, 'utf8');
     assert.doesNotMatch(source, /priorize por `updated` mais recente/i, path);
     assert.doesNotMatch(source, /mais antiga `updated`/i, path);
-    assert.doesNotMatch(source, /com `updated` mais recente/i, path);
-    assert.doesNotMatch(source, /`updated` mais recente, salvo/i, path);
+    assert.doesNotMatch(source, /`updated` mais recente/i, path);
+    assert.doesNotMatch(source, /updated mais recente/i, path);
   }
 
   const discovery = fs.readFileSync('agents/skills/shared/operations/issue-queue-discovery.md', 'utf8');
-  assert.match(discovery, /createdAt/i);
+  assert.match(discovery, /createdAt` crescente/i);
   assert.match(discovery, /nunca use `updatedAt`/i);
+  assert.match(discovery, /menor numero da issue/i);
+
+  const developerAgent = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
+  assert.match(developerAgent, /createdAt` crescente/i);
+  assert.doesNotMatch(developerAgent, /`updated` mais recente/i);
 });

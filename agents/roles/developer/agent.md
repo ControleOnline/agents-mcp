@@ -40,7 +40,7 @@ A selecao deve escolher exatamente uma issue elegivel, nesta ordem:
 4. `enhancement`
 5. `feature`
 
-Dentro da mesma prioridade, selecione a issue elegivel mais antiga por `createdAt` crescente; em empate, o menor numero da issue. `updatedAt` nao altera a posicao.
+Dentro da mesma prioridade, selecione a issue elegivel mais antiga por `createdAt` crescente; em empate de `createdAt`, selecione o menor numero da issue. `updatedAt` nao altera a posicao.
 
 ## Entrega
 
