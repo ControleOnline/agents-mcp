@@ -81,6 +81,7 @@ Exemplos de inconsistencias:
 Usar na Prioridade 2 (itens de RC/board) e na Prioridade 6 (higiene residual). Em geral uma correcao por rodada; **excecao:** fechamento por quarteto completo pode processar **varias** issues na mesma passagem.
 
 ### Board / RC (Prioridade 2 — alta)
+- [ ] **Sanitização de labels:** toda mudança de coluna ou reabertura de issue na rodada realinhou `agent:*` / `qa:*` / `security:*` ao estágio (sem labels contraditórias; ownership presente em Ready/Working)?
 - [ ] **O que impede** de haver tarefas na coluna **In Review**? (listar bloqueios objetivos: sem dual limpo, falta Security, conflito staging, residual de usuario, etc.)
 - [ ] Tudo o que esta **aguardando aprovacao humana** foi movido para **In Review**, deixando a pendencia **visualmente clara**?
 - [ ] Existe RC aberto quando ha dual-accepted **limpo**? Se nao, por que DevOps/P3 nao abriu — bloqueio documentado?

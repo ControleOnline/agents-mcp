@@ -149,6 +149,18 @@ devem ser **fechadas** (`state=closed`) e alinhadas a coluna **Done** no Project
 - Nenhuma task nova injetada no pacote freezeado via label/coluna.
 - **Proibido** mover task de **Deploy** de volta para **In Review** (ou qualquer coluna anterior) sem evidência explícita de rejeição humana.
 
+
+##### Sanitização de labels (coluna e reabertura)
+
+**Obrigatório** em toda mutação de coluna e em toda reabertura de issue:
+
+1. Alinhar labels ao estágio da coluna de destino (tabela "Labels obrigatorias por estagio").
+2. Remover labels incompatíveis (ex.: `agent:qa` após `qa:accepted`/`qa:rejected`; ownership ausente após `rejected`; Done/`closed` sem quarteto).
+3. Ao reabrir: nunca permanecer em coluna **Done**; restaurar `agent:<executor>`; comentar evidência.
+4. Coluna e labels mudam **na mesma passagem** — não fazer só o movimento visual.
+
+Fonte completa: `agents/skills/shared/operations/agent-handoff-governance.md` (seção Sanitização de labels).
+
 ##### Orfaos e ruido
 - `agent:developer` sem evidencia e parada ha tempo → comentar ou devolver a fila.
 - Labels operacionais sem `agent:*` de estagio → completar ou limpar.

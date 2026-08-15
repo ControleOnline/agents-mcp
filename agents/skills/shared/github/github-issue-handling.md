@@ -140,6 +140,17 @@ Ao concluir, entregue um resumo operacional curto com:
 - achado relevante de repositorio ou workflow, quando isso tiver sido parte da analise
 - se houve tarefa-mãe relacionada, confirmação de que ela recebeu comentário do `Sysadmin`
 
+
+## Sanitização de labels em mudança de coluna ou reabertura
+
+Regra transversal (detalhe operacional em `agents/skills/shared/operations/agent-handoff-governance.md`):
+
+1. **Qualquer** mudança de coluna no board obriga realinhar labels ao estágio de destino na **mesma** passagem.
+2. **Qualquer** reabertura (`closed` → `open`) obriga sanitizar labels de conclusão e restaurar `agent:*` do próximo executor; coluna **Ready** ou **Working**.
+3. Registrar comentário objetivo (antes/depois de coluna e labels).
+
+Não mover coluna “só visualmente” deixando tags do estágio anterior.
+
 ## Quality Bar
 
 - nao duplique issues sem necessidade
