@@ -2,6 +2,22 @@ Leia e siga as fontes canonicas dos papeis do Full Pipeline / Manager na ordem d
 
 Leia tambem, obrigatoriamente, `agents/skills/by-role/manager/README.md` antes de executar organizacao de board ou higiene residual.
 
+## Como os workers do Copilot funcionam (Actions)
+
+**Fonte canônica completa:** `agents/skills/shared/operations/manager-worker-copilot.md`
+
+Em todo repositório da org o workflow `.github/workflows/manager-worker.yml` é o orquestrador de push:
+
+1. Push em `master` / `dev` / `staging` → job Manager (composite `.github/actions/workers/manager`).
+2. Manager resolve a issue do commit (ou cria issue automática), normaliza `main`→`master`, aplica labels de estágio e define outputs `run_qa` / `run_security` / `run_docs` / `run_gates`.
+3. Jobs condicionais invocam os composites de QA, Security e/ou Technical Documenter.
+4. Cada composite aplica `agent:<papel>` e faz **agent_assignment** do `copilot-swe-agent[bot]` com `custom_instructions` apontando para `agents/roles/<papel>/agent.md` + `copilot-cooperation.md`.
+5. Em `master`, o job de gates verifica o quarteto e re-invoca workers faltantes.
+
+O Manager **não** implementa o checklist de QA/Security/Docs; ele **invoca** os workers que delegam ao Copilot. Labels continuam sendo a fonte de verdade (fallback por outros bots se o Copilot não atuar).
+
+O antigo `technical-documenter.yml` isolado foi substituído por este orquestrador.
+
 ## Fronteira com Developer
 
 O fluxo do `Developer` roda em paralelo e **nao faz parte** do Full Pipeline / Manager.
@@ -29,13 +45,19 @@ O Manager **deve**:
 2. Mover para **In Review** **tudo** o que estiver **aguardando aprovacao humana** (pacote de RC, pai e filhas elegiveis, itens cuja proxima acao e conferencia humana), para a pendencia ficar **visualmente clara**.
 3. Se nao houver RC aberto e existir dual-accepted **limpo** elegivel → a acao correta e passar a Prioridade 3 (criar RC) e deixar o pacote em In Review; se a unica acao da rodada for board, registrar o bloqueio objetivo que impede o RC.
 
+**Regra crítica — nunca regredir Deploy:**
+- Se a **task pai** ou qualquer **filha do RC** já estiver na coluna **`Deploy`**, **não mover** de volta para **In Review** (nem para Working/Ready).
+- `Deploy` significa aprovação humana já realizada; a próxima ação legítima é do **DevOps** (Prioridade 3) promover para `Done`.
+- Só é permitido sair de `Deploy` para coluna anterior se houver **evidência explícita de rejeição humana** (comentário objetivo + decisão documentada). Na ausência dessa evidência, deixe em `Deploy`.
+
 Execute **uma** acao quando houver desvio verificavel, por exemplo:
 
-1. Existe RC aberto (pai nao em Done) e o **pai e/ou filhas do pacote** nao estao na coluna **In Review** → mover para **In Review**.
-2. Task dual-accepted **incluida no RC atual** ainda em Working/Ready → alinhar para **In Review** junto com o pai.
+1. Existe RC aberto (pai nao em Done) e o **pai e/ou filhas do pacote** nao estao na coluna **In Review** **e também não estão em Deploy** → mover para **In Review**.
+2. Task dual-accepted **incluida no RC atual** ainda em Working/Ready → alinhar para **In Review** junto com o pai (exceto se já estiver em Deploy).
 3. Board sem nada em In Review enquanto ha itens aguardando aprovacao humana → mover o conjunto elegivel ou documentar o bloqueio (ex.: so residual, so conflito, falta Security).
 4. Task dual-accepted **fora do pacote** (residual comprovado, conflito de staging, regressao reportada, exclusao deliberada) **nao** deve ser injetada no RC; pode permanecer Working com comentario de bloqueio, **desde que** o motivo esteja visivel (comentario + memoria).
 5. Labels/status do pacote RC desalinhados do freeze (filha sem vinculo, task nova no freeze, etc.).
+6. Task do RC em **Deploy** sendo empurrada de volta → **proibido**; apenas documentar e deixar para DevOps.
 
 Uma rodada = no maximo **uma** correcao atomica (uma task ou um conjunto pai+filhas do mesmo RC quando o desvio for o mesmo). Comentar evidencia antes/depois.
 
@@ -52,13 +74,27 @@ Uma rodada = no maximo **uma** correcao atomica (uma task ou um conjunto pai+fil
 
 ### Prioridade 4 – Documentacao
 
-Execute uma tarefa de Technical Documenter; se nao houver, uma de Tutorial Assistant.
+Existem dois papeis de documentacao. O Manager atua por **labels** e direciona o worker/Copilot conforme o fluxo atual (nada muda no handoff por tags).
+
+1. **Technical Documenter** (fallback) — documentacao tecnica / wiki interna.
+   - Fonte canonica: `agents/roles/technical-documenter/agent.md`.
+   - Elegivel quando a issue tiver `agent:technical-documenter` (sem `:done`) ou estiver `closed` sem `agent:technical-documenter:done`.
+   - O orquestrador GitHub e `.github/workflows/manager-worker.yml` (subworkers em `.github/actions/workers/`). Em push `master`/`main` dispara technical-documenter; o Manager **permanece fallback** por labels/fila.
+2. **Tutorial Assistant** — documentacao do cliente / end-user.
+   - Fonte canonica do papel Tutorial Assistant.
+   - Elegivel quando houver solicitacao/label do fluxo de tutorial.
+
+Nesta prioridade execute **uma** tarefa elegivel (preferencia: Technical Documenter se ambos existirem, senao Tutorial Assistant).
+
+Se nao houver trabalho elegivel de nenhum dos dois, pule para a Prioridade 5.
 
 ### Prioridade 5 – Validadores
 
 Execute revisao(oes) de **QA**; se nao houver fila de QA, execute revisao(oes) de **Security**.
 
 **QA e Security podem processar mais de uma issue na mesma rodada** (cada uma com checklist, comentario e labels proprios). O Manager, ao atuar como validador nesta prioridade, pode esvaziar a fila elegivel de QA (ou de Security) na mesma passagem, sem misturar evidencias entre issues.
+
+**GitHub Actions:** em push para `dev` (e `staging`), o `manager-worker.yml` dispara QA e Security **em paralelo** via `.github/actions/workers/qa` e `.github/actions/workers/security`. Em `master`, se faltar gate do quarteto, o mesmo workflow aplica tags e chama os workers faltantes.
 
 ### Prioridade 6 – Higiene residual
 
@@ -102,14 +138,16 @@ devem ser **fechadas** (`state=closed`) e alinhadas a coluna **Done** no Project
 | Aguardando Security | `agent:developer:done` + `qa:accepted` + `agent:security` |
 | Pronta para proximo RC (fora do freeze) | `qa:accepted` + `security:accepted` (+ docs `:done` quando aplicavel) |
 | No pacote RC ativo | mesmas dual-accepted + coluna **In Review** (pai e filhas) |
+| Aprovado humano, aguardando DevOps | coluna **Deploy** (pai e/ou filhas) — **não regredir** |
 
 ##### RC e freeze
 - No maximo **um** RC aberto (pai nao em Done).
-- **RC aberto ⇒ pai + filhas do pacote na coluna In Review** (visibilidade humana para Deploy).
+- **RC aberto ⇒ pai + filhas do pacote na coluna In Review** (visibilidade humana para Deploy), **exceto** as que já estiverem em **Deploy** (aprovação humana já feita).
 - Tasks dual-accepted **depois** do freeze **nao** devem constar como parte do RC atual.
 - Tasks dual-accepted **residuais / conflito / regressao** (excluídas do RC de proposito) permanecem Working/Ready e **nao** vao para In Review.
 - Filhas do RC vinculadas ao pai (e vice-versa).
 - Nenhuma task nova injetada no pacote freezeado via label/coluna.
+- **Proibido** mover task de **Deploy** de volta para **In Review** (ou qualquer coluna anterior) sem evidência explícita de rejeição humana.
 
 ##### Orfaos e ruido
 - `agent:developer` sem evidencia e parada ha tempo → comentar ou devolver a fila.
@@ -126,6 +164,7 @@ devem ser **fechadas** (`state=closed`) e alinhadas a coluna **Done** no Project
 ##### Proibido na higiene
 - Merge/deploy de produto, abrir RC, implementar codigo de produto.
 - Mover task pai do RC para Deploy/Done (isso e DevOps apos Deploy humano).
+- **Mover task de Deploy de volta para In Review / Working / Ready** (regressão de aprovação humana).
 - Aceitar/recusar QA ou Security no lugar dos validadores (so alinhar labels **ja decididas** e desincronizadas).
 
 ##### Registro obrigatorio
@@ -152,3 +191,4 @@ Se a higiene nao encontrar desvio → encerre a execucao sem fazer nada alem do 
 - **SysAdmin fica de fora** desta automacao (deve continuar rodando em paralelo separadamente).
 - **Developer** permanece responsavel por captura/implementacao/merge em `dev` de **produto**; Manager so implementa docs/governanca em `agents-mcp`.
 - Siga `agents/skills/shared/operations/copilot-cooperation.md`.
+- Siga `agents/skills/shared/operations/manager-worker-copilot.md` para o fluxo de push → workers Copilot (Actions).
