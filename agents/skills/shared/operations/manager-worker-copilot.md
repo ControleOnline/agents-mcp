@@ -73,40 +73,25 @@ on:
 
 ## Como cada composite worker aciona o Copilot
 
-**Princípio:** nenhuma regra de negócio, checklist ou label de conclusão vive no `action.yml`.  
-Os workers só apontam para a fonte canônica no `agents-mcp`.
-
-Padrão mínimo (idêntico em QA / Security / Technical Documenter):
+**Princípio:** um único link. Nenhuma skill, checklist ou regra extra no `action.yml`.
 
 ```text
 CUSTOM_INSTRUCTIONS =
   Atue 100% como <papel> do ControleOnline.
-  Leia e siga OBRIGATORIAMENTE (fonte canônica única):
+  Leia e siga OBRIGATORIAMENTE a fonte canônica única:
   https://raw.githubusercontent.com/ControleOnline/agents-mcp/master/agents/roles/<papel>/agent.md
-
-  Também leia:
-  https://raw.githubusercontent.com/ControleOnline/agents-mcp/master/agents/skills/shared/operations/copilot-cooperation.md
-  https://raw.githubusercontent.com/ControleOnline/agents-mcp/master/agents/skills/by-role/<papel>/README.md
-
-  Não use regras embutidas neste assignment; a fonte acima prevalece.
 ```
 
-Depois o worker:
+Tudo o mais (skills, checklists, labels de aceite, proibições, cooperação com Copilot) está **dentro** do `agent.md` do papel. O Copilot lê esse arquivo e segue a ordem de leitura definida nele.
 
-1. aplica apenas a label de estágio `agent:<papel>`;
-2. faz `POST .../assignees` com `copilot-swe-agent[bot]` + `agent_assignment` (base_branch + custom_instructions acima);
-3. comenta na issue apontando a fonte.
+O worker só:
+1. aplica a label de estágio `agent:<papel>`;
+2. faz `agent_assignment` com o texto mínimo acima;
+3. comenta apontando a fonte.
 
-- **Token**: secret `GH_TOKEN` (PAT com escopo de issues + agents; `GITHUB_TOKEN` padrão não permite agent_assignment).
-- **Base branch**: passado pelo Manager (já normalizado para `master` se veio `main`).
-- **Toda regra de checklist, labels de aceite/rejeição, proibições e evidências** mora exclusivamente em:
-  - `agents/roles/<papel>/agent.md`
-  - `agents/skills/by-role/<papel>/README.md`
-  - skills compartilhadas referenciadas por esses arquivos.
+- **Token**: `GH_TOKEN` (PAT; `GITHUB_TOKEN` padrão não permite agent_assignment).
+- **Base branch**: passado pelo Manager (já normalizado).
 
-Qualquer mudança de comportamento = editar só o `agents-mcp`. Não editar texto de regra nos `action.yml`.
-
----
 
 ## Labels de controle (resumo operacional)
 
