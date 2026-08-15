@@ -45,13 +45,19 @@ O Manager **deve**:
 2. Mover para **In Review** **tudo** o que estiver **aguardando aprovacao humana** (pacote de RC, pai e filhas elegiveis, itens cuja proxima acao e conferencia humana), para a pendencia ficar **visualmente clara**.
 3. Se nao houver RC aberto e existir dual-accepted **limpo** elegivel → a acao correta e passar a Prioridade 3 (criar RC) e deixar o pacote em In Review; se a unica acao da rodada for board, registrar o bloqueio objetivo que impede o RC.
 
+**Regra crítica — nunca regredir Deploy:**
+- Se a **task pai** ou qualquer **filha do RC** já estiver na coluna **`Deploy`**, **não mover** de volta para **In Review** (nem para Working/Ready).
+- `Deploy` significa aprovação humana já realizada; a próxima ação legítima é do **DevOps** (Prioridade 3) promover para `Done`.
+- Só é permitido sair de `Deploy` para coluna anterior se houver **evidência explícita de rejeição humana** (comentário objetivo + decisão documentada). Na ausência dessa evidência, deixe em `Deploy`.
+
 Execute **uma** acao quando houver desvio verificavel, por exemplo:
 
-1. Existe RC aberto (pai nao em Done) e o **pai e/ou filhas do pacote** nao estao na coluna **In Review** → mover para **In Review**.
-2. Task dual-accepted **incluida no RC atual** ainda em Working/Ready → alinhar para **In Review** junto com o pai.
+1. Existe RC aberto (pai nao em Done) e o **pai e/ou filhas do pacote** nao estao na coluna **In Review** **e também não estão em Deploy** → mover para **In Review**.
+2. Task dual-accepted **incluida no RC atual** ainda em Working/Ready → alinhar para **In Review** junto com o pai (exceto se já estiver em Deploy).
 3. Board sem nada em In Review enquanto ha itens aguardando aprovacao humana → mover o conjunto elegivel ou documentar o bloqueio (ex.: so residual, so conflito, falta Security).
 4. Task dual-accepted **fora do pacote** (residual comprovado, conflito de staging, regressao reportada, exclusao deliberada) **nao** deve ser injetada no RC; pode permanecer Working com comentario de bloqueio, **desde que** o motivo esteja visivel (comentario + memoria).
 5. Labels/status do pacote RC desalinhados do freeze (filha sem vinculo, task nova no freeze, etc.).
+6. Task do RC em **Deploy** sendo empurrada de volta → **proibido**; apenas documentar e deixar para DevOps.
 
 Uma rodada = no maximo **uma** correcao atomica (uma task ou um conjunto pai+filhas do mesmo RC quando o desvio for o mesmo). Comentar evidencia antes/depois.
 
@@ -129,14 +135,16 @@ devem ser **fechadas** (`state=closed`) e alinhadas a coluna **Done** no Project
 | Aguardando Security | `agent:developer:done` + `qa:accepted` + `agent:security` |
 | Pronta para proximo RC (fora do freeze) | `qa:accepted` + `security:accepted` (+ docs `:done` quando aplicavel) |
 | No pacote RC ativo | mesmas dual-accepted + coluna **In Review** (pai e filhas) |
+| Aprovado humano, aguardando DevOps | coluna **Deploy** (pai e/ou filhas) — **não regredir** |
 
 ##### RC e freeze
 - No maximo **um** RC aberto (pai nao em Done).
-- **RC aberto ⇒ pai + filhas do pacote na coluna In Review** (visibilidade humana para Deploy).
+- **RC aberto ⇒ pai + filhas do pacote na coluna In Review** (visibilidade humana para Deploy), **exceto** as que já estiverem em **Deploy** (aprovação humana já feita).
 - Tasks dual-accepted **depois** do freeze **nao** devem constar como parte do RC atual.
 - Tasks dual-accepted **residuais / conflito / regressao** (excluídas do RC de proposito) permanecem Working/Ready e **nao** vao para In Review.
 - Filhas do RC vinculadas ao pai (e vice-versa).
 - Nenhuma task nova injetada no pacote freezeado via label/coluna.
+- **Proibido** mover task de **Deploy** de volta para **In Review** (ou qualquer coluna anterior) sem evidência explícita de rejeição humana.
 
 ##### Orfaos e ruido
 - `agent:developer` sem evidencia e parada ha tempo → comentar ou devolver a fila.
@@ -153,6 +161,7 @@ devem ser **fechadas** (`state=closed`) e alinhadas a coluna **Done** no Project
 ##### Proibido na higiene
 - Merge/deploy de produto, abrir RC, implementar codigo de produto.
 - Mover task pai do RC para Deploy/Done (isso e DevOps apos Deploy humano).
+- **Mover task de Deploy de volta para In Review / Working / Ready** (regressão de aprovação humana).
 - Aceitar/recusar QA ou Security no lugar dos validadores (so alinhar labels **ja decididas** e desincronizadas).
 
 ##### Registro obrigatorio
