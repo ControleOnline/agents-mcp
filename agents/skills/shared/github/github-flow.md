@@ -134,6 +134,12 @@ Exemplos:
    - não deixar nenhuma filha do inventário em `Deploy` / `In Review` / `Working` após o pai estar em `Done`;
    - se pulou merge por ja estar feito, **comente a justificativa** na task pai.
 
+**Proteção de coluna Deploy (Manager e higiene):**
+- A coluna **`Deploy`** é o sinal de aprovação humana já realizada.
+- **Nenhum** agent (Manager P2/P6, higiene residual ou outro) pode mover task de **`Deploy`** de volta para **`In Review`**, Working ou Ready.
+- Única exceção: evidência explícita de rejeição humana (comentário objetivo + decisão documentada).
+- Enquanto a task pai estiver em `Deploy`, a próxima ação legítima é do **DevOps** (promover e ir para `Done`).
+
 Detalhes de publicacao: `agents/skills/shared/github/master-publication.md`.
 
 ### O que o DevOps nao faz
@@ -247,3 +253,4 @@ master
 - nao refaca merge/passo ja concluido sem necessidade; documente o pulo com comentario
 - nao pule etapa sem evidencia verificavel no GitHub
 - nao feche issue; `closed`/Done operacional segue o board e humanos conforme governanca
+- **nao** mova task de **Deploy** de volta para **In Review** (Manager / higiene); Deploy é terminal até DevOps promover para Done
