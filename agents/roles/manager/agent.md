@@ -50,9 +50,14 @@ Uma rodada = no maximo **uma** correcao atomica (uma task ou um conjunto pai+fil
 3. Ao criar o RC: pai + filhas do pacote devem ir **imediatamente** para **In Review**.
 4. Se nao for possivel abrir RC, a rodada de DevOps/board deve **documentar o bloqueio** (lista objetiva: residual, conflito, falta gate) — board sem In Review sem comentario de bloqueio e falha de governanca.
 
-### Prioridade 4 – Documentacao
+### Prioridade 4 – Documentacao (somente Tutorial Assistant)
 
-Execute uma tarefa de Technical Documenter; se nao houver, uma de Tutorial Assistant.
+**Technical Documenter** foi removido da responsabilidade do Manager.
+A documentacao tecnica e tratada automaticamente pelo workflow `.github/workflows/technical-documenter.yml` em todo push em `master` (fonte canônica `agents/roles/technical-documenter/agent.md`).
+
+Nesta prioridade o Manager executa **apenas** uma tarefa de **Tutorial Assistant** (documentacao do cliente / end-user).
+
+Se nao houver trabalho elegivel de Tutorial Assistant, pule para a Prioridade 5.
 
 ### Prioridade 5 – Validadores
 
