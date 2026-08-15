@@ -1,29 +1,49 @@
 # Runner Skills
 
-Este arquivo mapeia o modelo atual de execucao do ecossistema sem misturar o papel dos agents pares no ChatGPT com o papel do runner gerencial no GitHub.
+Este arquivo mapeia o modelo atual de execução do ecossistema sem misturar o papel dos agents pares no ChatGPT com o papel do runner gerencial no GitHub.
 
-## Estado atual
+## Trilha principal de push → Copilot (Manager Worker)
 
-Hoje existem duas trilhas oficiais e complementares:
+**Fonte canônica completa:** [`agents/skills/shared/operations/manager-worker-copilot.md`](../shared/operations/manager-worker-copilot.md)
 
-- os agents pares no ChatGPT sao o canal oficial para execucao normal por papel, investigacao, correcao de codigo, revisao tecnica e handoff operacional
-- o workflow `.github/workflows/github-operations.yml` e o canal oficial para mutacoes remotas no GitHub e manutencao recorrente dentro do proprio GitHub
+Em **todos** os repositórios da org:
+
+- Trigger: push em `master` | `dev` | `staging`
+- Workflow: `.github/workflows/manager-worker.yml`
+- Composite actions: `.github/actions/workers/{manager,qa,security,technical-documenter}/action.yml`
+
+Fluxo resumido:
+
+1. **Manager Subworker** resolve/cria a issue, normaliza `main`→`master`, aplica labels de estágio e decide quais workers invocar (`run_qa` / `run_security` / `run_docs` / `run_gates`).
+2. Jobs condicionais invocam os composites.
+3. Cada composite (QA / Security / Technical Documenter) aplica a label `agent:<papel>` e faz **agent_assignment** do `copilot-swe-agent[bot]` com `custom_instructions` apontando para `agents/roles/<papel>/agent.md` + `copilot-cooperation.md`.
+4. Em `master`, o job de gates verifica o quarteto e re-invoca workers faltantes.
+
+O antigo `technical-documenter.yml` isolado foi **substituído** por este orquestrador. Labels continuam sendo a fonte de verdade; se o Copilot não atuar, fallback por labels permanece válido.
+
+## Estado atual (canais paralelos)
+
+Existem trilhas oficiais e complementares:
+
+- **Manager Worker + composite actions** (acima) — canal oficial de push → orquestração de issue + assignment do Copilot para QA / Security / Technical Documenter
+- os agents pares no ChatGPT são o canal oficial para execução normal por papel, investigação, correção de código, revisão técnica e handoff operacional
+- o workflow `.github/workflows/github-operations.yml` e os runners em `workers/src/` / `workers/automate/` continuam para mutações de Project, dispatch de PR e manutenção recorrente
 
 Com isso:
 
-- `Developer`, `Security`, `Quality Assurance` e `DevOps` continuam tendo comportamento real definido pelos entry points em `workers/src/` e pelos scripts em `workers/automate/scripts/`
-- `Developer`, `Quality Assurance` e `Security` atuam sobre a mesma tarefa em `Working`, trocando apenas o label `agent:*` do dono atual e copiando o checklist canonico para a issue quando aprovar ou reprovar
-- `Ready` e a fila de entrada; `Working` e o estado de ownership ativo ate o trio tecnico concluir a etapa
-- os labels canonicos atuais sao `qa:accepted`, `qa:rejected`, `security:accepted` e `security:rejected`
-- durante a transicao, os runners ainda devem reconhecer tambem os labels legados `approved:*` e `rejected:*` quando encontrarem trilhas antigas
-- quando `qa:accepted` e `security:accepted` coexistem sem novas solicitacoes nos comentarios, `DevOps` cria a release; uma pessoa aprova a tarefa movendo-a para `Deploy`, e a partir de `Deploy` `DevOps` publica a build em producao e acompanha a entrega ate a finalizacao
-- `DevOps` permanece responsavel pela fila propria de deploy e pela reconciliacao operacional quando houver conflito de merge ou bloqueio repo-local de publicacao
+- `Developer`, `Security`, `Quality Assurance` e `DevOps` continuam tendo comportamento real definido pelos entry points em `workers/src/` e pelos scripts em `workers/automate/scripts/` (canal de fila/PR)
+- Labels canônicos de validação: `qa:accepted`, `qa:rejected`, `security:accepted`, `security:rejected`
+- Labels de estágio de agent: `agent:qa`, `agent:security`, `agent:technical-documenter`, `agent:technical-documenter:done`, etc.
+- quando `qa:accepted` e `security:accepted` coexistem sem novas solicitações nos comentários, `DevOps` cria a release; uma pessoa aprova a tarefa movendo-a para `Deploy`, e a partir de `Deploy` `DevOps` publica a build em produção
+- `DevOps` permanece responsável pela fila própria de deploy e pela reconciliação operacional
 
-## GitHub Manager Runner
+## GitHub Manager Runner (legado de Project)
 
-- workflow ativo: `.github/workflows/github-operations.yml`
-- logica final: `workers/automate/scripts/github-operations.mjs`
+- workflow: `.github/workflows/github-operations.yml`
+- lógica final: `workers/automate/scripts/github-operations.mjs`
 - guia operacional: `workers/automate/github-operations.md`
+
+**Não confundir** com o `manager-worker.yml` (orquestrador de push + Copilot).
 
 ## Runners por papel
 
