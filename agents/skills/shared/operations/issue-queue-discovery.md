@@ -79,7 +79,7 @@ Ordem de prioridade do `Developer`:
 4. `enhancement`
 5. `feature`
 
-Dentro da mesma prioridade, selecione a issue elegivel mais antiga por `createdAt` crescente; em empate de `createdAt`, selecione o menor numero da issue. `updatedAt` nao altera a posicao. Se nenhuma issue elegivel existir, registre o criterio de busca e pare com bloqueio objetivo.
+Dentro da mesma prioridade, escolha a issue elegivel com `updated` mais recente, salvo ordem explicita no prompt. Se nenhuma issue elegivel existir, registre o criterio de busca e pare com bloqueio objetivo.
 
 ## Template de elegibilidade — papeis documentais
 
