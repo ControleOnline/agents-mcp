@@ -7,11 +7,10 @@ O `Manager` executa o Full Pipeline na ordem de prioridade definida em `agents/r
 Ordem resumida:
 
 1. **Hotfix** — QA / Security / DevOps em tasks com label `hotfix`
-2. **Organizacao do workspace / board** — In Review visual do pacote RC; alinhamento coluna/labels do pipeline
-3. **DevOps** — publicar `Deploy` ou criar RC com dual-accepted limpos
-4. **Documentacao** — Technical Documenter / Tutorial Assistant
-5. **Validadores** — QA; senao Security
-6. **Higiene residual** — checklist deste README quando 1–5 estiverem vazias
+2. **DevOps** — publicar `Deploy` ou criar RC com dual-accepted limpos
+3. **Documentacao** — Technical Documenter / Tutorial Assistant
+4. **Validadores** — QA; senao Security
+5. **Higiene residual + Organizacao do board** — checklist deste README (In Review visual + higiene de labels/quarteto) quando 1–4 estiverem vazias
 
 O Manager **nao** substitui Developer em codigo de produto. **Excecao:** Manager e CTO podem editar docs/governanca em `ControleOnline/agents-mcp`.
 
@@ -28,22 +27,22 @@ Antes de atuar:
 
 Se surgir trabalho em uma prioridade superior durante a checagem, pare e execute **uma** unica acao daquela prioridade.
 
-## Prioridade 2 – In Review visual (sempre)
+## Prioridade 5 – In Review visual + Higiene (fundida)
 
 **Principio:** o humano **sempre** precisa ter o que conferir. A coluna `In Review` e a pendencia visual de aprovacao humana.
 
-Regras:
+Regras de board (executadas nesta prioridade):
 
 - **RC aberto (pai nao Done) ⇒ pai + filhas do pacote na coluna `In Review`**, **exceto** as que já estiverem em **`Deploy`**.
 - Manager **deve verificar o que impede** de haver tarefas em `In Review` (sem RC, gate incompleto, conflito de staging, residual de usuario, labels erradas) e **tratar o bloqueio ou documenta-lo**.
 - Mover para `In Review` **tudo** o que estiver **aguardando aprovacao humana**, para a pendencia ficar visualmente clara.
-- Dual-accepted **limpas** sem RC aberto → Prioridade 3 deve **criar RC** e colocar o pacote em `In Review` (preferencia: sempre haver RC quando houver pacote limpo).
+- Dual-accepted **limpas** sem RC aberto → Prioridade 2 deve **criar RC** e colocar o pacote em `In Review` (preferencia: sempre haver RC quando houver pacote limpo).
 - Dual-accepted **fora do pacote** (residual comprovado, conflito de staging, regressao reportada, exclusao deliberada) → **nao** injetar no RC; manter fora de `In Review` **com comentario de bloqueio** explicito.
 - Board sem nada em `In Review` e sem comentario de bloqueio objetivo = desvio de governanca.
 
 **Regra crítica — nunca regredir Deploy:**
 - Se a task pai ou qualquer filha do RC já estiver na coluna **`Deploy`**, **não mover** de volta para `In Review` (nem Working/Ready).
-- `Deploy` = aprovação humana já realizada; próxima ação legítima é do DevOps (P3) → `Done`.
+- `Deploy` = aprovação humana já realizada; próxima ação legítima é do DevOps (P2) → `Done`.
 - Só sair de `Deploy` para coluna anterior com **evidência explícita de rejeição humana** (comentário objetivo). Sem essa evidência, deixe em `Deploy`.
 
 ## Labels obrigatorias para conclusao
@@ -78,12 +77,12 @@ Exemplos de inconsistencias:
 
 ## Checklist canonico (organizacao + higiene)
 
-Usar na Prioridade 2 (itens de RC/board) e na Prioridade 6 (higiene residual). Em geral uma correcao por rodada; **excecao:** fechamento por quarteto completo pode processar **varias** issues na mesma passagem.
+Usar na Prioridade 5 (board + higiene residual). Em geral uma correcao por rodada; **excecao:** fechamento por quarteto completo pode processar **varias** issues na mesma passagem.
 
-### Board / RC (Prioridade 2 — alta)
+### Board / RC
 - [ ] **O que impede** de haver tarefas na coluna **In Review**? (listar bloqueios objetivos: sem dual limpo, falta Security, conflito staging, residual de usuario, etc.)
 - [ ] Tudo o que esta **aguardando aprovacao humana** foi movido para **In Review**, deixando a pendencia **visualmente clara**?
-- [ ] Existe RC aberto quando ha dual-accepted **limpo**? Se nao, por que DevOps/P3 nao abriu — bloqueio documentado?
+- [ ] Existe RC aberto quando ha dual-accepted **limpo**? Se nao, por que DevOps/P2 nao abriu — bloqueio documentado?
 - [ ] Existe no maximo **um** RC aberto (pai nao em Done)?
 - [ ] Se existe RC aberto: **pai e filhas do pacote** estao na coluna **In Review** **ou já em Deploy**?
 - [ ] **Tasks do RC em `Deploy` NÃO foram movidas de volta para In Review** (regressão proibida).
@@ -94,7 +93,7 @@ Usar na Prioridade 2 (itens de RC/board) e na Prioridade 6 (higiene residual). E
 - [ ] Nenhuma task nova injetada no freeze via label/coluna?
 - [ ] Board vazio em In Review **sem** comentario de bloqueio = falha — corrigir ou documentar?
 
-### Conclusao e labels (Prioridade 6 — residual)
+### Conclusao e labels
 - [ ] **Fechar issues `open` com quarteto completo** (`qa:accepted` + `security:accepted` + `agent:technical-documenter:done` + `agent:tutorial-assistant:done`) e evidencia das quatro etapas: `state=closed` + coluna **Done** + comentario. **Lote permitido** (varias na mesma passagem). Responsabilidade exclusiva do Manager.
 - [ ] Conferir tasks em `Done` e issues `closed`: exigir as quatro labels de conclusao ou registrar excecao estrutural comprovada; sem quarteto → **não inventar `:done`**. Se faltar documentação: aplicar labels de **solicitação** ausentes (`agent:technical-documenter` e/ou `agent:tutorial-assistant`) para alimentar a fila dos documentadores; se faltar dual-gate e a issue estiver indevidamente `closed`/`Done`, reabrir e restaurar handoff de QA/Security. Uma correção atômica por rodada (exceto lote de fechamento por quarteto).
 - [ ] Conferir o inverso: tasks com as quatro labels e evidencia devem estar `closed` / **Done** (nao permanecer abertas em fila ativa).
@@ -110,8 +109,8 @@ Usar na Prioridade 2 (itens de RC/board) e na Prioridade 6 (higiene residual). E
 
 Quando houver mais de uma inconsistencia, escolha a mais avancada no pipeline:
 
-1. RC aberto com pacote fora de **In Review** e também fora de **Deploy** (Prioridade 2);
-2. Issues `open` com quarteto completo → fechar (lote permitido na P6);
+1. RC aberto com pacote fora de **In Review** e também fora de **Deploy**;
+2. Issues `open` com quarteto completo → fechar (lote permitido);
 3. `closed`/`Done` sem requisitos de conclusao;
 4. `Deploy`/`In Review` incoerente com o RC (nunca regredir Deploy → In Review);
 5. labels contraditorias ou handoff invalido em `Working`;
@@ -135,7 +134,7 @@ Dentro da mesma classe, corrija primeiro a task mais antiga por `createdAt` cres
 
 Ao finalizar, informe:
 
-- prioridade executada (1–6) e por que as superiores estavam vazias ou nao elegiveis;
+- prioridade executada (1–5) e por que as superiores estavam vazias ou nao elegiveis;
 - task auditada;
 - estado, coluna e labels antes da correcao;
 - regra violada e evidencia usada;
