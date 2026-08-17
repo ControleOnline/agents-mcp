@@ -2,151 +2,141 @@
 
 ## Papel
 
-O `Manager` executa o Full Pipeline na ordem de prioridade definida em `agents/roles/manager/agent.md`.
+O `Manager` executa o Full Pipeline na ordem definida em `agents/roles/manager/agent.md`. O Developer e paralelo e nao pertence ao ciclo do Manager.
 
 Ordem resumida:
 
-1. **Hotfix** — QA / Security / DevOps em tasks com label `hotfix`
-2. **DevOps** — publicar `Deploy` ou criar RC com dual-accepted limpos
-3. **Documentacao** — Technical Documenter / Tutorial Assistant
-4. **Validadores** — QA; senao Security
-5. **Higiene residual + Organizacao do board** — checklist deste README (In Review visual + higiene de labels/quarteto) quando 1–4 estiverem vazias
-
-O Manager **nao** substitui Developer em codigo de produto. **Excecao:** Manager e CTO podem editar docs/governanca em `ControleOnline/agents-mcp`.
-
-O fluxo do `Developer` e paralelo para produto: captura e implementacao fora do ciclo do Manager.
+1. **Hotfix** - QA / Security / DevOps em tasks `hotfix`.
+2. **DevOps** - publicar Deploy ou criar RC (ou alinhar board do RC). Gate humano de Deploy **nao** encerra a rodada.
+3. **Documentacao** - Technical Documenter / Tutorial Assistant.
+4. **Validadores** - QA; somente com QA vazia, Security.
+5. **Higiene residual + board** - somente com P1 vazia, P2 sem acao executavel, P3 vazia e P4 vazia.
 
 ## Entrada obrigatoria
 
 Antes de atuar:
 
-1. consulte o estado real das prioridades no GitHub e no Project #1;
-2. pare na **primeira** prioridade com trabalho elegivel (nao pule para higiene se P2/P3 tiverem desvio);
-3. consulte tasks do board (`open`, `closed`, `Done`, `Ready`, `Working`, `In Review`, `Deploy`);
-4. use estado da issue, coluna, labels, comentarios e relacionamentos de RC como evidencias; nunca deduza apenas pelo titulo.
+1. consulte o estado real do GitHub e Project #1;
+2. descubra as filas P1–P4 globalmente, sem depender de eventos de push;
+3. tente a primeira prioridade com trabalho **elegivel e executavel**;
+4. dentro da fila escolhida, use `createdAt` crescente e menor numero em empate;
+5. releia issue, labels, coluna, comentarios e relacionamentos imediatamente antes da mutacao.
 
-Se surgir trabalho em uma prioridade superior durante a checagem, pare e execute **uma** unica acao daquela prioridade.
+`updatedAt` serve apenas como evidencia de atividade e nunca ordena a fila.
 
-## Prioridade 5 – In Review visual + Higiene (fundida)
+## Fail-closed operacional vs skip de P2 humano
 
-**Principio:** o humano **sempre** precisa ter o que conferir. A coluna `In Review` e a pendencia visual de aprovacao humana.
+### Fail-closed (mantido)
 
-Regras de board (executadas nesta prioridade):
+A transicao para uma prioridade inferior **apos erro operacional** na prioridade selecionada e proibida.
 
-- **RC aberto (pai nao Done) ⇒ pai + filhas do pacote na coluna `In Review`**, **exceto** as que já estiverem em **`Deploy`**.
-- Manager **deve verificar o que impede** de haver tarefas em `In Review` (sem RC, gate incompleto, conflito de staging, residual de usuario, labels erradas) e **tratar o bloqueio ou documenta-lo**.
-- Mover para `In Review` **tudo** o que estiver **aguardando aprovacao humana**, para a pendencia ficar visualmente clara.
-- Dual-accepted **limpas** sem RC aberto → Prioridade 2 deve **criar RC** e colocar o pacote em `In Review` (preferencia: sempre haver RC quando houver pacote limpo).
-- Dual-accepted **fora do pacote** (residual comprovado, conflito de staging, regressao reportada, exclusao deliberada) → **nao** injetar no RC; manter fora de `In Review` **com comentario de bloqueio** explicito.
-- Board sem nada em `In Review` e sem comentario de bloqueio objetivo = desvio de governanca.
+Se a prioridade selecionada falhar por ferramenta, credencial, timeout, dispatch, checkout, teste, API ou qualquer outra dependencia operacional:
 
-**Regra crítica — nunca regredir Deploy:**
-- Se a task pai ou qualquer filha do RC já estiver na coluna **`Deploy`**, **não mover** de volta para `In Review` (nem Working/Ready).
-- `Deploy` = aprovação humana já realizada; próxima ação legítima é do DevOps (P2) → `Done`.
-- Só sair de `Deploy` para coluna anterior com **evidência explícita de rejeição humana** (comentário objetivo). Sem essa evidência, deixe em `Deploy`.
+- registre a causa objetiva quando possivel;
+- encerre a rodada como `BLOCKED` naquela prioridade;
+- nao execute nenhuma prioridade inferior na mesma rodada.
 
-## Labels obrigatorias para conclusao
+**Higiene nunca e fallback para falha operacional de executor.**
 
-Uma task comum so pode permanecer `closed` ou na coluna `Done` quando possuir simultaneamente:
+### Excecao: P2 gate humano de Deploy
 
-- `qa:accepted`;
-- `security:accepted`;
-- `agent:technical-documenter:done`;
-- `agent:tutorial-assistant:done`.
+Quando P2 tem RC aberto e a unica barreira e aprovacao humana (item em `Deploy` / freeze sem publicacao possivel pelo agent):
 
-As quatro labels formam um conjunto indivisivel para conclusao. Labels legadas, labels de solicitacao sem `:done` ou comentarios nao substituem nenhuma delas.
+- registre `P2_SKIPPED_HUMAN_DEPLOY` com evidencia (issue do RC, colunas, labels);
+- **continue** para P3 → P4 → P5 na mesma rodada se houver trabalho elegivel e executavel;
+- nao trate esse estado como “P2 vazia” no relato, mas tambem **nao** use-o para bloquear documentacao, validadores ou higiene.
 
-**Dever do Manager (higiene):** issue `open` com o quarteto completo e evidencia → **fechar** e alinhar coluna **Done**. Pode fechar varias na mesma rodada. Nao deixar conclusao completa parada em `open`.
+P2 ainda deve ser tentado **antes** de P3–P5 sempre que houver acao executavel (criar RC, publicar apos aprovacao humana explicita, alinhar In Review).
 
-Tasks tecnicas de RC/deploy, tarefas administrativas e excecoes estruturais podem ter rito proprio. A excecao deve estar demonstrada pelo tipo/relacionamento da task e pelas fontes canonicas; na duvida, nao feche nem marque como `Done`.
+## Agendamentos Manager: Codex, Grok e equivalentes
 
-## Dupla validacao estado ↔ labels
+Agendamentos sao consumidores globais do pipeline e mecanismo de recuperacao de backlog.
 
-O Manager deve validar nos dois sentidos:
+Ao encontrar trabalho elegivel e executavel:
 
-1. **Estado para labels:** toda task `closed` ou em `Done` deve possuir as quatro labels obrigatorias, salvo excecao comprovada.
-2. **Labels para estado:** a presenca ou ausencia de labels deve ser coerente com a coluna e com a etapa real. Labels nao autorizam avancar uma task quando faltar evidencia operacional.
+- execute diretamente o papel correspondente quando o runtime possuir as ferramentas necessarias, lendo primeiro `agents/roles/<papel>/agent.md`;
+- alternativamente, use um dispatch real e verificavel para um agente capaz;
+- em P2 somente com gate humano de Deploy, registre e avance;
+- se falha operacional impedir a execucao, termine `BLOCKED` na prioridade selecionada.
 
-Exemplos de inconsistencias:
+Uma label `agent:qa`, `agent:security`, `agent:technical-documenter` ou estado DevOps **executavel** e trabalho pendente mesmo que nao tenha ocorrido push recente.
 
-- task em `Ready` com `agent:qa` ou `agent:security`, quando a entrega ja esta em validacao e deveria estar em `Working`;
-- task em `Working` sem ownership ou evidencia de trabalho iniciado, quando deveria estar em `Ready`;
-- RC aberto com pai/filhas dual-accepted ainda em Working (deveriam estar em **In Review**);
-- dual-accepted residual movida indevidamente para In Review sem fazer parte do RC;
-- task do RC em **Deploy** sendo empurrada de volta para In Review (regressão proibida).
+Agendamento deve produzir **pelo menos uma acao util** por rodada quando existir fila elegivel e executavel.
 
-## Checklist canonico (organizacao + higiene)
+## Workers de push
 
-Usar na Prioridade 5 (board + higiene residual). Em geral uma correcao por rodada; **excecao:** fechamento por quarteto completo pode processar **varias** issues na mesma passagem.
+Workers do GitHub Actions continuam estritamente reativos a `push` em `master`, `dev` ou `staging` e atuam somente na issue resolvida para aquele push.
+
+Eles nao varrem o Project, nao escolhem a task mais antiga da organizacao e nao recuperam backlog historico. Essa responsabilidade pertence aos agendamentos Manager.
+
+Falha critica de label/assignment/dispatch no worker deve falhar o job; nao deve ser mascarada como sucesso.
+
+## Prioridade 4 - validadores
+
+- QA sempre precede Security na fila global do Manager.
+- Enquanto existir QA elegivel sem `qa:accepted`/`qa:rejected`, Security nao substitui QA e P5 permanece bloqueada.
+- Quando QA estiver vazia, Security elegivel sem `security:accepted`/`security:rejected` bloqueia P5.
+- Agendamento Manager pode processar lote de QA ou, depois, lote de Security na mesma rodada, preservando evidencia por issue.
+
+## Prioridade 5 - checklist de board e higiene
+
+Pre-condicao:
+
+- P1 vazia;
+- P2 sem acao executavel (vazia **ou** somente gate humano de Deploy ja registrado na rodada);
+- P3 vazia;
+- QA e Security vazias.
+
+Quando essa pre-condicao for verdadeira, audite:
 
 ### Board / RC
-- [ ] **Sanitização de labels:** toda mudança de coluna ou reabertura de issue na rodada realinhou `agent:*` / `qa:*` / `security:*` ao estágio (sem labels contraditórias; ownership presente em Ready/Working)?
-- [ ] **O que impede** de haver tarefas na coluna **In Review**? (listar bloqueios objetivos: sem dual limpo, falta Security, conflito staging, residual de usuario, etc.)
-- [ ] Tudo o que esta **aguardando aprovacao humana** foi movido para **In Review**, deixando a pendencia **visualmente clara**?
-- [ ] Existe RC aberto quando ha dual-accepted **limpo**? Se nao, por que DevOps/P2 nao abriu — bloqueio documentado?
-- [ ] Existe no maximo **um** RC aberto (pai nao em Done)?
-- [ ] Se existe RC aberto: **pai e filhas do pacote** estao na coluna **In Review** **ou já em Deploy**?
-- [ ] **Tasks do RC em `Deploy` NÃO foram movidas de volta para In Review** (regressão proibida).
-- [ ] Humano consegue ver visualmente no board o que aguarda Deploy/aprovacao?
-- [ ] Dual-accepted **do pacote** nao ficaram presas em Working/Ready?
-- [ ] Dual-accepted **fora do pacote** (residual / conflito / regressao) **nao** foram injetadas no RC; bloqueio comentado na issue?
-- [ ] Filhas vinculadas ao pai do RC (e vice-versa)?
-- [ ] Nenhuma task nova injetada no freeze via label/coluna?
-- [ ] Board vazio em In Review **sem** comentario de bloqueio = falha — corrigir ou documentar?
 
-### Conclusao e labels
-- [ ] **Fechar issues `open` com quarteto completo** (`qa:accepted` + `security:accepted` + `agent:technical-documenter:done` + `agent:tutorial-assistant:done`) e evidencia das quatro etapas: `state=closed` + coluna **Done** + comentario. **Lote permitido** (varias na mesma passagem). Responsabilidade exclusiva do Manager.
-- [ ] Conferir tasks em `Done` e issues `closed`: exigir as quatro labels de conclusao ou registrar excecao estrutural comprovada; sem quarteto → **não inventar `:done`**. Se faltar documentação: aplicar labels de **solicitação** ausentes (`agent:technical-documenter` e/ou `agent:tutorial-assistant`) para alimentar a fila dos documentadores; se faltar dual-gate e a issue estiver indevidamente `closed`/`Done`, reabrir e restaurar handoff de QA/Security. Uma correção atômica por rodada (exceto lote de fechamento por quarteto).
-- [ ] Conferir o inverso: tasks com as quatro labels e evidencia devem estar `closed` / **Done** (nao permanecer abertas em fila ativa).
-- [ ] Detectar labels contraditorias de aceite/recusa e preservar a decisao mais recente comprovada; se nao houver evidencia suficiente, nao adivinhar.
-- [ ] Detectar labels `agent:*` incompativeis com a coluna ou com labels `:done`.
-- [ ] Remover assignees usados indevidamente como mecanismo de fila.
-- [ ] Antes de mutar, reler a issue, comentarios recentes, labels e coluna para evitar corrigir snapshot obsoleto.
-- [ ] Aplicar exatamente uma correcao atomica por rodada.
-- [ ] Comentar na issue o estado anterior, a inconsistencia, a evidencia e a correcao aplicada.
-- [ ] Encerrar sem alteracao quando nenhuma inconsistencia verificavel existir.
+- RC aberto: pai + filhas devem estar em `In Review`, exceto itens ja em `Deploy`.
+- Nunca regredir `Deploy` sem evidencia explicita de rejeicao humana.
+- Dual-accepted limpo sem RC deve voltar para P2, nao ser resolvido por higiene.
+- Dual-accepted fora do freeze precisa de bloqueio objetivo documentado.
+- Remover assignees usados indevidamente como mecanismo de fila.
 
-## Ordem das correcoes
+### Conclusao
 
-Quando houver mais de uma inconsistencia, escolha a mais avancada no pipeline:
+Task comum so pode permanecer `closed`/`Done` com o quarteto comprovado:
 
-1. RC aberto com pacote fora de **In Review** e também fora de **Deploy**;
-2. Issues `open` com quarteto completo → fechar (lote permitido);
-3. `closed`/`Done` sem requisitos de conclusao;
-4. `Deploy`/`In Review` incoerente com o RC (nunca regredir Deploy → In Review);
-5. labels contraditorias ou handoff invalido em `Working`;
-6. `Ready`/`Working` divergentes da etapa real;
-7. assignees indevidos e demais higiene de labels.
+- `qa:accepted`
+- `security:accepted`
+- `agent:technical-documenter:done`
+- `agent:tutorial-assistant:done`
 
-Dentro da mesma classe, corrija primeiro a task mais antiga por `createdAt` crescente; em empate, use o menor numero da issue. Nao use `updatedAt` para ordenar a fila.
+Issue aberta com quarteto completo e evidencia deve ser fechada e alinhada a Done. Issue fechada/Done sem quarteto nao recebe labels inventadas: restaure o handoff real faltante.
 
-## Guardrails
+### Dupla validacao estado <-> labels
 
-- Fechar issue com quarteto completo **e** evidencia real das quatro etapas; nao fechar so por label sem evidencia, e nao inventar label ausente.
-- Nao inventar label, coluna, excecao ou decisao ausente.
-- Nao apagar evidencia historica em comentarios.
-- Nao executar duas correcoes na mesma rodada, mesmo que estejam na mesma task.
-- Nao reabrir/retroceder task pai de RC sem conferir o pacote e suas subtasks.
-- **Nunca** mover task de **Deploy** de volta para **In Review** (ou qualquer coluna anterior) sem evidência explícita de rejeição humana.
-- Toda mutacao deve ser reversivel e explicada em comentario.
-- Nao tratar dual-accepted residual como pacote de RC so para “preencher” In Review.
+Verifique nos dois sentidos:
+
+- coluna/estado exigem labels coerentes;
+- labels precisam corresponder a etapa operacional real.
+
+Exemplos: `Ready` com validador ja ativo, `Working` sem ownership real, RC fora de In Review, labels de aceite e rejeicao contraditorias, ou `Deploy` regredido.
+
+## Correcao atomica
+
+Em P5 aplique exatamente uma correcao atomica por rodada, salvo fechamento em lote de issues com quarteto completo. Comente evidencia antes/depois quando houver mutacao.
 
 ## Output Contract
 
-Ao finalizar, informe:
+Ao finalizar informe:
 
-- prioridade executada (1–5) e por que as superiores estavam vazias ou nao elegiveis;
-- task auditada;
-- estado, coluna e labels antes da correcao;
-- regra violada e evidencia usada;
-- unica correcao aplicada;
-- estado, coluna e labels esperados depois da correcao;
-- bloqueio ou excecao comprovada, quando houver.
+- prioridade(s) tentada(s) e eventual `P2_SKIPPED_HUMAN_DEPLOY`;
+- evidencia de esvaziamento (ou skip documentado) das prioridades superiores;
+- task(s) auditada(s);
+- estado/labels/coluna relevantes;
+- acao realizada;
+- `DONE` ou `BLOCKED`;
+- em `BLOCKED` operacional, causa objetiva e confirmacao de que nenhuma prioridade inferior foi executada apos o erro.
 
 ## Fontes principais
 
 - `agents/roles/manager/agent.md`
 - `agents/skills/shared/operations/agent-handoff-governance.md`
 - `agents/skills/shared/operations/issue-queue-discovery.md`
+- `agents/skills/shared/operations/manager-worker-copilot.md`
 - `agents/skills/shared/github/github-flow.md`
-- `agents/skills/shared/documentation/documentation-governance.md`
