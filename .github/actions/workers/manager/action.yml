@@ -124,17 +124,17 @@ runs:
           master)
             run_docs=true
             run_gates=true
-            gh issue edit "$NUM" --repo "$REPO" --add-label "agent:technical-documenter" || true
+            gh issue edit "$NUM" --repo "$REPO" --add-label "agent:technical-documenter"
             ;;
           dev)
             run_qa=true
             run_security=true
-            gh issue edit "$NUM" --repo "$REPO" --add-label "agent:qa" --add-label "agent:security" --add-label "agent:developer:done" || true
+            gh issue edit "$NUM" --repo "$REPO" --add-label "agent:qa" --add-label "agent:security" --add-label "agent:developer:done"
             ;;
           staging)
             run_qa=true
             run_security=true
-            gh issue edit "$NUM" --repo "$REPO" --add-label "agent:qa" --add-label "agent:security" || true
+            gh issue edit "$NUM" --repo "$REPO" --add-label "agent:qa" --add-label "agent:security"
             ;;
         esac
 
