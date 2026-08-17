@@ -30,7 +30,7 @@ https://raw.githubusercontent.com/ControleOnline/agents-mcp/master/agents/skills
 
 Não use regras embutidas neste assignment; a fonte acima prevalece.'
 
-        gh issue edit "$ISSUE" --repo "$REPO" --add-label "agent:technical-documenter" || true
+        gh issue edit "$ISSUE" --repo "$REPO" --add-label "agent:technical-documenter"
 
         gh api --method POST \
           -H "Accept: application/vnd.github+json" \

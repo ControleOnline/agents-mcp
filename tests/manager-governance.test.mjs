@@ -37,6 +37,13 @@ test('workers remain push scoped and do not become backlog schedulers', () => {
   assert.match(securityWorker, /push-scoped/i);
 });
 
+test('manager worker does not mask critical label assignment failures', () => {
+  const managerAction = fs.readFileSync('.github/actions/workers/manager/action.yml', 'utf8');
+  const managerWorkflow = fs.readFileSync('.github/workflows/manager-worker.yml', 'utf8');
+  assert.doesNotMatch(managerAction, /gh issue edit[^\n]*--add-label[^\n]*\|\| true/);
+  assert.doesNotMatch(managerWorkflow, /gh issue edit[^\n]*--add-label[^\n]*\|\| true/);
+});
+
 test('critical worker dispatch failures are not masked', () => {
   assert.doesNotMatch(qaWorker, /gh issue edit[^\n]*\|\| true/);
   assert.doesNotMatch(securityWorker, /gh issue edit[^\n]*\|\| true/);
