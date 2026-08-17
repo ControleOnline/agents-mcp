@@ -7,48 +7,61 @@ O `Manager` executa o Full Pipeline na ordem definida em `agents/roles/manager/a
 Ordem resumida:
 
 1. **Hotfix** - QA / Security / DevOps em tasks `hotfix`.
-2. **DevOps** - publicar Deploy ou criar RC.
+2. **DevOps** - publicar Deploy ou criar RC (ou alinhar board do RC). Gate humano de Deploy **nao** encerra a rodada.
 3. **Documentacao** - Technical Documenter / Tutorial Assistant.
 4. **Validadores** - QA; somente com QA vazia, Security.
-5. **Higiene residual + board** - somente com P1-P4 comprovadamente vazias.
+5. **Higiene residual + board** - somente com P1 vazia, P2 sem acao executavel, P3 vazia e P4 vazia.
 
 ## Entrada obrigatoria
 
 Antes de atuar:
 
 1. consulte o estado real do GitHub e Project #1;
-2. descubra as filas P1-P4 globalmente, sem depender de eventos de push;
-3. pare na primeira prioridade com trabalho elegivel;
+2. descubra as filas P1–P4 globalmente, sem depender de eventos de push;
+3. tente a primeira prioridade com trabalho **elegivel e executavel**;
 4. dentro da fila escolhida, use `createdAt` crescente e menor numero em empate;
 5. releia issue, labels, coluna, comentarios e relacionamentos imediatamente antes da mutacao.
 
 `updatedAt` serve apenas como evidencia de atividade e nunca ordena a fila.
 
-## Fail-closed entre prioridades
+## Fail-closed operacional vs skip de P2 humano
 
-A transicao para uma prioridade inferior exige evidencia de que a prioridade superior esta **vazia**, nao apenas de que o runtime nao conseguiu executa-la.
+### Fail-closed (mantido)
 
-Se a prioridade selecionada falhar por ferramenta, credencial, timeout, dispatch, checkout, teste, API ou qualquer outra dependencia:
+A transicao para uma prioridade inferior **apos erro operacional** na prioridade selecionada e proibida.
+
+Se a prioridade selecionada falhar por ferramenta, credencial, timeout, dispatch, checkout, teste, API ou qualquer outra dependencia operacional:
 
 - registre a causa objetiva quando possivel;
 - encerre a rodada como `BLOCKED` naquela prioridade;
 - nao execute nenhuma prioridade inferior na mesma rodada.
 
-Consequentemente, P5 e proibida quando houver qualquer P1-P4 elegivel ou quando a descoberta de P1-P4 estiver inconclusiva.
+**Higiene nunca e fallback para falha operacional de executor.**
+
+### Excecao: P2 gate humano de Deploy
+
+Quando P2 tem RC aberto e a unica barreira e aprovacao humana (item em `Deploy` / freeze sem publicacao possivel pelo agent):
+
+- registre `P2_SKIPPED_HUMAN_DEPLOY` com evidencia (issue do RC, colunas, labels);
+- **continue** para P3 → P4 → P5 na mesma rodada se houver trabalho elegivel e executavel;
+- nao trate esse estado como “P2 vazia” no relato, mas tambem **nao** use-o para bloquear documentacao, validadores ou higiene.
+
+P2 ainda deve ser tentado **antes** de P3–P5 sempre que houver acao executavel (criar RC, publicar apos aprovacao humana explicita, alinhar In Review).
 
 ## Agendamentos Manager: Codex, Grok e equivalentes
 
 Agendamentos sao consumidores globais do pipeline e mecanismo de recuperacao de backlog.
 
-Ao encontrar trabalho elegivel:
+Ao encontrar trabalho elegivel e executavel:
 
 - execute diretamente o papel correspondente quando o runtime possuir as ferramentas necessarias, lendo primeiro `agents/roles/<papel>/agent.md`;
 - alternativamente, use um dispatch real e verificavel para um agente capaz;
-- se nao puder executar nem despachar, termine `BLOCKED` na prioridade selecionada.
+- em P2 somente com gate humano de Deploy, registre e avance;
+- se falha operacional impedir a execucao, termine `BLOCKED` na prioridade selecionada.
 
-Uma label `agent:qa`, `agent:security`, `agent:technical-documenter` ou estado DevOps elegivel e trabalho pendente mesmo que nao tenha ocorrido push recente.
+Uma label `agent:qa`, `agent:security`, `agent:technical-documenter` ou estado DevOps **executavel** e trabalho pendente mesmo que nao tenha ocorrido push recente.
 
-**Higiene nunca e fallback para indisponibilidade de executor.**
+Agendamento deve produzir **pelo menos uma acao util** por rodada quando existir fila elegivel e executavel.
 
 ## Workers de push
 
@@ -67,7 +80,12 @@ Falha critica de label/assignment/dispatch no worker deve falhar o job; nao deve
 
 ## Prioridade 5 - checklist de board e higiene
 
-Pre-condicao absoluta: P1, P2, P3, QA e Security foram consultadas com sucesso e estao vazias.
+Pre-condicao:
+
+- P1 vazia;
+- P2 sem acao executavel (vazia **ou** somente gate humano de Deploy ja registrado na rodada);
+- P3 vazia;
+- QA e Security vazias.
 
 Quando essa pre-condicao for verdadeira, audite:
 
@@ -107,13 +125,13 @@ Em P5 aplique exatamente uma correcao atomica por rodada, salvo fechamento em lo
 
 Ao finalizar informe:
 
-- prioridade executada;
-- evidencia de esvaziamento das prioridades superiores;
+- prioridade(s) tentada(s) e eventual `P2_SKIPPED_HUMAN_DEPLOY`;
+- evidencia de esvaziamento (ou skip documentado) das prioridades superiores;
 - task(s) auditada(s);
 - estado/labels/coluna relevantes;
 - acao realizada;
 - `DONE` ou `BLOCKED`;
-- em `BLOCKED`, causa objetiva e confirmacao de que nenhuma prioridade inferior foi executada.
+- em `BLOCKED` operacional, causa objetiva e confirmacao de que nenhuma prioridade inferior foi executada apos o erro.
 
 ## Fontes principais
 
