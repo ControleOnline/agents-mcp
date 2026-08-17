@@ -1,5 +1,5 @@
 name: QA Worker
-description: Assign Copilot as QA — single link to agents-mcp
+description: Assign Copilot as QA for the issue resolved by the triggering push
 inputs:
   gh_token:
     required: true
@@ -19,12 +19,15 @@ runs:
         BASE: ${{ inputs.base_branch }}
       run: |
         set -euo pipefail
+        # Business rule: this worker is push-scoped. Backlog recovery belongs to scheduled Managers.
         CUSTOM_INSTRUCTIONS='Atue 100% como QA do ControleOnline.
-Leia e siga OBRIGATORIAMENTE a fonte canônica única:
+Leia e siga OBRIGATORIAMENTE a fonte canonica unica:
 https://raw.githubusercontent.com/ControleOnline/agents-mcp/master/agents/roles/qa/agent.md'
 
-        gh issue edit "$ISSUE" --repo "$REPO" --add-label "agent:qa" || true
+        # Stage labeling is part of dispatch. If it cannot be persisted, the handoff is incomplete.
+        gh issue edit "$ISSUE" --repo "$REPO" --add-label "agent:qa"
 
+        # Agent assignment is critical. Never mask an API/credential/assignment failure.
         gh api --method POST \
           -H "Accept: application/vnd.github+json" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
@@ -41,4 +44,4 @@ https://raw.githubusercontent.com/ControleOnline/agents-mcp/master/agents/roles/
         EOFINNER
 
         gh issue comment "$ISSUE" --repo "$REPO" --body \
-          "Manager Worker → **QA**. Fonte: agents-mcp/agents/roles/qa/agent.md"
+          "Manager Worker -> **QA** (push-scoped). Fonte: agents-mcp/agents/roles/qa/agent.md"
