@@ -122,7 +122,7 @@ Task comum so pode permanecer `closed`/`Done` com o quarteto comprovado:
 
 Issue aberta com quarteto completo e evidencia deve ser fechada e alinhada a Done. Issue fechada/Done sem quarteto **nao** recebe labels `:done` inventadas: **restaure o handoff real faltante** (`agent:technical-documenter` e/ou `agent:tutorial-assistant` de solicitação; e normalize `agent:qa:accepted` / `agent:security:accepted` se só existirem aliases legados).
 
-**Lote de documentação (exceção à regra de uma correção atômica):** em P5, o Manager **pode e deve** aplicar em **lote** as labels de solicitação de documentação em todas as issues `Done`/`closed` de produto do escopo que estejam sem `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done` e sem a solicitação correspondente. Governança pura pode ser isenta com comentário. Comente evidência resumida (lista de issues tocadas).
+**Lote de documentação (exceção à regra de uma correção atômica):** em P5, o Manager **pode e deve** aplicar em **lote** as labels de solicitação de documentação em **todas** as issues `Done`/`closed` do escopo que estejam sem `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done` e sem a solicitação correspondente — **incluindo governança** (`agents-mcp`). Sem isenção. Quem decide o conteúdo/`:done` é o documentador. Comente evidência resumida (lista de issues tocadas).
 
 ### Dupla validacao estado <-> labels
 

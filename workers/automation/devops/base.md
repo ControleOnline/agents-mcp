@@ -40,7 +40,7 @@ Quando a task pai chegar em **`Deploy`**:
 
 ## Handoff de documentação (fail-closed)
 
-Ao promover filhas de produto para Done: aplicar `agent:technical-documenter` e `agent:tutorial-assistant` se faltar `:done`. Não inventar `:done`. Isenção só governança pura / hotfix sem delta de produto com comentário.
+Ao promover **qualquer** filha/task do inventário para Done: aplicar **sempre** `agent:technical-documenter` e `agent:tutorial-assistant` se faltar o `:done` correspondente. **Sem isenção.** Não inventar `:done`. Quem decide documentação é o documentador, não o DevOps.
 
 ## Promoção para master
 
