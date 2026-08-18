@@ -16,15 +16,22 @@ A fonte primaria da fila sao **issues + labels** (e estado open/closed).
 - Use ProjectV2 quando for preciso: associar issue recem-criada ao board, ler status/coluna complementar, ou quando o prompt pedir explicitamente.
 - Projeto operacional padrao da org: [ControleOnline Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1) (`organization` `ControleOnline`, `number` `1`).
 
-## Associacao obrigatoria ao criar task
+## Associacao obrigatoria ao Project #1 (hands-on — todos os agents)
+
+**Regra transversal e hands-on:** todo agent do ecossistema (CTO, Developer, Manager, QA, Security, DevOps, Sysadmin, documentadores e qualquer outro papel) e **obrigado** a manter issues no board operacional. Nao e opcional, nao e so do Manager e nao pode ser adiado para “depois”.
 
 Sempre que um agent **criar** uma issue/task nova:
 
 1. Crie a issue no repositorio adequado.
-2. **Associe-a ao projeto** `https://github.com/orgs/ControleOnline/projects/1/views/1` (ProjectV2 da org, number `1`).
-3. Aplique as labels `agent:*` necessarias.
+2. **Associe-a imediatamente** ao projeto `https://github.com/orgs/ControleOnline/projects/1/views/1` (ProjectV2 da org, number `1`).
+3. Defina o Status do item no board (`Ready` na entrada padrao, ou a coluna coerente com o estado real se ja houver ownership/etapa).
+4. Aplique as labels `agent:*` necessarias.
 
-Falha ao associar ao projeto deve ser registrada no comentario da issue e tentada de novo quando houver permissao/API; a issue em si nao deve ficar “solta” sem tentativa de vinculo.
+Regras adicionais (todos os agents):
+
+- Issue **sem** item no Project #1 e desvio operacional: o agent que a criar, capturar ou mutar deve **associar na mesma rodada**.
+- Falha de permissao/API ao associar **nao e silenciosa**: comente na issue a falha objetiva e tente de novo quando houver permissao; a issue nao deve permanecer “solta” sem tentativa de vinculo registrada.
+- Manager em P5 (higiene) audita e corrige issues soltas, mas isso **nao dispensa** a obrigacao hands-on dos demais agents na criacao/captura.
 
 ## Outras regras
 
