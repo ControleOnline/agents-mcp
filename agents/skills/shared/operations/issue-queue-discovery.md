@@ -18,20 +18,21 @@ A fonte primaria da fila sao **issues + labels** (e estado open/closed).
 
 ## Associacao obrigatoria ao Project #1 (hands-on — todos os agents)
 
-**Regra transversal e hands-on:** todo agent do ecossistema (CTO, Developer, Manager, QA, Security, DevOps, Sysadmin, documentadores e qualquer outro papel) e **obrigado** a manter issues no board operacional. Nao e opcional, nao e so do Manager e nao pode ser adiado para “depois”.
+**Regra transversal e hands-on:** todo agent do ecossistema (CTO, Developer, Manager, QA, Security, DevOps, Sysadmin, documentadores e qualquer outro papel) e **obrigado** a manter **issues e PRs** no **Project #1**. Tudo e Project #1. Nao e opcional, nao e so do Manager e nao pode ser adiado para “depois”.
 
-Sempre que um agent **criar** uma issue/task nova:
+Sempre que um agent **criar** uma issue/task **ou** abrir/atuar em uma PR:
 
-1. Crie a issue no repositorio adequado.
-2. **Associe-a imediatamente** ao projeto `https://github.com/orgs/ControleOnline/projects/1/views/1` (ProjectV2 da org, number `1`).
+1. Crie a issue no repositorio adequado (ou identifique a PR).
+2. **Associe-a imediatamente** ao projeto `https://github.com/orgs/ControleOnline/projects/1/views/1` (ProjectV2 da org, number `1`) — **na mesma hora**.
 3. Defina o Status do item no board (`Ready` na entrada padrao, ou a coluna coerente com o estado real se ja houver ownership/etapa).
 4. Aplique as labels `agent:*` necessarias.
 
 Regras adicionais (todos os agents):
 
-- Issue **sem** item no Project #1 e desvio operacional: o agent que a criar, capturar ou mutar deve **associar na mesma rodada**.
-- Falha de permissao/API ao associar **nao e silenciosa**: comente na issue a falha objetiva e tente de novo quando houver permissao; a issue nao deve permanecer “solta” sem tentativa de vinculo registrada.
-- Manager em P5 (higiene) audita e corrige issues soltas, mas isso **nao dispensa** a obrigacao hands-on dos demais agents na criacao/captura.
+- Issue ou PR **sem** item no Project #1 e desvio operacional: o agent que a criar, capturar ou mutar deve **associar na mesma rodada/hora**.
+- **Todas** as PRs `open` do escopo entram nessa regra (nao so as “ja no board”).
+- Falha de permissao/API ao associar **nao e silenciosa**: comente no item a falha objetiva e tente de novo quando houver permissao; nao deixe solto sem tentativa registrada.
+- Manager em P5 (higiene) audita e corrige itens soltos, mas isso **nao dispensa** a obrigacao hands-on dos demais agents.
 
 
 ## Outras regras
@@ -173,7 +174,7 @@ Candidata se **qualquer** for verdadeira:
 1. publicacao: task pai de RC (ou hotfix elegivel) na coluna **`Deploy`** com aprovacao humana;
 2. RC aberto: desvio corrigivel de board/freeze/staging (pai/filhas fora de alinhamento);
 3. montagem de RC: existe dual-accepted (`agent:qa:accepted` + `agent:security:accepted`) limpo e **nenhum** RC aberto;
-4. handoff DevOps: issue com label **`agent:devops`** **ou** PR aberta marcada para DevOps (label `agent:devops` na PR, PR item no Project #1, ou PR vinculada a issue com `agent:devops`) — decisao de merge/alinhar fluxo/fechar.
+4. handoff DevOps: issue com label **`agent:devops`** **ou** **qualquer** PR `open` marcada/encaminhada para DevOps (label `agent:devops`, vinculo a issue `agent:devops`, ou PR solta sem handoff apos higiene). Se a PR **nao** estiver no Project #1, **associar na mesma hora** antes ou junto da decisao.
 
 Nao candidata se a acao pertencer exclusivamente a Developer/QA/Security sem handoff DevOps, ou se o unico bloqueio for gate humano de Deploy ja documentado sem acao executavel pelo agent.
 

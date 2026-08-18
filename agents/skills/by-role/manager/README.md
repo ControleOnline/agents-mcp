@@ -91,19 +91,25 @@ Quando essa pre-condicao for verdadeira, audite:
 
 ### Board / RC
 
-- **Issues soltas (obrigatorio):** issues `open` elegiveis da org/escopo operacional **sem item no Project #1** devem ser associadas ao board na mesma correcao atomica; Status padrao `Ready` (ou coluna coerente com labels/estado real). Falha de API/permissao deve ser comentada na issue — nunca silenciosa. Isso complementa a regra hands-on de todos os agents; P5 e a rede de seguranca, nao a unica via.
+- **Issues e PRs fora do Project #1 (obrigatorio):** **tudo** opera no Project #1. Qualquer issue `open` ou PR `open` do escopo operacional **sem item no board** deve ser **associada na mesma hora** (mesma correcao atomica); Status padrao `Ready` (ou coluna coerente). Falha de API/permissao deve ser comentada no item — nunca silenciosa. P5 e rede de seguranca; a obrigacao hands-on vale para todos os agents.
 - RC aberto: pai + filhas devem estar em `In Review`, exceto itens ja em `Deploy`.
 - Nunca regredir `Deploy` sem evidencia explicita de rejeicao humana.
 - Dual-accepted limpo sem RC deve voltar para P2, nao ser resolvido por higiene.
 - Dual-accepted fora do freeze precisa de bloqueio objetivo documentado.
 - Remover assignees usados indevidamente como mecanismo de fila.
 
-### PRs soltas (obrigatorio)
+### PRs (obrigatorio — **todas** as PRs abertas)
 
-Inclui PRs abertas **e** PRs que sejam **itens do Project #1** (board) sem handoff operacional claro. Destravar em P5 (correcao atomica; uma PR por rodada):
+O board e o **Project #1**: **todas** as PRs `open` do escopo operacional entram na higiene, nao so as que ja estao no board.
 
-1. **PR com tarefa/issue associada:** se a issue estiver `closed`, **reabra**; aplique handoff para **DevOps** (`agent:devops`); comente na issue e na PR o motivo (PR solta no board/fila, precisa de decisao DevOps: merge/alinhar fluxo/fechar). Nao mergeie nem feche a PR no lugar do DevOps.
-2. **PR sem tarefa associada:** **crie** uma issue para o DevOps decidir (implementar/alinhar merge ou fechar a PR); associe issue **e** mantenha/associe a PR ao Project #1 com Status coerente (padrao `Ready`); label de tipo adequada + `agent:devops` na issue (e na PR se o repositorio usar a mesma label); comente o vinculo cruzado. Falha de associacao ao board nao e silenciosa.
+Na mesma passagem, antes ou junto do handoff:
+
+0. Se a PR **nao** estiver no Project #1, **associe-a na mesma hora** (Status coerente, padrao `Ready`). Idem para a issue vinculada, se houver. Sem item no Project #1 e desvio — corrigir imediatamente.
+
+Depois destranque o handoff (correcao atomica; uma PR por rodada):
+
+1. **PR com tarefa/issue associada:** se a issue estiver `closed`, **reabra**; aplique handoff para **DevOps** (`agent:devops`); comente na issue e na PR. Nao mergeie nem feche a PR no lugar do DevOps.
+2. **PR sem tarefa associada:** **crie** uma issue para o DevOps decidir (implementar/alinhar merge ou fechar a PR); associe **issue e PR** ao Project #1 na mesma hora; label de tipo + `agent:devops`; comente o vinculo cruzado. Falha de associacao nao e silenciosa.
 
 ### Conclusao
 
