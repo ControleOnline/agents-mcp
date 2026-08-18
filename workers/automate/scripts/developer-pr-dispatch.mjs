@@ -19,10 +19,10 @@ const ALL_AGENT_LABELS = [
   'agent:devops',
   'agent:sysadmin',
 ];
-const QA_ACCEPTED_LABEL = 'qa:accepted';
-const QA_REJECTED_LABEL = 'qa:rejected';
-const SECURITY_ACCEPTED_LABEL = 'security:accepted';
-const SECURITY_REJECTED_LABEL = 'security:rejected';
+const QA_ACCEPTED_LABEL = 'agent:qa:accepted';
+const QA_REJECTED_LABEL = 'agent:qa:rejected';
+const SECURITY_ACCEPTED_LABEL = 'agent:security:accepted';
+const SECURITY_REJECTED_LABEL = 'agent:security:rejected';
 const BUG_LABEL = 'bug';
 const IMPROVEMENT_LABEL = 'enhancement';
 const FEATURE_LABEL = 'feature';

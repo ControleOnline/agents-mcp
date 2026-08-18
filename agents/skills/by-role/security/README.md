@@ -23,20 +23,20 @@
 
 Candidata se:
 
-- `agent:security` presente e ainda sem `security:accepted` / `security:rejected`; **ou**
-- issue `closed` sem `security:accepted`.
+- `agent:security` presente e ainda sem `agent:security:accepted` / `agent:security:rejected`; **ou**
+- issue `closed` sem `agent:security:accepted`.
 
 ### Gate dual
 
-Issue **closed** sem `qa:accepted` **e** `security:accepted` → **reabrir**, analisar, decidir. Nao deixar fechada sem as duas aprovacoes.
+Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **reabrir**, analisar, decidir. Nao deixar fechada sem as duas aprovacoes.
 
 ## Labels oficiais
 
 | Label | Significado |
 | --- | --- |
 | `agent:security` | Solicitacao de revisao Security |
-| `security:accepted` | Aprovado; trabalho do Security **encerrado** nesta passagem |
-| `security:rejected` | Recusado; trabalho do Security **encerrado** nesta passagem |
+| `agent:security:accepted` | Aprovado; trabalho do Security **encerrado** nesta passagem |
+| `agent:security:rejected` | Recusado; trabalho do Security **encerrado** nesta passagem |
 
 ## Ownership
 
@@ -48,8 +48,8 @@ Issue **closed** sem `qa:accepted` **e** `security:accepted` → **reabrir**, an
 
 ## Handoff
 
-- **Aceitar:** `security:accepted`, remover `agent:security`, checklist na issue
-- **Recusar:** `security:rejected`, remover `agent:security`, comentario objetivo, issue **open**
+- **Aceitar:** `agent:security:accepted`, remover `agent:security`, checklist na issue
+- **Recusar:** `agent:security:rejected`, remover `agent:security`, comentario objetivo, issue **open**
 
 ## Fontes principais
 
