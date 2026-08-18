@@ -79,15 +79,20 @@ Candidata se **qualquer** for verdadeira:
 
 Nao candidata se houver decisao/revisao ativa que ainda pertenca a `QA`, `Security` ou `DevOps` (por exemplo, aguardando aceite/recusa com `agent:qa`, `agent:security` ou pacote de RC).
 
-Ordem de prioridade do `Developer`:
+Ordem de prioridade do `Developer` (por **tipo**):
 
 1. `hotfix`
 2. `qa:rejected` ou `security:rejected`
 3. `bug`
-4. labels de prioridade `p0`, `p1`, `p2`, … (menor número = maior prioridade; ex.: `p0` antes de `p1`)
-5. demais tipos (`enhancement`, `feature` ou sem tipo)
+4. demais tipos (`enhancement`, `feature` ou sem tipo)
 
-Dentro do mesmo nível de prioridade acima, selecione a issue elegivel mais antiga por `createdAt` crescente; em empate de `createdAt`, selecione o menor numero da issue. `updatedAt` nao altera a posicao. Labels `p0`/`p1`/`p2`/… podem ser criadas pelo agent quando ausentes. Se nenhuma issue elegivel existir, registre o criterio de busca e pare com bloqueio objetivo.
+**Desempate dentro de cada linha de tipo** (nesta ordem):
+
+1. labels de prioridade `p0`, `p1`, `p2`, … (menor número = maior prioridade; issue **sem** label `p*` depois das que têm)
+2. `createdAt` crescente (mais antiga)
+3. menor numero da issue
+
+`updatedAt` nao altera a posicao. `p*` **nao** e faixa entre `bug` e demais — so desempate em cada tipo. Labels `p0`/`p1`/`p2`/… podem ser criadas pelo agent quando ausentes. Se nenhuma issue elegivel existir, registre o criterio de busca e pare com bloqueio objetivo.
 
 ## Template de elegibilidade — papeis documentais
 
