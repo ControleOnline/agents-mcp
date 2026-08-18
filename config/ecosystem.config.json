@@ -1,11 +1,11 @@
 {
   "$schema": "./ecosystem.config.schema.json",
-  "description": "Valores do fork. Preencha os campos value. A documentacao canonica usa placeholders; tokens/secrets nao entram neste arquivo.",
+  "description": "Valores canônicos ControleOnline. Tokens/secrets NÃO entram neste arquivo.",
 
   "owner": {
     "placeholder": "<OWNER>",
     "env": "OWNER",
-    "value": "",
+    "value": "ControleOnline",
     "description": "Organizacao ou usuario GitHub dono dos repositorios."
   },
 
@@ -14,12 +14,16 @@
     "core_repository": {
       "placeholder": "<OWNER>/agents-mcp",
       "env": "AGENTS_MCP_REPOSITORY",
-      "value": "agents-mcp",
+      "value": "ControleOnline/agents-mcp",
       "description": "Repositorio canonico de agents e skills (nome curto ou OWNER/agents-mcp)."
     },
     "product_repositories": {
       "env": "PRODUCT_REPOSITORIES",
-      "value": [],
+      "value": [
+        "ControleOnline/app-community",
+        "ControleOnline/api-community",
+        "ControleOnline/api-whatsapp"
+      ],
       "description": "Repositorios de produto cobertos pelos agents."
     }
   },
@@ -28,13 +32,13 @@
     "url": {
       "placeholder": "<PROJECT_URL>",
       "env": "PROJECT_URL",
-      "value": "",
+      "value": "https://github.com/orgs/ControleOnline/projects/1",
       "description": "URL do ProjectV2 operacional."
     },
     "org": {
       "placeholder": "<OWNER>",
       "env": ["PROJECT_ORG", "QA_PROJECT_ORG", "DEVOPS_PROJECT_ORG"],
-      "value": "",
+      "value": "ControleOnline",
       "description": "Organizacao do ProjectV2."
     },
     "number": {
@@ -71,16 +75,16 @@
       "QA_TASK_LIMIT": "5",
       "QA_AUTO_MERGE": "false",
       "DEVELOPER_COPILOT_BASE_REF": "master",
-      "OWNER": "",
-      "PROJECT_ORG": "",
-      "QA_PROJECT_ORG": "",
-      "DEVOPS_PROJECT_ORG": "",
+      "OWNER": "ControleOnline",
+      "PROJECT_ORG": "ControleOnline",
+      "QA_PROJECT_ORG": "ControleOnline",
+      "DEVOPS_PROJECT_ORG": "ControleOnline",
       "PROJECT_NUMBER": "1",
       "QA_PROJECT_NUMBER": "1",
       "DEVOPS_PROJECT_NUMBER": "1",
-      "AGENTS_MCP_REPOSITORY": "",
-      "CTO_CORE_REPOSITORY": "",
-      "TECHNICAL_LEAD_CORE_REPOSITORY": ""
+      "AGENTS_MCP_REPOSITORY": "ControleOnline/agents-mcp",
+      "CTO_CORE_REPOSITORY": "ControleOnline/agents-mcp",
+      "TECHNICAL_LEAD_CORE_REPOSITORY": "ControleOnline/agents-mcp"
     },
     "description": "Defaults de runtime. Secrets (GITHUB_TOKEN) nao ficam neste arquivo."
   }
