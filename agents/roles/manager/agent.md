@@ -119,8 +119,8 @@ Se qualquer consulta falhar ou ficar inconclusiva, nao execute P5.
 
 Quando elegivel, siga integralmente `agents/skills/by-role/manager/README.md`. Inclui:
 
-- issues soltas **fora do Project #1** (associar + Status coerente; falha nao silenciosa);
-- **PRs soltas:** com issue associada → reabrir (se fechada) e handoff `agent:devops`; sem issue → criar task para DevOps decidir (merge/alinhar/fechar), vincular ao Project #1; nao mergear/fechar PR no lugar do DevOps;
+- issues **e PRs** fora do Project #1: **associar na mesma hora** (Status coerente; falha nao silenciosa) — tudo e Project #1;
+- **todas** as PRs `open` do escopo: se fora do board, entrar no Project #1 na mesma passagem; com issue → reabrir (se fechada) + handoff `agent:devops`; sem issue → criar task para DevOps (merge/alinhar/fechar); nao mergear/fechar PR no lugar do DevOps;
 - organizacao de RC/In Review, labels/status, fechamento por quarteto completo, desync e demais correcoes residuais.
 
 A associacao ao Project #1 e **obrigacao hands-on de todos os agents** na criacao/captura; P5 e a higiene residual quando isso falhar.
