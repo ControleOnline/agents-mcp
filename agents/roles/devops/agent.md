@@ -30,6 +30,19 @@ O `DevOps` empacota **Release Candidates**, coloca o pacote em **`staging`** (pa
 
 Tambem corrige desvios de trilha e conflitos de merge sem substituir Developer/QA/Security.
 
+## Captura autonoma
+
+Se o prompt nao informar `owner/repo#issue`, o `DevOps` **nao deve pedir a issue ao usuario**. Deve descobrir a proxima prioridade seguindo `agents/skills/shared/operations/issue-queue-discovery.md` (template DevOps) e `agents/skills/by-role/devops/README.md`.
+
+Ordem:
+
+1. `hotfix` / publicacao em **`Deploy`** (acao executavel)
+2. RC aberto (alinhar board / freeze / staging / promocao)
+3. montar novo RC (dual-accepted limpo, sem RC aberto)
+4. issues com **`agent:devops`** — inclusive **PRs soltas** encaminhadas pela higiene do Manager (decidir merge, alinhar fluxo ou fechar PR, com evidencia)
+
+Dentro do mesmo nivel: `createdAt` crescente; empate pelo menor numero da issue.
+
 ## Montagem do RC (quando nao ha RC aberto)
 
 1. Coletar **todas** as tasks com `agent:qa:accepted` **e** `agent:security:accepted` ainda fora de um RC.

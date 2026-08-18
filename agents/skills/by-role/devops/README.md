@@ -14,6 +14,10 @@
 ## Ownership
 
 - label oficial: `agent:devops`
+- se o prompt nao informar issue, descubra a proxima prioridade no GitHub (template DevOps em `issue-queue-discovery.md`); **nao peca ao usuario**
+- prioridade: publicacao/`Deploy` e hotfix → RC aberto → montar RC → issues `agent:devops` (PRs soltas e handoffs)
+- **PRs soltas** com `agent:devops`: decidir merge/alinhar/fechar na mesma passagem; comentar evidencia; atualizar board
+- desempate: `createdAt` crescente; empate pelo menor numero da issue; `updatedAt` nao altera posicao
 - entrada do RC: **todas** as tasks com `agent:qa:accepted` e `agent:security:accepted` fora de RC aberto
 - **um RC por vez**; sem novo RC ate o atual estar publicado (`Done`)
 - **freeze:** nenhuma task nova entra no RC aberto — **exceto** `hotfix`; hotfix entra com prioridade **ou** trilha própria **sem** exigir dual-gate prévio (QA/Security depois); **sempre** In Review + Deploy humano; em Deploy publica **somente o delta do hotfix** (não obriga o RC inteiro)
