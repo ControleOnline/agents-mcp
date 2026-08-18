@@ -100,10 +100,10 @@ Quando essa pre-condicao for verdadeira, audite:
 
 ### PRs soltas (obrigatorio)
 
-PRs abertas “soltas” no board/Project ou sem handoff operacional claro devem ser destravadas em P5 (correcao atomica; uma PR por rodada):
+Inclui PRs abertas **e** PRs que sejam **itens do Project #1** (board) sem handoff operacional claro. Destravar em P5 (correcao atomica; uma PR por rodada):
 
-1. **PR com tarefa/issue associada:** se a issue estiver `closed`, **reabra**; aplique handoff para **DevOps** (`agent:devops` ou label/ownership canônico vigente); comente na issue e na PR o motivo (PR solta, precisa de decisao DevOps: merge/alinhar fluxo/fechar). Nao mergeie nem feche a PR no lugar do DevOps.
-2. **PR sem tarefa associada:** **crie** uma issue para o DevOps decidir (implementar/alinhar merge ou fechar a PR); associe ao Project #1 com Status coerente (padrao `Ready`); label de tipo adequada + `agent:devops`; comente o vinculo na PR e na issue. Falha de associacao ao board nao e silenciosa.
+1. **PR com tarefa/issue associada:** se a issue estiver `closed`, **reabra**; aplique handoff para **DevOps** (`agent:devops`); comente na issue e na PR o motivo (PR solta no board/fila, precisa de decisao DevOps: merge/alinhar fluxo/fechar). Nao mergeie nem feche a PR no lugar do DevOps.
+2. **PR sem tarefa associada:** **crie** uma issue para o DevOps decidir (implementar/alinhar merge ou fechar a PR); associe issue **e** mantenha/associe a PR ao Project #1 com Status coerente (padrao `Ready`); label de tipo adequada + `agent:devops` na issue (e na PR se o repositorio usar a mesma label); comente o vinculo cruzado. Falha de associacao ao board nao e silenciosa.
 
 ### Conclusao
 
