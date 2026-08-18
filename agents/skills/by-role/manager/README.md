@@ -98,6 +98,13 @@ Quando essa pre-condicao for verdadeira, audite:
 - Dual-accepted fora do freeze precisa de bloqueio objetivo documentado.
 - Remover assignees usados indevidamente como mecanismo de fila.
 
+### PRs soltas (obrigatorio)
+
+PRs abertas “soltas” no board/Project ou sem handoff operacional claro devem ser destravadas em P5 (correcao atomica; uma PR por rodada):
+
+1. **PR com tarefa/issue associada:** se a issue estiver `closed`, **reabra**; aplique handoff para **DevOps** (`agent:devops` ou label/ownership canônico vigente); comente na issue e na PR o motivo (PR solta, precisa de decisao DevOps: merge/alinhar fluxo/fechar). Nao mergeie nem feche a PR no lugar do DevOps.
+2. **PR sem tarefa associada:** **crie** uma issue para o DevOps decidir (implementar/alinhar merge ou fechar a PR); associe ao Project #1 com Status coerente (padrao `Ready`); label de tipo adequada + `agent:devops`; comente o vinculo na PR e na issue. Falha de associacao ao board nao e silenciosa.
+
 ### Conclusao
 
 Task comum so pode permanecer `closed`/`Done` com o quarteto comprovado:
