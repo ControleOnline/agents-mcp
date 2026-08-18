@@ -38,6 +38,10 @@ Quando a task pai chegar em **`Deploy`**:
 - confirme que o pacote em `staging` corresponde ao RC da task pai
 - confirme aprovação humana (movimento In Review → Deploy)
 
+## Handoff de documentação (fail-closed)
+
+Ao promover filhas de produto para Done: aplicar `agent:technical-documenter` e `agent:tutorial-assistant` se faltar `:done`. Não inventar `:done`. Isenção só governança pura / hotfix sem delta de produto com comentário.
+
 ## Promoção para master
 
 - aplique `master-publication.md`

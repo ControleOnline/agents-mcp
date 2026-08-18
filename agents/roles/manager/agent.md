@@ -121,7 +121,8 @@ Quando elegivel, siga integralmente `agents/skills/by-role/manager/README.md`. I
 
 - issues **e PRs** fora do Project #1: **associar na mesma hora** (Status coerente; falha nao silenciosa) — tudo e Project #1;
 - **todas** as PRs `open` do escopo: se fora do board, entrar no Project #1 na mesma passagem; com issue → reabrir (se fechada) + handoff `agent:devops`; sem issue → criar task para DevOps (merge/alinhar/fechar); nao mergear/fechar PR no lugar do DevOps;
-- organizacao de RC/In Review, labels/status, fechamento por quarteto completo, desync e demais correcoes residuais.
+- organizacao de RC/In Review, labels/status, fechamento por quarteto completo, desync e demais correcoes residuais;
+- **lote** de labels de solicitação de doc (`agent:technical-documenter` / `agent:tutorial-assistant`) em Done/closed sem quarteto + normalização `agent:qa:accepted` / `agent:security:accepted`.
 
 A associacao ao Project #1 e **obrigacao hands-on de todos os agents** na criacao/captura; P5 e a higiene residual quando isso falhar.
 
