@@ -62,11 +62,11 @@ Quando o humano mover a task pai para **`Deploy`**:
 1. Mesclar o pacote **`staging` → `master`** (pai + submodulos, ordem correta).
 2. Confirmar versão **numérica** já gravada (`X.Y.N` em `package.json` / `app.json`); não há sufixo textual para remover; confirmar push/tags.
 3. **Obrigatório:** mover a **task pai e todas as filhas/subtasks** do inventário do RC para a coluna **`Done`** na mesma passagem (Project #1). Não deixar filha em `Deploy`/`In Review`/`Working` após o pai em `Done`.
-4. **Handoff de documentação (obrigatório, fail-closed):** em cada filha de **produto** sem `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done`, aplicar **obrigatoriamente** as labels de solicitação ausentes (`agent:technical-documenter` e `agent:tutorial-assistant`). Nunca inventar `:done`.
-   - **Fail-closed:** não considere a publicação da filha concluída enquanto as solicitações de doc estiverem ausentes (exceto isenção abaixo).
-   - **Isenção** só para governança pura (`agents-mcp` sem delta de produto) ou hotfix **sem** delta de produto/UX — com **comentário objetivo** na issue. Hotfix de tela/API/fluxo de produto **não** isenta.
+4. **Handoff de documentação (obrigatório, fail-closed):** em **cada** filha/task do inventário **sem** `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done`, aplicar **sempre** as labels de solicitação ausentes (`agent:technical-documenter` e `agent:tutorial-assistant`). **Sem isenção** (produto, governança, hotfix — todas). Nunca inventar `:done`.
+   - **Quem decide** se há documentação a produzir, o conteúdo e o `:done` é **somente** o documentador (`technical-documenter` / `tutorial-assistant`). O DevOps **não** decide isentar nem concluir documentação.
+   - **Fail-closed:** não considere a publicação da filha concluída enquanto as solicitações de doc estiverem ausentes.
    - Preferir labels canônicas `agent:qa:accepted` / `agent:security:accepted`; se a issue só tiver aliases legados `qa:accepted` / `security:accepted`, trate-os como equivalentes e, ao atuar, adicione o par `agent:*` quando faltar.
-   - Listar no comentário do pai do RC todas as filhas que receberam handoff de doc ou isenção.
+   - Listar no comentário do pai do RC as filhas que receberam handoff de solicitação de doc.
 5. Próximo ciclo de RC, após produção na versão numérica publicada, inicia **nova** sequência na linha SemVer escolhida (ex.: após `1.5.1` em master → próximo feature `1.6.1` no package).
 
 ## Proibicoes

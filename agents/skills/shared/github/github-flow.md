@@ -138,7 +138,7 @@ Exemplos:
    - confirma push remoto e tags/versao quando aplicavel;
    - **obrigatório:** move a **task pai e todas as filhas/subtasks** do inventário do RC para a coluna **`Done`** na mesma passagem (Project #1);
    - não deixar nenhuma filha do inventário em `Deploy` / `In Review` / `Working` após o pai estar em `Done`;
-   - **handoff de documentação (fail-closed):** em cada filha de produto sem `agent:technical-documenter:done` / `agent:tutorial-assistant:done`, aplicar **obrigatoriamente** labels de solicitação (`agent:technical-documenter` e `agent:tutorial-assistant`); nunca inventar `:done`; isenção só governança pura / hotfix sem delta de produto com comentário; ver `master-publication.md` e `devops/agent.md`;
+   - **handoff de documentação (fail-closed):** em **cada** filha/task sem `agent:technical-documenter:done` / `agent:tutorial-assistant:done`, aplicar **sempre** labels de solicitação (`agent:technical-documenter` e `agent:tutorial-assistant`); **sem isenção**; nunca inventar `:done`; decisão documental é só dos documentadores; ver `master-publication.md` e `devops/agent.md`;
    - se pulou merge por ja estar feito, **comente a justificativa** na task pai.
 
 **Proteção de coluna Deploy (Manager e higiene):**
