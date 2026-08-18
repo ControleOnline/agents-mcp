@@ -40,10 +40,12 @@ A selecao deve escolher exatamente uma issue elegivel, nesta ordem:
 1. `hotfix`
 2. retomada/correcao de entrega devolvida por `agent:qa:rejected` ou `agent:security:rejected`
 3. `bug`
-4. `enhancement`
-5. `feature`
+4. labels de prioridade `p0`, `p1`, `p2`, … (menor número = maior prioridade; ex.: `p0` antes de `p1`)
+5. demais tipos (`enhancement`, `feature` ou sem tipo)
 
-Dentro da mesma prioridade, selecione a issue elegivel mais antiga por `createdAt` crescente; em empate de `createdAt`, selecione o menor numero da issue. `updatedAt` nao altera a posicao.
+Dentro do mesmo nível de prioridade acima, selecione a issue elegivel mais antiga por `createdAt` crescente; em empate de `createdAt`, selecione o menor numero da issue. `updatedAt` nao altera a posicao.
+
+Labels `p0`/`p1`/`p2`/… podem ser criadas pelo agent quando ausentes no repositório.
 
 ## Entrega
 
