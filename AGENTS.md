@@ -19,6 +19,15 @@ Entradas principais:
 - `workers/automate/`
 
 
+
+## Configuracao do fork (obrigatoria)
+
+Antes de qualquer acao operacional, leia **`config/ecosystem.config.json`**.
+
+- Use os campos `value` e `runners.defaults` para resolver `<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>` e repositorios de produto.
+- Tokens (`GITHUB_TOKEN`) nao ficam no arquivo; use secrets do ambiente.
+- Modelo: `config/ecosystem.config.example.json` — detalhes em `config/README.md`.
+
 ## Copilot Cooperation
 
 Todo agent do ecossistema **deve estender** `agents/skills/shared/operations/copilot-cooperation.md`.
