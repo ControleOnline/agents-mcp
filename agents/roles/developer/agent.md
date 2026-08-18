@@ -35,17 +35,20 @@ Se o prompt nao informar `owner/repo#issue`, o `Developer` **nao deve pedir a is
 
 Esta captura pertence somente ao fluxo paralelo do `Developer`; ela nao faz parte do Full Pipeline / Manager.
 
-A selecao deve escolher exatamente uma issue elegivel, nesta ordem:
+A selecao deve escolher exatamente uma issue elegivel, nesta ordem de **tipo**:
 
 1. `hotfix`
 2. retomada/correcao de entrega devolvida por `agent:qa:rejected` ou `agent:security:rejected`
 3. `bug`
-4. labels de prioridade `p0`, `p1`, `p2`, … (menor número = maior prioridade; ex.: `p0` antes de `p1`)
-5. demais tipos (`enhancement`, `feature` ou sem tipo)
+4. demais tipos (`enhancement`, `feature` ou sem tipo)
 
-Dentro do mesmo nível de prioridade acima, selecione a issue elegivel mais antiga por `createdAt` crescente; em empate de `createdAt`, selecione o menor numero da issue. `updatedAt` nao altera a posicao.
+**Desempate dentro de cada linha de tipo** (nesta ordem):
 
-Labels `p0`/`p1`/`p2`/… podem ser criadas pelo agent quando ausentes no repositório.
+1. labels de prioridade `p0`, `p1`, `p2`, … (menor número = maior prioridade; ex.: `p0` antes de `p1`; issue **sem** label `p*` fica depois das que têm)
+2. `createdAt` crescente (mais antiga)
+3. menor numero da issue
+
+`updatedAt` nao altera a posicao. Labels `p0`/`p1`/`p2`/… podem ser criadas pelo agent quando ausentes no repositório. `p*` **nao** e uma faixa separada entre `bug` e demais tipos — e so criterio de desempate em cada tipo.
 
 ## Entrega
 

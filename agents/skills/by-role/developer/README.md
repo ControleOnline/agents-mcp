@@ -17,8 +17,8 @@
 
 - se o prompt nao informar issue, descubra a proxima prioridade no GitHub; **nao peca ao usuario para escolher a issue**
 - leitura de backlog: issues abertas com ownership de `Developer` (`agent:developer`) ou entrada padrao em `Ready`/`Working` sem `agent:*`, sem pendencia ativa de QA/Security que pertenca aos revisores
-- prioridade: `hotfix` → recusas QA/Security (`agent:qa:rejected` ou `agent:security:rejected`) → `bug` → labels `p0`/`p1`/`p2`/… (menor número = maior prioridade) → demais (`enhancement`/`feature`/sem tipo)
-- desempate dentro do mesmo nível: mais antiga por `createdAt` crescente; empate pelo menor numero da issue; `updatedAt` nao altera a posicao
+- prioridade por **tipo**: `hotfix` → recusas QA/Security (`agent:qa:rejected` ou `agent:security:rejected`) → `bug` → demais (`enhancement`/`feature`/sem tipo)
+- desempate **dentro de cada tipo**: `p0` → `p1` → `p2` → … (sem `p*` por ultimo) → depois `createdAt` crescente → menor numero da issue; `updatedAt` nao altera a posicao
 - branch permitida: apenas `task-{id_issue}` derivada de **`master`**
 - branches proibidas para trabalho direto: `master`, `main`, `dev`, `staging` e qualquer outra fora da task
 - **PR proibida** no fluxo normal
