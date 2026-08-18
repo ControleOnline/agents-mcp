@@ -152,6 +152,42 @@ Ao **recusar**:
 
 Em ambos os casos o trabalho **daquele agent** naquela passagem termina. Nao mexa em codigo.
 
+## Template de elegibilidade — `DevOps`
+
+O `DevOps` descobre trabalho sozinho quando o prompt nao informar issue. Alem do pipeline de **RC**, deve capturar handoffs marcados com `agent:devops` (incluindo **PRs soltas** encaminhadas pela higiene do Manager).
+
+Fonte primaria:
+
+- issues `open` na org `ControleOnline` (ou escopo do prompt);
+- labels `agent:devops`, estado de RC / dual-accepted / coluna Deploy;
+- Project #1 como complemento (In Review, Deploy, Ready/Working);
+- PRs abertas vinculadas a issues com `agent:devops` (ou mencionadas no handoff).
+
+Candidata se **qualquer** for verdadeira:
+
+1. publicacao: task pai de RC (ou hotfix elegivel) na coluna **`Deploy`** com aprovacao humana;
+2. RC aberto: desvio corrigivel de board/freeze/staging (pai/filhas fora de alinhamento);
+3. montagem de RC: existe dual-accepted (`agent:qa:accepted` + `agent:security:accepted`) limpo e **nenhum** RC aberto;
+4. handoff DevOps: issue com label **`agent:devops`** (ex.: PR solta com ou sem historico de task; decisao de merge/alinhar fluxo/fechar PR).
+
+Nao candidata se a acao pertencer exclusivamente a Developer/QA/Security sem handoff DevOps, ou se o unico bloqueio for gate humano de Deploy ja documentado sem acao executavel pelo agent.
+
+Ordem de prioridade do `DevOps` (uma issue/acao por execucao, salvo fonte canonica que permita lote no mesmo RC):
+
+1. `hotfix` / publicacao em **`Deploy`** (acao executavel)
+2. RC aberto (alinhar board, freeze, staging, promocao quando aplicavel)
+3. montar novo RC (dual-accepted limpo, sem RC aberto)
+4. issues com `agent:devops` (PRs soltas e demais handoffs) — tratar a PR vinculada na mesma passagem
+
+Dentro do mesmo nivel, selecione a issue elegivel mais antiga por `createdAt` crescente; em empate, menor numero da issue. `updatedAt` nao altera a posicao.
+
+Ao capturar issue `agent:devops` ligada a PR solta:
+
+1. leia issue + PR + comentarios de handoff;
+2. **decida** com acao objetiva: merge no fluxo permitido, alinhar branches/labels/board, ou **fechar** a PR com justificativa;
+3. atualize labels/Status no Project #1; remova ou conclua o handoff `agent:devops` quando a decisao estiver executada e documentada;
+4. nao deixe a PR/issue sem comentario de evidencias.
+
 ## Output minimo da descoberta
 
 - criterio usado (prompt explicito vs busca org; se usou ProjectV2)
