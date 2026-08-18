@@ -23,14 +23,14 @@ Hoje a execucao operacional oficial do ecossistema combina duas trilhas compleme
 - workflow desativado: `.github/workflows/qa-runner.yml`
 - entry point de runtime: `workers/src/qa-runner.js`
 - logica final atual: `workers/automate/scripts/pr-label-review-runner.mjs`
-- papel atual: registrar `qa:accepted` ou `qa:rejected` em PR do developer
+- papel atual: registrar `agent:qa:accepted` ou `agent:qa:rejected` em PR do developer
 
 ### Security
 
 - workflow desativado: `.github/workflows/security-runner.yml`
 - entry point de runtime: `workers/src/security-runner.js`
 - logica final atual: `workers/automate/scripts/pr-label-review-runner.mjs`
-- papel atual: registrar `security:accepted` ou `security:rejected` em PR do developer
+- papel atual: registrar `agent:security:accepted` ou `agent:security:rejected` em PR do developer
 
 ### CTO
 

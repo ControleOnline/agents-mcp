@@ -25,8 +25,8 @@ const ALL_AGENT_LABELS = [
 const REVIEWER_META = {
   qa: {
     displayName: 'Quality Assurance',
-    acceptedLabel: 'qa:accepted',
-    rejectedLabel: 'qa:rejected',
+    acceptedLabel: 'agent:qa:accepted',
+    rejectedLabel: 'agent:qa:rejected',
     expectedIssueLabel: 'agent:qa',
     legacyAcceptedLabel: 'approved:qa',
     legacyRejectedLabel: 'rejected:qa',
@@ -41,8 +41,8 @@ const REVIEWER_META = {
   },
   security: {
     displayName: 'Security Review',
-    acceptedLabel: 'security:accepted',
-    rejectedLabel: 'security:rejected',
+    acceptedLabel: 'agent:security:accepted',
+    rejectedLabel: 'agent:security:rejected',
     expectedIssueLabel: 'agent:security',
     legacyAcceptedLabel: 'approved:security',
     legacyRejectedLabel: 'rejected:security',

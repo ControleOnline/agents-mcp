@@ -44,12 +44,12 @@ Excecao documental interna: quando necessario registrar regra confirmada no `AGE
 
 Candidata se **qualquer** for verdadeira:
 
-1. possui `agent:security` e ainda **nao** tem `security:accepted` nem `security:rejected`;
-2. esta `closed` e **ainda nao** possui `security:accepted`.
+1. possui `agent:security` e ainda **nao** tem `agent:security:accepted` nem `agent:security:rejected`;
+2. esta `closed` e **ainda nao** possui `agent:security:accepted`.
 
 ### Gate dual com QA
 
-Uma tarefa **nao deve permanecer fechada** sem **as duas** aprovacoes `qa:accepted` e `security:accepted`.
+Uma tarefa **nao deve permanecer fechada** sem **as duas** aprovacoes `agent:qa:accepted` e `agent:security:accepted`.
 
 Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 
@@ -65,14 +65,14 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 ### Aprovar
 
 1. Comente resumo + checklist atendido.
-2. Adicione `security:accepted`.
+2. Adicione `agent:security:accepted`.
 3. Remova `agent:security` se presente.
-4. Remova `security:rejected` anterior se estiver reavaliando.
+4. Remova `agent:security:rejected` anterior se estiver reavaliando.
 
 ### Recusar
 
 1. Comente motivos + checklist nao atendido (obrigatorio).
-2. Adicione `security:rejected`.
+2. Adicione `agent:security:rejected`.
 3. Remova `agent:security` se presente.
 4. Garanta issue **open** para o Developer.
 

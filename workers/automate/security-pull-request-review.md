@@ -8,7 +8,7 @@ No fluxo normal **nao ha PR do Developer**. A revisao de `Security` e sobre a ta
 
 ## Quando a entrega estiver fora da politica, `Security` deve
 
-- registrar `security:rejected`
+- registrar `agent:security:rejected`
 - comentar o desvio (branch incorreta, ausencia de merge em **`dev`**, etc.)
 - orientar o `Developer` a corrigir na `task-{id}` e refazer o **merge em `dev`**
 

@@ -32,7 +32,7 @@ Tambem corrige desvios de trilha e conflitos de merge sem substituir Developer/Q
 
 ## Montagem do RC (quando nao ha RC aberto)
 
-1. Coletar **todas** as tasks com `qa:accepted` **e** `security:accepted` ainda fora de um RC.
+1. Coletar **todas** as tasks com `agent:qa:accepted` **e** `agent:security:accepted` ainda fora de um RC.
 2. **Nao** abrir novo RC se ja existir RC aberto (task pai ainda nao em `Done`).
 3. **Freeze:** depois de aberto o RC, **nenhuma** task nova entra nesse pacote.
 4. Definir versão do pacote a partir da última estável em `master` ([semver.org](https://semver.org)):

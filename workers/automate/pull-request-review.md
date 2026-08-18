@@ -9,13 +9,13 @@ No fluxo normal **nao ha PR do Developer**. A revisao de `QA` e sobre a task/iss
 ## Quando a entrega estiver operacionalmente valida, `QA` deve
 
 - aplicar o checklist canonico
-- registrar `qa:accepted` ou `qa:rejected` na task
+- registrar `agent:qa:accepted` ou `agent:qa:rejected` na task
 - comentar na issue com evidencia e motivo
 - remover `agent:qa` apos a decisao
 
 ## Quando a entrega estiver fora da politica, `QA` deve
 
-- registrar `qa:rejected`
+- registrar `agent:qa:rejected`
 - comentar o desvio (branch incorreta, ausencia de merge em **`dev`**, etc.)
 - orientar o `Developer` a corrigir na `task-{id}` e refazer o **merge em `dev`**
 

@@ -198,7 +198,7 @@ function hasAgentLabel(issue, label) {
 
 function hasRejectedReview(issue) {
   const labels = new Set(issueLabels(issue));
-  return labels.has('qa:rejected') || labels.has('security:rejected');
+  return labels.has('agent:qa:rejected') || labels.has('agent:security:rejected');
 }
 
 function issuePriority(issue) {

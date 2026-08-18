@@ -38,7 +38,7 @@ Esta captura pertence somente ao fluxo paralelo do `Developer`; ela nao faz part
 A selecao deve escolher exatamente uma issue elegivel, nesta ordem:
 
 1. `hotfix`
-2. retomada/correcao de entrega devolvida por `qa:rejected` ou `security:rejected`
+2. retomada/correcao de entrega devolvida por `agent:qa:rejected` ou `agent:security:rejected`
 3. `bug`
 4. `enhancement`
 5. `feature`

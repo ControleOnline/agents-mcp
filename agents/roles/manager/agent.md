@@ -80,7 +80,7 @@ A implementacao de produto pelo Developer continua no fluxo paralelo. Hotfix nao
 ## Prioridade 2 - DevOps
 
 1. Publique release aprovada em Deploy, se houver.
-2. Senao, crie RC quando houver tasks com `qa:accepted` + `security:accepted` limpas e nenhum RC em andamento.
+2. Senao, crie RC quando houver tasks com `agent:qa:accepted` + `agent:security:accepted` limpas e nenhum RC em andamento.
 3. Ao criar RC, pai + filhas entram em `In Review` imediatamente.
 4. Alinhe board de RC ja aberto (In Review / freeze) quando houver desvio corrigivel pelo agent.
 5. Se a unica barreira for gate humano de Deploy, registre `P2_SKIPPED_HUMAN_DEPLOY` e **nao** trate isso como fail-closed da rodada — avance para P3–P5.

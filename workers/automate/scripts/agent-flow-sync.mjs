@@ -271,10 +271,10 @@ function currentAgentLabel(issue) {
 
 function hasReviewDecisionLabel(labels) {
   const decisionLabels = new Set([
-    'qa:accepted',
-    'qa:rejected',
-    'security:accepted',
-    'security:rejected',
+    'agent:qa:accepted',
+    'agent:qa:rejected',
+    'agent:security:accepted',
+    'agent:security:rejected',
   ]);
   return labels.some((label) => decisionLabels.has(label));
 }

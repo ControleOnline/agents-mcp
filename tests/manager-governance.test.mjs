@@ -9,8 +9,8 @@ const qaWorker = fs.readFileSync('.github/actions/workers/qa/action.yml', 'utf8'
 const securityWorker = fs.readFileSync('.github/actions/workers/security/action.yml', 'utf8');
 
 const completionLabels = [
-  'qa:accepted',
-  'security:accepted',
+  'agent:qa:accepted',
+  'agent:security:accepted',
   'agent:technical-documenter:done',
   'agent:tutorial-assistant:done',
 ];

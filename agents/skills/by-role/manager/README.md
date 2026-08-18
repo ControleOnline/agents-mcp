@@ -74,8 +74,8 @@ Falha critica de label/assignment/dispatch no worker deve falhar o job; nao deve
 ## Prioridade 4 - validadores
 
 - QA sempre precede Security na fila global do Manager.
-- Enquanto existir QA elegivel sem `qa:accepted`/`qa:rejected`, Security nao substitui QA e P5 permanece bloqueada.
-- Quando QA estiver vazia, Security elegivel sem `security:accepted`/`security:rejected` bloqueia P5.
+- Enquanto existir QA elegivel sem `agent:qa:accepted`/`agent:qa:rejected`, Security nao substitui QA e P5 permanece bloqueada.
+- Quando QA estiver vazia, Security elegivel sem `agent:security:accepted`/`agent:security:rejected` bloqueia P5.
 - Agendamento Manager pode processar lote de QA ou, depois, lote de Security na mesma rodada, preservando evidencia por issue.
 
 ## Prioridade 5 - checklist de board e higiene
@@ -101,8 +101,8 @@ Quando essa pre-condicao for verdadeira, audite:
 
 Task comum so pode permanecer `closed`/`Done` com o quarteto comprovado:
 
-- `qa:accepted`
-- `security:accepted`
+- `agent:qa:accepted`
+- `agent:security:accepted`
 - `agent:technical-documenter:done`
 - `agent:tutorial-assistant:done`
 
