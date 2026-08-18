@@ -91,6 +91,7 @@ Quando essa pre-condicao for verdadeira, audite:
 
 ### Board / RC
 
+- **Issues soltas (obrigatorio):** issues `open` elegiveis da org/escopo operacional **sem item no Project #1** devem ser associadas ao board na mesma correcao atomica; Status padrao `Ready` (ou coluna coerente com labels/estado real). Falha de API/permissao deve ser comentada na issue — nunca silenciosa. Isso complementa a regra hands-on de todos os agents; P5 e a rede de seguranca, nao a unica via.
 - RC aberto: pai + filhas devem estar em `In Review`, exceto itens ja em `Deploy`.
 - Nunca regredir `Deploy` sem evidencia explicita de rejeicao humana.
 - Dual-accepted limpo sem RC deve voltar para P2, nao ser resolvido por higiene.

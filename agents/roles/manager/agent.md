@@ -115,7 +115,12 @@ P5 e fallback estrito. Antes de iniciar, deve ser verdadeiro e comprovado:
 
 Se qualquer consulta falhar ou ficar inconclusiva, nao execute P5.
 
-Quando elegivel, siga integralmente `agents/skills/by-role/manager/README.md`. Inclui organizacao de RC/In Review, labels/status, fechamento por quarteto completo, desync e demais correcoes residuais.
+Quando elegivel, siga integralmente `agents/skills/by-role/manager/README.md`. Inclui:
+
+- issues soltas **fora do Project #1** (associar + Status coerente; falha nao silenciosa);
+- organizacao de RC/In Review, labels/status, fechamento por quarteto completo, desync e demais correcoes residuais.
+
+A associacao ao Project #1 e **obrigacao hands-on de todos os agents** na criacao/captura; P5 e a higiene residual quando isso falhar.
 
 Nunca regredir item em `Deploy` sem evidencia explicita de rejeicao humana.
 

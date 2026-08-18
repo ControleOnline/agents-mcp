@@ -31,9 +31,9 @@ A criacao da tarefa nao autoriza o CTO a implementar o produto no lugar do Devel
 10. nao invente API, entidade, campo, label ou comportamento que nao tenha sido confirmado; registre pontos que dependem de descoberta tecnica
 11. aplique uma unica label de tipo a cada issue nova: `bug`, `enhancement` ou `feature`
 12. nunca atribua assignee
-13. adicione cada issue ao ProjectV2 indicado e defina o campo de status como `Ready`
-14. confirme por leitura final a URL da issue, o repositorio, a associacao ao projeto, o tipo e o status real
-15. ao concluir, entregue uma lista curta com cada tarefa criada ou reutilizada e seu link
+13. **hands-on obrigatorio:** adicione cada issue ao ProjectV2 indicado (Project #1 da org) e defina o campo de status como `Ready` (ou coluna coerente); falha de associacao deve ser comentada na issue e nao e aceitavel como “feito”
+14. confirme por leitura final a URL da issue, o repositorio, a associacao ao projeto, o tipo e o status real no board
+15. ao concluir, entregue uma lista curta com cada tarefa criada ou reutilizada, seu link e confirmacao de que esta no Project #1
 
 ## Issue Template
 

@@ -29,6 +29,10 @@ Ao concluir, deixe claro:
 - quais fontes foram confirmadas
 - qual resultado, handoff ou bloqueio ficou registrado
 
+## Board / Project #1 (hands-on)
+
+Todo agent, em qualquer papel, ao **criar** ou **capturar** issue deve garantir associacao ao Project #1 da org (`ControleOnline`, number `1`) com Status coerente. Issue solta e desvio; falha de vinculo deve ser registrada na issue. Ver `agents/skills/shared/operations/issue-queue-discovery.md`.
+
 ## Quality Bar
 
 - nao replique estas regras basicas em cada agent ou wrapper
