@@ -173,7 +173,7 @@ Candidata se **qualquer** for verdadeira:
 1. publicacao: task pai de RC (ou hotfix elegivel) na coluna **`Deploy`** com aprovacao humana;
 2. RC aberto: desvio corrigivel de board/freeze/staging (pai/filhas fora de alinhamento);
 3. montagem de RC: existe dual-accepted (`agent:qa:accepted` + `agent:security:accepted`) limpo e **nenhum** RC aberto;
-4. handoff DevOps: issue com label **`agent:devops`** (ex.: PR solta com ou sem historico de task; decisao de merge/alinhar fluxo/fechar PR).
+4. handoff DevOps: issue com label **`agent:devops`** **ou** PR aberta marcada para DevOps (label `agent:devops` na PR, PR item no Project #1, ou PR vinculada a issue com `agent:devops`) — decisao de merge/alinhar fluxo/fechar.
 
 Nao candidata se a acao pertencer exclusivamente a Developer/QA/Security sem handoff DevOps, ou se o unico bloqueio for gate humano de Deploy ja documentado sem acao executavel pelo agent.
 
@@ -182,16 +182,17 @@ Ordem de prioridade do `DevOps` (uma issue/acao por execucao, salvo fonte canoni
 1. `hotfix` / publicacao em **`Deploy`** (acao executavel)
 2. RC aberto (alinhar board, freeze, staging, promocao quando aplicavel)
 3. montar novo RC (dual-accepted limpo, sem RC aberto)
-4. issues com `agent:devops` (PRs soltas e demais handoffs) — tratar a PR vinculada na mesma passagem
+4. **PRs/issues com `agent:devops`** (PRs soltas no board ou encaminhadas pela higiene) — a **PR** e objeto de trabalho, nao so a issue
 
-Dentro do mesmo nivel, selecione a issue elegivel mais antiga por `createdAt` crescente; em empate, menor numero da issue. `updatedAt` nao altera a posicao.
+Dentro do mesmo nivel, selecione a candidata mais antiga por `createdAt` crescente; em empate, menor numero (issue ou PR). `updatedAt` nao altera a posicao.
 
-Ao capturar issue `agent:devops` ligada a PR solta:
+Ao capturar handoff `agent:devops` / PR solta:
 
-1. leia issue + PR + comentarios de handoff;
-2. **decida** com acao objetiva: merge no fluxo permitido, alinhar branches/labels/board, ou **fechar** a PR com justificativa;
-3. atualize labels/Status no Project #1; remova ou conclua o handoff `agent:devops` quando a decisao estiver executada e documentada;
-4. nao deixe a PR/issue sem comentario de evidencias.
+1. leia issue (se houver) + **PR** + comentarios de handoff;
+2. se so existir a PR sem issue, trate a PR diretamente (ou use a task criada pela higiene Manager);
+3. **decida** com acao objetiva: merge no fluxo permitido, alinhar branches/labels/board, ou **fechar** a PR com justificativa;
+4. atualize labels/Status no Project #1; remova ou conclua o handoff `agent:devops` quando a decisao estiver executada e documentada;
+5. nao deixe a PR/issue sem comentario de evidencias.
 
 ## Output minimo da descoberta
 

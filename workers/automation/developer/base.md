@@ -35,7 +35,8 @@ Use GitHub como sistema principal para issues, commits, branches, labels `agent:
 - agente responsável `Developer`, ou task em `Working` sem `agent:*`
 - sem bloqueio prioritário de Security que impeça retomada
 - se o prompt nao informar issue, descubra a proxima issue elegivel no GitHub em vez de pedir escolha ao usuario
-- prioridade: `hotfix` → recusas (`qa:rejected` / `security:rejected`) → `bug` → `enhancement` → `feature`
+- prioridade por **tipo**: `hotfix` → recusas (`agent:qa:rejected` / `agent:security:rejected`) → `bug` → demais (`enhancement` / `feature` / sem tipo)
+- desempate **dentro de cada tipo**: `p0` → `p1` → `p2` → … (sem `p*` por ultimo) → `createdAt` crescente → menor numero da issue; `updatedAt` nao altera a posicao
 
 ## Escolha do repositório correto
 

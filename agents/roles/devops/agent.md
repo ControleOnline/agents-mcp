@@ -36,7 +36,7 @@ Ordem:
 1. `hotfix` / publicacao em **`Deploy`** (acao executavel)
 2. RC aberto (alinhar board / freeze / staging / promocao)
 3. montar novo RC (dual-accepted limpo, sem RC aberto)
-4. issues com **`agent:devops`** — inclusive **PRs soltas** encaminhadas pela higiene do Manager (decidir merge, alinhar fluxo ou fechar PR, com evidencia)
+4. **PRs e issues** com **`agent:devops`** — inclusive PRs soltas no board / encaminhadas pela higiene (a PR e objeto de decisao: merge, alinhar fluxo ou fechar, com evidencia)
 
 Dentro do mesmo nivel: `createdAt` crescente; empate pelo menor numero da issue.
 
