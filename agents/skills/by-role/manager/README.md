@@ -115,12 +115,14 @@ Depois destranque o handoff (correcao atomica; uma PR por rodada):
 
 Task comum so pode permanecer `closed`/`Done` com o quarteto comprovado:
 
-- `qa:accepted`
-- `security:accepted`
+- `agent:qa:accepted` (alias legado `qa:accepted` conta como equivalente na leitura; ao atuar, normalize para `agent:qa:accepted`)
+- `agent:security:accepted` (alias legado `security:accepted` idem → `agent:security:accepted`)
 - `agent:technical-documenter:done`
 - `agent:tutorial-assistant:done`
 
-Issue aberta com quarteto completo e evidencia deve ser fechada e alinhada a Done. Issue fechada/Done sem quarteto nao recebe labels inventadas: restaure o handoff real faltante.
+Issue aberta com quarteto completo e evidencia deve ser fechada e alinhada a Done. Issue fechada/Done sem quarteto **nao** recebe labels `:done` inventadas: **restaure o handoff real faltante** (`agent:technical-documenter` e/ou `agent:tutorial-assistant` de solicitação; e normalize `agent:qa:accepted` / `agent:security:accepted` se só existirem aliases legados).
+
+**Lote de documentação (exceção à regra de uma correção atômica):** em P5, o Manager **pode e deve** aplicar em **lote** as labels de solicitação de documentação em todas as issues `Done`/`closed` de produto do escopo que estejam sem `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done` e sem a solicitação correspondente. Governança pura pode ser isenta com comentário. Comente evidência resumida (lista de issues tocadas).
 
 ### Dupla validacao estado <-> labels
 
@@ -133,7 +135,11 @@ Exemplos: `Ready` com validador ja ativo, `Working` sem ownership real, RC fora 
 
 ## Correcao atomica
 
-Em P5 aplique exatamente uma correcao atomica por rodada, salvo fechamento em lote de issues com quarteto completo. Comente evidencia antes/depois quando houver mutacao.
+Em P5 aplique exatamente uma correcao atomica por rodada, **exceto**:
+- fechamento em lote de issues com quarteto completo;
+- **lote de restauração de labels de solicitação de documentação** (e normalização `agent:qa:accepted` / `agent:security:accepted`) em Done/closed sem quarteto.
+
+Comente evidencia antes/depois quando houver mutacao.
 
 ## Output Contract
 
