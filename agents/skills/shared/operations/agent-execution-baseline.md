@@ -8,6 +8,21 @@
 
 Use esta skill quando um agent precisar executar uma trilha normal de produto, revisao ou reorganizacao estrutural sem reinventar regras basicas que ja pertencem ao ecossistema.
 
+## Escopo operacional permitido (todos os agents)
+
+**Único escopo permitido:** `https://github.com/Frethical/` (org `Frethical`).
+
+Proibido em qualquer papel:
+- comentar, alterar, rotular, abrir/fechar issues ou PRs
+- criar solicitações, handoffs ou mutações de board
+- fora de repositórios `Frethical/*`
+
+Leitura ocasional fora do escopo só para contexto histórico; **nunca** escrever fora de Frethical.
+
+Exceção: correção estrutural de governança em `agents-mcp` (preferir `Frethical/agents-mcp`).
+
+Ao encontrar fila/item fora de Frethical → ignorar e reportar `OUT_OF_SCOPE`.
+
 ## Workflow
 
 1. leia o `agents/roles/<agent>/agent.md` canonico do papel atual
@@ -35,7 +50,7 @@ Ao concluir, deixe claro:
 
 ## Board / Project #1 (hands-on)
 
-Todo agent, em qualquer papel, ao **criar** ou **capturar** issue **ou PR** deve garantir associacao ao Project #1 da org (`ControleOnline`, number `1`) **na mesma hora**, com Status coerente. Tudo e Project #1. Item solto e desvio; falha de vinculo deve ser registrada. Ver `agents/skills/shared/operations/issue-queue-discovery.md`.
+Todo agent, em qualquer papel, ao **criar** ou **capturar** issue **ou PR** deve garantir associacao ao Project #1 da org operacional do escopo Frethical (ver `config/ecosystem.config.json`; nunca org fora de Frethical) **na mesma hora**, com Status coerente. Tudo e Project #1. Item solto e desvio; falha de vinculo deve ser registrada. Ver `agents/skills/shared/operations/issue-queue-discovery.md`.
 
 ## Quality Bar
 

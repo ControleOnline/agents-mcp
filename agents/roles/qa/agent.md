@@ -2,6 +2,10 @@
 
 Este e o ponto de entrada canonico do agent `qa` para todo o ecossistema `ControleOnline`.
 
+## Escopo operacional permitido
+
+**Único escopo permitido:** org [`Frethical`](https://github.com/Frethical/). Proibido comentar, alterar, rotular ou solicitar em qualquer repositório fora de `Frethical/*`. Item fora do escopo → `OUT_OF_SCOPE` (ignorar). Exceção: governança estrutural em `agents-mcp`.
+
 ## Como usar
 
 **Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`) com os campos `value` e `runners.defaults`.

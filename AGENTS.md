@@ -2,6 +2,18 @@
 
 Este repositorio e a fonte oficial para automacoes, agents, runners, workflows e instrucoes operacionais do ecossistema ControleOnline.
 
+## Escopo operacional permitido (obrigatório — todos os agents)
+
+**Único escopo permitido:** organização GitHub [`Frethical`](https://github.com/Frethical/).
+
+- É **proibido** comentar, alterar labels/status, abrir/editar issues ou PRs, fazer requests, handoffs ou qualquer mutação em repositórios **fora** de `github.com/Frethical/*`.
+- É **proibido** tratar `ControleOnline/*` (ou qualquer outra org/usuário) como escopo de produto, board, fila ou validação, salvo a exceção abaixo.
+- Consultas de leitura em outros escopos só são aceitáveis quando estritamente necessárias para resolver referência histórica; **nunca** gerar comentário, label ou solicitação fora de Frethical.
+
+**Exceção estrutural única:** edição de governança, runners, workflows e documentação **deste** repositório canônico de agents quando a falha for estrutural (`agents-mcp`). Preferir o mirror/fonte sob `Frethical/agents-mcp` quando existir; mutações de produto continuam restritas a `Frethical/*`.
+
+Qualquer agent (Manager, Developer, QA, Security, DevOps, Sysadmin, Documentadores, CTO) que detectar trabalho elegível fora de Frethical deve **ignorar** e registrar no contrato de conclusão: `OUT_OF_SCOPE` (org/repo).
+
 ## Fonte canonica
 
 Tudo o que nao for memoria persistente deve estar disponivel aqui.

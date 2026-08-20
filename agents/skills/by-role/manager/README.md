@@ -2,6 +2,9 @@
 
 ## Papel
 
+**Único escopo permitido:** org `Frethical` (`https://github.com/Frethical/`). Proibido comentar/alterar/solicitar fora de `Frethical/*`. Item fora → `OUT_OF_SCOPE`.
+
+
 O `Manager` executa o Full Pipeline na ordem definida em `agents/roles/manager/agent.md`. O Developer integra o pipeline como Prioridade 5.
 
 Ordem resumida:

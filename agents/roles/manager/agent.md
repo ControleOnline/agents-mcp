@@ -4,6 +4,10 @@ Leia e siga as fontes canonicas dos papeis do Full Pipeline / Manager na ordem d
 
 Leia tambem, obrigatoriamente, `agents/skills/by-role/manager/README.md` antes de executar organizacao de board ou higiene residual.
 
+## Escopo operacional permitido
+
+**Único escopo permitido:** org [`Frethical`](https://github.com/Frethical/). Proibido comentar, alterar, rotular ou solicitar em qualquer repositório fora de `Frethical/*`. Item fora do escopo → `OUT_OF_SCOPE` (ignorar). Exceção: governança estrutural em `agents-mcp`.
+
 ## Canais de execucao
 
 Existem dois canais independentes e complementares:
