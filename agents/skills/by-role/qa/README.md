@@ -11,6 +11,7 @@
 - `agents/skills/shared/operations/agent-execution-baseline.md`
 - `agents/skills/shared/operations/issue-queue-discovery.md`
 - `agents/skills/shared/quality/code-quality.md`
+- `agents/skills/shared/quality/smoke-test-flows.md` — catálogo de fluxos de negócio (smoke)
 - `agents/skills/shared/operations/agent-handoff-governance.md`
 
 ## Independencia (sem ProjectV2)
