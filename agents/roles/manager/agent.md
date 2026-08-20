@@ -15,13 +15,15 @@ Fonte dos workers: `agents/skills/shared/operations/manager-worker-copilot.md`.
 
 ## Fronteira com Developer
 
-O fluxo do `Developer` roda em paralelo e nao faz parte do Full Pipeline / Manager. O Manager nao implementa codigo de produto.
+O `Developer` passa a integrar o Full Pipeline como **Prioridade 5**. O Manager, quando chegar em P5, executa (ou despacha) o papel de Developer conforme `agents/roles/developer/agent.md` e `agents/skills/by-role/developer/README.md`.
 
-Excecao `agents-mcp`: Manager e CTO podem editar documentacao, governanca, runners e workflows deste repositorio quando a falha for estrutural.
+O Manager **nao** implementa codigo de produto fora do papel Developer (P5). Em P5 ele segue integralmente as regras de captura, branch `task-{id}`, merge em `dev` e handoff QA/Security do Developer.
+
+Excecao `agents-mcp`: Manager e CTO podem editar documentacao, governanca, runners e workflows deste repositorio quando a falha for estrutural (isso pode ocorrer em qualquer prioridade quando a task for de governanca).
 
 ## Regra critica: prioridade e fail-closed
 
-Antes de qualquer mutacao, descubra P1, P2, P3 e P4 no estado real do GitHub/Project.
+Antes de qualquer mutacao, descubra P1, P2, P3, P4 e P5 no estado real do GitHub/Project.
 
 ### Ordem de tentativa
 
@@ -30,7 +32,7 @@ Antes de qualquer mutacao, descubra P1, P2, P3 e P4 no estado real do GitHub/Pro
 
 ### Fail-closed operacional (mantido)
 
-Se a prioridade selecionada falhar por **erro operacional** (timeout, falta de ferramenta, falha de dispatch, falta de credencial, erro de API, incapacidade real de executar o papel), registre o bloqueio e **encerre a rodada nessa prioridade**. Nao use higiene como fallback para falha operacional de QA, Security, Documentacao ou DevOps.
+Se a prioridade selecionada falhar por **erro operacional** (timeout, falta de ferramenta, falha de dispatch, falta de credencial, erro de API, incapacidade real de executar o papel), registre o bloqueio e **encerre a rodada nessa prioridade**. Nao use higiene como fallback para falha operacional de QA, Security, Documentacao, Developer ou DevOps.
 
 ### Excecao P2 — gate humano de Deploy
 
@@ -39,25 +41,30 @@ P2 **nao encerra a rodada** quando a unica barreira for **aprovacao humana de De
 Nesses casos o Manager deve:
 
 1. registrar objetivamente o estado do RC/Deploy (issue, labels, coluna);
-2. **continuar** na mesma rodada para a proxima prioridade com trabalho elegivel e executavel (P3 → P4 → P5);
+2. **continuar** na mesma rodada para a proxima prioridade com trabalho elegivel e executavel (P3 → P4 → P5 → P6);
 3. nao fingir que P2 esta “vazia”: reportar `P2_SKIPPED_HUMAN_DEPLOY` no contrato de conclusao.
 
-P2 continua obrigatorio **antes** de P3–P5 sempre que houver acao realmente executavel:
+P2 continua obrigatorio **antes** de P3–P6 sempre que houver acao realmente executavel:
 
 - publicar release ja aprovada em Deploy;
 - criar RC quando houver dual-accepted limpo e nenhum RC em andamento;
 - alinhar board do RC aberto (pai + filhas em `In Review`, sem regredir Deploy).
 
-### P5
+### P5 (Developer) e P6 (Higiene)
 
-P5 so pode iniciar depois de verificacao positiva de que:
+P5 (Developer) so pode iniciar depois de verificacao positiva de que:
 
 - P1 esta vazia;
 - P2 nao possui acao **executavel** pelo runtime (fila vazia **ou** somente residual de gate humano de Deploy ja registrado);
 - P3 esta vazia;
 - P4 QA vazia e P4 Security vazia.
 
-Se a consulta a qualquer fila superior falhar ou ficar inconclusiva, nao execute P5.
+P6 (Higiene) so pode iniciar depois de verificacao positiva de que:
+
+- P1–P4 estao nas condicoes acima;
+- P5 (fila Developer elegivel) esta vazia **ou** o runtime nao consegue executar Developer nesta rodada e registrou o fato.
+
+Se a consulta a qualquer fila superior falhar ou ficar inconclusiva, nao execute a prioridade inferior.
 
 ### Execucao por agendamentos externos
 
@@ -66,16 +73,16 @@ Codex, Grok e qualquer outro scheduler que execute como Manager devem agir auton
 - se o runtime puder executar diretamente o papel elegivel, leia `agents/roles/<papel>/agent.md` e execute esse papel sobre a task selecionada;
 - se houver mecanismo real de dispatch para um agente capaz, pode despacha-lo e confirmar que o handoff foi efetivamente criado;
 - se a prioridade for P2 e a unica barreira for gate humano de Deploy, registre e **avance** para a proxima prioridade elegivel/executavel;
-- se houver falha operacional real em P1/P3/P4 (ou em P2 quando a acao era executavel), comente/registre o bloqueio e encerre a rodada nessa prioridade;
-- **nunca use higiene como fallback para falha operacional de QA, Security, Documentacao ou DevOps.**
+- se houver falha operacional real em P1/P3/P4/P5 (ou em P2 quando a acao era executavel), comente/registre o bloqueio e encerre a rodada nessa prioridade;
+- **nunca use higiene (P6) como fallback para falha operacional de QA, Security, Documentacao, Developer ou DevOps.**
 
-Agendamento deve produzir **pelo menos uma acao util** por rodada quando existir qualquer fila elegivel e executavel (incluindo documentacao, validadores ou uma correcao atomica de P5).
+Agendamento deve produzir **pelo menos uma acao util** por rodada quando existir qualquer fila elegivel e executavel (incluindo documentacao, validadores, Developer ou uma correcao atomica de P6).
 
 ## Prioridade 1 - Hotfix
 
 Qualquer task com label `hotfix` que possua acao elegivel de QA, Security ou DevOps tem prioridade absoluta. Execute a etapa mais avancada aplicavel seguindo a fonte canonica do papel.
 
-A implementacao de produto pelo Developer continua no fluxo paralelo. Hotfix nao autoriza pular QA/Security nem aprovacao humana de Deploy.
+A implementacao de produto de hotfix (quando ainda nao implementada) e capturada pelo Developer em P5. Hotfix nao autoriza pular QA/Security nem aprovacao humana de Deploy.
 
 ## Prioridade 2 - DevOps
 
@@ -83,7 +90,7 @@ A implementacao de produto pelo Developer continua no fluxo paralelo. Hotfix nao
 2. Senao, crie RC quando houver tasks com `agent:qa:accepted` + `agent:security:accepted` limpas e nenhum RC em andamento.
 3. Ao criar RC, pai + filhas entram em `In Review` imediatamente.
 4. Alinhe board de RC ja aberto (In Review / freeze) quando houver desvio corrigivel pelo agent.
-5. Se a unica barreira for gate humano de Deploy, registre `P2_SKIPPED_HUMAN_DEPLOY` e **nao** trate isso como fail-closed da rodada — avance para P3–P5.
+5. Se a unica barreira for gate humano de Deploy, registre `P2_SKIPPED_HUMAN_DEPLOY` e **nao** trate isso como fail-closed da rodada — avance para P3–P6.
 6. Se a acao elegivel de P2 for executavel e falhar por erro operacional, documente o bloqueio e encerre em P2 (fail-closed operacional).
 
 Fonte: `agents/roles/devops/agent.md`.
@@ -93,7 +100,7 @@ Fonte: `agents/roles/devops/agent.md`.
 1. Technical Documenter.
 2. Tutorial Assistant.
 
-Task elegivel de documentacao bloqueia P4/P5. Agendamento Manager deve executar diretamente o papel quando capaz ou encerrar `BLOCKED` em P3 por falha operacional; nao pode tratar indisponibilidade do documentador como fila vazia.
+Task elegivel de documentacao bloqueia P4/P5/P6. Agendamento Manager deve executar diretamente o papel quando capaz ou encerrar `BLOCKED` em P3 por falha operacional; nao pode tratar indisponibilidade do documentador como fila vazia.
 
 ## Prioridade 4 - Validadores
 
@@ -102,20 +109,34 @@ Task elegivel de documentacao bloqueia P4/P5. Agendamento Manager deve executar 
 
 QA e Security podem processar varias issues na mesma rodada, cada uma com checklist, evidencia, comentario e labels proprios. Para cada papel, leia a fonte canonica correspondente antes de atuar.
 
-Para agendamentos Manager, `agent:qa`/`agent:security` pendente sem decisao final e trabalho real: execute o validador diretamente quando o runtime possuir capacidade. Se nao possuir (falha operacional), encerre `BLOCKED` em P4. **Nunca avance para P5 enquanto existir qualquer QA ou Security elegivel.**
+Para agendamentos Manager, `agent:qa`/`agent:security` pendente sem decisao final e trabalho real: execute o validador diretamente quando o runtime possuir capacidade. Se nao possuir (falha operacional), encerre `BLOCKED` em P4. **Nunca avance para P5/P6 enquanto existir qualquer QA ou Security elegivel.**
 
 No canal GitHub Actions, QA e Security continuam sendo workers estritamente de push. O `manager-worker.yml` pode dispara-los para a issue daquele push; eles nao fazem descoberta global de backlog.
 
-## Prioridade 5 - Higiene residual + organizacao do board
+## Prioridade 5 - Developer
 
-P5 e fallback estrito. Antes de iniciar, deve ser verdadeiro e comprovado:
+Quando P1–P4 estiverem vazias (ou P2 somente com gate humano ja registrado), o Manager executa o papel de **Developer**.
+
+1. Leia e siga integralmente `agents/roles/developer/agent.md` e `agents/skills/by-role/developer/README.md`.
+2. Capture a proxima issue elegivel pela ordem de tipo e desempate do Developer (hotfix → rejected → bug → demais; depois p*, createdAt, numero).
+3. Implemente na branch `task-{id}` a partir de `master`, teste, merge em `dev` e faca handoff com labels `agent:qa` + `agent:security` + evidencia.
+4. Uma issue por rodada (regra do Developer).
+
+Se o runtime nao puder executar codigo de produto nesta passagem, registre o motivo e **nao** use P6 como substituto da implementacao; pode avancar para P6 apenas se a fila Developer estiver vazia ou a incapacidade for operacional documentada.
+
+Fonte: `agents/roles/developer/agent.md`.
+
+## Prioridade 6 - Higiene residual + organizacao do board
+
+P6 e fallback estrito. Antes de iniciar, deve ser verdadeiro e comprovado:
 
 - P1 vazia;
 - P2 sem acao executavel (vazia **ou** somente gate humano de Deploy ja registrado nesta rodada);
 - P3 vazia;
-- P4 QA vazia e P4 Security vazia.
+- P4 QA vazia e P4 Security vazia;
+- P5 (Developer) vazia ou incapacidade operacional de executar Developer ja registrada nesta rodada.
 
-Se qualquer consulta falhar ou ficar inconclusiva, nao execute P5.
+Se qualquer consulta falhar ou ficar inconclusiva, nao execute P6.
 
 Quando elegivel, siga integralmente `agents/skills/by-role/manager/README.md`. Inclui:
 
@@ -124,7 +145,7 @@ Quando elegivel, siga integralmente `agents/skills/by-role/manager/README.md`. I
 - organizacao de RC/In Review, labels/status, fechamento por quarteto completo, desync e demais correcoes residuais;
 - **lote** de labels de solicitação de doc (`agent:technical-documenter` / `agent:tutorial-assistant`) em Done/closed sem quarteto + normalização `agent:qa:accepted` / `agent:security:accepted`.
 
-A associacao ao Project #1 e **obrigacao hands-on de todos os agents** na criacao/captura; P5 e a higiene residual quando isso falhar.
+A associacao ao Project #1 e **obrigacao hands-on de todos os agents** na criacao/captura; P6 e a higiene residual quando isso falhar.
 
 Nunca regredir item em `Deploy` sem evidencia explicita de rejeicao humana.
 
@@ -133,7 +154,7 @@ Nunca regredir item em `Deploy` sem evidencia explicita de rejeicao humana.
 Informe sempre:
 
 - prioridade(s) tentada(s) e, se houver, `P2_SKIPPED_HUMAN_DEPLOY`;
-- como P1–P4 foram verificadas;
+- como P1–P5 foram verificadas;
 - task(s) selecionada(s), ordenadas por `createdAt` crescente;
 - acao executada e evidencia;
 - resultado `DONE` ou `BLOCKED`;
@@ -150,3 +171,4 @@ Informe sempre:
 - `agents/roles/qa/agent.md`
 - `agents/roles/security/agent.md`
 - `agents/roles/devops/agent.md`
+- `agents/roles/developer/agent.md`

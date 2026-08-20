@@ -128,23 +128,29 @@ Quando `agent:qa:accepted` e `agent:security:accepted` coexistirem, a trilha de 
 
 ## Fluxos operacionais paralelos
 
-Existem dois fluxos independentes que rodam em paralelo:
+O Full Pipeline / Manager governa, na ordem:
 
-1. **Full Pipeline / Manager**: governa Hotfix ja implementado, DevOps, Documentacao, Validadores e higiene de board. Este fluxo **nao captura nem implementa trabalho de Developer**.
-2. **Developer**: captura autonomamente a propria fila, implementa em `task-{id_issue}` a partir de `master`, faz merge da task em `dev` e entrega para QA/Security.
+1. Hotfix (já implementado → QA/Security/DevOps)
+2. DevOps (Deploy / RC)
+3. Documentação
+4. Validadores (QA → Security)
+5. **Developer** (captura + implementação + merge em `dev` + handoff)
+6. Higiene residual + organização do board
 
-O Manager pode corrigir labels/status que devolvam uma task ao `Developer`, mas nao deve executar a implementacao, escolher uma task para implementar dentro do seu ciclo, nem bloquear a propria rodada porque existe trabalho novo de Developer.
+O Manager, ao chegar em P5, executa (ou despacha) o papel de Developer conforme `agents/roles/developer/agent.md`.
+
+SysAdmin continua em fluxo paralelo separado.
 
 ## Mode de Acao do Agent (Full Pipeline / Manager)
 
 Quando a automação unificada (`Controle Online - Full Pipeline`) for executada, ela deve seguir **estritamente** a ordem de prioridade abaixo.  
-O princípio é: **sempre atuar no que está mais avançado no pipeline do Manager**, sem incluir a fila paralela do `Developer`.
+O princípio é: **sempre atuar no que está mais avançado no pipeline do Manager**.
 
 ### Ordem de prioridade (uma ação por execução)
 
 1. **Hotfix**
    - Qualquer issue com label `hotfix` (validar QA/Security, promover/deploy) tem prioridade absoluta
-   - **Implementação (Developer) de hotfix roda à parte** no fluxo paralelo do `Developer` e não faz parte desta automação do Manager
+   - Implementação de hotfix (quando ainda não feita) é capturada pelo Developer em P5
    - Hotfix **pode entrar** em RC já freezeado; ainda assim **sempre** passa por **In Review** + ação humana em **Deploy** (nunca direto a master)
    - Ao criar task hotfix: **sempre** aplicar a label `hotfix`
    - Ver seção Hotfix em `agents/skills/shared/github/github-flow.md`
@@ -164,6 +170,11 @@ O princípio é: **sempre atuar no que está mais avançado no pipeline do Manag
    - Security
 
 5. **Developer**
+   - Captura a próxima issue elegível, implementa em `task-{id}` a partir de `master`, merge em `dev`, handoff QA/Security
+   - Fonte: `agents/roles/developer/agent.md`
+
+6. **Higiene residual + board**
+   - Somente quando P1–P5 estiverem vazias (ou P2 somente gate humano + P5 vazia/incapacidade documentada)
 
 ### Regras deste mode
 
@@ -172,6 +183,5 @@ O princípio é: **sempre atuar no que está mais avançado no pipeline do Manag
 - Dentro da mesma prioridade funcional, selecione a task elegivel mais antiga por `createdAt` crescente; em empate, use o menor numero da issue.
 - `updatedAt` serve apenas como evidencia de atividade e nunca reposiciona uma task na fila.
 - SysAdmin **não** participa deste mode (deve continuar rodando em paralelo em automação separada).
-- **Developer** **não** participa deste mode: sua captura, implementação e merge em `dev` rodam no fluxo paralelo próprio.
 - Sempre confirme o estado real no GitHub / Project #1 antes de agir.
 - Siga integralmente as fontes canônicas de cada papel (`agents/roles/*/agent.md` e skills referenciadas).

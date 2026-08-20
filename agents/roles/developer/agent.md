@@ -33,7 +33,7 @@ O `Developer` implementa a issue na branch `task-{id_issue}` derivada de **`mast
 
 Se o prompt nao informar `owner/repo#issue`, o `Developer` **nao deve pedir a issue ao usuario**. Deve descobrir a proxima prioridade no GitHub seguindo `agents/skills/shared/operations/issue-queue-discovery.md` e `agents/skills/by-role/developer/README.md`.
 
-Esta captura pertence somente ao fluxo paralelo do `Developer`; ela nao faz parte do Full Pipeline / Manager.
+A captura do Developer e executada pelo Manager na Prioridade 5 (ou por agendamento/wrapper dedicado que siga as mesmas regras).
 
 A selecao deve escolher exatamente uma issue elegivel, nesta ordem de **tipo**:
 

@@ -32,7 +32,7 @@ Regras adicionais (todos os agents):
 - Issue ou PR **sem** item no Project #1 e desvio operacional: o agent que a criar, capturar ou mutar deve **associar na mesma rodada/hora**.
 - **Todas** as PRs `open` do escopo entram nessa regra (nao so as “ja no board”).
 - Falha de permissao/API ao associar **nao e silenciosa**: comente no item a falha objetiva e tente de novo quando houver permissao; nao deixe solto sem tentativa registrada.
-- Manager em P5 (higiene) audita e corrige itens soltos, mas isso **nao dispensa** a obrigacao hands-on dos demais agents.
+- Manager em P6 (higiene) audita e corrige itens soltos, mas isso **nao dispensa** a obrigacao hands-on dos demais agents.
 
 ## Outras regras
 
@@ -62,7 +62,7 @@ Regras adicionais (todos os agents):
 
 O `Developer` deve descobrir trabalho sozinho quando a issue nao vier no prompt. Nao peca ao usuario para escolher uma issue se o GitHub/Project #1 puder ser consultado.
 
-Este template e exclusivo do fluxo paralelo do `Developer`. O Full Pipeline / Manager nao usa esta fila para capturar implementacao; ele apenas corrige desvios de governanca quando chegar na etapa de higiene.
+Este template e exclusivo do fluxo paralelo do `Developer`. O Full Pipeline / Manager executa a captura de Developer na Prioridade 5 e a higiene residual na Prioridade 6.
 
 Fonte primaria:
 
