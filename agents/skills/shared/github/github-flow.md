@@ -75,7 +75,7 @@ Exemplos:
 ## Revisao (QA e Security)
 
 - Atuam sobre a task/issue e a evidencia da entrega (commits na task branch e o que foi mergeado em **`dev`**).
-- Registram `qa:accepted` / `qa:rejected` e `security:accepted` / `security:rejected`.
+- Registram `agent:qa:accepted` / `agent:qa:rejected` e `agent:security:accepted` / `agent:security:rejected`.
 - **Nao** abrem PR; **nao** finalizam task; **nao** mexem em branches de integracao.
 - Recusa devolve prioridade ao Developer na mesma `task-{id_issue}` (corrigir e re-mergear em `dev`).
 
@@ -83,7 +83,7 @@ Exemplos:
 
 ### Entrada
 
-- Todas as issues **open** (ou elegiveis) que tenham **ao mesmo tempo** `qa:accepted` **e** `security:accepted`.
+- Todas as issues **open** (ou elegiveis) que tenham **ao mesmo tempo** `agent:qa:accepted` **e** `agent:security:accepted`.
 - Essas tasks ainda **nao** estao vinculadas a um RC aberto.
 
 ### Regras de exclusividade do RC
@@ -153,7 +153,7 @@ Detalhes de publicacao: `agents/skills/shared/github/master-publication.md`.
 
 - Nao implementa feature de produto no lugar do Developer.
 - Nao abre RC novo com RC ainda aberto.
-- Nao inclui task **comum** sem o par `qa:accepted` + `security:accepted` (exceção: `hotfix`, cujo dual-gate pode ser posterior).
+- Nao inclui task **comum** sem o par `agent:qa:accepted` + `agent:security:accepted` (exceção: `hotfix`, cujo dual-gate pode ser posterior).
 - Nao injeta tasks comuns novas no RC ja freezeado (exceção: `hotfix`; dual-gate pode ser posterior).
 
 ## Quem pode o que
@@ -207,7 +207,7 @@ master
                                    (NÃO é obrigatório levar o RC inteiro junto)
 ```
 
-**Aceleração de hotfix (gate diferido):** no hotfix, o Developer entrega em `dev` e o delta **já pode ir para `staging` na mesma passada**, **sem** esperar `qa:accepted` + `security:accepted`. QA e Security **atuam depois** (revisam o que já está em staging / In Review) e aplicam labels quando concluírem. O dual-gate **não** bloqueia a entrada em `staging` no caminho de hotfix.
+**Aceleração de hotfix (gate diferido):** no hotfix, o Developer entrega em `dev` e o delta **já pode ir para `staging` na mesma passada**, **sem** esperar `agent:qa:accepted` + `agent:security:accepted`. QA e Security **atuam depois** (revisam o que já está em staging / In Review) e aplicam labels quando concluírem. O dual-gate **não** bloqueia a entrada em `staging` no caminho de hotfix.
 
 **Obrigatório (inalterado):** o delta **não** vai direto para `master`. Após estar em `staging`, a task hotfix **deve** passar pela coluna **In Review** para conferência humana. Só após o **humano** mover a task hotfix para **Deploy** o DevOps promove a `master`.
 
@@ -224,7 +224,7 @@ master
 ### Regras
 
 1. **Developer**: captura e implementa hotfix antes de qualquer outra issue; branch `task-{id}` a partir de `master`; merge **somente** `task-{id}` → `dev`; aplica labels de handoff `agent:qa` + `agent:security` (QA/Security **podem** concluir depois). Em hotfix, o delta já está elegível para `staging` na mesma passada.
-2. **QA / Security**: no hotfix, **não bloqueiam** a entrada em `staging`. Revisam com prioridade (código já pode estar em staging / In Review) e registram `qa:accepted`/`security:accepted` (ou rejected) **depois**. Recusa após staging exige correção na mesma `task-{id}` e novo merge (dev + staging).
+2. **QA / Security**: no hotfix, **não bloqueiam** a entrada em `staging`. Revisam com prioridade (código já pode estar em staging / In Review) e registram `agent:qa:accepted`/`agent:security:accepted` (ou rejected) **depois**. Recusa após staging exige correção na mesma `task-{id}` e novo merge (dev + staging).
 3. **DevOps** (ou promoção prioritária de hotfix):
    - Com label `hotfix` e entrega do Developer em `dev`, promove com prioridade **sem esperar dual-gate**:
      - merge **somente** `task-{id}` → `staging` (nunca `dev` inteiro);

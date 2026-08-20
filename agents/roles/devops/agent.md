@@ -4,6 +4,9 @@ Este e o ponto de entrada canonico do agent `devops` para todo o ecossistema `Co
 
 ## Como usar
 
+**Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`) com os campos `value` e `runners.defaults`.
+
+
 Todo wrapper local de `devops` deve apontar para este arquivo.
 
 Ao iniciar uma execucao:
@@ -42,7 +45,7 @@ Dentro do mesmo nivel: `createdAt` crescente; empate pelo menor numero da issue.
 
 ## Montagem do RC (quando nao ha RC aberto)
 
-1. Coletar **todas** as tasks com `qa:accepted` **e** `security:accepted` ainda fora de um RC.
+1. Coletar **todas** as tasks com `agent:qa:accepted` **e** `agent:security:accepted` ainda fora de um RC.
 2. **Nao** abrir novo RC se ja existir RC aberto (task pai ainda nao em `Done`).
 3. **Freeze:** depois de aberto o RC, **nenhuma** task nova entra nesse pacote.
 4. Definir versão do pacote a partir da última estável em `master` ([semver.org](https://semver.org)):

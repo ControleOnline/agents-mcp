@@ -13,10 +13,10 @@ const RETRY = githubRetryConfig('CTO_PR_FINALIZER');
 const DEFAULT_ALLOWED_AUTHOR_ASSOCIATIONS = 'OWNER,MEMBER,COLLABORATOR';
 const DEFAULT_STAGING_BRANCH = 'staging';
 const DEFAULT_IN_REVIEW_STATUS = 'In Review';
-const QA_ACCEPTED_LABELS = ['qa:accepted', 'approved:qa'];
-const QA_REJECTED_LABELS = ['qa:rejected', 'rejected:qa'];
-const SECURITY_ACCEPTED_LABELS = ['security:accepted', 'approved:security'];
-const SECURITY_REJECTED_LABELS = ['security:rejected', 'rejected:security'];
+const QA_ACCEPTED_LABELS = ['agent:qa:accepted', 'approved:qa'];
+const QA_REJECTED_LABELS = ['agent:qa:rejected', 'rejected:qa'];
+const SECURITY_ACCEPTED_LABELS = ['agent:security:accepted', 'approved:security'];
+const SECURITY_REJECTED_LABELS = ['agent:security:rejected', 'rejected:security'];
 
 function env(name, fallback = '') {
   return (process.env[name] || fallback).trim();

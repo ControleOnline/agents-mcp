@@ -2,7 +2,7 @@
 
 ## Papel
 
-O `Manager` executa o Full Pipeline na ordem definida em `agents/roles/manager/agent.md`. O Developer e paralelo e nao pertence ao ciclo do Manager.
+O `Manager` executa o Full Pipeline na ordem definida em `agents/roles/manager/agent.md`. O Developer integra o pipeline como Prioridade 5.
 
 Ordem resumida:
 
@@ -10,14 +10,15 @@ Ordem resumida:
 2. **DevOps** - publicar Deploy ou criar RC (ou alinhar board do RC). Gate humano de Deploy **nao** encerra a rodada.
 3. **Documentacao** - Technical Documenter / Tutorial Assistant.
 4. **Validadores** - QA; somente com QA vazia, Security.
-5. **Higiene residual + board** - somente com P1 vazia, P2 sem acao executavel, P3 vazia e P4 vazia.
+5. **Developer** - captura e implementa a proxima issue elegivel (branch task-*, merge em dev, handoff QA/Security).
+6. **Higiene residual + board** - somente com P1–P5 vazias (ou P2 somente gate humano + P5 vazia/incapacidade documentada).
 
 ## Entrada obrigatoria
 
 Antes de atuar:
 
 1. consulte o estado real do GitHub e Project #1;
-2. descubra as filas P1–P4 globalmente, sem depender de eventos de push;
+2. descubra as filas P1–P5 globalmente, sem depender de eventos de push;
 3. tente a primeira prioridade com trabalho **elegivel e executavel**;
 4. dentro da fila escolhida, use `createdAt` crescente e menor numero em empate;
 5. releia issue, labels, coluna, comentarios e relacionamentos imediatamente antes da mutacao.
@@ -43,10 +44,10 @@ Se a prioridade selecionada falhar por ferramenta, credencial, timeout, dispatch
 Quando P2 tem RC aberto e a unica barreira e aprovacao humana (item em `Deploy` / freeze sem publicacao possivel pelo agent):
 
 - registre `P2_SKIPPED_HUMAN_DEPLOY` com evidencia (issue do RC, colunas, labels);
-- **continue** para P3 → P4 → P5 na mesma rodada se houver trabalho elegivel e executavel;
+- **continue** para P3 → P4 → P5 → P6 na mesma rodada se houver trabalho elegivel e executavel;
 - nao trate esse estado como “P2 vazia” no relato, mas tambem **nao** use-o para bloquear documentacao, validadores ou higiene.
 
-P2 ainda deve ser tentado **antes** de P3–P5 sempre que houver acao executavel (criar RC, publicar apos aprovacao humana explicita, alinhar In Review).
+P2 ainda deve ser tentado **antes** de P3–P6 sempre que houver acao executavel (criar RC, publicar apos aprovacao humana explicita, alinhar In Review).
 
 ## Agendamentos Manager: Codex, Grok e equivalentes
 
@@ -74,11 +75,11 @@ Falha critica de label/assignment/dispatch no worker deve falhar o job; nao deve
 ## Prioridade 4 - validadores
 
 - QA sempre precede Security na fila global do Manager.
-- Enquanto existir QA elegivel sem `qa:accepted`/`qa:rejected`, Security nao substitui QA e P5 permanece bloqueada.
-- Quando QA estiver vazia, Security elegivel sem `security:accepted`/`security:rejected` bloqueia P5.
+- Enquanto existir QA elegivel sem `agent:qa:accepted`/`agent:qa:rejected`, Security nao substitui QA e P5/P6 permanecem bloqueadas.
+- Quando QA estiver vazia, Security elegivel sem `agent:security:accepted`/`agent:security:rejected` bloqueia P5/P6.
 - Agendamento Manager pode processar lote de QA ou, depois, lote de Security na mesma rodada, preservando evidencia por issue.
 
-## Prioridade 5 - checklist de board e higiene
+## Prioridade 6 - checklist de board e higiene
 
 Pre-condicao:
 
@@ -91,7 +92,7 @@ Quando essa pre-condicao for verdadeira, audite:
 
 ### Board / RC
 
-- **Issues e PRs fora do Project #1 (obrigatorio):** **tudo** opera no Project #1. Qualquer issue `open` ou PR `open` do escopo operacional **sem item no board** deve ser **associada na mesma hora** (mesma correcao atomica); Status padrao `Ready` (ou coluna coerente). Falha de API/permissao deve ser comentada no item — nunca silenciosa. P5 e rede de seguranca; a obrigacao hands-on vale para todos os agents.
+- **Issues e PRs fora do Project #1 (obrigatorio):** **tudo** opera no Project #1. Qualquer issue `open` ou PR `open` do escopo operacional **sem item no board** deve ser **associada na mesma hora** (mesma correcao atomica); Status padrao `Ready` (ou coluna coerente). Falha de API/permissao deve ser comentada no item — nunca silenciosa. P6 e rede de seguranca; a obrigacao hands-on vale para todos os agents.
 - RC aberto: pai + filhas devem estar em `In Review`, exceto itens ja em `Deploy`.
 - Nunca regredir `Deploy` sem evidencia explicita de rejeicao humana.
 - Dual-accepted limpo sem RC deve voltar para P2, nao ser resolvido por higiene.
@@ -122,7 +123,7 @@ Task comum so pode permanecer `closed`/`Done` com o quarteto comprovado:
 
 Issue aberta com quarteto completo e evidencia deve ser fechada e alinhada a Done. Issue fechada/Done sem quarteto **nao** recebe labels `:done` inventadas: **restaure o handoff real faltante** (`agent:technical-documenter` e/ou `agent:tutorial-assistant` de solicitação; e normalize `agent:qa:accepted` / `agent:security:accepted` se só existirem aliases legados).
 
-**Lote de documentação (exceção à regra de uma correção atômica):** em P5, o Manager **pode e deve** aplicar em **lote** as labels de solicitação de documentação em **todas** as issues `Done`/`closed` do escopo que estejam sem `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done` e sem a solicitação correspondente — **incluindo governança** (`agents-mcp`). Sem isenção. Quem decide o conteúdo/`:done` é o documentador. Comente evidência resumida (lista de issues tocadas).
+**Lote de documentação (exceção à regra de uma correção atômica):** em P6, o Manager **pode e deve** aplicar em **lote** as labels de solicitação de documentação em **todas** as issues `Done`/`closed` do escopo que estejam sem `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done` e sem a solicitação correspondente — **incluindo governança** (`agents-mcp`). Sem isenção. Quem decide o conteúdo/`:done` é o documentador. Comente evidência resumida (lista de issues tocadas).
 
 ### Dupla validacao estado <-> labels
 
@@ -135,7 +136,7 @@ Exemplos: `Ready` com validador ja ativo, `Working` sem ownership real, RC fora 
 
 ## Correcao atomica
 
-Em P5 aplique exatamente uma correcao atomica por rodada, **exceto**:
+Em P6 aplique exatamente uma correcao atomica por rodada, **exceto**:
 - fechamento em lote de issues com quarteto completo;
 - **lote de restauração de labels de solicitação de documentação** (e normalização `agent:qa:accepted` / `agent:security:accepted`) em Done/closed sem quarteto.
 

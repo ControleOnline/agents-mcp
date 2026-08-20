@@ -32,9 +32,9 @@ Existem trilhas oficiais e complementares:
 Com isso:
 
 - `Developer`, `Security`, `Quality Assurance` e `DevOps` continuam tendo comportamento real definido pelos entry points em `workers/src/` e pelos scripts em `workers/automate/scripts/` (canal de fila/PR)
-- Labels canônicos de validação: `qa:accepted`, `qa:rejected`, `security:accepted`, `security:rejected`
+- Labels canônicos de validação: `agent:qa:accepted`, `agent:qa:rejected`, `agent:security:accepted`, `agent:security:rejected`
 - Labels de estágio de agent: `agent:qa`, `agent:security`, `agent:technical-documenter`, `agent:technical-documenter:done`, etc.
-- quando `qa:accepted` e `security:accepted` coexistem sem novas solicitações nos comentários, `DevOps` cria a release; uma pessoa aprova a tarefa movendo-a para `Deploy`, e a partir de `Deploy` `DevOps` publica a build em produção
+- quando `agent:qa:accepted` e `agent:security:accepted` coexistem sem novas solicitações nos comentários, `DevOps` cria a release; uma pessoa aprova a tarefa movendo-a para `Deploy`, e a partir de `Deploy` `DevOps` publica a build em produção
 - `DevOps` permanece responsável pela fila própria de deploy e pela reconciliação operacional
 
 ## GitHub Manager Runner (legado de Project)

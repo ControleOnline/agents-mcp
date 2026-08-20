@@ -4,6 +4,9 @@ Este e o ponto de entrada canonico do agent `developer` para todo o ecossistema 
 
 ## Como usar
 
+**Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`) com os campos `value` e `runners.defaults`.
+
+
 Todo wrapper local de `developer` deve apontar para este arquivo.
 
 Ao iniciar uma execucao:
@@ -30,12 +33,12 @@ O `Developer` implementa a issue na branch `task-{id_issue}` derivada de **`mast
 
 Se o prompt nao informar `owner/repo#issue`, o `Developer` **nao deve pedir a issue ao usuario**. Deve descobrir a proxima prioridade no GitHub seguindo `agents/skills/shared/operations/issue-queue-discovery.md` e `agents/skills/by-role/developer/README.md`.
 
-Esta captura pertence somente ao fluxo paralelo do `Developer`; ela nao faz parte do Full Pipeline / Manager.
+A captura do Developer e executada pelo Manager na Prioridade 5 (ou por agendamento/wrapper dedicado que siga as mesmas regras).
 
 A selecao deve escolher exatamente uma issue elegivel, nesta ordem de **tipo**:
 
 1. `hotfix`
-2. retomada/correcao de entrega devolvida por `qa:rejected` ou `security:rejected`
+2. retomada/correcao de entrega devolvida por `agent:qa:rejected` ou `agent:security:rejected`
 3. `bug`
 4. demais tipos (`enhancement`, `feature` ou sem tipo)
 

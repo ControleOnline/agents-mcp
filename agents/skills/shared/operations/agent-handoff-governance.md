@@ -12,8 +12,8 @@ Use esta skill para padronizar tags, transicao de etapa, handoff tecnico e desvi
 4. se a task estiver em `Ready` ou `Working` sem `agent:*`, a entrada padrao e `Developer`
 5. fluxo tecnico padrao:
    - `Developer` implementa em `task-{id}` (de `master`), **merge em `dev`**, handoff com `agent:qa` + `agent:security`, task em `Working`
-   - `QA` registra `qa:accepted` ou `qa:rejected`
-   - `Security` registra `security:accepted` ou `security:rejected`
+   - `QA` registra `agent:qa:accepted` ou `agent:qa:rejected`
+   - `Security` registra `agent:security:accepted` ou `agent:security:rejected`
    - quando houver tasks com **ambas** as aprovacoes e **nao** existir RC aberto, `DevOps` monta o **RC** (semver), coloca o pacote em **`staging`** (pai + submodulos), cria **task pai de deploy** com as tasks como **subtasks**, move pai e filhas para **`In Review`**
    - humano confere staging e move a task pai para **`Deploy`**
    - `DevOps` mescla **`staging` → `master`** e move para **`Done`**

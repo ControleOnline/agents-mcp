@@ -102,8 +102,8 @@ jobs:
           need_security=false
           need_docs=false
 
-          echo "$LABELS" | grep -q 'qa:accepted' || need_qa=true
-          echo "$LABELS" | grep -q 'security:accepted' || need_security=true
+          echo "$LABELS" | grep -q 'agent:qa:accepted' || need_qa=true
+          echo "$LABELS" | grep -q 'agent:security:accepted' || need_security=true
           echo "$LABELS" | grep -q 'agent:technical-documenter:done' || need_docs=true
 
           echo "need_qa=$need_qa" >> "$GITHUB_OUTPUT"

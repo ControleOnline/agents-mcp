@@ -32,8 +32,7 @@ Regras adicionais (todos os agents):
 - Issue ou PR **sem** item no Project #1 e desvio operacional: o agent que a criar, capturar ou mutar deve **associar na mesma rodada/hora**.
 - **Todas** as PRs `open` do escopo entram nessa regra (nao so as “ja no board”).
 - Falha de permissao/API ao associar **nao e silenciosa**: comente no item a falha objetiva e tente de novo quando houver permissao; nao deixe solto sem tentativa registrada.
-- Manager em P5 (higiene) audita e corrige itens soltos, mas isso **nao dispensa** a obrigacao hands-on dos demais agents.
-
+- Manager em P6 (higiene) audita e corrige itens soltos, mas isso **nao dispensa** a obrigacao hands-on dos demais agents.
 
 ## Outras regras
 
@@ -63,7 +62,7 @@ Regras adicionais (todos os agents):
 
 O `Developer` deve descobrir trabalho sozinho quando a issue nao vier no prompt. Nao peca ao usuario para escolher uma issue se o GitHub/Project #1 puder ser consultado.
 
-Este template e exclusivo do fluxo paralelo do `Developer`. O Full Pipeline / Manager nao usa esta fila para capturar implementacao; ele apenas corrige desvios de governanca quando chegar na etapa de higiene.
+Este template e exclusivo do fluxo paralelo do `Developer`. O Full Pipeline / Manager executa a captura de Developer na Prioridade 5 e a higiene residual na Prioridade 6.
 
 Fonte primaria:
 
@@ -76,14 +75,14 @@ Candidata se **qualquer** for verdadeira:
 1. possui `agent:developer`;
 2. esta em `Ready` sem nenhum `agent:*` (entrada padrao do fluxo);
 3. esta em `Working` sem nenhum `agent:*`, quando nao houver evidencia de ownership humano exclusivo;
-4. possui `qa:rejected` ou `security:rejected` e ainda precisa de correcao pelo Developer.
+4. possui `agent:qa:rejected` ou `agent:security:rejected` e ainda precisa de correcao pelo Developer.
 
 Nao candidata se houver decisao/revisao ativa que ainda pertenca a `QA`, `Security` ou `DevOps` (por exemplo, aguardando aceite/recusa com `agent:qa`, `agent:security` ou pacote de RC).
 
 Ordem de prioridade do `Developer` (por **tipo**):
 
 1. `hotfix`
-2. `qa:rejected` ou `security:rejected`
+2. `agent:qa:rejected` ou `agent:security:rejected`
 3. `bug`
 4. demais tipos (`enhancement`, `feature` ou sem tipo)
 
@@ -118,26 +117,26 @@ Estes papeis **nao alteram codigo**, branches, PRs nem arquivos de produto. So a
 | Label | Significado |
 | --- | --- |
 | `agent:qa` / `agent:security` | Solicitacao explicita de revisao (**qualquer status**) |
-| `qa:accepted` / `security:accepted` | Revisao aprovada; trabalho daquele papel **encerrado** nesta passagem |
-| `qa:rejected` / `security:rejected` | Revisao recusada; trabalho daquele papel **encerrado** nesta passagem |
+| `agent:qa:accepted` / `agent:security:accepted` | Revisao aprovada; trabalho daquele papel **encerrado** nesta passagem |
+| `agent:qa:rejected` / `agent:security:rejected` | Revisao recusada; trabalho daquele papel **encerrado** nesta passagem |
 
 Candidata para o papel se **qualquer** for verdadeira:
 
 1. possui `agent:<papel>` e **ainda nao** tem decisao final daquele papel (`:accepted` ou `:rejected`);
-2. esta `closed` e **ainda nao** possui a aprovacao daquele papel (`qa:accepted` ou `security:accepted` respectivamente).
+2. esta `closed` e **ainda nao** possui a aprovacao daquele papel (`agent:qa:accepted` ou `agent:security:accepted` respectivamente).
 
 Notas:
 
 - `rejected` **encerra** o trabalho do revisor naquela passagem (nao fica em loop infinito na mesma evidencia).
-- Issue `closed` **sem** `qa:accepted` **e** `security:accepted` e ilegal no fluxo: o revisor que a capturar deve **reabrir** a issue antes ou durante a analise.
-- Uma tarefa so pode permanecer `closed` com as **duas** aprovacoes: `qa:accepted` **e** `security:accepted`.
+- Issue `closed` **sem** `agent:qa:accepted` **e** `agent:security:accepted` e ilegal no fluxo: o revisor que a capturar deve **reabrir** a issue antes ou durante a analise.
+- Uma tarefa so pode permanecer `closed` com as **duas** aprovacoes: `agent:qa:accepted` **e** `agent:security:accepted`.
 
 ### Gate dual (fechamento)
 
 | Estado da issue | Labels de aprovacao | Acao do revisor |
 | --- | --- | --- |
-| `closed` | falta `qa:accepted` e/ou `security:accepted` | **Reabrir** a issue, analisar, decidir por labels |
-| `closed` | tem `qa:accepted` **e** `security:accepted` | Nao e candidata por fechamento indevido |
+| `closed` | falta `agent:qa:accepted` e/ou `agent:security:accepted` | **Reabrir** a issue, analisar, decidir por labels |
+| `closed` | tem `agent:qa:accepted` **e** `agent:security:accepted` | Nao e candidata por fechamento indevido |
 | `open` | tem `agent:qa` / `agent:security` sem decisao | Analisar e decidir |
 
 ### Conclusao da revisao
@@ -145,14 +144,14 @@ Notas:
 Ao **aprovar**:
 
 1. Comente resumo objetivo + checklist atendido (quando couber).
-2. Adicione `qa:accepted` ou `security:accepted`.
+2. Adicione `agent:qa:accepted` ou `agent:security:accepted`.
 3. Remova `agent:qa` ou `agent:security` se presente.
 4. Remova eventual `:rejected` anterior do **mesmo** papel se estiver reavaliando apos correcao.
 
 Ao **recusar**:
 
 1. Comente motivos objetivos + checklist nao atendido.
-2. Adicione `qa:rejected` ou `security:rejected`.
+2. Adicione `agent:qa:rejected` ou `agent:security:rejected`.
 3. Remova `agent:qa` ou `agent:security` se presente.
 4. Garanta que a issue fique **open** (reabra se estiver closed) para o Developer atuar.
 

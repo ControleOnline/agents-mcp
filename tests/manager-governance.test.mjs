@@ -16,17 +16,19 @@ const completionLabels = [
 ];
 
 test('manager is fail-closed before hygiene', () => {
-  assert.match(managerAgent, /prioridade fail-closed/i);
-  assert.match(managerAgent, /P5 so pode iniciar.*P1.*P2.*P3.*P4.*vazias/is);
-  assert.match(managerAgent, /nunca use higiene como fallback/i);
-  assert.match(managerSkill, /P5 e proibida.*P1-P4/is);
+  assert.match(managerAgent, /prioridade e fail-closed/i);
+  assert.match(managerAgent, /P6 e fallback estrito/i);
+  assert.match(managerAgent, /P5 \(Developer\) so pode iniciar/i);
+  assert.match(managerAgent, /nunca use higiene \(P6\) como fallback/i);
+  assert.match(managerAgent, /Prioridade 5 - Developer/i);
+  assert.match(managerAgent, /Prioridade 6 - Higiene residual/i);
 });
 
 test('scheduled managers recover global backlog independently of push', () => {
   assert.match(managerAgent, /Codex, Grok.*scheduler/is);
   assert.match(managerAgent, /nao dependem de novo push/i);
   assert.match(managerSkill, /consumidores globais.*recuperacao de backlog/is);
-  assert.match(managerAgent, /QA.*Security.*P5/is);
+  assert.match(managerAgent, /QA.*Security.*P5|Developer/is);
 });
 
 test('workers remain push scoped and do not become backlog schedulers', () => {
