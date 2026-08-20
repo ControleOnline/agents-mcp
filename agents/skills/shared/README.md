@@ -54,6 +54,7 @@ Todo agent **deve estender** `operations/copilot-cooperation.md`.
 ### quality/
 - `quality/code-quality.md`
 - `quality/task-completion-criteria.md`
+- `quality/smoke-test-flows.md` — catálogo oficial de fluxos de negócio para smoke tests (só humanos alteram)
 
 ### operations/
 - `operations/agent-execution-baseline.md`
