@@ -19,6 +19,15 @@ Entradas principais:
 - `workers/automate/`
 
 
+
+## Configuracao do fork (obrigatoria)
+
+Antes de qualquer acao operacional, leia **`config/ecosystem.config.json`**.
+
+- Use os campos `value` e `runners.defaults` para resolver `<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>` e repositorios de produto.
+- Tokens (`GITHUB_TOKEN`) nao ficam no arquivo; use secrets do ambiente.
+- Modelo: `config/ecosystem.config.example.json` — detalhes em `config/README.md`.
+
 ## Copilot Cooperation
 
 Todo agent do ecossistema **deve estender** `agents/skills/shared/operations/copilot-cooperation.md`.
@@ -83,7 +92,7 @@ Fonte completa: `agents/skills/shared/github/github-flow.md`.
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
 - `QA` e `Security` decidem por labels na task; evidencia em `dev`; nao abrem PR
-- `DevOps` empacota **todas** as tasks com `qa:accepted` + `security:accepted` em um **RC semver**, coloca o pacote em **`staging`** (pai + submodulos), cria **task pai de deploy** com as demais como **subtasks**, move pai e filhas para **`In Review`**
+- `DevOps` empacota **todas** as tasks com `agent:qa:accepted` + `agent:security:accepted` em um **RC semver**, coloca o pacote em **`staging`** (pai + submodulos), cria **task pai de deploy** com as demais como **subtasks**, move pai e filhas para **`In Review`**
 - **um RC por vez**; freeze — nenhuma task nova entra no RC aberto; nao ha novo RC ate publicar o atual
 - humano confere staging e move a task pai para **`Deploy`**
 - `DevOps` mescla **`staging` → `master`** e move para **`Done`**
@@ -92,10 +101,10 @@ Fonte completa: `agents/skills/shared/github/github-flow.md`.
 
 Labels oficiais de review na task:
 
-- `qa:accepted`
-- `qa:rejected`
-- `security:accepted`
-- `security:rejected`
+- `agent:qa:accepted`
+- `agent:qa:rejected`
+- `agent:security:accepted`
+- `agent:security:rejected`
 
 Regras obrigatorias:
 
@@ -115,7 +124,7 @@ O CTO supervisiona o ecossistema e corrige diretamente o `agents-mcp` quando hou
 
 O CTO nao deve substituir a execucao normal de `Developer`, `Security`, `Quality Assurance`, `DevOps` ou `Sysadmin` quando a trilha ja pertence claramente a um desses agents.
 
-Quando `qa:accepted` e `security:accepted` coexistirem, a trilha de RC/`staging`/`master` pertence ao `DevOps`, conforme `agents/skills/shared/github/github-flow.md` e `agents/skills/shared/github/master-publication.md`.
+Quando `agent:qa:accepted` e `agent:security:accepted` coexistirem, a trilha de RC/`staging`/`master` pertence ao `DevOps`, conforme `agents/skills/shared/github/github-flow.md` e `agents/skills/shared/github/master-publication.md`.
 
 ## Fluxos operacionais paralelos
 
@@ -143,7 +152,7 @@ O princípio é: **sempre atuar no que está mais avançado no pipeline do Manag
 
 2. **DevOps**
    - Publicar release aprovada na coluna Deploy (se existir)
-   - Criar Release Candidate (se houver tasks com `qa:accepted` + `security:accepted` e não houver RC em andamento)
+   - Criar Release Candidate (se houver tasks com `agent:qa:accepted` + `agent:security:accepted` e não houver RC em andamento)
    - No RC: merge **somente** das `task-{id}` aprovadas em `staging` (nunca `dev` inteiro)
 
 3. **Documentação** (Documentadores)

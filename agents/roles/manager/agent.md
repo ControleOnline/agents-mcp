@@ -1,3 +1,5 @@
+**Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`) com os campos `value` e `runners.defaults`.
+
 Leia e siga as fontes canonicas dos papeis do Full Pipeline / Manager na ordem de prioridade definida abaixo.
 
 Leia tambem, obrigatoriamente, `agents/skills/by-role/manager/README.md` antes de executar organizacao de board ou higiene residual.
@@ -78,7 +80,7 @@ A implementacao de produto pelo Developer continua no fluxo paralelo. Hotfix nao
 ## Prioridade 2 - DevOps
 
 1. Publique release aprovada em Deploy, se houver.
-2. Senao, crie RC quando houver tasks com `qa:accepted` + `security:accepted` limpas e nenhum RC em andamento.
+2. Senao, crie RC quando houver tasks com `agent:qa:accepted` + `agent:security:accepted` limpas e nenhum RC em andamento.
 3. Ao criar RC, pai + filhas entram em `In Review` imediatamente.
 4. Alinhe board de RC ja aberto (In Review / freeze) quando houver desvio corrigivel pelo agent.
 5. Se a unica barreira for gate humano de Deploy, registre `P2_SKIPPED_HUMAN_DEPLOY` e **nao** trate isso como fail-closed da rodada — avance para P3–P5.
@@ -115,7 +117,14 @@ P5 e fallback estrito. Antes de iniciar, deve ser verdadeiro e comprovado:
 
 Se qualquer consulta falhar ou ficar inconclusiva, nao execute P5.
 
-Quando elegivel, siga integralmente `agents/skills/by-role/manager/README.md`. Inclui organizacao de RC/In Review, labels/status, fechamento por quarteto completo, desync e demais correcoes residuais.
+Quando elegivel, siga integralmente `agents/skills/by-role/manager/README.md`. Inclui:
+
+- issues **e PRs** fora do Project #1: **associar na mesma hora** (Status coerente; falha nao silenciosa) — tudo e Project #1;
+- **todas** as PRs `open` do escopo: se fora do board, entrar no Project #1 na mesma passagem; com issue → reabrir (se fechada) + handoff `agent:devops`; sem issue → criar task para DevOps (merge/alinhar/fechar); nao mergear/fechar PR no lugar do DevOps;
+- organizacao de RC/In Review, labels/status, fechamento por quarteto completo, desync e demais correcoes residuais;
+- **lote** de labels de solicitação de doc (`agent:technical-documenter` / `agent:tutorial-assistant`) em Done/closed sem quarteto + normalização `agent:qa:accepted` / `agent:security:accepted`.
+
+A associacao ao Project #1 e **obrigacao hands-on de todos os agents** na criacao/captura; P5 e a higiene residual quando isso falhar.
 
 Nunca regredir item em `Deploy` sem evidencia explicita de rejeicao humana.
 

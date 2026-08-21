@@ -18,7 +18,7 @@ Fonte canonica: `agents/skills/shared/github/github-flow.md`.
 ## Staging = somente RC (DevOps)
 
 - `staging` **nao** e destino do Developer
-- `DevOps` coloca o pacote RC (semver) em `staging` apos `qa:accepted` + `security:accepted`
+- `DevOps` coloca o pacote RC (semver) em `staging` apos `agent:qa:accepted` + `agent:security:accepted`
 - update de `staging` dispara deploy de conferencia humana
 - apos coluna `Deploy`: merge `staging` → `master` → coluna `Done`
 
@@ -26,8 +26,8 @@ Fonte canonica: `agents/skills/shared/github/github-flow.md`.
 
 Quando houver tasks com simultaneamente:
 
-- `qa:accepted`
-- `security:accepted`
+- `agent:qa:accepted`
+- `agent:security:accepted`
 - e **nao** existir RC aberto
 
 nessa situacao ele deve:
@@ -39,7 +39,7 @@ nessa situacao ele deve:
 ## Bloqueios
 
 - faltar uma das duas aprovacoes por label
-- existir `qa:rejected` ou `security:rejected`
+- existir `agent:qa:rejected` ou `agent:security:rejected`
 - integracao em `dev` (Developer) ou `staging` (RC) em conflito sem resolucao
 - branch da tarefa nao vinculada ao numero da issue
 - segundo RC enquanto o atual nao esta em `Done`

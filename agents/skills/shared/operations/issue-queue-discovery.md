@@ -16,15 +16,23 @@ A fonte primaria da fila sao **issues + labels** (e estado open/closed).
 - Use ProjectV2 quando for preciso: associar issue recem-criada ao board, ler status/coluna complementar, ou quando o prompt pedir explicitamente.
 - Projeto operacional padrao da org: [ControleOnline Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1) (`organization` `ControleOnline`, `number` `1`).
 
-## Associacao obrigatoria ao criar task
+## Associacao obrigatoria ao Project #1 (hands-on — todos os agents)
 
-Sempre que um agent **criar** uma issue/task nova:
+**Regra transversal e hands-on:** todo agent do ecossistema (CTO, Developer, Manager, QA, Security, DevOps, Sysadmin, documentadores e qualquer outro papel) e **obrigado** a manter **issues e PRs** no **Project #1**. Tudo e Project #1. Nao e opcional, nao e so do Manager e nao pode ser adiado para “depois”.
 
-1. Crie a issue no repositorio adequado.
-2. **Associe-a ao projeto** `https://github.com/orgs/ControleOnline/projects/1/views/1` (ProjectV2 da org, number `1`).
-3. Aplique as labels `agent:*` necessarias.
+Sempre que um agent **criar** uma issue/task **ou** abrir/atuar em uma PR:
 
-Falha ao associar ao projeto deve ser registrada no comentario da issue e tentada de novo quando houver permissao/API; a issue em si nao deve ficar “solta” sem tentativa de vinculo.
+1. Crie a issue no repositorio adequado (ou identifique a PR).
+2. **Associe-a imediatamente** ao projeto `https://github.com/orgs/ControleOnline/projects/1/views/1` (ProjectV2 da org, number `1`) — **na mesma hora**.
+3. Defina o Status do item no board (`Ready` na entrada padrao, ou a coluna coerente com o estado real se ja houver ownership/etapa).
+4. Aplique as labels `agent:*` necessarias.
+
+Regras adicionais (todos os agents):
+
+- Issue ou PR **sem** item no Project #1 e desvio operacional: o agent que a criar, capturar ou mutar deve **associar na mesma rodada/hora**.
+- **Todas** as PRs `open` do escopo entram nessa regra (nao so as “ja no board”).
+- Falha de permissao/API ao associar **nao e silenciosa**: comente no item a falha objetiva e tente de novo quando houver permissao; nao deixe solto sem tentativa registrada.
+- Manager em P5 (higiene) audita e corrige itens soltos, mas isso **nao dispensa** a obrigacao hands-on dos demais agents.
 
 ## Outras regras
 
@@ -67,19 +75,24 @@ Candidata se **qualquer** for verdadeira:
 1. possui `agent:developer`;
 2. esta em `Ready` sem nenhum `agent:*` (entrada padrao do fluxo);
 3. esta em `Working` sem nenhum `agent:*`, quando nao houver evidencia de ownership humano exclusivo;
-4. possui `qa:rejected` ou `security:rejected` e ainda precisa de correcao pelo Developer.
+4. possui `agent:qa:rejected` ou `agent:security:rejected` e ainda precisa de correcao pelo Developer.
 
 Nao candidata se houver decisao/revisao ativa que ainda pertenca a `QA`, `Security` ou `DevOps` (por exemplo, aguardando aceite/recusa com `agent:qa`, `agent:security` ou pacote de RC).
 
-Ordem de prioridade do `Developer`:
+Ordem de prioridade do `Developer` (por **tipo**):
 
 1. `hotfix`
-2. `qa:rejected` ou `security:rejected`
+2. `agent:qa:rejected` ou `agent:security:rejected`
 3. `bug`
-4. `enhancement`
-5. `feature`
+4. demais tipos (`enhancement`, `feature` ou sem tipo)
 
-Dentro da mesma prioridade, selecione a issue elegivel mais antiga por `createdAt` crescente; em empate de `createdAt`, selecione o menor numero da issue. `updatedAt` nao altera a posicao. Se nenhuma issue elegivel existir, registre o criterio de busca e pare com bloqueio objetivo.
+**Desempate dentro de cada linha de tipo** (nesta ordem):
+
+1. labels de prioridade `p0`, `p1`, `p2`, … (menor número = maior prioridade; issue **sem** label `p*` depois das que têm)
+2. `createdAt` crescente (mais antiga)
+3. menor numero da issue
+
+`updatedAt` nao altera a posicao. `p*` **nao** e faixa entre `bug` e demais — so desempate em cada tipo. Labels `p0`/`p1`/`p2`/… podem ser criadas pelo agent quando ausentes. Se nenhuma issue elegivel existir, registre o criterio de busca e pare com bloqueio objetivo.
 
 ## Template de elegibilidade — papeis documentais
 
@@ -104,26 +117,26 @@ Estes papeis **nao alteram codigo**, branches, PRs nem arquivos de produto. So a
 | Label | Significado |
 | --- | --- |
 | `agent:qa` / `agent:security` | Solicitacao explicita de revisao (**qualquer status**) |
-| `qa:accepted` / `security:accepted` | Revisao aprovada; trabalho daquele papel **encerrado** nesta passagem |
-| `qa:rejected` / `security:rejected` | Revisao recusada; trabalho daquele papel **encerrado** nesta passagem |
+| `agent:qa:accepted` / `agent:security:accepted` | Revisao aprovada; trabalho daquele papel **encerrado** nesta passagem |
+| `agent:qa:rejected` / `agent:security:rejected` | Revisao recusada; trabalho daquele papel **encerrado** nesta passagem |
 
 Candidata para o papel se **qualquer** for verdadeira:
 
 1. possui `agent:<papel>` e **ainda nao** tem decisao final daquele papel (`:accepted` ou `:rejected`);
-2. esta `closed` e **ainda nao** possui a aprovacao daquele papel (`qa:accepted` ou `security:accepted` respectivamente).
+2. esta `closed` e **ainda nao** possui a aprovacao daquele papel (`agent:qa:accepted` ou `agent:security:accepted` respectivamente).
 
 Notas:
 
 - `rejected` **encerra** o trabalho do revisor naquela passagem (nao fica em loop infinito na mesma evidencia).
-- Issue `closed` **sem** `qa:accepted` **e** `security:accepted` e ilegal no fluxo: o revisor que a capturar deve **reabrir** a issue antes ou durante a analise.
-- Uma tarefa so pode permanecer `closed` com as **duas** aprovacoes: `qa:accepted` **e** `security:accepted`.
+- Issue `closed` **sem** `agent:qa:accepted` **e** `agent:security:accepted` e ilegal no fluxo: o revisor que a capturar deve **reabrir** a issue antes ou durante a analise.
+- Uma tarefa so pode permanecer `closed` com as **duas** aprovacoes: `agent:qa:accepted` **e** `agent:security:accepted`.
 
 ### Gate dual (fechamento)
 
 | Estado da issue | Labels de aprovacao | Acao do revisor |
 | --- | --- | --- |
-| `closed` | falta `qa:accepted` e/ou `security:accepted` | **Reabrir** a issue, analisar, decidir por labels |
-| `closed` | tem `qa:accepted` **e** `security:accepted` | Nao e candidata por fechamento indevido |
+| `closed` | falta `agent:qa:accepted` e/ou `agent:security:accepted` | **Reabrir** a issue, analisar, decidir por labels |
+| `closed` | tem `agent:qa:accepted` **e** `agent:security:accepted` | Nao e candidata por fechamento indevido |
 | `open` | tem `agent:qa` / `agent:security` sem decisao | Analisar e decidir |
 
 ### Conclusao da revisao
@@ -131,18 +144,55 @@ Notas:
 Ao **aprovar**:
 
 1. Comente resumo objetivo + checklist atendido (quando couber).
-2. Adicione `qa:accepted` ou `security:accepted`.
+2. Adicione `agent:qa:accepted` ou `agent:security:accepted`.
 3. Remova `agent:qa` ou `agent:security` se presente.
 4. Remova eventual `:rejected` anterior do **mesmo** papel se estiver reavaliando apos correcao.
 
 Ao **recusar**:
 
 1. Comente motivos objetivos + checklist nao atendido.
-2. Adicione `qa:rejected` ou `security:rejected`.
+2. Adicione `agent:qa:rejected` ou `agent:security:rejected`.
 3. Remova `agent:qa` ou `agent:security` se presente.
 4. Garanta que a issue fique **open** (reabra se estiver closed) para o Developer atuar.
 
 Em ambos os casos o trabalho **daquele agent** naquela passagem termina. Nao mexa em codigo.
+
+## Template de elegibilidade — `DevOps`
+
+O `DevOps` descobre trabalho sozinho quando o prompt nao informar issue. Alem do pipeline de **RC**, deve capturar handoffs marcados com `agent:devops` (incluindo **PRs soltas** encaminhadas pela higiene do Manager).
+
+Fonte primaria:
+
+- issues `open` na org `ControleOnline` (ou escopo do prompt);
+- labels `agent:devops`, estado de RC / dual-accepted / coluna Deploy;
+- Project #1 como complemento (In Review, Deploy, Ready/Working);
+- PRs abertas vinculadas a issues com `agent:devops` (ou mencionadas no handoff).
+
+Candidata se **qualquer** for verdadeira:
+
+1. publicacao: task pai de RC (ou hotfix elegivel) na coluna **`Deploy`** com aprovacao humana;
+2. RC aberto: desvio corrigivel de board/freeze/staging (pai/filhas fora de alinhamento);
+3. montagem de RC: existe dual-accepted (`agent:qa:accepted` + `agent:security:accepted`) limpo e **nenhum** RC aberto;
+4. handoff DevOps: issue com label **`agent:devops`** **ou** **qualquer** PR `open` marcada/encaminhada para DevOps (label `agent:devops`, vinculo a issue `agent:devops`, ou PR solta sem handoff apos higiene). Se a PR **nao** estiver no Project #1, **associar na mesma hora** antes ou junto da decisao.
+
+Nao candidata se a acao pertencer exclusivamente a Developer/QA/Security sem handoff DevOps, ou se o unico bloqueio for gate humano de Deploy ja documentado sem acao executavel pelo agent.
+
+Ordem de prioridade do `DevOps` (uma issue/acao por execucao, salvo fonte canonica que permita lote no mesmo RC):
+
+1. `hotfix` / publicacao em **`Deploy`** (acao executavel)
+2. RC aberto (alinhar board, freeze, staging, promocao quando aplicavel)
+3. montar novo RC (dual-accepted limpo, sem RC aberto)
+4. **PRs/issues com `agent:devops`** (PRs soltas no board ou encaminhadas pela higiene) — a **PR** e objeto de trabalho, nao so a issue
+
+Dentro do mesmo nivel, selecione a candidata mais antiga por `createdAt` crescente; em empate, menor numero (issue ou PR). `updatedAt` nao altera a posicao.
+
+Ao capturar handoff `agent:devops` / PR solta:
+
+1. leia issue (se houver) + **PR** + comentarios de handoff;
+2. se so existir a PR sem issue, trate a PR diretamente (ou use a task criada pela higiene Manager);
+3. **decida** com acao objetiva: merge no fluxo permitido, alinhar branches/labels/board, ou **fechar** a PR com justificativa;
+4. atualize labels/Status no Project #1; remova ou conclua o handoff `agent:devops` quando a decisao estiver executada e documentada;
+5. nao deixe a PR/issue sem comentario de evidencias.
 
 ## Output minimo da descoberta
 

@@ -4,6 +4,9 @@ Este e o ponto de entrada canonico do agent `qa` para todo o ecossistema `Contro
 
 ## Como usar
 
+**Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`) com os campos `value` e `runners.defaults`.
+
+
 Todo wrapper local de `qa` deve apontar para este arquivo.
 
 Ao iniciar uma revisao:
@@ -39,12 +42,12 @@ Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edi
 
 Candidata se **qualquer** for verdadeira:
 
-1. possui `agent:qa` e ainda **nao** tem `qa:accepted` nem `qa:rejected`;
-2. esta `closed` e **ainda nao** possui `qa:accepted`.
+1. possui `agent:qa` e ainda **nao** tem `agent:qa:accepted` nem `agent:qa:rejected`;
+2. esta `closed` e **ainda nao** possui `agent:qa:accepted`.
 
 ### Gate dual com Security
 
-Uma tarefa **nao deve permanecer fechada** sem **as duas** aprovacoes `qa:accepted` e `security:accepted`.
+Uma tarefa **nao deve permanecer fechada** sem **as duas** aprovacoes `agent:qa:accepted` e `agent:security:accepted`.
 
 Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 
@@ -64,21 +67,21 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 5. **Loops e chamadas duplicadas**: em cada tela/fluxo revisado, nao deve haver loops, re-renders desnecessarios ou requests/API duplicados.
 6. **Android** (quando aplicavel e houver build/artefato acessivel): verifique bugs obvios de runtime ou justifique explicitamente o que ficou fora de alcance.
 
-Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao. Falta de qualquer item acima em entrega com interface bloqueia `qa:accepted`.
+Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao. Falta de qualquer item acima em entrega com interface bloqueia `agent:qa:accepted`.
 
 ## Conclusao
 
 ### Aprovar
 
 1. Comente resumo + checklist atendido (incluindo os itens runtime/UI quando aplicavel).
-2. Adicione `qa:accepted`.
+2. Adicione `agent:qa:accepted`.
 3. Remova `agent:qa` se presente.
-4. Remova `qa:rejected` anterior se estiver reavaliando.
+4. Remova `agent:qa:rejected` anterior se estiver reavaliando.
 
 ### Recusar
 
 1. Comente motivos + checklist nao atendido (obrigatorio).
-2. Adicione `qa:rejected`.
+2. Adicione `agent:qa:rejected`.
 3. Remova `agent:qa` se presente.
 4. Garanta issue **open** para o Developer.
 

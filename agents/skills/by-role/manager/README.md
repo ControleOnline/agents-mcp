@@ -74,8 +74,8 @@ Falha critica de label/assignment/dispatch no worker deve falhar o job; nao deve
 ## Prioridade 4 - validadores
 
 - QA sempre precede Security na fila global do Manager.
-- Enquanto existir QA elegivel sem `qa:accepted`/`qa:rejected`, Security nao substitui QA e P5 permanece bloqueada.
-- Quando QA estiver vazia, Security elegivel sem `security:accepted`/`security:rejected` bloqueia P5.
+- Enquanto existir QA elegivel sem `agent:qa:accepted`/`agent:qa:rejected`, Security nao substitui QA e P5 permanece bloqueada.
+- Quando QA estiver vazia, Security elegivel sem `agent:security:accepted`/`agent:security:rejected` bloqueia P5.
 - Agendamento Manager pode processar lote de QA ou, depois, lote de Security na mesma rodada, preservando evidencia por issue.
 
 ## Prioridade 5 - checklist de board e higiene
@@ -91,22 +91,38 @@ Quando essa pre-condicao for verdadeira, audite:
 
 ### Board / RC
 
+- **Issues e PRs fora do Project #1 (obrigatorio):** **tudo** opera no Project #1. Qualquer issue `open` ou PR `open` do escopo operacional **sem item no board** deve ser **associada na mesma hora** (mesma correcao atomica); Status padrao `Ready` (ou coluna coerente). Falha de API/permissao deve ser comentada no item — nunca silenciosa. P5 e rede de seguranca; a obrigacao hands-on vale para todos os agents.
 - RC aberto: pai + filhas devem estar em `In Review`, exceto itens ja em `Deploy`.
 - Nunca regredir `Deploy` sem evidencia explicita de rejeicao humana.
 - Dual-accepted limpo sem RC deve voltar para P2, nao ser resolvido por higiene.
 - Dual-accepted fora do freeze precisa de bloqueio objetivo documentado.
 - Remover assignees usados indevidamente como mecanismo de fila.
 
+### PRs (obrigatorio — **todas** as PRs abertas)
+
+O board e o **Project #1**: **todas** as PRs `open` do escopo operacional entram na higiene, nao so as que ja estao no board.
+
+Na mesma passagem, antes ou junto do handoff:
+
+0. Se a PR **nao** estiver no Project #1, **associe-a na mesma hora** (Status coerente, padrao `Ready`). Idem para a issue vinculada, se houver. Sem item no Project #1 e desvio — corrigir imediatamente.
+
+Depois destranque o handoff (correcao atomica; uma PR por rodada):
+
+1. **PR com tarefa/issue associada:** se a issue estiver `closed`, **reabra**; aplique handoff para **DevOps** (`agent:devops`); comente na issue e na PR. Nao mergeie nem feche a PR no lugar do DevOps.
+2. **PR sem tarefa associada:** **crie** uma issue para o DevOps decidir (implementar/alinhar merge ou fechar a PR); associe **issue e PR** ao Project #1 na mesma hora; label de tipo + `agent:devops`; comente o vinculo cruzado. Falha de associacao nao e silenciosa.
+
 ### Conclusao
 
 Task comum so pode permanecer `closed`/`Done` com o quarteto comprovado:
 
-- `qa:accepted`
-- `security:accepted`
+- `agent:qa:accepted` (alias legado `qa:accepted` conta como equivalente na leitura; ao atuar, normalize para `agent:qa:accepted`)
+- `agent:security:accepted` (alias legado `security:accepted` idem → `agent:security:accepted`)
 - `agent:technical-documenter:done`
 - `agent:tutorial-assistant:done`
 
-Issue aberta com quarteto completo e evidencia deve ser fechada e alinhada a Done. Issue fechada/Done sem quarteto nao recebe labels inventadas: restaure o handoff real faltante.
+Issue aberta com quarteto completo e evidencia deve ser fechada e alinhada a Done. Issue fechada/Done sem quarteto **nao** recebe labels `:done` inventadas: **restaure o handoff real faltante** (`agent:technical-documenter` e/ou `agent:tutorial-assistant` de solicitação; e normalize `agent:qa:accepted` / `agent:security:accepted` se só existirem aliases legados).
+
+**Lote de documentação (exceção à regra de uma correção atômica):** em P5, o Manager **pode e deve** aplicar em **lote** as labels de solicitação de documentação em **todas** as issues `Done`/`closed` do escopo que estejam sem `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done` e sem a solicitação correspondente — **incluindo governança** (`agents-mcp`). Sem isenção. Quem decide o conteúdo/`:done` é o documentador. Comente evidência resumida (lista de issues tocadas).
 
 ### Dupla validacao estado <-> labels
 
@@ -119,7 +135,11 @@ Exemplos: `Ready` com validador ja ativo, `Working` sem ownership real, RC fora 
 
 ## Correcao atomica
 
-Em P5 aplique exatamente uma correcao atomica por rodada, salvo fechamento em lote de issues com quarteto completo. Comente evidencia antes/depois quando houver mutacao.
+Em P5 aplique exatamente uma correcao atomica por rodada, **exceto**:
+- fechamento em lote de issues com quarteto completo;
+- **lote de restauração de labels de solicitação de documentação** (e normalização `agent:qa:accepted` / `agent:security:accepted`) em Done/closed sem quarteto.
+
+Comente evidencia antes/depois quando houver mutacao.
 
 ## Output Contract
 

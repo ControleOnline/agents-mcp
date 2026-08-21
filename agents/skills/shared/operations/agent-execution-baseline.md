@@ -1,3 +1,7 @@
+## Configuracao do fork
+
+**Obrigatorio:** leia `config/ecosystem.config.json` no inicio da execucao e resolva os placeholders com os campos `value` / `runners.defaults`.
+
 # Agent Execution Baseline
 
 ## Overview
@@ -28,6 +32,10 @@ Ao concluir, deixe claro:
 - qual repositorio ou modulo foi o ponto principal da mudanca
 - quais fontes foram confirmadas
 - qual resultado, handoff ou bloqueio ficou registrado
+
+## Board / Project #1 (hands-on)
+
+Todo agent, em qualquer papel, ao **criar** ou **capturar** issue **ou PR** deve garantir associacao ao Project #1 da org (`ControleOnline`, number `1`) **na mesma hora**, com Status coerente. Tudo e Project #1. Item solto e desvio; falha de vinculo deve ser registrada. Ver `agents/skills/shared/operations/issue-queue-discovery.md`.
 
 ## Quality Bar
 

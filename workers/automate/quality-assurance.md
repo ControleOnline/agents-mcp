@@ -10,7 +10,7 @@ Fonte de branches/entrega: `agents/skills/shared/github/github-flow.md`.
 
 - localizar issue com `agent:qa` (fase compartilhada com `agent:security` quando couber)
 - validar disciplina do `Developer` (branch `task-{id}` e **merge em `dev`**)
-- decidir entre `qa:accepted` e `qa:rejected`
+- decidir entre `agent:qa:accepted` e `agent:qa:rejected`
 - comentar na recusa
 - copiar checklist e remover `agent:qa` apos decisao
 
@@ -27,8 +27,8 @@ Ao revisar:
 
 ## Saidas validas
 
-- `qa:accepted`
-- `qa:rejected`
+- `agent:qa:accepted`
+- `agent:qa:rejected`
 
 ## Restricoes
 

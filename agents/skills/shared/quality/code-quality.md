@@ -37,6 +37,15 @@ Se houver conflito entre um AGENTS local e esta skill para criterios de qualidad
 - as capturas, prints, screenshots ou artefatos do smoke test devem ser guardados quando forem uteis para o `Documentor` transformar a validacao em documentacao para o cliente
 - o `Documentor` deve conseguir reutilizar o material gerado pelo smoke sem depender de interpretacao verbal da entrega
 
+
+## Fluxos de negócio (smoke)
+
+Smokes devem ser associados a um fluxo do catálogo canônico em `quality/smoke-test-flows.md`.
+
+- Agents **não** inventam novos fluxos; só humanos autorizam mudanças no catálogo.
+- Ao criar/alterar smoke, declarar o fluxo (`fluxo: <id>`). Sem coerência → usar `outros`.
+- Ver a skill completa para o catálogo e regras de governança.
+
 ## Uso por papel
 
 - `Developer` usa esta skill antes de encerrar a propria entrega

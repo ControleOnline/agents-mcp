@@ -31,3 +31,7 @@ workers/            # execução (scripts, runners, automações)
 ## Nota
 
 Este repositório é a fonte canônica. Wrappers em `.github/agents/` devem permanecer finos e apontar para `agents/roles/*/agent.md`.
+
+## Configuracao do fork (obrigatoria)
+
+Leia **`config/ecosystem.config.json`** antes de executar agents ou workers. Veja `config/README.md`.

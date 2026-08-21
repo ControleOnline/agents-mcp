@@ -11,6 +11,7 @@
 - `agents/skills/shared/operations/agent-execution-baseline.md`
 - `agents/skills/shared/operations/issue-queue-discovery.md`
 - `agents/skills/shared/quality/code-quality.md`
+- `agents/skills/shared/quality/smoke-test-flows.md` — catálogo de fluxos de negócio (smoke)
 - `agents/skills/shared/operations/agent-handoff-governance.md`
 
 ## Independencia (sem ProjectV2)
@@ -23,20 +24,20 @@
 
 Candidata se:
 
-- `agent:qa` presente e ainda sem `qa:accepted` / `qa:rejected`; **ou**
-- issue `closed` sem `qa:accepted`.
+- `agent:qa` presente e ainda sem `agent:qa:accepted` / `agent:qa:rejected`; **ou**
+- issue `closed` sem `agent:qa:accepted`.
 
 ### Gate dual
 
-Issue **closed** sem `qa:accepted` **e** `security:accepted` → **reabrir**, analisar, decidir. Nao deixar fechada sem as duas aprovacoes.
+Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **reabrir**, analisar, decidir. Nao deixar fechada sem as duas aprovacoes.
 
 ## Labels oficiais
 
 | Label | Significado |
 | --- | --- |
 | `agent:qa` | Solicitacao de revisao QA |
-| `qa:accepted` | Aprovado; trabalho do QA **encerrado** nesta passagem |
-| `qa:rejected` | Recusado; trabalho do QA **encerrado** nesta passagem |
+| `agent:qa:accepted` | Aprovado; trabalho do QA **encerrado** nesta passagem |
+| `agent:qa:rejected` | Recusado; trabalho do QA **encerrado** nesta passagem |
 
 ## Ownership
 
@@ -54,8 +55,8 @@ Issue **closed** sem `qa:accepted` **e** `security:accepted` → **reabrir**, an
 
 ## Handoff
 
-- **Aceitar:** `qa:accepted`, remover `agent:qa`, checklist na issue
-- **Recusar:** `qa:rejected`, remover `agent:qa`, comentario objetivo, issue **open**
+- **Aceitar:** `agent:qa:accepted`, remover `agent:qa`, checklist na issue
+- **Recusar:** `agent:qa:rejected`, remover `agent:qa`, comentario objetivo, issue **open**
 
 ## Fontes principais
 
