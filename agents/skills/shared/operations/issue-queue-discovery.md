@@ -4,10 +4,13 @@ Skill compartilhada pelos agents documentais (`technical-documenter`, `tutorial-
 
 ## Objetivo
 
-A fonte primaria da fila sao **issues + labels** (e estado open/closed).
+Esta skill define o protocolo de descoberta e captura na fila para quando o prompt **não informar** qual tarefa deve ser executada.
 
-- **QA e Security:** podem selecionar e processar **varias** issues elegiveis na mesma execucao/rodada (cada uma com decisao e comentario completos).
-- **Demais papeis** (Developer, DevOps, Manager board, Documentacao, etc.): selecionar **exatamente uma** issue elegivel por execucao, salvo prompt ou fonte canonica do papel que ordene o contrario.
+- **Regra primordial:** se o prompt informar a tarefa a ser executada (`owner/repo#issue`, link, número ou escopo direto), o agent deve trabalhar **diretamente nessa tarefa** (validando a elegibilidade do papel), **sem buscar prioridade na fila**.
+- **Apenas se o prompt NÃO tiver informado qual a tarefa a ser executada:** o agent deve buscar e selecionar a próxima prioridade na fila seguindo as regras abaixo.
+- A fonte primaria da fila sao **issues + labels** (e estado open/closed).
+- **QA e Security:** quando buscando na fila, podem selecionar e processar **varias** issues elegiveis na mesma execucao/rodada (cada uma com decisao e comentario completos).
+- **Demais papeis** (Developer, DevOps, Manager board, Documentacao, etc.): selecionar **exatamente uma** issue elegivel por execucao quando buscando na fila, salvo prompt ou fonte canonica do papel que ordene o contrario.
 
 ## ProjectV2
 
@@ -26,6 +29,7 @@ Sempre que um agent **criar** uma issue/task **ou** abrir/atuar em uma PR:
 2. **Associe-a imediatamente** ao projeto `https://github.com/orgs/ControleOnline/projects/1/views/1` (ProjectV2 da org, number `1`) — **na mesma hora**.
 3. Defina o Status do item no board (`Ready` na entrada padrao, ou a coluna coerente com o estado real se ja houver ownership/etapa).
 4. Aplique as labels `agent:*` necessarias.
+5. **Label de página:** se a criação for a partir de erro/relato com URL ou tela identificável, aplique na mesma hora a label com o slug da página (ex.: `client-details`). Detalhe canônico: `agents/skills/shared/github/github-issue-handling.md` e `agents/skills/by-role/cto/github-backlog-task-creation.md`.
 
 Regras adicionais (todos os agents):
 
@@ -37,7 +41,7 @@ Regras adicionais (todos os agents):
 ## Outras regras
 
 - Nao processe mais de uma issue na mesma execucao **exceto QA e Security** (e salvo prompt ou fonte canonica do papel que ordene o contrario).
-- O agent pode **criar labels** oficiais ausentes no repositorio.
+- O agent pode **criar labels** oficiais ausentes no repositorio (incluindo labels de página no formato kebab-case do path).
 
 ## Fonte de verdade da fila
 
@@ -47,8 +51,8 @@ Regras adicionais (todos os agents):
 
 ## Descoberta
 
-1. Se o prompt definir `owner/repo` + numero da issue → trabalhe **somente** nela (ainda assim valide elegibilidade do papel).
-2. Se o prompt **nao** definir issue/repositorio:
+1. Se o prompt definir `owner/repo` + numero da issue (ou a tarefa a ser executada) → trabalhe **diretamente nela** (validando a elegibilidade do papel), sem varredura de fila.
+2. **Somente se o prompt NAO definir qual tarefa deve ser executada**:
    - busque issues em **todos** os repositorios da org `ControleOnline` (preferencialmente por label/estado);
    - se util, complemente com itens do Project #1;
    - filtre pelas regras de elegibilidade do papel;

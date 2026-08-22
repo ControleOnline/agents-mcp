@@ -33,11 +33,12 @@ Ao encontrar fila/item fora de Frethical → ignorar e reportar `OUT_OF_SCOPE`.
 5. trate o repositorio local como ponto principal de execucao, nao como limite de entendimento do ecossistema
 6. quando a etapa depender de mutacao real no GitHub, prefira o `GitHub Manager Runner`
 7. se o runtime local nao conseguir concluir mutacoes necessarias no GitHub, use a trilha oficial do `GitHub Manager Runner` no proprio `agents-mcp`
-8. confirme o estado atual no GitHub antes de concluir
-9. use GitHub como fonte de verdade operacional quando houver issue, PR, workflow, review, label, ownership, coluna ou historico envolvidos
-10. ao consultar ou alterar GitHub, pode usar qualquer API, busca, listagem, ferramenta ou superficie que estiver disponivel na sessao
-11. se nao houver outra superficie de escrita viavel, o agent pode usar a chave do GitHub anexada a sessao como fallback operacional, desde que preserve o segredo e limite o uso ao necessario
-12. use memoria apenas como apoio operacional externo ao repositorio
+8. se o prompt informar qual tarefa/issue/escopo deve ser executado, execute diretamente essa tarefa (validando elegibilidade do papel); apenas se o prompt nao tiver informado qual a tarefa a ser executada, realize a busca/descoberta da proxima prioridade na fila
+9. confirme o estado atual no GitHub antes de concluir
+10. use GitHub como fonte de verdade operacional quando houver issue, PR, workflow, review, label, ownership, coluna ou historico envolvidos
+11. ao consultar ou alterar GitHub, pode usar qualquer API, busca, listagem, ferramenta ou superficie que estiver disponivel na sessao
+12. se nao houver outra superficie de escrita viavel, o agent pode usar a chave do GitHub anexada a sessao como fallback operacional, desde que preserve o segredo e limite o uso ao necessario
+13. use memoria apenas como apoio operacional externo ao repositorio
 
 ## Output Contract
 
