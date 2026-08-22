@@ -30,10 +30,17 @@ A criacao da tarefa nao autoriza o CTO a implementar o produto no lugar do Devel
 9. exija reutilizacao de componentes padrao existentes quando o solicitante indicar um componente como `defaultTable` ou `defaultUpload`
 10. nao invente API, entidade, campo, label ou comportamento que nao tenha sido confirmado; registre pontos que dependem de descoberta tecnica
 11. aplique uma unica label de tipo a cada issue nova: `bug`, `enhancement` ou `feature`
-12. nunca atribua assignee
-13. **hands-on obrigatorio:** adicione cada issue ao ProjectV2 indicado (Project #1 da org) e defina o campo de status como `Ready` (ou coluna coerente); falha de associacao deve ser comentada na issue e nao e aceitavel como “feito”
-14. confirme por leitura final a URL da issue, o repositorio, a associacao ao projeto, o tipo e o status real no board
-15. ao concluir, entregue uma lista curta com cada tarefa criada ou reutilizada, seu link e confirmacao de que esta no Project #1
+12. **label de página (obrigatória quando identificável):** se o relato/solicitação informar URL ou tela, ou se for possível identificar a página, aplique na issue uma label com o slug da página
+    - extrair da URL o path principal (ex.: `https://staging.controleonline.com/client-details?clientId=15&...` → label `client-details`)
+    - se não houver URL, inferir pelo texto (“tela de detalhes do cliente”, “My Companies”, rota conhecida)
+    - formato: kebab-case; **sem** domínio, query string, hash ou IDs numéricos
+    - uma label de página por issue (página principal do erro/escopo)
+    - se a label ainda não existir no repositório, **criá-la**
+    - ausência de página identificável não bloqueia a criação; registre no corpo que a página não foi determinada
+13. nunca atribua assignee
+14. **hands-on obrigatorio:** adicione cada issue ao ProjectV2 indicado (Project #1 da org) e defina o campo de status como `Ready` (ou coluna coerente); falha de associacao deve ser comentada na issue e nao e aceitavel como “feito”
+15. confirme por leitura final a URL da issue, o repositorio, a associacao ao projeto, o tipo, a label de página (quando aplicável) e o status real no board
+16. ao concluir, entregue uma lista curta com cada tarefa criada ou reutilizada, seu link e confirmacao de que esta no Project #1
 
 ## Issue Template
 
@@ -84,6 +91,7 @@ Para migracao de listagem para `defaultTable`, a issue deve pedir explicitamente
 - nao criar duplicata sem pesquisar o historico
 - nao deixar issue apenas com URL e uma frase generica
 - nao deixar task nova sem label de tipo
+- nao deixar task nova com URL/tela identificável sem a label de página correspondente
 - nao declarar que o item esta no backlog sem confirmar a mutacao no ProjectV2
 - nao usar assignee como ownership
 - nao fechar issues; fechamento continua pertencendo apenas a humanos
