@@ -79,6 +79,17 @@ Exemplos:
 - **Nao** abrem PR; **nao** finalizam task; **nao** mexem em branches de integracao.
 - Recusa devolve prioridade ao Developer na mesma `task-{id_issue}` (corrigir e re-mergear em `dev`).
 
+### Label `on Staging` (obrigatório ao devolver de In Review)
+
+A label `on Staging` significa que o **delta da task** está confirmado no branch **`staging`**.
+
+Quando uma issue em **In Review** for identificada com **erro** e houver pedido de **refazer** (rework) e/ou movimentação para **Working** ou **Ready**:
+
+1. **Remover obrigatoriamente** a label `on Staging` na mesma ação (recusa, rework ou mudança de coluna).
+2. Motivo: o código **será alterado** e **deixa de ser** o delta que está em `staging`.
+3. A label `on Staging` **só pode voltar** quando o DevOps (ou o fluxo de RC/hotfix) **confirmar de novo** que o delta corrigido está presente em `staging`.
+4. Quem devolve (QA, Security, Manager ou Developer no handoff de correção) é responsável por remover a label — **não** deixar residual `on Staging` em task que voltou para implementação.
+
 ## DevOps — Release Candidate (RC)
 
 ### Entrada
@@ -261,3 +272,4 @@ master
 - nao pule etapa sem evidencia verificavel no GitHub
 - nao feche issue; `closed`/Done operacional segue o board e humanos conforme governanca
 - **nao** mova task de **Deploy** de volta para **In Review** (Manager / higiene); Deploy é terminal até DevOps promover para Done
+- ao **recusar**, pedir **rework** ou mover issue de **In Review** para **Working**/`Ready` por erro na entrega: **remover obrigatoriamente** a label `on Staging` (o delta em staging deixa de valer até nova confirmação)
