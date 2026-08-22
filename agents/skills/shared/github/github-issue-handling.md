@@ -123,6 +123,13 @@ Ao criar ou atualizar issues:
 - nao invente labels que nao existam (exceto a de página e demais labels oficiais do fluxo, que podem ser criadas quando ausentes)
 - se a lista de labels disponivel nao estiver clara para labels opcionais, siga sem label adicional em vez de presumir uma label inexistente
 
+### Label `on Staging`
+
+- Significa que o delta da task está confirmado no branch `staging`.
+- **Obrigatório remover** `on Staging` quando a issue em **In Review** for recusada, marcada para **rework** ou movida para **Working** / **Ready** por erro na entrega (o código será alterado e deixa de refletir o que está em `staging`).
+- A label só deve ser reaplicada após nova confirmação do delta em `staging` (fluxo DevOps / RC / hotfix).
+- Detalhe canônico do fluxo: `agents/skills/shared/github/github-flow.md`.
+
 ## Security Handling Inside GitHub
 
 Quando houver indicio de problema de seguranca:
@@ -155,4 +162,5 @@ Ao concluir, entregue um resumo operacional curto com:
 - nao exponha dados sensiveis
 - nao trate GitHub como substituto do estado real do ambiente
 - nao deixar issue nova com página/URL identificável sem a label de página
+- ao devolver issue de In Review para Working/Ready por erro/rework: remover a label `on Staging`
 - sempre mantenha tudo relacionado a GitHub centralizado nesta skill
