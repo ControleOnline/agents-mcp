@@ -13,6 +13,20 @@ Fonte canonica do fluxo de branches e entrega tecnica do ecossistema ControleOnl
 | `staging` | **Somente** o pacote RC do DevOps (versionamento semântico); dispara deploy para conferencia humana |
 | `task-{id_issue}` | Branch de trabalho do Developer |
 
+## Label `on Staging`
+
+A label GitHub **`on Staging`** indica **somente** que o **delta da task está presente no branch git `staging`** (pai e/ou submódulos relevantes), verificado no repositório.
+
+| Aplica | Não aplica |
+| --- | --- |
+| Após merge/cherry-pick/pin do delta no branch **`staging`** | Coluna do Project (`In Review`, `Deploy`, etc.) |
+| Evidência: commit/pin no branch `staging` | Ambiente URL (`staging.controleonline.com`) por si só |
+| | Branch `dev` ou `master` sem o delta em `staging` |
+
+**Regra:** aplicar **`on Staging` somente** quando a tarefa for para o branch **`staging`**. Não usar a label como sinônimo de “em homologação”, “In Review” ou “após Deploy”.
+
+Descrição canônica da label no GitHub: *Delta da task confirmado presente no branch staging*.
+
 ## Fluxo ponta a ponta
 
 ```text
