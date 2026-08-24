@@ -6,6 +6,7 @@ Estas listas sao o criterio de aprovacao que deve ser copiado para a task quando
 
 - limite de linhas e tamanho do componente estao coerentes com o escopo
 - componentes, hooks, services e helpers existentes foram reaproveitados quando possivel
+- subchecklist de reaproveitamento de componentes em `workers/automate/qa/component-reuse-checklist.md` foi executado quando a entrega afetar frontend
 - smoke tests foram executados ou seus resultados existentes foram lidos e validados quando a interface foi afetada (nao reexecutar se ja houver evidencia valida e atual)
 - a tela / fluxo afetado abre corretamente
 - a acao principal da tarefa foi realizada com sucesso (comportamento observado, nao apenas codigo)
