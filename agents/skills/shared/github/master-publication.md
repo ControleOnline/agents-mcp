@@ -15,15 +15,16 @@ Use esta skill quando `DevOps` for promover o **pacote RC** de `staging` para `m
 
 1. confirme o repositorio principal e os subprojetos em `.gitmodules`
 2. trate **`staging`** como origem da publicacao para **`master`**
-3. publique **primeiro cada submodulo** obrigatorio com delta, depois o projeto pai (gitlinks coerentes)
-4. para cada repositorio com delta real entre `staging` e `master`, faça o merge/promocao autorizada (`staging` → `master`); use PR apenas se a politica do repo exigir — o rito operacional e a promocao do pacote RC, nao PR de task de produto
-5. faca merge somente sem conflito e com a task pai em `Deploy`
-6. depois do merge, **confirme a versão numérica** já presente no pacote (`X.Y.N` em `package.json` e, se existir, `app.json` com `version` igual e `versionCode = MAJOR*10000 + MINOR*100 + PATCH`); **não** existe sufixo textual para remover; tags usam a mesma versão numérica
-7. confirme que `master` recebeu o commit esperado e que o push remoto aconteceu
-8. registre quais repositorios foram promovidos e quais ficaram bloqueados
-9. **obrigatório:** mova a **task pai e todas as filhas/subtasks** do inventário do RC para **`Done`** na mesma passagem (Project #1); não deixe filha atrás do pai
-10. **handoff de documentação (obrigatório no publish):** para **cada filha de produto** do inventário que ainda **não** tenha `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done`, aplique as labels de **solicitação** ausentes (`agent:technical-documenter` e/ou `agent:tutorial-assistant`). **Nunca** invente `:done`. Issues só de governança/docs (`agents-mcp` puro) e hotfixes sem delta de UI/API de produto podem ficar isentas com comentário de exceção estrutural. Comente no pai do RC a lista do que recebeu label de docs.
-11. se o projeto principal ficar com conflito, nao force update nem reescreva `master`; registre o bloqueio e pare na fronteira segura
+3. antes de promover qualquer versão, audite os deploys/workflows anteriores mais recentes de `staging` e `master` do projeto pai e dos submodulos obrigatorios; se algum estiver falho, cancelado, pendente, em andamento sem conclusão, ou sem evidência clara de sucesso, descubra a causa, corrija ou registre bloqueio concreto, e **pare sem publicar em `master`**
+4. publique **primeiro cada submodulo** obrigatorio com delta, depois o projeto pai (gitlinks coerentes)
+5. para cada repositorio com delta real entre `staging` e `master`, faça o merge/promocao autorizada (`staging` → `master`); use PR apenas se a politica do repo exigir — o rito operacional e a promocao do pacote RC, nao PR de task de produto
+6. faca merge somente sem conflito e com a task pai em `Deploy`
+7. depois do merge, **confirme a versão numérica** já presente no pacote (`X.Y.N` em `package.json` e, se existir, `app.json` com `version` igual e `versionCode = MAJOR*10000 + MINOR*100 + PATCH`); **não** existe sufixo textual para remover; tags usam a mesma versão numérica
+8. confirme que `master` recebeu o commit esperado e que o push remoto aconteceu
+9. registre quais repositorios foram promovidos e quais ficaram bloqueados
+10. **obrigatório:** mova a **task pai e todas as filhas/subtasks** do inventário do RC para **`Done`** na mesma passagem (Project #1); não deixe filha atrás do pai
+11. **handoff de documentação (obrigatório no publish):** para **cada filha de produto** do inventário que ainda **não** tenha `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done`, aplique as labels de **solicitação** ausentes (`agent:technical-documenter` e/ou `agent:tutorial-assistant`). **Nunca** invente `:done`. Issues só de governança/docs (`agents-mcp` puro) e hotfixes sem delta de UI/API de produto podem ficar isentas com comentário de exceção estrutural. Comente no pai do RC a lista do que recebeu label de docs.
+12. se o projeto principal ficar com conflito, nao force update nem reescreva `master`; registre o bloqueio e pare na fronteira segura
 
 ## Front Rule
 
@@ -64,6 +65,7 @@ Ao concluir, informe:
 ## Quality Bar
 
 - nao promova sem coluna `Deploy` na task pai
+- nao promova se os deploys anteriores de `staging`/`master` nao tiverem finalizado corretamente e com causa de falha resolvida
 - nao pule subprojetos obrigatorios
 - nao publique o projeto principal antes dos subprojetos
 - nao force ref em `master` para contornar conflito
