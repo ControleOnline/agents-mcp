@@ -8,52 +8,65 @@ Fonte única de verdade para associação de smokes a fluxos. Alterações no ca
 
 - **Somente humanos** autorizam inclusão, remoção ou alteração de fluxos neste catálogo.
 - Agents (Developer, QA, qualquer papel) **não inventam** novos fluxos.
-- Ao criar ou alterar um smoke test, o agent **deve declarar** o fluxo associado (um dos listados abaixo ou `Outros`).
-- Se o smoke não se encaixa em nenhum fluxo do catálogo, use o fluxo reservado **`Outros`**.
+- Ao criar ou alterar um smoke test, o agent **deve declarar** o fluxo associado (um dos listados abaixo ou `outros`).
+- Se o smoke não se encaixa em nenhum fluxo do catálogo, use o fluxo reservado **`outros`** e justifique na issue.
 - Esta skill deve ser lida por Developer, QA e qualquer papel que escreva ou valide smoke.
+- A wiki técnica do produto deve espelhar estes fluxos em:
+  - `https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows`
+  - `https://github.com/ControleOnline/api-community/wiki/Smoke-Test-Flows`
+
+## Gate obrigatório de evidência visual
+
+QA **não pode aprovar** smoke test de UI/browser se a evidência não cobrir o fluxo inteiro com prints/screenshot.
+
+Para cada smoke de UI/browser, a evidência mínima é:
+
+1. `fluxo: <id>` declarado no teste, manifesto, comentário ou evidência da issue.
+2. Lista de passos do fluxo executado.
+3. Print/screenshot de cada passo relevante, incluindo:
+   - estado inicial/tela de entrada;
+   - preenchimentos ou seleção de dados críticos;
+   - ação principal;
+   - feedback visual de sucesso, erro esperado ou estado final;
+   - qualquer transição que prove integração entre módulos.
+4. Artefatos persistidos em diretório de resultados do smoke, com manifesto ou resumo indicando o fluxo.
+5. Justificativa explícita quando um passo não puder gerar print por limitação técnica.
+
+Falta de prints por etapa, prints que não permitem reconstruir a jornada ou smoke sem fluxo declarado bloqueiam `agent:qa:accepted`.
 
 ## Catálogo oficial
 
-Cada entrada: `id` estável, papel (ator), nome legível.
+Cada entrada possui `id` estável, ator principal e nome legível.
 
-| id | papel | nome |
+| id | ator principal | nome |
 | --- | --- | --- |
-| `leilao-importacao-manual` | super admin | Importação de leilão manual |
-| `endereco-criacao` | embarcador | Criação de endereço |
-| `leilao-abertura` | embarcador | Abertura de leilão |
-| `leilao-antecipacao` | embarcador | Antecipação de leilão |
-| `leilao-inclusao-transportador` | transportador | Inclusão em leilão |
-| `oferta-voluntaria` | transportador | Oferta voluntária |
-| `transportador-suspensao` | embarcador | Suspensão de transportador |
-| `viagem-solicitacao-individual` | embarcador | Solicitação de viagem individual |
-| `viagem-solicitacao-lote` | embarcador | Solicitação de viagem em lote |
-| `viagem-aceite` | transportador | Aceite de viagem |
-| `viagem-recusa` | transportador | Recusa de viagem |
-| `motorista-cadastro` | transportador | Cadastro de motorista |
-| `veiculo-cadastro` | transportador | Cadastro de veículos/placas |
-| `motorista-placa-inclusao` | transportador | Inclusão de motorista/placas |
-| `outros` | qualquer | Outros (fallback — smoke sem coerência com fluxos acima) |
+| `produto-cadastro` | backoffice / gestor | Cadastro de produtos |
+| `compra-fluxo` | comprador / loja / POS | Compra |
+| `device-configuracao` | admin / operador | Configuração de devices |
+| `pedido-criacao` | vendedor / operador | Criação de pedido |
+| `producao-fluxo` | produção / operação | Produção |
+| `cliente-cadastro` | CRM / atendimento | Cadastro de cliente |
+| `usuario-permissao` | admin | Usuários, permissões e autenticação |
+| `financeiro-cobranca` | financeiro | Cobrança, pagamento e conciliação |
+| `logistica-entrega` | logística / entrega | Entrega e logística |
+| `relatorio-consulta` | gestor | Relatórios e consultas gerenciais |
+| `integracao-api` | sistema / API | Integração API entre módulos |
+| `outros` | qualquer | Outros (fallback com justificativa obrigatória) |
 
 ## Regras de uso
 
 1. Todo smoke novo ou alterado deve referenciar **exatamente um** `id` da tabela (preferir o mais específico).
 2. Preferir o fluxo de negócio real exercitado pelo teste; usar `outros` só quando não houver correspondência razoável.
-3. Em comentários de PR/issue, evidência de QA ou descrição do smoke, declarar: `fluxo: <id>`.
-4. Não criar aliases ou sub-fluxos sem atualização humana desta skill.
-5. Smokes de infraestrutura, login genérico, healthcheck ou UI pontual sem jornada de negócio → `outros`.
-
-## Papéis (atores)
-
-- **super admin**: operação de plataforma / importação / configuração global
-- **embarcador**: dono da carga / criador de leilão e solicitação de viagem
-- **transportador**: executor da viagem / oferta / motorista e frota
-- **qualquer**: fallback `outros`
+3. Em comentários de issue, evidência de QA ou descrição do smoke, declarar: `fluxo: <id>`.
+4. Não criar aliases, sub-fluxos ou nomes paralelos sem atualização humana desta skill.
+5. Smokes de infraestrutura, login genérico, healthcheck ou UI pontual sem jornada de negócio → `outros`, com justificativa objetiva.
+6. Testes espalhados por módulo devem ser encaixados em um manifesto por fluxo; o módulo/arquivo executado é detalhe de implementação.
 
 ## Relação com code-quality
 
-Smoke tests continuam obrigatórios conforme `quality/code-quality.md`. Esta skill **não** substitui a exigência de smoke; apenas padroniza a **classificação por fluxo de negócio**.
+Smoke tests continuam obrigatórios conforme `quality/code-quality.md`. Esta skill **não** substitui a exigência de smoke; padroniza a **classificação por fluxo de negócio** e torna obrigatório o gate de evidência visual completa.
 
 ## Fora de escopo desta skill
 
-- Implementação dos arquivos de teste (Playwright, etc.) nos repositórios de produto
-- Runners, workflows de CI ou inventário de arquivos de teste
+- Implementação dos arquivos de teste (Playwright, Postman, PHPUnit, etc.) nos repositórios de produto.
+- Runners, workflows de CI ou inventário de arquivos de teste.
