@@ -34,7 +34,8 @@ Se houver conflito entre um AGENTS local e esta skill para criterios de qualidad
 - a ausencia de teste automatizado adequado bloqueia a aprovacao de mudanca funcional
 - lint, testes e smoke devem ser executados ou explicitamente bloqueados com justificativa objetiva
 - o resultado da validacao deve ser descrito com o escopo real do que foi coberto
-- as capturas, prints, screenshots ou artefatos do smoke test devem ser guardados quando forem uteis para o `Documentor` transformar a validacao em documentacao para o cliente
+- em smoke test de UI/browser, as capturas, prints, screenshots ou artefatos devem cobrir **todo o fluxo** por etapa; evidencia parcial bloqueia QA
+- o manifesto ou comentario do smoke deve permitir reconstruir a jornada sem interpretacao verbal: `fluxo: <id>`, passos executados, prints por passo e resultado final
 - o `Documentor` deve conseguir reutilizar o material gerado pelo smoke sem depender de interpretacao verbal da entrega
 
 
@@ -44,6 +45,7 @@ Smokes devem ser associados a um fluxo do catálogo canônico em `quality/smoke-
 
 - Agents **não** inventam novos fluxos; só humanos autorizam mudanças no catálogo.
 - Ao criar/alterar smoke, declarar o fluxo (`fluxo: <id>`). Sem coerência → usar `outros`.
+- QA deve recusar smoke de UI/browser que não tenha prints/screenshot cobrindo todas as etapas relevantes do fluxo.
 - Ver a skill completa para o catálogo e regras de governança.
 
 ## Uso por papel
@@ -59,7 +61,7 @@ Uma entrega so avanca quando:
 - os arquivos e componentes ficaram pequenos o suficiente
 - os testes relevantes existem e passam, ou existe bloqueio externo documentado
 - os smoke tests existem para fluxos visiveis no browser
-- a evidência cobre o comportamento que mudou
+- a evidência cobre o comportamento que mudou e, quando houver UI/browser, contém prints por etapa do fluxo inteiro
 
 ## Sinais de rejeicao
 
@@ -67,6 +69,7 @@ Devolva a entrega quando:
 
 - faltar teste apropriado
 - faltar smoke test em mudanca de UI
+- smoke de UI/browser sem prints por etapa ou sem `fluxo: <id>`
 - houver componente ou arquivo grande demais sem quebra aceitavel
 - a mudanca duplicar contrato que ja existe em shared/store/component
 - a mudanca tornar o codigo mais centralizado, dificil de reaproveitar ou dificil de testar
