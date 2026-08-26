@@ -34,6 +34,25 @@ Para cada smoke de UI/browser, a evidência mínima é:
 
 Falta de prints por etapa, prints que não permitem reconstruir a jornada ou smoke sem fluxo declarado bloqueiam `agent:qa:accepted`.
 
+## Flowcharts publicados no admin (vínculo operacional)
+
+O catálogo desta skill **não substitui** os flowcharts do tenant admin. Soma-se a eles.
+
+Antes de dar `agent:qa:accepted` em smoke de UI dos produtos POS, SHOP, PPC, DELIVERY, CHECKOUT ou MANAGER, o QA **deve ler** os flowcharts habilitados:
+
+1. `GET https://api.controleonline.com/flowcharts` (e `/flowcharts/{id}` quando precisar do diagrama).
+2. Headers permitidos (token **nunca** no git): `api-token` e `app-domain: admin.controleonline.com`.
+3. Credencial: Drive `admin-api.json` (pasta de credenciais do ecossistema). Não colar o token em issue, PR, wiki ou arquivo versionado.
+4. UI de conferência: `https://admin.controleonline.com/admin/flowcharts/{id}`.
+
+O smoke só é aceito se:
+
+- declarar um ou mais `flowchartIds` **existentes e `enabled`** no admin;
+- tiver prints/screenshot de cada etapa relevante da jornada daquele flowchart;
+- continuar declarando `fluxo: <id>` deste catálogo.
+
+Smoke órfão (`fluxo: outros` **sem** `flowchartId` válido) em entrega de UI desses produtos **bloqueia** aceite. Comentário de recusa deve citar falta de flowchart ou falta de print por etapa.
+
 ## Catálogo oficial
 
 Cada entrada possui `id` estável, ator principal e nome legível.
