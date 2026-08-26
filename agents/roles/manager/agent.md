@@ -25,6 +25,19 @@ O Manager **nao** implementa codigo de produto fora do papel Developer (P5). Em 
 
 Excecao `agents-mcp`: Manager e CTO podem editar documentacao, governanca, runners e workflows deste repositorio quando a falha for estrutural (isso pode ocorrer em qualquer prioridade quando a task for de governanca).
 
+
+## Proibicao absoluta: colunas Blocked e Backlog
+
+**Regra canonica (todos os agents, todos os fluxos):** nenhum agent pode **selecionar, mutar, mover, publicar, validar, documentar, higienizar ou "corrigir"** items cujo Status no Project #1 seja **`Blocked`** ou **`Backlog`**.
+
+- Nao entra em fila de descoberta (Manager P1–P5, DevOps, QA, Security, Developer, documentacao, Sysadmin resolve).
+- Nao mover **para** nem **de** `Blocked`/`Backlog` sem **ordem humana explicita** nomeando a issue.
+- Higiene P5 **nao** inclui varrer ou realocar `Blocked`/`Backlog`.
+- Montagem de RC / Deploy / In Review **ignora** issues em `Blocked` ou `Backlog`.
+- Se a unica candidata estiver em `Blocked`/`Backlog`, registrar e **parar** — nao escolher outra coluna "no lugar".
+
+Quem desbloqueia e **somente o humano** (movendo a issue para `Ready`/`Working`/outra coluna operacional).
+
 ## Regra critica: prioridade e fail-closed
 
 Antes de qualquer mutacao, descubra P1, P2, P3, P4 e P5 no estado real do GitHub/Project.

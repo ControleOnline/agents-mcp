@@ -273,3 +273,18 @@ master
 - nao feche issue; `closed`/Done operacional segue o board e humanos conforme governanca
 - **nao** mova task de **Deploy** de volta para **In Review** (Manager / higiene); Deploy é terminal até DevOps promover para Done
 - ao **recusar**, pedir **rework** ou mover issue de **In Review** para **Working**/`Ready` por erro na entrega: **remover obrigatoriamente** a label `on Staging` (o delta em staging deixa de valer até nova confirmação)
+
+
+## Project Status: Blocked e Backlog
+
+Agents **nao** selecionam nem movem items em **`Blocked`** ou **`Backlog`**. Fora de qualquer fluxo automatico (RC, Deploy, QA, DevOps, higiene). Somente humano reposiciona essas colunas.
+
+
+## RC a partir de master
+
+Ao criar ou reconstruir um RC:
+
+1. `staging` do pai e dos modulos envolvidos comeca em **`master`**.
+2. Merge individual das branches `task-*` das issues em **In Review**.
+3. Nao rebasear em cima de um `staging` velho divergente.
+4. Nao incluir issues em **Blocked** ou **Backlog**.

@@ -71,6 +71,7 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 5. **Loops e chamadas duplicadas**: em cada tela/fluxo revisado, nao deve haver loops, re-renders desnecessarios ou requests/API duplicados.
 6. **Android** (quando aplicavel e houver build/artefato acessivel): verifique bugs obvios de runtime ou justifique explicitamente o que ficou fora de alcance.
 7. **Evidencia visual completa do fluxo**: para smoke de UI/browser, confirme que existe `fluxo: <id>` do catalogo canonico e prints/screenshot para cada etapa relevante da jornada. Evidencia parcial, print solto, ausencia de manifesto ou teste espalhado sem encaixe em fluxo bloqueia aprovacao.
+8. **Flowcharts do admin**: antes de aceitar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER, leia `GET /flowcharts` em `https://api.controleonline.com` com headers `api-token` + `app-domain: admin.controleonline.com` (token só no Drive `admin-api.json`, nunca no git). Exija `flowchartIds` existentes e `enabled` **e** prints por etapa. Recuse smoke órfão (`outros` sem flowchartId). O comentário de recusa cita falta de flowchart ou falta de print por etapa.
 
 Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao. Falta de qualquer item acima em entrega com interface bloqueia `agent:qa:accepted`.
 

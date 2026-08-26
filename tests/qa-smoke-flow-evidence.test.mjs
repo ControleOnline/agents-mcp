@@ -38,3 +38,21 @@ test('QA gate requires screenshots for every UI/browser smoke step', () => {
   assert.match(codeQuality, /evidencia parcial bloqueia QA/i);
   assert.match(qaAgent, /Evidencia visual completa do fluxo/i);
 });
+
+test('QA gate requires admin flowchartIds plus per-step prints', () => {
+  const qaReadme = fs.readFileSync('agents/skills/by-role/qa/README.md', 'utf8');
+
+  for (const source of [smokeFlows, codeQuality, qaAgent, qaReadme]) {
+    assert.match(source, /flowchartIds/);
+    assert.match(source, /\/flowcharts/);
+    assert.match(source, /prints? por etapa/i);
+  }
+
+  assert.match(smokeFlows, /api-token/);
+  assert.match(smokeFlows, /app-domain: admin\.controleonline\.com/);
+  assert.match(smokeFlows, /admin-api\.json/);
+  assert.match(smokeFlows, /nunca no git|Não colar o token/i);
+  assert.match(smokeFlows, /outros/);
+  assert.match(qaAgent, /falta de flowchart ou falta de print por etapa/);
+  assert.match(qaReadme, /falta de flowchart ou falta de print por etapa/);
+});
