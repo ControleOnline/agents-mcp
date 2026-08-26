@@ -29,6 +29,7 @@ Sempre que um agent **criar** uma issue/task **ou** abrir/atuar em uma PR:
 2. **Associe-a imediatamente** ao projeto `https://github.com/orgs/ControleOnline/projects/1/views/1` (ProjectV2 da org, number `1`) — **na mesma hora**.
 3. Defina o Status do item no board (`Ready` na entrada padrao, ou a coluna coerente com o estado real se ja houver ownership/etapa).
 4. Aplique as labels `agent:*` necessarias.
+5. **Label de página:** se a criação for a partir de erro/relato com URL ou tela identificável, aplique na mesma hora a label com o slug da página (ex.: `client-details`). Detalhe canônico: `agents/skills/shared/github/github-issue-handling.md` e `agents/skills/by-role/cto/github-backlog-task-creation.md`.
 
 Regras adicionais (todos os agents):
 
@@ -40,7 +41,7 @@ Regras adicionais (todos os agents):
 ## Outras regras
 
 - Nao processe mais de uma issue na mesma execucao **exceto QA e Security** (e salvo prompt ou fonte canonica do papel que ordene o contrario).
-- O agent pode **criar labels** oficiais ausentes no repositorio.
+- O agent pode **criar labels** oficiais ausentes no repositorio (incluindo labels de página no formato kebab-case do path).
 
 ## Fonte de verdade da fila
 
