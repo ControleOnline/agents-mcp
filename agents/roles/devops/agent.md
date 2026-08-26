@@ -66,15 +66,16 @@ Dentro do mesmo nivel: `createdAt` crescente; empate pelo menor numero da issue.
 
 Quando o humano mover a task pai para **`Deploy`**:
 
-1. Mesclar o pacote **`staging` → `master`** (pai + submodulos, ordem correta).
-2. Confirmar versão **numérica** já gravada (`X.Y.N` em `package.json` / `app.json`); não há sufixo textual para remover; confirmar push/tags.
-3. **Obrigatório:** mover a **task pai e todas as filhas/subtasks** do inventário do RC para a coluna **`Done`** na mesma passagem (Project #1). Não deixar filha em `Deploy`/`In Review`/`Working` após o pai em `Done`.
-4. **Handoff de documentação (obrigatório, fail-closed):** em **cada** filha/task do inventário **sem** `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done`, aplicar **sempre** as labels de solicitação ausentes (`agent:technical-documenter` e `agent:tutorial-assistant`). **Sem isenção** (produto, governança, hotfix — todas). Nunca inventar `:done`.
+1. **Auditar deploys anteriores antes de publicar:** conferir os workflows/deploys mais recentes de `staging` e `master` do pacote e de submodulos obrigatorios. Se algum deploy anterior ainda estiver em andamento, cancelado, falho ou sem conclusao verificavel, o DevOps deve descobrir a causa, corrigir ou registrar bloqueio concreto, e **nao** promover nova versão para `master` ate haver estado conclusivo e saudavel.
+2. Mesclar o pacote **`staging` → `master`** (pai + submodulos, ordem correta).
+3. Confirmar versão **numérica** já gravada (`X.Y.N` em `package.json` / `app.json`); não há sufixo textual para remover; confirmar push/tags.
+4. **Obrigatório:** mover a **task pai e todas as filhas/subtasks** do inventário do RC para a coluna **`Done`** na mesma passagem (Project #1). Não deixar filha em `Deploy`/`In Review`/`Working` após o pai em `Done`.
+5. **Handoff de documentação (obrigatório, fail-closed):** em **cada** filha/task do inventário **sem** `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done`, aplicar **sempre** as labels de solicitação ausentes (`agent:technical-documenter` e `agent:tutorial-assistant`). **Sem isenção** (produto, governança, hotfix — todas). Nunca inventar `:done`.
    - **Quem decide** se há documentação a produzir, o conteúdo e o `:done` é **somente** o documentador (`technical-documenter` / `tutorial-assistant`). O DevOps **não** decide isentar nem concluir documentação.
    - **Fail-closed:** não considere a publicação da filha concluída enquanto as solicitações de doc estiverem ausentes.
    - Preferir labels canônicas `agent:qa:accepted` / `agent:security:accepted`; se a issue só tiver aliases legados `qa:accepted` / `security:accepted`, trate-os como equivalentes e, ao atuar, adicione o par `agent:*` quando faltar.
    - Listar no comentário do pai do RC as filhas que receberam handoff de solicitação de doc.
-5. Próximo ciclo de RC, após produção na versão numérica publicada, inicia **nova** sequência na linha SemVer escolhida (ex.: após `1.5.1` em master → próximo feature `1.6.1` no package).
+6. Próximo ciclo de RC, após produção na versão numérica publicada, inicia **nova** sequência na linha SemVer escolhida (ex.: após `1.5.1` em master → próximo feature `1.6.1` no package).
 
 ## Proibicoes
 
@@ -82,5 +83,6 @@ Quando o humano mover a task pai para **`Deploy`**:
 - Nao incluir task **comum** sem o par de aprovacoes QA+Security (exceção: `hotfix` — dual-gate pode ser posterior à entrada em staging).
 - Nao injetar tasks comuns novas em RC ja freezeado (exceção: `hotfix`; dual-gate pode ser posterior; ainda assim passa por In Review + Deploy humano).
 - Nao implementar feature de produto no lugar do Developer.
+- Nao publicar nova versão se deploy anterior estiver falho, pendente, cancelado ou sem causa apurada.
 
 Fonte completa: `agents/skills/shared/github/github-flow.md`.

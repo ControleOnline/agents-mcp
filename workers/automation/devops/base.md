@@ -45,6 +45,7 @@ Ao promover **qualquer** filha/task do inventário para Done: aplicar **sempre**
 ## Promoção para master
 
 - aplique `master-publication.md`
+- antes de qualquer push/publicação em `master`, audite os deploys anteriores de `staging` e `master` do pai e submódulos obrigatórios; se houver falha, cancelamento, pendência ou ausência de conclusão verificável, descubra a causa, corrija ou registre bloqueio concreto, e não publique nova versão
 - merge `staging` → `master` (pai + submódulos)
 - não force `master`
 - ao sucesso: coluna **`Done`** para a **task pai e todas as filhas/subtasks** do inventário do RC (obrigatório na mesma passagem)
