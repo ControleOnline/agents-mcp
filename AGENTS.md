@@ -69,6 +69,31 @@ Distribuicao obrigatoria:
 - `agents/roles/*/agent.md` devem ficar enxutos e conter apenas ponto de entrada, papel, fronteiras e referencias obrigatorias
 - wrappers locais em `.github/agents/*.agent.md` devem ser finos e apontar para a fonte canonica e para o contexto local minimo
 
+## Documentação (navegação humana)
+
+| Categoria | Destino |
+| --- | --- |
+| Home deste repositório | este `AGENTS.md` + skills em `agents/skills/` |
+| Qualidade / smoke | [code-quality.md](agents/skills/shared/quality/code-quality.md) · [smoke-test-flows.md](agents/skills/shared/quality/smoke-test-flows.md) |
+| Espelho app (wiki) | https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows |
+| Espelho API (wiki) | https://github.com/ControleOnline/api-community/wiki/Fluxos-de-Smoke |
+| Governança documental | [documentation-governance.md](agents/skills/shared/documentation/documentation-governance.md) |
+
+### Por categoria — qualidade e smoke
+
+| Página | O que documenta |
+| --- | --- |
+| [smoke-test-flows.md](agents/skills/shared/quality/smoke-test-flows.md) | Catálogo canônico `fluxo: <id>`, gate de evidência visual completa (prints por etapa), regras de uso |
+| [code-quality.md](agents/skills/shared/quality/code-quality.md) | Limites de arquivo, testes, smoke obrigatório, evidência parcial bloqueia QA |
+| Teste de governança | `tests/qa-smoke-flow-evidence.test.mjs` |
+
+### Módulos relacionados
+
+| Módulo | Entrada |
+| --- | --- |
+| app-community | https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows |
+| api-community | https://github.com/ControleOnline/api-community/wiki/Fluxos-de-Smoke |
+
 ## Canal de execucao
 
 Os runners do GitHub deste repositorio estao desativados como canal operacional principal.

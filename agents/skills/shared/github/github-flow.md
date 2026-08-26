@@ -13,6 +13,20 @@ Fonte canonica do fluxo de branches e entrega tecnica do ecossistema ControleOnl
 | `staging` | **Somente** o pacote RC do DevOps (versionamento semântico); dispara deploy para conferencia humana |
 | `task-{id_issue}` | Branch de trabalho do Developer |
 
+## Label `on Staging`
+
+A label GitHub **`on Staging`** indica **somente** que o **delta da task está presente no branch git `staging`** (pai e/ou submódulos relevantes), verificado no repositório.
+
+| Aplica | Não aplica |
+| --- | --- |
+| Após merge/cherry-pick/pin do delta no branch **`staging`** | Coluna do Project (`In Review`, `Deploy`, etc.) |
+| Evidência: commit/pin no branch `staging` | Ambiente URL (`staging.controleonline.com`) por si só |
+| | Branch `dev` ou `master` sem o delta em `staging` |
+
+**Regra:** aplicar **`on Staging` somente** quando a tarefa for para o branch **`staging`**. Não usar a label como sinônimo de “em homologação”, “In Review” ou “após Deploy”.
+
+Descrição canônica da label no GitHub: *Delta da task confirmado presente no branch staging*.
+
 ## Fluxo ponta a ponta
 
 ```text
@@ -78,6 +92,17 @@ Exemplos:
 - Registram `agent:qa:accepted` / `agent:qa:rejected` e `agent:security:accepted` / `agent:security:rejected`.
 - **Nao** abrem PR; **nao** finalizam task; **nao** mexem em branches de integracao.
 - Recusa devolve prioridade ao Developer na mesma `task-{id_issue}` (corrigir e re-mergear em `dev`).
+
+### Label `on Staging` (obrigatório ao devolver de In Review)
+
+A label `on Staging` significa que o **delta da task** está confirmado no branch **`staging`**.
+
+Quando uma issue em **In Review** for identificada com **erro** e houver pedido de **refazer** (rework) e/ou movimentação para **Working** ou **Ready**:
+
+1. **Remover obrigatoriamente** a label `on Staging` na mesma ação (recusa, rework ou mudança de coluna).
+2. Motivo: o código **será alterado** e **deixa de ser** o delta que está em `staging`.
+3. A label `on Staging` **só pode voltar** quando o DevOps (ou o fluxo de RC/hotfix) **confirmar de novo** que o delta corrigido está presente em `staging`.
+4. Quem devolve (QA, Security, Manager ou Developer no handoff de correção) é responsável por remover a label — **não** deixar residual `on Staging` em task que voltou para implementação.
 
 ## DevOps — Release Candidate (RC)
 
@@ -261,3 +286,4 @@ master
 - nao pule etapa sem evidencia verificavel no GitHub
 - nao feche issue; `closed`/Done operacional segue o board e humanos conforme governanca
 - **nao** mova task de **Deploy** de volta para **In Review** (Manager / higiene); Deploy é terminal até DevOps promover para Done
+- ao **recusar**, pedir **rework** ou mover issue de **In Review** para **Working**/`Ready` por erro na entrega: **remover obrigatoriamente** a label `on Staging` (o delta em staging deixa de valer até nova confirmação)

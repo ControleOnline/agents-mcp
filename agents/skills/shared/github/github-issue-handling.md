@@ -112,10 +112,16 @@ Ao criar ou atualizar issues:
 
 - use tags compativeis com o papel responsavel pela proxima etapa
 - use uma label de tipo obrigatoria (`bug`, `enhancement` ou `feature`) em toda task nova
-- no backlog novo, use `agent:developer` como classificador de entrada;
+- no backlog novo, use `agent:developer` como classificador de entrada
 - combine labels de papel com labels de tipo de problema quando isso ajudar a triagem
-- nao invente labels que nao existam
-- se a lista de labels disponivel nao estiver clara, siga sem label adicional em vez de presumir uma label inexistente
+- **label de página (obrigatória quando identificável):** ao criar issue a partir de erro, relato ou URL de tela, aplique label com o slug da página
+  - URL: usar o segmento de path relevante (ex.: `/client-details?...` → `client-details`)
+  - sem URL: inferir pelo texto do relato quando possível
+  - kebab-case; sem domínio, query, hash ou IDs
+  - se a label não existir no repositório, criá-la (é permitido criar labels oficiais ausentes)
+  - se a página não for identificável, não inventar label; documentar no corpo
+- nao invente labels que nao existam (exceto a de página e demais labels oficiais do fluxo, que podem ser criadas quando ausentes)
+- se a lista de labels disponivel nao estiver clara para labels opcionais, siga sem label adicional em vez de presumir uma label inexistente
 
 ## Security Handling Inside GitHub
 
@@ -148,4 +154,5 @@ Ao concluir, entregue um resumo operacional curto com:
 - nao use a coluna `Security`
 - nao exponha dados sensiveis
 - nao trate GitHub como substituto do estado real do ambiente
+- nao deixar issue nova com página/URL identificável sem a label de página
 - sempre mantenha tudo relacionado a GitHub centralizado nesta skill
