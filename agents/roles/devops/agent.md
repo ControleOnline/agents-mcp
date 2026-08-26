@@ -43,6 +43,19 @@ Ordem:
 
 Dentro do mesmo nivel: `createdAt` crescente; empate pelo menor numero da issue.
 
+
+## Colunas proibidas
+
+**Blocked** e **Backlog** estao fora de todos os fluxos DevOps (descoberta, RC, freeze, Deploy, Done, higiene). Nao listar, nao mover, nao mesclar, nao "corrigir". So o humano tira issue dessas colunas.
+
+## Montagem correta do RC (trilha git)
+
+1. Partir de **`master`** (staging do pai e de cada modulo = `master` atual).
+2. Mesclar **somente** as `task-*` das issues que estao na coluna **In Review** (e dual-accepted, salvo hotfix).
+3. Conflito: abortar aquele merge, registrar no body do RC, seguir a proxima task.
+4. Gravacao numerica da versao no `package.json` / `app.json` e pins dos submodulos no pai.
+5. Nao usar o `staging` antigo divergente como base.
+
 ## Montagem do RC (quando nao ha RC aberto)
 
 1. Coletar **todas** as tasks com `agent:qa:accepted` **e** `agent:security:accepted` ainda fora de um RC.
@@ -78,6 +91,7 @@ Quando o humano mover a task pai para **`Deploy`**:
 - Nao criar segundo RC em paralelo.
 - Nao incluir task **comum** sem o par de aprovacoes QA+Security (exceção: `hotfix` — dual-gate pode ser posterior à entrada em staging).
 - Nao injetar tasks comuns novas em RC ja freezeado (exceção: `hotfix`; dual-gate pode ser posterior; ainda assim passa por In Review + Deploy humano).
+- Nao tocar colunas `Blocked` ou `Backlog` (proibicao absoluta).
 - Nao implementar feature de produto no lugar do Developer.
 - Nao publicar nova versão se deploy anterior estiver falho, pendente, cancelado ou sem causa apurada.
 

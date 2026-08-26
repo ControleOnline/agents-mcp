@@ -292,3 +292,13 @@ master
 ## Project Status: Blocked e Backlog
 
 Agents **nao** selecionam nem movem items em **`Blocked`** ou **`Backlog`**. Fora de qualquer fluxo automatico (RC, Deploy, QA, DevOps, higiene). Somente humano reposiciona essas colunas.
+
+
+## RC a partir de master
+
+Ao criar ou reconstruir um RC:
+
+1. `staging` do pai e dos modulos envolvidos comeca em **`master`**.
+2. Merge individual das branches `task-*` das issues em **In Review**.
+3. Nao rebasear em cima de um `staging` velho divergente.
+4. Nao incluir issues em **Blocked** ou **Backlog**.

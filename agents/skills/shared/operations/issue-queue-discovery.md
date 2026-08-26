@@ -44,6 +44,14 @@ Regras adicionais (todos os agents):
 - O agent pode **criar labels** oficiais ausentes no repositorio (incluindo labels de página no formato kebab-case do path).
 
 
+## Filtro obrigatorio de coluna (fail-closed)
+
+Antes de qualquer candidata:
+
+1. Leia o Status no Project #1.
+2. Se for **`Blocked`** ou **`Backlog`**: descarte. Nao comente, nao mova, nao valide, nao documente.
+3. RC/Deploy so considera **In Review** / **Deploy** / **Done** conforme o rito. Nunca varre Blocked/Backlog.
+
 ## Proibicao: Blocked e Backlog
 
 Issues com Status Project #1 **`Blocked`** ou **`Backlog`** **nao sao candidatas** em nenhum template de elegibilidade (Developer, QA, Security, DevOps, documentacao, Manager).
