@@ -1,3 +1,9 @@
+
+## Proibicao Blocked / Backlog
+
+Em **qualquer** prioridade (incluindo P5 higiene): **nao tocar** issues/PRs com Status **`Blocked`** ou **`Backlog`**. Nao mover, nao rotular "de passagem", nao incluir em RC. So humano tira de Blocked/Backlog.
+
+
 # Manager Skills
 
 ## Papel
