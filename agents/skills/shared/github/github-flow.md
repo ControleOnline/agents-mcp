@@ -261,7 +261,6 @@ master
 - nao pule etapa sem evidencia verificavel no GitHub
 - nao feche issue; `closed`/Done operacional segue o board e humanos conforme governanca
 - **nao** mova task de **Deploy** de volta para **In Review** (Manager / higiene); Deploy é terminal até DevOps promover para Done
-- ao **recusar**, pedir **rework** ou mover issue de **In Review** para **Working**/`Ready` por erro na entrega: **remover obrigatoriamente** a label `on Staging` (o delta em staging deixa de valer até nova confirmação)
 
 
 ## Project Status: Blocked e Backlog
