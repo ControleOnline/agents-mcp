@@ -16,6 +16,7 @@ Use esta skill quando `DevOps` for promover o **pacote RC** de `staging` para `m
 1. confirme o repositorio principal e os subprojetos em `.gitmodules`
 2. trate **`staging`** como origem da publicacao para **`master`**
 3. antes de promover qualquer versão, audite os deploys/workflows anteriores mais recentes de `staging` e `master` do projeto pai e dos submodulos obrigatorios; se algum estiver falho, cancelado, pendente, em andamento sem conclusão, ou sem evidência clara de sucesso, descubra a causa, corrija ou registre bloqueio concreto, e **pare sem publicar em `master`**
+   - **Smokes de browser/UI com problema:** quando a auditoria encontrar smoke falho que nao faca parte do delta imediato a publicar, nao transforme isso em comentario solto nem misture com a task de deploy/RC. Abra ou atualize uma issue tecnica separada no repositorio afetado, em `Ready`, com labels `hotfix` + `bug` + `agent:developer` (e label de pagina quando identificavel), referenciando o workflow/job/run, fluxo (`fluxo: <id>` ou `outros`) e resumo sanitizado da falha. A publicacao so permanece bloqueada se a falha provar que o pacote atual nao esta publicavel; caso contrario, a correcao fica para o fluxo paralelo do `Developer`.
 4. publique **primeiro cada submodulo** obrigatorio com delta, depois o projeto pai (gitlinks coerentes)
 5. para cada repositorio com delta real entre `staging` e `master`, faça o merge/promocao autorizada (`staging` → `master`); use PR apenas se a politica do repo exigir — o rito operacional e a promocao do pacote RC, nao PR de task de produto
 6. faca merge somente sem conflito e com a task pai em `Deploy`
@@ -66,6 +67,7 @@ Ao concluir, informe:
 
 - nao promova sem coluna `Deploy` na task pai
 - nao promova se os deploys anteriores de `staging`/`master` nao tiverem finalizado corretamente e com causa de falha resolvida
+- nao deixe smoke de browser/UI falho sem issue tecnica de follow-up em `Ready` com `hotfix` + `bug` + `agent:developer`
 - nao pule subprojetos obrigatorios
 - nao publique o projeto principal antes dos subprojetos
 - nao force ref em `master` para contornar conflito

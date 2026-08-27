@@ -11,6 +11,14 @@ const codeQuality = fs.readFileSync(
   'utf8',
 );
 const qaAgent = fs.readFileSync('agents/roles/qa/agent.md', 'utf8');
+const masterPublication = fs.readFileSync(
+  'agents/skills/shared/github/master-publication.md',
+  'utf8',
+);
+const githubIssueHandling = fs.readFileSync(
+  'agents/skills/shared/github/github-issue-handling.md',
+  'utf8',
+);
 
 test('canonical smoke flow catalog matches ControleOnline business flows', () => {
   for (const flowId of [
@@ -55,4 +63,20 @@ test('QA gate requires admin flowchartIds plus per-step prints', () => {
   assert.match(smokeFlows, /outros/);
   assert.match(qaAgent, /falta de flowchart ou falta de print por etapa/);
   assert.match(qaReadme, /falta de flowchart ou falta de print por etapa/);
+});
+
+test('browser smoke failures become developer follow-up tasks', () => {
+  for (const source of [codeQuality, masterPublication, githubIssueHandling]) {
+    assert.match(source, /smoke de browser\/UI|smokes de browser\/UI/i);
+    assert.match(source, /Ready/);
+    assert.match(source, /`hotfix`/);
+    assert.match(source, /`bug`/);
+    assert.match(source, /`agent:developer`/);
+    assert.match(source, /fluxo: <id>|`fluxo: <id>`/);
+    assert.match(source, /sanitizad[ao]|segredo|credenciais/i);
+  }
+
+  assert.match(masterPublication, /nao transforme isso em comentario solto/i);
+  assert.match(githubIssueHandling, /nao use assignee/i);
+  assert.match(githubIssueHandling, /fluxo e erro raiz/i);
 });

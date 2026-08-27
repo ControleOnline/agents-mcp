@@ -32,7 +32,7 @@ Excecao `agents-mcp`: Manager e CTO podem editar documentacao, governanca, runne
 
 Quem desbloqueia e **somente o humano** (movendo a issue para `Ready`/`Working`/outra coluna operacional).
 
-## Regra critica: prioridade e fail-closed
+## Regra critica: prioridade fail-closed
 
 Antes de qualquer mutacao, descubra P1, P2, P3 e P4 no estado real do GitHub/Project.
 
@@ -64,6 +64,8 @@ P2 continua obrigatorio **antes** de P3–P5 sempre que houver acao realmente ex
 ### P5
 
 P5 so pode iniciar depois de verificacao positiva de que:
+
+P5 so pode iniciar quando P1, P2, P3 e P4 estiverem vazias ou sem acao executavel conforme a excecao de gate humano de Deploy.
 
 - P1 esta vazia;
 - P2 nao possui acao **executavel** pelo runtime (fila vazia **ou** somente residual de gate humano de Deploy ja registrado);

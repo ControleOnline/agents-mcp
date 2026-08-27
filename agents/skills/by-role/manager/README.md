@@ -88,6 +88,8 @@ Falha critica de label/assignment/dispatch no worker deve falhar o job; nao deve
 
 Pre-condicao:
 
+P5 e proibida enquanto P1-P4 nao estiverem vazias ou sem acao executavel conforme a excecao de gate humano de Deploy.
+
 - P1 vazia;
 - P2 sem acao executavel (vazia **ou** somente gate humano de Deploy ja registrado na rodada);
 - P3 vazia;

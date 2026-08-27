@@ -49,6 +49,21 @@ Smokes devem ser associados a um fluxo do catálogo canônico em `quality/smoke-
 - QA deve recusar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER sem `flowchartIds` válido no admin (`GET /flowcharts`) ou sem prints por etapa.
 - Ver a skill completa para o catálogo e regras de governança.
 
+## Falhas de smoke encontradas fora da entrega atual
+
+Quando um agent encontrar smoke de browser/UI com problema durante auditoria de CI, publicacao, higiene ou validacao indireta, e a correcao nao pertencer claramente ao delta imediato em revisao, a falha deve virar issue tecnica de follow-up para o `Developer`.
+
+Regras obrigatorias:
+
+- abrir ou atualizar issue separada no repositorio afetado
+- colocar em `Ready`
+- aplicar labels `hotfix`, `bug` e `agent:developer`
+- declarar o smoke/fluxo afetado (`fluxo: <id>` ou `outros`)
+- referenciar run/job/workflow e branch/SHA com resumo sanitizado da falha
+- nao expor credenciais, headers sensiveis, dados reais ou logs brutos
+
+Esse follow-up nao substitui a recusa de QA quando a falha pertence ao delta em revisao; nesse caso, o QA continua devolvendo a task original ao `Developer`.
+
 ## Uso por papel
 
 - `Developer` usa esta skill antes de encerrar a propria entrega
