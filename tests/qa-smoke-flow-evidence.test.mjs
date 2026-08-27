@@ -19,6 +19,9 @@ const githubIssueHandling = fs.readFileSync(
   'agents/skills/shared/github/github-issue-handling.md',
   'utf8',
 );
+const qaReadme = fs.readFileSync('agents/skills/by-role/qa/README.md', 'utf8');
+const qaBase = fs.readFileSync('workers/automation/qa/base.md', 'utf8');
+const reviewChecklist = fs.readFileSync('workers/automate/review-checklists.md', 'utf8');
 
 test('canonical smoke flow catalog matches ControleOnline business flows', () => {
   for (const flowId of [
@@ -48,8 +51,6 @@ test('QA gate requires screenshots for every UI/browser smoke step', () => {
 });
 
 test('QA gate requires admin flowchartIds plus per-step prints', () => {
-  const qaReadme = fs.readFileSync('agents/skills/by-role/qa/README.md', 'utf8');
-
   for (const source of [smokeFlows, codeQuality, qaAgent, qaReadme]) {
     assert.match(source, /flowchartIds/);
     assert.match(source, /\/flowcharts/);
@@ -79,4 +80,16 @@ test('browser smoke failures become developer follow-up tasks', () => {
   assert.match(masterPublication, /nao transforme isso em comentario solto/i);
   assert.match(githubIssueHandling, /nao use assignee/i);
   assert.match(githubIssueHandling, /fluxo e erro raiz/i);
+});
+
+test('QA rejects when required tests did not run', () => {
+  for (const source of [qaAgent, qaReadme, qaBase, reviewChecklist]) {
+    assert.match(source, /testes obrigatorios do escopo/i);
+    assert.match(source, /agent:qa:rejected/);
+    assert.match(source, /Developer/);
+  }
+
+  assert.match(reviewChecklist, /se nao houver evidencia de execucao.*recusar imediatamente/is);
+  assert.match(qaAgent, /nao houver evidencia objetiva de execucao.*recusar imediatamente/is);
+  assert.match(qaBase, /sem prova de testes executados.*devolva para o `Developer`/is);
 });
