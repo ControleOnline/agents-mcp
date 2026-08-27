@@ -56,6 +56,7 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 - branch `task-{id}`, commits e **merge em `dev`** (nao em `staging` — `staging` e so o RC do DevOps)
 - comentarios, checklist e escopo da issue
 - testes/smoke quando houver interface
+- evidencia de que os testes obrigatorios do escopo rodaram antes da aprovacao
 - composicoes cross-repo quando a entrega atravessar modulos
 
 ### Verificacoes runtime/UI obrigatorias (quando houver interface ou fluxo visual)
@@ -70,6 +71,8 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 8. **Flowcharts do admin**: antes de aceitar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER, leia `GET /flowcharts` em `https://api.controleonline.com` com headers `api-token` + `app-domain: admin.controleonline.com` (token só no Drive `admin-api.json`, nunca no git). Exija `flowchartIds` existentes e `enabled` **e** prints por etapa. Recuse smoke órfão (`outros` sem flowchartId). O comentário de recusa cita falta de flowchart ou falta de print por etapa.
 
 Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao. Falta de qualquer item acima em entrega com interface bloqueia `agent:qa:accepted`.
+
+Se os testes obrigatorios do escopo nao rodaram, ou nao houver evidencia objetiva de execucao, o QA deve recusar imediatamente: aplicar `agent:qa:rejected`, manter/reabrir a issue `open`, comentar o que faltou e devolver para o `Developer` corrigir na `task-{id}`.
 
 ## Conclusao
 

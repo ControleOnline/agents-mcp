@@ -8,6 +8,7 @@ Estas listas sao o criterio de aprovacao que deve ser copiado para a task quando
 - componentes, hooks, services e helpers existentes foram reaproveitados quando possivel
 - subchecklist de reaproveitamento de componentes em `workers/automate/qa/component-reuse-checklist.md` foi executado quando a entrega afetar frontend
 - smoke tests foram executados ou seus resultados existentes foram lidos e validados quando a interface foi afetada (nao reexecutar se ja houver evidencia valida e atual)
+- testes obrigatorios do escopo foram executados antes da aprovacao; se nao houver evidencia de execucao, o QA deve recusar imediatamente (`agent:qa:rejected`), manter/reabrir a issue `open` e devolver para o `Developer`
 - a tela / fluxo afetado abre corretamente
 - a acao principal da tarefa foi realizada com sucesso (comportamento observado, nao apenas codigo)
 - nao ha erros/warnings relevantes no console do browser relacionados a entrega

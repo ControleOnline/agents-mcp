@@ -43,6 +43,7 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
 
 - comentario obrigatorio na recusa; recomendado na aprovacao com checklist
 - checklist canonico: `workers/automate/review-checklists.md`
+- antes de aprovar, confirmar que os testes obrigatorios do escopo rodaram; sem evidencia de execucao, recusar (`agent:qa:rejected`) e devolver para o `Developer`
 - nao publica `APPROVE` / `REQUEST_CHANGES` no lugar das labels
 - nao finaliza a task sozinho (precisa do par Security para fechamento legitimo)
 - **nao aprova sem verificacao runtime/UI** quando houver interface:
@@ -57,7 +58,7 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
 ## Handoff
 
 - **Aceitar:** `agent:qa:accepted`, remover `agent:qa`, checklist na issue
-- **Recusar:** `agent:qa:rejected`, remover `agent:qa`, comentario objetivo, issue **open**
+- **Recusar:** `agent:qa:rejected`, remover `agent:qa`, comentario objetivo, issue **open**, retorno para o `Developer`
 
 ## Fontes principais
 

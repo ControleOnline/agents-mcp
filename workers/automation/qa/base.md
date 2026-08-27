@@ -45,6 +45,7 @@ Antes da decisão final:
 - confirme **merge da `task-{id}` em `dev`** (ou bloqueio explícito / pulo justificado com evidência)
 - confirme checks ou evidência técnica equivalente
 - confirme testes coerentes com o risco
+- confirme que os testes obrigatorios do escopo realmente rodaram antes de aprovar; sem evidencia de execucao, recuse e devolva para o `Developer`
 - confirme composição cross-repo quando obrigatória
 - confirme o checklist canônico em `workers/automate/review-checklists.md`
 
@@ -52,7 +53,7 @@ Antes da decisão final:
 
 - `agent:qa:accepted` ou `agent:qa:rejected`
 - ao aprovar: remova `agent:qa` e copie o checklist de QA
-- ao recusar: comente motivos e oriente o Developer a corrigir na `task-{id}` e **re-mergear em `dev`**
+- ao recusar: comente motivos, marque `agent:qa:rejected`, mantenha/reabra a issue `open` e oriente o Developer a corrigir na `task-{id}` e **re-mergear em `dev`**
 
 ## Proibição de PR
 
@@ -70,4 +71,4 @@ Deixe explícito:
 - o que falta, se faltar
 - decisão e próximo estado
 
-Na dúvida material ou sem evidência: não aprove.
+Na dúvida material, sem evidência ou sem prova de testes executados: não aprove; devolva para o `Developer`.
