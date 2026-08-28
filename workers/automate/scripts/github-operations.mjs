@@ -262,6 +262,19 @@ async function getProjectMetadata(org, projectNumber) {
           }
           nodes {
             id
+            fieldValues(first:20) {
+              nodes {
+                ... on ProjectV2ItemFieldSingleSelectValue {
+                  name
+                  field {
+                    ... on ProjectV2SingleSelectField {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
+            }
             content {
               ... on Issue {
                 id
@@ -637,6 +650,40 @@ function statusMatches(status, allowedStatuses) {
   return allowedStatuses.some((entry) => entry.toLowerCase() === normalized);
 }
 
+function normalizeStatusName(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function hasHumanAuthorizedRcRemoval(input) {
+  const reason = String(input.rc_removal_reason || input.human_authorization_reason || '').trim();
+  return input.human_authorized_rc_removal === true && input.devops_rc_removal === true && reason.length > 0;
+}
+
+function assertAllowedProjectStatusTransition(item, input) {
+  const fromStatus = getStatusValue(item);
+  const from = normalizeStatusName(fromStatus);
+  const target = normalizeStatusName(input.target_status);
+
+  if (from !== 'in review' || ['in review', 'deploy', 'done'].includes(target)) {
+    return;
+  }
+
+  // In Review is the frozen RC/human-review package. Removing a task from it
+  // changes the RC inventory, so automation must fail closed unless DevOps is
+  // acting on an explicit human authorization and records the reason.
+  if (hasHumanAuthorizedRcRemoval(input)) {
+    return;
+  }
+
+  const issueRef = input.repo_full_name && input.issue_number
+    ? `${input.repo_full_name}#${input.issue_number}`
+    : input.item_id || 'unknown item';
+  throw new Error(
+    `Refusing ProjectV2 status transition ${fromStatus || 'In Review'} -> ${input.target_status} for ${issueRef}: ` +
+    'In Review is a frozen RC package/human-review column. Only DevOps may remove an item from the RC after explicit human authorization; provide human_authorized_rc_removal=true, devops_rc_removal=true and rc_removal_reason.'
+  );
+}
+
 function buildMissingProjectAuditSummary({
   org,
   projectNumber,
@@ -671,6 +718,7 @@ async function updateProjectStatus(input) {
   const statusField = getStatusField(project);
   const statusOption = getStatusOption(statusField, input.target_status);
   const item = await resolveProjectItem(project, input);
+  assertAllowedProjectStatusTransition(item, input);
 
   await githubGraphQL(
     `mutation($projectId:ID!, $itemId:ID!, $fieldId:ID!, $optionId:String!) {
@@ -698,6 +746,7 @@ async function updateProjectStatus(input) {
   return {
     project: { id: project.id, title: project.title, org: input.org, number: Number(input.project_number) },
     item_id: item.id,
+    previous_status: getStatusValue(item),
     target_status: input.target_status,
     repo_full_name: input.repo_full_name || item?.content?.repository?.nameWithOwner || null,
     issue_number: input.issue_number || item?.content?.number || null,

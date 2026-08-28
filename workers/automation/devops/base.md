@@ -29,6 +29,7 @@ Funções principais:
 - Ordem: submódulos primeiro, depois o pai (pins/gitlinks coerentes).
 - Task pai + subtasks no [Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1).
 - Coluna após montagem: **`In Review`** (pai e filhas).
+- `In Review` e o freeze do pacote: nenhuma automacao gerencial remove task dessa coluna. Quando uma remocao for necessaria, somente o `DevOps` pode ajustar o inventario/`staging` e mover a task, com autorizacao humana explicita e comentario registrando motivo e novo pacote.
 
 ## Regra de entrada em Deploy
 

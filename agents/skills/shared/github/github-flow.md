@@ -125,7 +125,9 @@ Exemplos:
 3. Colocar as tasks do pacote como **filhos/subtasks** da task pai (e/ou links bidirecionais claros issue pai ↔ filhas).
 4. Mover a **task pai e as filhas** para a coluna **`In Review`**.
 
-   Se o pacote ficar fora de `In Review` (pai/filhas ainda em Working/Ready), a **Prioridade 2 do Manager** (organizacao do board) corrige na proxima rodada — o humano precisa ver o pacote visualmente antes do Deploy. Dual-accepted **fora** do pacote (residual/conflito/regressao) **nao** vao para `In Review`.
+   Se o pacote ficar fora de `In Review` (pai/filhas ainda em Working/Ready), a **Prioridade 2 do Manager** (organizacao do board) corrige na proxima rodada colocando o item faltante em `In Review` — o humano precisa ver o pacote visualmente antes do Deploy. Dual-accepted **fora** do pacote (residual/conflito/regressao) **nao** vao para `In Review`.
+
+   **Protecao do freeze:** `In Review` e o pacote congelado do RC/hotfix em staging. Depois que uma task entra em `In Review`, nenhum Manager, higiene ou worker generico pode remove-la dessa coluna, devolver para `Working`/`Ready`, ou retira-la do inventario do RC automaticamente. Se uma task em `In Review` estiver rejeitada, conflitada ou indevida, o Manager deve registrar a evidencia e acionar `DevOps`; somente o `DevOps`, com autorizacao humana explicita, pode remover a task do RC e registrar o novo inventario/pacote em staging.
 5. Label operacional tipica na pai: `agent:devops` (ou manter ownership de deploy no board).
 
 ### Aprovacao humana e publicacao
@@ -146,6 +148,12 @@ Exemplos:
 - **Nenhum** agent (Manager P2/P6, higiene residual ou outro) pode mover task de **`Deploy`** de volta para **`In Review`**, Working ou Ready.
 - Única exceção: evidência explícita de rejeição humana (comentário objetivo + decisão documentada).
 - Enquanto a task pai estiver em `Deploy`, a próxima ação legítima é do **DevOps** (promover e ir para `Done`).
+
+**Proteção de coluna In Review (freeze):**
+- A coluna **`In Review`** é o sinal de que a task faz parte do pacote de RC/hotfix em staging e aguarda conferência humana.
+- **Nenhum** Manager, higiene residual ou worker genérico pode mover task de **`In Review`** para `Working`, `Ready`, `Backlog` ou `Blocked`, nem removê-la do inventário do RC automaticamente.
+- Única exceção: remoção conduzida pelo **DevOps**, com autorização humana explícita, comentário objetivo e novo inventário do RC registrado.
+- Rejeição de QA/Security após entrada em staging não autoriza o Manager a retirar a task do freeze; o caminho correto é handoff para DevOps decidir correção/reempacote/remocao autorizada.
 
 Detalhes de publicacao: `agents/skills/shared/github/master-publication.md`.
 

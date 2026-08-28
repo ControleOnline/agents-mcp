@@ -28,6 +28,7 @@
 - branch do pacote: **`staging`** (dispara deploy de conferencia)
 - task pai + subtasks no [Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1)
 - colunas: **`In Review`** (pacote montado) → humano → **`Deploy`** → merge em `master` → **`Done`**
+- `In Review` e freeze do pacote: remover uma task desta coluna altera o RC. So o `DevOps`, com autorizacao humana explicita e comentario de evidencia, pode retirar item do RC, ajustar `staging`/inventario e entao mover a task para a coluna coerente.
 - antes de publicar qualquer versão em `master`, auditar os deploys anteriores de `staging` e `master`; se algum não finalizou corretamente, descobrir o motivo e corrigir ou bloquear a publicação com evidência concreta
 
 ## Fontes principais

@@ -71,6 +71,17 @@ Dentro do mesmo nivel: `createdAt` crescente; empate pelo menor numero da issue.
 7. Criar **task pai** de deploy/RC com título operacional `RC X.Y.Z-rc.N`; ligar as tasks do pacote como **filhos/subtasks**; associar ao [Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1).
 8. Mover **task pai e filhas** para a coluna **`In Review`**.
 
+## Remocao de task do RC / In Review
+
+`In Review` significa pacote de RC/hotfix em freeze e ja exposto para conferencia humana em staging. Manager, higiene e workers genericos nao podem retirar item dessa coluna.
+
+Quando o Manager detectar que uma task em `In Review` esta rejeitada, conflitada ou indevida, ele deve acionar `agent:devops` com evidencia. O `DevOps` so pode remover a task do RC quando houver autorizacao humana explicita; nesse caso deve:
+
+1. registrar a autorizacao e o motivo no pai do RC e na task removida;
+2. ajustar o inventario do RC e, quando necessario, o pacote em `staging`;
+3. mover a task para a coluna coerente somente depois do ajuste;
+4. comentar o novo inventario final do RC.
+
 ## Publicacao (coluna Deploy)
 
 Quando o humano mover a task pai para **`Deploy`**:

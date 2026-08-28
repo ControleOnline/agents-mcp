@@ -52,7 +52,21 @@ Quando P2 tem RC aberto e a unica barreira e aprovacao humana (item em `Deploy` 
 - **continue** para P3 → P4 → P5 na mesma rodada se houver trabalho elegivel e executavel;
 - nao trate esse estado como “P2 vazia” no relato, mas tambem **nao** use-o para bloquear documentacao, validadores ou higiene.
 
-P2 ainda deve ser tentado **antes** de P3–P5 sempre que houver acao executavel (criar RC, publicar apos aprovacao humana explicita, alinhar In Review).
+P2 ainda deve ser tentado **antes** de P3–P5 sempre que houver acao executavel (criar RC, publicar apos aprovacao humana explicita, alinhar In Review adicionando itens faltantes ao pacote).
+
+### Protecao de In Review / freeze de RC
+
+`In Review` e o pacote de RC em freeze para conferencia humana. Depois que pai, filha ou hotfix entram em `In Review`, o Manager **nao pode** remover o item dessa coluna, devolver para `Working`/`Ready`, nem excluir do inventario do RC por higiene.
+
+Se houver indicio de item indevido, rejeitado, conflitado ou fora do pacote desejado:
+
+1. nao mova a task de `In Review`;
+2. registre a evidencia no pai do RC e na task afetada;
+3. aplique/encaminhe `agent:devops`;
+4. deixe o `DevOps` revisar `staging` e o inventario do RC;
+5. somente com autorizacao humana explicita o `DevOps` pode remover a task do RC e registrar o novo inventario.
+
+Transicoes normais a partir de `In Review`: humano move para `Deploy`; DevOps move para `Done` apos publicacao; ou DevOps remove do RC com autorizacao humana documentada. `In Review` nunca e fila generica de QA/Security.
 
 ## Agendamentos Manager: Codex, Grok e equivalentes
 
@@ -101,6 +115,7 @@ Quando essa pre-condicao for verdadeira, audite:
 
 - **Issues e PRs fora do Project #1 (obrigatorio):** **tudo** opera no Project #1. Qualquer issue `open` ou PR `open` do escopo operacional **sem item no board** deve ser **associada na mesma hora** (mesma correcao atomica); Status padrao `Ready` (ou coluna coerente). Falha de API/permissao deve ser comentada no item — nunca silenciosa. P5 e rede de seguranca; a obrigacao hands-on vale para todos os agents.
 - RC aberto: pai + filhas devem estar em `In Review`, exceto itens ja em `Deploy`.
+- RC em freeze: nao remova item de `In Review` nem devolva para `Working`/`Ready`; encaminhe a remocao/correcao para `DevOps` com autorizacao humana.
 - Nunca regredir `Deploy` sem evidencia explicita de rejeicao humana.
 - Dual-accepted limpo sem RC deve voltar para P2, nao ser resolvido por higiene.
 - Dual-accepted fora do freeze precisa de bloqueio objetivo documentado.

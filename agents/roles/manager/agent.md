@@ -59,7 +59,20 @@ P2 continua obrigatorio **antes** de P3–P5 sempre que houver acao realmente ex
 
 - publicar release ja aprovada em Deploy;
 - criar RC quando houver dual-accepted limpo e nenhum RC em andamento;
-- alinhar board do RC aberto (pai + filhas em `In Review`, sem regredir Deploy).
+- alinhar board do RC aberto colocando pai + filhas faltantes em `In Review`, sem remover itens ja em `In Review` e sem regredir Deploy.
+
+### Protecao de In Review / freeze de RC
+
+`In Review` significa pacote de RC em freeze aguardando conferencia humana. Depois que uma task esta em `In Review` como parte de um RC ou hotfix em staging, **nenhum Manager, higiene ou worker generico pode remove-la dessa coluna, devolve-la para `Working`/`Ready`, ou exclui-la do pacote automaticamente**.
+
+Se o Manager encontrar item em `In Review` que parece incorreto, rejeitado, conflitado ou fora do inventario desejado:
+
+1. nao mova o item;
+2. comente a evidencia no pai do RC e na task afetada;
+3. aplique/encaminhe handoff `agent:devops`;
+4. o `DevOps` deve validar o pacote em `staging`, atualizar/remover a task do inventario do RC somente com autorizacao humana explicita, e entao registrar o novo inventario.
+
+A unica transicao automatica normal a partir de `In Review` e a humana para `Deploy` ou a publicacao final para `Done` pelo DevOps. Remocao de item do freeze exige decisao humana documentada.
 
 ### P5
 
@@ -97,7 +110,7 @@ A implementacao de produto pelo Developer continua no fluxo paralelo. Hotfix nao
 1. Publique release aprovada em Deploy, se houver.
 2. Senao, crie RC quando houver tasks com `agent:qa:accepted` + `agent:security:accepted` limpas e nenhum RC em andamento.
 3. Ao criar RC, pai + filhas entram em `In Review` imediatamente.
-4. Alinhe board de RC ja aberto (In Review / freeze) quando houver desvio corrigivel pelo agent.
+4. Alinhe board de RC ja aberto adicionando pai/filhas faltantes a `In Review` quando houver desvio corrigivel pelo agent. Nao remova task de `In Review` durante freeze; se houver item indevido, encaminhe para DevOps com evidencia e aguarde autorizacao humana para remover do RC.
 5. Se a unica barreira for gate humano de Deploy, registre `P2_SKIPPED_HUMAN_DEPLOY` e **nao** trate isso como fail-closed da rodada — avance para P3–P5.
 6. Se a acao elegivel de P2 for executavel e falhar por erro operacional, documente o bloqueio e encerre em P2 (fail-closed operacional).
 

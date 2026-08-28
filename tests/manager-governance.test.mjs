@@ -5,6 +5,9 @@ import test from 'node:test';
 const managerSkill = fs.readFileSync('agents/skills/by-role/manager/README.md', 'utf8');
 const managerAgent = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
 const workerDoc = fs.readFileSync('agents/skills/shared/operations/manager-worker-copilot.md', 'utf8');
+const githubFlow = fs.readFileSync('agents/skills/shared/github/github-flow.md', 'utf8');
+const githubOperations = fs.readFileSync('workers/automate/scripts/github-operations.mjs', 'utf8');
+const githubOperationsDoc = fs.readFileSync('workers/automate/github-operations.md', 'utf8');
 const qaWorker = fs.readFileSync('.github/actions/workers/qa/action.yml', 'utf8');
 const securityWorker = fs.readFileSync('.github/actions/workers/security/action.yml', 'utf8');
 
@@ -53,4 +56,20 @@ test('closed and Done tasks require the complete four-label contract', () => {
 test('queue ordering is oldest first and never updatedAt', () => {
   assert.match(managerAgent, /createdAt.*crescente/i);
   assert.match(managerAgent, /updatedAt.*nunca.*orden/i);
+});
+
+test('In Review is protected as frozen RC inventory', () => {
+  assert.match(managerAgent, /In Review.*pacote de RC em freeze/is);
+  assert.match(managerAgent, /nao.*devolv[a-z-]* para `Working`\/`Ready`/is);
+  assert.match(managerSkill, /In Review.*pacote de RC em freeze/is);
+  assert.match(githubFlow, /Prote[cç][aã]o de coluna In Review/is);
+  assert.match(githubFlow, /somente o `DevOps`, com autorizacao humana explicita/is);
+});
+
+test('generic project_status runner refuses automatic In Review removal', () => {
+  assert.match(githubOperations, /function assertAllowedProjectStatusTransition/);
+  assert.match(githubOperations, /from !== 'in review'/);
+  assert.match(githubOperations, /human_authorized_rc_removal=true/);
+  assert.match(githubOperationsDoc, /Protecao de freeze/i);
+  assert.match(githubOperationsDoc, /recusa `In Review` → `Working`\/`Ready`/i);
 });

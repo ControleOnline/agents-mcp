@@ -196,6 +196,8 @@ Candidata se **qualquer** for verdadeira:
 3. montagem de RC: existe dual-accepted (`agent:qa:accepted` + `agent:security:accepted`) limpo e **nenhum** RC aberto;
 4. handoff DevOps: issue com label **`agent:devops`** **ou** **qualquer** PR `open` marcada/encaminhada para DevOps (label `agent:devops`, vinculo a issue `agent:devops`, ou PR solta sem handoff apos higiene). Se a PR **nao** estiver no Project #1, **associar na mesma hora** antes ou junto da decisao.
 
+Desvio de RC aberto que envolve **remover** item de `In Review` nao e higiene nem correcao automatica de board. `In Review` e freeze do pacote; somente `DevOps`, com autorizacao humana explicita, pode retirar a task do RC, ajustar `staging`/inventario e mover a coluna depois de registrar evidencia.
+
 Nao candidata se a acao pertencer exclusivamente a Developer/QA/Security sem handoff DevOps, ou se o unico bloqueio for gate humano de Deploy ja documentado sem acao executavel pelo agent.
 
 Ordem de prioridade do `DevOps` (uma issue/acao por execucao, salvo fonte canonica que permita lote no mesmo RC):
