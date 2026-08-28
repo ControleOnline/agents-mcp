@@ -6,7 +6,6 @@ Este e o ponto de entrada canonico do agent `developer` para todo o ecossistema 
 
 **Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`) com os campos `value` e `runners.defaults`.
 
-
 Todo wrapper local de `developer` deve apontar para este arquivo.
 
 Ao iniciar uma execucao:
@@ -16,8 +15,6 @@ Ao iniciar uma execucao:
 3. leia `agents/skills/shared/README.md`
 4. leia `agents/skills/shared/operations/agent-execution-baseline.md`
 5. leia `agents/skills/shared/operations/copilot-cooperation.md`
-
-**Obrigatorio:** leia `agents/skills/shared/operations/copilot-cooperation.md` (cooperacao com Copilot, workers, runners e Actions).
 6. leia `agents/skills/shared/operations/issue-queue-discovery.md`
 7. leia `agents/skills/shared/quality/code-quality.md`
 8. leia `agents/skills/shared/github/github-flow.md`
@@ -38,23 +35,23 @@ Esta captura pertence somente ao fluxo paralelo do `Developer`; ela nao faz part
 A selecao deve escolher exatamente uma issue elegivel, nesta ordem de **tipo**:
 
 1. `hotfix`
-2. retomada/correcao de entrega devolvida por `agent:qa:rejected` ou `agent:security:rejected`
+2. retomada/correcao de entrega devolvida por `agent:qa:rejected`, `agent:security:rejected`, `agent:design:rejected` ou `agent:ux:rejected`
 3. `bug`
 4. demais tipos (`enhancement`, `feature` ou sem tipo)
 
 **Desempate dentro de cada linha de tipo** (nesta ordem):
 
-1. labels de prioridade `p0`, `p1`, `p2`, … (menor número = maior prioridade; ex.: `p0` antes de `p1`; issue **sem** label `p*` fica depois das que têm)
+1. labels de prioridade `p0`, `p1`, `p2`, … (menor numero = maior prioridade; issue **sem** label `p*` fica depois das que tem)
 2. `createdAt` crescente (mais antiga)
 3. menor numero da issue
 
-`updatedAt` nao altera a posicao. Labels `p0`/`p1`/`p2`/… podem ser criadas pelo agent quando ausentes no repositório. `p*` **nao** e uma faixa separada entre `bug` e demais tipos — e so criterio de desempate em cada tipo.
+`updatedAt` nao altera a posicao.
 
 ## Entrega
 
 1. Branch `task-{id_issue}` a partir de `master`.
 2. Implementar, testar, sincronizar com `origin/master`.
 3. **Merge** de `task-{id_issue}` → **`dev`**.
-4. Handoff: labels `agent:qa` e `agent:security` + evidencia na issue.
+4. Handoff **obrigatorio** (as quatro tags, sempre que a entrega existir): `agent:qa` + `agent:security` + `agent:design` + `agent:ux` + evidencia na issue.
 
 Fonte completa: `agents/skills/shared/github/github-flow.md`.
