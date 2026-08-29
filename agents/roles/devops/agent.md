@@ -30,7 +30,7 @@ O `DevOps` opera **integracao continua por task** (nao empacota Release Candidat
 
 Sao **duas funcoes**, nesta ordem (master **antes** de staging):
 
-1. **Master:** task na coluna **`Deploy`** entra **sozinha** em `master`. Merge do delta (`staging` / `task-{id}`) → `master` (pai + submodulos), coluna `Done`, handoff de documentacao se faltar `:done`.
+1. **Master:** todas as tasks na coluna **`Deploy`** entram **sozinhas** em `master`, uma a uma. Merge do delta (`staging` / `task-{id}`) → `master` (pai + submodulos), coluna `Done`, handoff de documentacao se faltar `:done`.
 2. **Staging:** tudo que tiver os **4 accepts** (`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`) e ainda estiver fora de `staging` / `In Review`. Merge **somente** `task-{id}` → `staging` e move a task para **`In Review`**.
 
 Promocao de `hotfix` → staging fica na **P2** do Manager, nao nesta captura P1.
@@ -45,7 +45,7 @@ Comentar sem merge/mutacao **nao** conclui a funcao se a promocao ainda era exec
 Ordem (nao inverter):
 
 1. publicacao executavel em **`Deploy`** → `master`
-2. task quadruplo-accepted ainda fora de `staging` / `In Review` — promover a staging
+2. todas as tasks quadruplo-accepted ainda fora de `staging` / `In Review` — promover a staging
 3. PRs/issues com `agent:devops` que ainda tenham acao de merge/alinhamento (exceto fila `hotfix`, que e P2)
 
 Dentro do mesmo nivel: `createdAt` crescente; empate pelo menor numero.

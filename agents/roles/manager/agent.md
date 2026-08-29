@@ -52,8 +52,8 @@ Registre `P1_SKIPPED_HUMAN_DEPLOY` (alias aceito: `P2_SKIPPED_HUMAN_DEPLOY`) e c
 
 P1 executavel (ordem fixa — master antes de staging):
 
-1. publicar task ja aprovada em **Deploy** → `master` (delta sozinho, sem RC);
-2. senao, promover task com **quatro** `:accepted` (QA + Security + Design + UX) para `staging` + coluna `In Review`.
+1. publicar todas as tasks ja aprovadas em **Deploy** → `master` (deltas individuais, sem RC);
+2. senao, promover todas as tasks com **quatro** `:accepted` (QA + Security + Design + UX) para `staging` + coluna `In Review`.
 
 Hotfix **nao** entra nesta prioridade. Hotfix e P2.
 
@@ -71,8 +71,8 @@ P5 so inicia quando P1 vazia (ou so gate humano), P2 vazia, P3 vazia, e P4 sem Q
 
 DevOps e **sempre o primeiro**. Duas funcoes, nesta ordem:
 
-1. Publique task em `Deploy` → `master` (CI, uma task).
-2. Senao, promova task quadruplo-accepted → `staging` + `In Review`.
+1. Publique todas as tasks em `Deploy` → `master` (CI, deltas individuais).
+2. Senao, promova todas as tasks quadruplo-accepted → `staging` + `In Review`.
 3. Nao crie task pai de RC.
 4. Se so houver gate humano, `P1_SKIPPED_HUMAN_DEPLOY` e avance para P2 (hotfix).
 

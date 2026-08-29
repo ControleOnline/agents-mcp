@@ -4,6 +4,8 @@ import test from 'node:test';
 
 const managerSkill = fs.readFileSync('agents/skills/by-role/manager/README.md', 'utf8');
 const managerAgent = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
+const devopsAgent = fs.readFileSync('agents/roles/devops/agent.md', 'utf8');
+const devopsSkill = fs.readFileSync('agents/skills/by-role/devops/README.md', 'utf8');
 const workerDoc = fs.readFileSync('agents/skills/shared/operations/manager-worker-copilot.md', 'utf8');
 const githubFlow = fs.readFileSync('agents/skills/shared/github/github-flow.md', 'utf8');
 const githubOperations = fs.readFileSync('workers/automate/scripts/github-operations.mjs', 'utf8');
@@ -21,9 +23,27 @@ const completionLabels = [
 
 test('manager is fail-closed before hygiene', () => {
   assert.match(managerAgent, /prioridade fail-closed/i);
-  assert.match(managerAgent, /P5 so inicia quando P1 vazia.*P2 sem acao executavel.*P3 vazia.*P4 sem/is);
-  assert.match(managerAgent, /Nao use higiene como fallback/i);
+  assert.match(managerAgent, /P5 so inicia quando P1 vazia.*P2 vazia.*P3 vazia.*P4 sem/is);
+  assert.match(managerAgent, /Nao use higiene nem documentacao de produto como fallback/i);
   assert.match(managerSkill, /P5 permanece bloqueada/i);
+});
+
+test('manager priority keeps DevOps before Hotfix', () => {
+  const p1 = managerAgent.indexOf('## Prioridade 1 - DevOps');
+  const p2 = managerAgent.indexOf('## Prioridade 2 - Hotfix');
+  const deployFirst = devopsAgent.indexOf('1. publicacao executavel em **`Deploy`**');
+  const stagingSecond = devopsAgent.indexOf('2. todas as tasks quadruplo-accepted');
+
+  assert.ok(p1 >= 0, 'manager P1 must be DevOps');
+  assert.ok(p2 > p1, 'manager P2 must be Hotfix after DevOps');
+  assert.match(managerAgent, /Publique todas as tasks em `Deploy` → `master`/);
+  assert.match(managerAgent, /promova todas as tasks quadruplo-accepted → `staging`/);
+  assert.ok(deployFirst >= 0, 'DevOps must publish Deploy first');
+  assert.ok(stagingSecond > deployFirst, 'DevOps must promote four-accepted work to staging after Deploy');
+  assert.doesNotMatch(managerAgent, /hotfix.*prioridade absoluta/is);
+  assert.match(managerSkill, /1\. \*\*DevOps\*/);
+  assert.match(managerSkill, /2\. \*\*Hotfix\*/);
+  assert.match(devopsSkill, /`Deploy` → `master`; depois quarteto → `staging`; por ultimo PRs\/issues `agent:devops`/);
 });
 
 test('scheduled managers recover global backlog independently of push', () => {
@@ -83,8 +103,8 @@ test('Blocked and Backlog are human-only columns for agents and workers', () => 
   const ctoSupervisor = fs.readFileSync('workers/automate/scripts/cto-project-supervisor.mjs', 'utf8');
   const directPushIngest = fs.readFileSync('workers/src/direct-push-ingest.js', 'utf8');
 
-  assert.match(managerAgent, /Nenhum agent pode selecionar, mutar, mover, publicar, validar, documentar ou higienizar/i);
-  assert.match(managerSkill, /qualquer.*prioridade.*nao tocar.*Blocked.*Backlog/is);
+  assert.match(managerAgent, /Nenhum agent seleciona a coluna \*\*`Blocked`\*\* ou \*\*`Backlog`\*\* como fila normal/i);
+  assert.match(managerSkill, /qualquer.*prioridade.*nao usar.*Blocked.*Backlog/is);
   assert.match(workerDoc, /se a issue resolvida ja estiver.*Blocked.*Backlog.*nao despachar/is);
   assert.match(managerWorker, /blocked\|backlog/i);
   assert.match(managerWorker, /run_qa=false/);

@@ -14,7 +14,7 @@ Toda rodada **executa**. Documentacao de produto nao e fallback enquanto P1/P2/P
 
 Ordem resumida:
 
-1. **DevOps** - sempre primeiro. Publicar item em `Deploy` para `master`; se nao houver, promover task quadruplo-accepted para `staging` + `In Review`. Gate humano de Deploy **nao** encerra a rodada. **Nao montar RC.**
+1. **DevOps** - sempre primeiro. Publicar todos os itens em `Deploy` para `master`; se nao houver, promover todas as tasks quadruplo-accepted para `staging` + `In Review`. Gate humano de Deploy **nao** encerra a rodada. **Nao montar RC.**
 2. **Hotfix** - QA / Security / Design / UX em tasks `hotfix`, e promocao hotfix → staging se ainda faltar. So depois de P1 sem acao executavel.
 3. **Documentacao** - Technical Documenter / Tutorial Assistant (so se P1/P2 sem acao executavel).
 4. **Validadores** - QA, Security, Design, UX (nesta ordem enquanto houver fila).
