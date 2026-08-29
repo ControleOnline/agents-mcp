@@ -13,6 +13,7 @@ const RETRY = githubRetryConfig('GITHUB_MANAGER');
 const DEFAULT_ALLOWED_LOGINS = 'luizkim,github-copilot[bot],copilot-swe-agent,copilot';
 const DEFAULT_AGENT_LABELS = 'agent:developer,agent:security,agent:qa,agent:devops,agent:sysadmin';
 const COMMAND_PREFIXES = ['/github-manager', '/github-ops'];
+const PROTECTED_PROJECT_STATUSES = new Set(['blocked', 'backlog']);
 
 function env(name, fallback = '') {
   return (process.env[name] || fallback).trim();
@@ -654,6 +655,10 @@ function normalizeStatusName(value) {
   return String(value || '').trim().toLowerCase();
 }
 
+function isProtectedProjectStatus(status) {
+  return PROTECTED_PROJECT_STATUSES.has(normalizeStatusName(status));
+}
+
 function hasHumanAuthorizedRcRemoval(input) {
   const reason = String(input.rc_removal_reason || input.human_authorization_reason || '').trim();
   return input.human_authorized_rc_removal === true && input.devops_rc_removal === true && reason.length > 0;
@@ -663,6 +668,19 @@ function assertAllowedProjectStatusTransition(item, input) {
   const fromStatus = getStatusValue(item);
   const from = normalizeStatusName(fromStatus);
   const target = normalizeStatusName(input.target_status);
+  const issueRef = input.repo_full_name && input.issue_number
+    ? `${input.repo_full_name}#${input.issue_number}`
+    : input.item_id || 'unknown item';
+
+  // Business rule: Backlog and Blocked are human-only holding columns.
+  // Workers and agents must not select, mutate, move, validate, publish,
+  // document, comment, or clean up items currently there, nor move items there.
+  if (isProtectedProjectStatus(fromStatus) || isProtectedProjectStatus(input.target_status)) {
+    throw new Error(
+      `Refusing ProjectV2 status transition ${fromStatus || 'unknown'} -> ${input.target_status} for ${issueRef}: ` +
+      'Blocked and Backlog are human-only columns and must not be touched by workers or agents.'
+    );
+  }
 
   if (from !== 'in review' || ['in review', 'deploy', 'done'].includes(target)) {
     return;
@@ -675,9 +693,6 @@ function assertAllowedProjectStatusTransition(item, input) {
     return;
   }
 
-  const issueRef = input.repo_full_name && input.issue_number
-    ? `${input.repo_full_name}#${input.issue_number}`
-    : input.item_id || 'unknown item';
   throw new Error(
     `Refusing ProjectV2 status transition ${fromStatus || 'In Review'} -> ${input.target_status} for ${issueRef}: ` +
     'In Review is a frozen RC package/human-review column. Only DevOps may remove an item from the RC after explicit human authorization; provide human_authorized_rc_removal=true, devops_rc_removal=true and rc_removal_reason.'

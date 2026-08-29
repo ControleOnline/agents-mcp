@@ -69,8 +69,8 @@ Issues com Status Project #1 **`Blocked`** ou **`Backlog`** **nao sao candidatas
    - complemente com Project #1 se util;
    - filtre pelas regras do papel;
    - **QA/Security:** varias elegiveis; demais papeis: exatamente uma;
-   - dentro da mesma prioridade: `createdAt` crescente; empate = menor numero;
-   - `updatedAt` nao ordena.
+   - dentro da mesma prioridade: `createdAt` crescente; empate = menor numero da issue;
+   - nunca use `updatedAt` para ordenar; `updatedAt` serve apenas como evidencia de atividade.
 
 ## Template de elegibilidade — `Developer`
 

@@ -3,6 +3,7 @@ import fs from 'node:fs';
 const GITHUB_API_URL = 'https://api.github.com/graphql';
 const DEFAULT_AGENT_LOGIN = 'github-copilot[bot]';
 const DEFAULT_AGENT_LOGINS = 'github-copilot[bot],copilot-swe-agent,copilot';
+const PROTECTED_PROJECT_STATUSES = new Set(['blocked', 'backlog']);
 
 function env(name, fallback = '') {
   return (process.env[name] || fallback).trim();
@@ -129,11 +130,16 @@ function getStatusValue(item) {
   return value?.name || null;
 }
 
+function isProtectedProjectStatus(status) {
+  return PROTECTED_PROJECT_STATUSES.has(String(status || '').trim().toLowerCase());
+}
+
 function listWorkItems(project, workStatus) {
   return (project.items?.nodes || []).filter((item) => {
     if (!item?.content?.repository?.nameWithOwner) return false;
     if (item.content.state !== 'OPEN') return false;
     const status = getStatusValue(item);
+    if (isProtectedProjectStatus(status)) return false;
     return status?.toLowerCase() === workStatus.toLowerCase();
   });
 }

@@ -16,6 +16,7 @@ const DEFAULT_QA_APPROVED_LABEL = 'approved:qa';
 const DEFAULT_SECURITY_APPROVED_LABEL = 'approved:security';
 const DEFAULT_STAGING_BRANCH = 'staging';
 const DEFAULT_READY_STATUSES = 'Ready,Working,In Review';
+const PROTECTED_PROJECT_STATUSES = new Set(['blocked', 'backlog']);
 
 function env(name, fallback = '') {
   return (process.env[name] || fallback).trim();
@@ -34,6 +35,7 @@ function getToken() {
 
 function statusMatches(status, allowedStatuses) {
   const normalized = (status || '').trim().toLowerCase();
+  if (PROTECTED_PROJECT_STATUSES.has(normalized)) return false;
   return allowedStatuses.some((entry) => entry.toLowerCase() === normalized);
 }
 

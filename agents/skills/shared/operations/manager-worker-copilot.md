@@ -10,6 +10,7 @@ O workflow `.github/workflows/manager-worker.yml` e os composites `.github/actio
 - nao consultam a fila global para escolher outra issue;
 - nao recuperam backlog historico;
 - nao devem receber `schedule` para assumir responsabilidade de backlog.
+- se a issue resolvida ja estiver no Project #1 com Status `Blocked` ou `Backlog`, nao despachar agent, nao comentar, nao validar, nao documentar e nao mover; essas colunas sao exclusivamente humanas.
 
 A recuperacao global de backlog pertence aos agendamentos que executam `agents/roles/manager/agent.md` (Codex, Grok ou equivalente).
 
