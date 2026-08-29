@@ -1,172 +1,31 @@
+## Proibicao de fila Blocked / Backlog
 
-## Proibicao Blocked / Backlog
-
-Em **qualquer** prioridade (incluindo P5 higiene): **nao tocar** issues/PRs com Status **`Blocked`** ou **`Backlog`**. Nao mover, nao rotular "de passagem", nao incluir em RC. So humano tira de Blocked/Backlog.
-
+Nao usar `Blocked`/`Backlog` como fila. Bloqueio operacional da rodada deve ser resolvido.
 
 # Manager Skills
 
 ## Papel
 
-**Único escopo permitido:** org `Frethical` (`https://github.com/Frethical/`). Proibido comentar/alterar/solicitar fora de `Frethical/*`. Item fora → `OUT_OF_SCOPE`.
-
-
-O `Manager` executa o Full Pipeline na ordem definida em `agents/roles/manager/agent.md`. O Developer integra o pipeline como Prioridade 5.
-
 Ordem resumida:
 
-1. **Hotfix** - QA / Security / DevOps em tasks `hotfix`.
-2. **DevOps** - publicar Deploy ou criar RC (ou alinhar board do RC). Gate humano de Deploy **nao** encerra a rodada.
-3. **Documentacao** - Technical Documenter / Tutorial Assistant.
-4. **Validadores** - QA; somente com QA vazia, Security.
-5. **Developer** - captura e implementa a proxima issue elegivel (branch task-*, merge em dev, handoff QA/Security).
-6. **Higiene residual + board** - somente com P1–P5 vazias (ou P2 somente gate humano + P5 vazia/incapacidade documentada).
+1. **DevOps** — sempre primeiro. `Deploy` → `master`; se vazio, quarteto → `staging` + `In Review`. Sem RC.
+2. **Hotfix** — validadores e promocao hotfix → staging.
+3. **Documentacao**
+4. **Validadores** comuns (QA → Security → Design → UX)
+5. **Higiene**
 
-## Entrada obrigatoria
+Toda rodada executa. Documentacao nao e fallback de P1/P2.
 
-Antes de atuar:
+## Gate de staging
 
-1. consulte o estado real do GitHub e Project #1;
-2. descubra as filas P1–P5 globalmente, sem depender de eventos de push;
-3. tente a primeira prioridade com trabalho **elegivel e executavel**;
-4. dentro da fila escolhida, use `createdAt` crescente e menor numero em empate;
-5. releia issue, labels, coluna, comentarios e relacionamentos imediatamente antes da mutacao.
-
-`updatedAt` serve apenas como evidencia de atividade e nunca ordena a fila.
-
-## Fail-closed operacional vs skip de P2 humano
-
-### Fail-closed (mantido)
-
-A transicao para uma prioridade inferior **apos erro operacional** na prioridade selecionada e proibida.
-
-Se a prioridade selecionada falhar por ferramenta, credencial, timeout, dispatch, checkout, teste, API ou qualquer outra dependencia operacional:
-
-- registre a causa objetiva quando possivel;
-- encerre a rodada como `BLOCKED` naquela prioridade;
-- nao execute nenhuma prioridade inferior na mesma rodada.
-
-**Higiene nunca e fallback para falha operacional de executor.**
-
-### Excecao: P2 gate humano de Deploy
-
-Quando P2 tem RC aberto e a unica barreira e aprovacao humana (item em `Deploy` / freeze sem publicacao possivel pelo agent):
-
-- registre `P2_SKIPPED_HUMAN_DEPLOY` com evidencia (issue do RC, colunas, labels);
-- **continue** para P3 → P4 → P5 → P6 na mesma rodada se houver trabalho elegivel e executavel;
-- nao trate esse estado como “P2 vazia” no relato, mas tambem **nao** use-o para bloquear documentacao, validadores ou higiene.
-
-P2 ainda deve ser tentado **antes** de P3–P6 sempre que houver acao executavel (criar RC, publicar apos aprovacao humana explicita, alinhar In Review).
-
-## Agendamentos Manager: Codex, Grok e equivalentes
-
-Agendamentos sao consumidores globais do pipeline e mecanismo de recuperacao de backlog.
-
-Ao encontrar trabalho elegivel e executavel:
-
-- execute diretamente o papel correspondente quando o runtime possuir as ferramentas necessarias, lendo primeiro `agents/roles/<papel>/agent.md`;
-- alternativamente, use um dispatch real e verificavel para um agente capaz;
-- em P2 somente com gate humano de Deploy, registre e avance;
-- se falha operacional impedir a execucao, termine `BLOCKED` na prioridade selecionada.
-
-Uma label `agent:qa`, `agent:security`, `agent:technical-documenter` ou estado DevOps **executavel** e trabalho pendente mesmo que nao tenha ocorrido push recente.
-
-Agendamento deve produzir **pelo menos uma acao util** por rodada quando existir fila elegivel e executavel.
-
-## Workers de push
-
-Workers do GitHub Actions continuam estritamente reativos a `push` em `master`, `dev` ou `staging` e atuam somente na issue resolvida para aquele push.
-
-Eles nao varrem o Project, nao escolhem a task mais antiga da organizacao e nao recuperam backlog historico. Essa responsabilidade pertence aos agendamentos Manager.
-
-Falha critica de label/assignment/dispatch no worker deve falhar o job; nao deve ser mascarada como sucesso.
-
-## Prioridade 4 - validadores
-
-- QA sempre precede Security na fila global do Manager.
-- Enquanto existir QA elegivel sem `agent:qa:accepted`/`agent:qa:rejected`, Security nao substitui QA e P5/P6 permanecem bloqueadas.
-- Quando QA estiver vazia, Security elegivel sem `agent:security:accepted`/`agent:security:rejected` bloqueia P5/P6.
-- Agendamento Manager pode processar lote de QA ou, depois, lote de Security na mesma rodada, preservando evidencia por issue.
-
-## Prioridade 6 - checklist de board e higiene
-
-Pre-condicao:
-
-- P1 vazia;
-- P2 sem acao executavel (vazia **ou** somente gate humano de Deploy ja registrado na rodada);
-- P3 vazia;
-- QA e Security vazias.
-
-Quando essa pre-condicao for verdadeira, audite:
-
-### Board / RC
-
-- **Issues e PRs fora do Project #1 (obrigatorio):** **tudo** opera no Project #1. Qualquer issue `open` ou PR `open` do escopo operacional **sem item no board** deve ser **associada na mesma hora** (mesma correcao atomica); Status padrao `Ready` (ou coluna coerente). Falha de API/permissao deve ser comentada no item — nunca silenciosa. P6 e rede de seguranca; a obrigacao hands-on vale para todos os agents.
-- RC aberto: pai + filhas devem estar em `In Review`, exceto itens ja em `Deploy`.
-- Nunca regredir `Deploy` sem evidencia explicita de rejeicao humana.
-- Dual-accepted limpo sem RC deve voltar para P2, nao ser resolvido por higiene.
-- Dual-accepted fora do freeze precisa de bloqueio objetivo documentado.
-- Remover assignees usados indevidamente como mecanismo de fila.
-
-### PRs (obrigatorio — **todas** as PRs abertas)
-
-O board e o **Project #1**: **todas** as PRs `open` do escopo operacional entram na higiene, nao so as que ja estao no board.
-
-Na mesma passagem, antes ou junto do handoff:
-
-0. Se a PR **nao** estiver no Project #1, **associe-a na mesma hora** (Status coerente, padrao `Ready`). Idem para a issue vinculada, se houver. Sem item no Project #1 e desvio — corrigir imediatamente.
-
-Depois destranque o handoff (correcao atomica; uma PR por rodada):
-
-1. **PR com tarefa/issue associada:** se a issue estiver `closed`, **reabra**; aplique handoff para **DevOps** (`agent:devops`); comente na issue e na PR. Nao mergeie nem feche a PR no lugar do DevOps.
-2. **PR sem tarefa associada:** **crie** uma issue para o DevOps decidir (implementar/alinhar merge ou fechar a PR); associe **issue e PR** ao Project #1 na mesma hora; label de tipo + `agent:devops`; comente o vinculo cruzado. Falha de associacao nao e silenciosa.
-
-### Conclusao
-
-Task comum so pode permanecer `closed`/`Done` com o quarteto comprovado:
-
-- `agent:qa:accepted` (alias legado `qa:accepted` conta como equivalente na leitura; ao atuar, normalize para `agent:qa:accepted`)
-- `agent:security:accepted` (alias legado `security:accepted` idem → `agent:security:accepted`)
-- `agent:technical-documenter:done`
-- `agent:tutorial-assistant:done`
-
-Issue aberta com quarteto completo e evidencia deve ser fechada e alinhada a Done. Issue fechada/Done sem quarteto **nao** recebe labels `:done` inventadas: **restaure o handoff real faltante** (`agent:technical-documenter` e/ou `agent:tutorial-assistant` de solicitação; e normalize `agent:qa:accepted` / `agent:security:accepted` se só existirem aliases legados).
-
-**Lote de documentação (exceção à regra de uma correção atômica):** em P6, o Manager **pode e deve** aplicar em **lote** as labels de solicitação de documentação em **todas** as issues `Done`/`closed` do escopo que estejam sem `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done` e sem a solicitação correspondente — **incluindo governança** (`agents-mcp`). Sem isenção. Quem decide o conteúdo/`:done` é o documentador. Comente evidência resumida (lista de issues tocadas).
-
-### Dupla validacao estado <-> labels
-
-Verifique nos dois sentidos:
-
-- coluna/estado exigem labels coerentes;
-- labels precisam corresponder a etapa operacional real.
-
-Exemplos: `Ready` com validador ja ativo, `Working` sem ownership real, RC fora de In Review, labels de aceite e rejeicao contraditorias, ou `Deploy` regredido.
-
-## Correcao atomica
-
-Em P6 aplique exatamente uma correcao atomica por rodada, **exceto**:
-- fechamento em lote de issues com quarteto completo;
-- **lote de restauração de labels de solicitação de documentação** (e normalização `agent:qa:accepted` / `agent:security:accepted`) em Done/closed sem quarteto.
-
-Comente evidencia antes/depois quando houver mutacao.
+`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
 
 ## Output Contract
 
-Ao finalizar informe:
-
-- prioridade(s) tentada(s) e eventual `P2_SKIPPED_HUMAN_DEPLOY`;
-- evidencia de esvaziamento (ou skip documentado) das prioridades superiores;
-- task(s) auditada(s);
-- estado/labels/coluna relevantes;
-- acao realizada;
-- `DONE` ou `BLOCKED`;
-- em `BLOCKED` operacional, causa objetiva e confirmacao de que nenhuma prioridade inferior foi executada apos o erro.
+Prioridade tentada, acao executada, `DONE` ou `BLOCKED`.
 
 ## Fontes principais
 
 - `agents/roles/manager/agent.md`
-- `agents/skills/shared/operations/agent-handoff-governance.md`
-- `agents/skills/shared/operations/issue-queue-discovery.md`
-- `agents/skills/shared/operations/manager-worker-copilot.md`
+- `agents/roles/devops/agent.md`
 - `agents/skills/shared/github/github-flow.md`
