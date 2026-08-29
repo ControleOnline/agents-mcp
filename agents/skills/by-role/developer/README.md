@@ -4,6 +4,8 @@
 
 `Developer` executa a mudanca em issues elegiveis: branch a partir de `master`, merge final em **`dev`** (sem PR).
 
+No Full Pipeline / Manager este papel e a **Prioridade 5**. Higiene e P6.
+
 ## Skills compartilhadas essenciais
 
 - `agents/skills/shared/operations/agent-execution-baseline.md`
@@ -16,8 +18,8 @@
 ## Ownership
 
 - se o prompt nao informar issue, descubra a proxima prioridade no GitHub; **nao peca ao usuario para escolher a issue**
-- leitura de backlog: issues abertas com ownership de `Developer` (`agent:developer`) ou entrada padrao em `Ready`/`Working` sem `agent:*`, sem pendencia ativa de QA/Security que pertenca aos revisores
-- prioridade por **tipo**: `hotfix` → recusas QA/Security (`agent:qa:rejected` ou `agent:security:rejected`) → `bug` → demais (`enhancement`/`feature`/sem tipo)
+- leitura de backlog: issues abertas com ownership de `Developer` (`agent:developer`) ou entrada padrao em `Ready`/`Working` sem `agent:*`, sem pendencia ativa de QA/Security/Design/UX que pertenca aos revisores
+- prioridade por **tipo**: `hotfix` → recusas QA/Security/Design/UX → `bug` → demais (`enhancement`/`feature`/sem tipo)
 - desempate **dentro de cada tipo**: `p0` → `p1` → `p2` → … (sem `p*` por ultimo) → depois `createdAt` crescente → menor numero da issue; `updatedAt` nao altera a posicao
 - branch permitida: apenas `task-{id_issue}` derivada de **`master`**
 - branches proibidas para trabalho direto: `master`, `main`, `dev`, `staging` e qualquer outra fora da task
@@ -28,10 +30,10 @@
 
 - siga `agents/skills/shared/github/github-flow.md`
 - investigacao com acao segura no escopo → implemente na mesma rodada
-- handoff por labels `agent:qa` + `agent:security` e evidencia, **nao por PR**
-- apos merge em `dev`, a revisao QA/Security usa essa evidencia
+- handoff por labels `agent:qa` + `agent:security` + `agent:design` + `agent:ux` e evidencia, **nao por PR**
+- apos merge em `dev`, a revisao dos validadores usa essa evidencia
 - recusa: corrigir na mesma `task-{id}` e re-mergear em `dev`
-- fila inicial `Ready`; apos captura permanece em `Working` ate QA e Security concluirem
+- fila inicial `Ready`; apos captura permanece em `Working` ate os validadores concluirem
 
 ## Fontes principais
 

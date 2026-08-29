@@ -26,11 +26,13 @@ Ao iniciar uma execucao:
 
 O `Developer` implementa a issue na branch `task-{id_issue}` derivada de **`master`** e entrega com **merge em `dev`** (sem PR). Nao mexe em `staging` nem em `master`.
 
+No Full Pipeline / Manager este papel e a **Prioridade 5**. Higiene e P6 e so roda se P5 estiver vazia.
+
 ## Captura autonoma
 
 Se o prompt nao informar `owner/repo#issue`, o `Developer` **nao deve pedir a issue ao usuario**. Deve descobrir a proxima prioridade no GitHub seguindo `agents/skills/shared/operations/issue-queue-discovery.md` e `agents/skills/by-role/developer/README.md`.
 
-Esta captura pertence somente ao fluxo paralelo do `Developer`; ela nao faz parte do Full Pipeline / Manager.
+Esta captura e a fila P5 do Manager. Execucao standalone do papel usa a mesma fila; nao existe pipeline paralelo.
 
 A selecao deve escolher exatamente uma issue elegivel, nesta ordem de **tipo**:
 

@@ -36,7 +36,7 @@ Regras adicionais:
 - Issue ou PR **sem** item no Project #1 e desvio operacional: associar na mesma rodada.
 - **Todas** as PRs `open` do escopo entram nessa regra.
 - Falha de permissao/API ao associar **nao e silenciosa**: comente a falha objetiva.
-- Manager em P5 (higiene) audita itens soltos, mas isso **nao dispensa** a obrigacao hands-on dos demais agents.
+- Manager em P6 (higiene) audita itens soltos, mas isso **nao dispensa** a obrigacao hands-on dos demais agents.
 
 ## Outras regras
 
@@ -76,19 +76,21 @@ Bloqueio operacional da rodada (API, conflito, label, board) deve ser resolvido,
 
 ## Template de elegibilidade — `Developer`
 
+No Manager esta captura e **P5**.
+
 Candidata se **qualquer** for verdadeira:
 
 1. possui `agent:developer`;
 2. esta em `Ready` sem nenhum `agent:*`;
 3. esta em `Working` sem nenhum `agent:*`, sem ownership humano exclusivo;
-4. possui `agent:qa:rejected` ou `agent:security:rejected` e ainda precisa de correcao.
+4. possui `agent:qa:rejected`, `agent:security:rejected`, `agent:design:rejected` ou `agent:ux:rejected` e ainda precisa de correcao.
 
 Nao candidata se a revisao ativa ainda pertencer a QA/Security/Design/UX sem decisao, ou a DevOps em Deploy/In Review sem handoff de correcao.
 
 Ordem de prioridade do `Developer` (por **tipo**):
 
 1. `hotfix`
-2. `agent:qa:rejected` ou `agent:security:rejected`
+2. `agent:qa:rejected`, `agent:security:rejected`, `agent:design:rejected` ou `agent:ux:rejected`
 3. `bug`
 4. demais tipos
 
@@ -126,7 +128,7 @@ Ao recusar: comentar, `agent:<papel>:rejected`, remover `agent:<papel>`, manter 
 
 O `DevOps` descobre trabalho sozinho quando o prompt nao informar issue. Opera **CI por task**. **Proibido** montar RC.
 
-No Manager, esta captura é **P1**. Hotfix é **P2** (fora desta ordem).
+No Manager, esta captura é **P1**. Hotfix é **P2** (fora desta ordem). Developer é **P5**. Higiene é **P6**.
 
 Candidata se **qualquer** for verdadeira:
 
