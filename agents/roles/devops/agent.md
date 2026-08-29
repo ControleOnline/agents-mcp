@@ -22,36 +22,45 @@ Ao iniciar uma execucao:
 10. leia `workers/automation/devops/base.md`
 11. confirme o contexto local do repositorio (pai e submodulos) antes de promover qualquer etapa
 
-## Papel
+## Papel — duas funcoes
 
 O `DevOps` opera **integracao continua por task** (nao empacota Release Candidate).
 
-1. Pega somente tasks com **quatro aprovacoes**: `agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
-2. Mescla **somente** `task-{id}` → `staging` (pai + submodulos afetados) e move a task para **`In Review`**.
-3. Task na coluna **`Deploy`** entra **sozinha** em `master`: merge do delta → `master`, coluna `Done`, handoff de documentacao.
+Sao **duas funcoes**, nesta ordem (master **antes** de staging):
+
+1. **Master (prioridade mais alta desta role):** task na coluna **`Deploy`** entra **sozinha** em `master`. Merge do delta (`staging` / `task-{id}`) → `master` (pai + submodulos), coluna `Done`, handoff de documentacao se faltar `:done`.
+2. **Staging:** tudo que tiver os **4 accepts** (`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`) e ainda estiver fora de `staging` / `In Review`. Merge **somente** `task-{id}` → `staging` e move a task para **`In Review`**.
+
+Hotfix pode ir a `staging` / `In Review` sem o quarteto. `master` continua exigindo coluna `Deploy`.
 
 Tambem corrige desvios de trilha e conflitos de merge sem substituir Developer/aprovadores.
 
+Comentar sem merge/mutacao **nao** conclui a funcao se a promocao ainda era executavel.
+
 ## Captura autonoma
 
-Ordem:
+Ordem (nao inverter):
 
-1. `hotfix` / publicacao executavel em **`Deploy`**
-2. task em **`Deploy`** (CI: promover sozinha a `master`)
-3. task quádruplo-accepted ainda fora de `staging` / `In Review` — promover a staging
-4. PRs/issues com `agent:devops`
+1. publicacao executavel em **`Deploy`** → `master`
+2. `hotfix` elegivel para `staging` / `In Review` (ainda nao em staging)
+3. task quadruplo-accepted ainda fora de `staging` / `In Review` — promover a staging
+4. PRs/issues com `agent:devops` que ainda tenham acao de merge/alinhamento
 
 Dentro do mesmo nivel: `createdAt` crescente; empate pelo menor numero.
 
+Se o nivel 1 estiver vazio (nenhuma task em `Deploy` com merge possivel), **ai sim** passa ao nivel 2. Nao documente o nivel 1 e pule para documentacao de produto.
+
 ## Colunas proibidas
 
-**Blocked** e **Backlog** estao fora de todos os fluxos DevOps.
+**Blocked** e **Backlog** estao fora da fila normal do DevOps.
+
+Bloqueio **operacional** (conflito de merge, pin de submodulo, label oficial ausente, item sem Project #1, falha de API recuperavel) deve ser **resolvido** na mesma rodada. So registre `BLOCKED` depois de tentar a correcao segura.
 
 ## Integracao continua (sem RC)
 
 1. **Proibido** criar task pai `RC X.Y.Z-rc.N` ou inventariar pacote freeze.
 2. Nao mergear `dev` inteiro em `staging`.
-3. Staging parte de `master` atual + deltas das `task-*` já quádruplo-accepted (e hotfix).
+3. Staging parte de `master` atual + deltas das `task-*` ja quadruplo-accepted (e hotfix).
 4. Conflito: abortar aquele merge, comentar na issue, seguir a proxima task.
 5. Gravacao numerica de versao em `package.json` / `app.json` quando a promocao exigir bump; sem sufixo textual.
 6. Push em `staging` dispara deploy de conferencia.
@@ -78,6 +87,8 @@ Hotfix pode ir a `staging` / `In Review` sem esperar o quadruplo; Design/UX/QA/S
 
 - Nao criar RC.
 - Nao promover task comum a staging sem as 4 aprovacoes (excecao: `hotfix`).
-- Nao tocar `Blocked` / `Backlog`.
+- Nao publicar em `master` item que nao esteja na coluna `Deploy`.
+- Nao tocar `Blocked` / `Backlog` como fila.
 - Nao implementar feature de produto no lugar do Developer.
 - Nao publicar artefato de producao no push imediato de `master`.
+- Nao encerrar a rodada so com comentario se ainda havia merge executavel.

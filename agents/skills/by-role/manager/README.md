@@ -1,6 +1,8 @@
-## Proibicao Blocked / Backlog
+## Proibicao de fila Blocked / Backlog
 
-Em **qualquer** prioridade (incluindo P5 higiene): **nao tocar** issues/PRs com Status **`Blocked`** ou **`Backlog`**.
+Em **qualquer** prioridade (incluindo P5 higiene): **nao usar** issues/PRs com Status **`Blocked`** ou **`Backlog`** como fila.
+
+Bloqueio operacional da rodada (API, conflito, label, board) deve ser resolvido, nao apenas documentado.
 
 # Manager Skills
 
@@ -8,11 +10,13 @@ Em **qualquer** prioridade (incluindo P5 higiene): **nao tocar** issues/PRs com 
 
 O `Manager` executa o Full Pipeline na ordem definida em `agents/roles/manager/agent.md`. O Developer e paralelo e nao pertence ao ciclo do Manager.
 
+Toda rodada **executa**. Documentacao de produto nao e fallback enquanto P1/P2/P4 tiverem acao.
+
 Ordem resumida:
 
 1. **Hotfix** - QA / Security / Design / UX / DevOps em tasks `hotfix`.
-2. **DevOps** - publicar item em Deploy para `master`, ou promover task quádruplo-accepted para `staging` + `In Review`. Gate humano de Deploy **nao** encerra a rodada. **Nao montar RC.**
-3. **Documentacao** - Technical Documenter / Tutorial Assistant.
+2. **DevOps** - primeiro publicar item em `Deploy` para `master`; se nao houver, promover task quadruplo-accepted para `staging` + `In Review`. Gate humano de Deploy **nao** encerra a rodada. **Nao montar RC.**
+3. **Documentacao** - Technical Documenter / Tutorial Assistant (so se P1/P2 sem acao executavel).
 4. **Validadores** - QA, Security, Design, UX (nesta ordem enquanto houver fila).
 5. **Higiene residual + board** - somente com P1-P4 sem acao executavel.
 
@@ -22,7 +26,7 @@ Antes de atuar: consulte GitHub e Project #1; descubra P1-P4; tente a primeira p
 
 ## Fail-closed operacional vs skip de P2 humano
 
-Se a prioridade selecionada falhar por ferramenta/credencial/API: registre, `BLOCKED`, nao execute prioridade inferior.
+Se a prioridade selecionada falhar por ferramenta/credencial/API **depois** de tentar corrigir: registre, `BLOCKED`, nao execute prioridade inferior.
 
 Excecao: P2 so com gate humano de Deploy → `P2_SKIPPED_HUMAN_DEPLOY` e continue P3-P5.
 
@@ -49,7 +53,7 @@ Documentadores (`:done`) nao fazem parte dessas quatro.
 
 ## Output Contract
 
-Prioridade tentada, evidencia P1-P4, tasks, acao, `DONE` ou `BLOCKED`.
+Prioridade tentada, evidencia P1-P4, tasks, acao executada, `DONE` ou `BLOCKED`.
 
 ## Fontes principais
 
