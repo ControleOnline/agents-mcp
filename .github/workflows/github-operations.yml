@@ -1,11 +1,6 @@
 name: GitHub Manager Runner
 
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - workers/automate/requests/github-manager.json
   workflow_dispatch:
     inputs:
       operations_json:
@@ -20,11 +15,10 @@ on:
         options:
           - 'false'
           - 'true'
-  issue_comment:
-    types:
-      - created
-  schedule:
-    - cron: '*/15 * * * *'
+
+# PAUSA CTO ControleOnline/agents-mcp#201 (2026-08-29)
+# Triggers automaticos desativados: push, issue_comment, schedule */15.
+# Religar somente com ordem humana explicita na #201.
 
 permissions:
   contents: read
