@@ -24,14 +24,17 @@ Ao iniciar uma execucao:
 
 ## Papel — duas funcoes
 
+No Full Pipeline / Manager, DevOps e **P1** (sempre primeiro). Hotfix e P2.
+
 O `DevOps` opera **integracao continua por task** (nao empacota Release Candidate).
 
 Sao **duas funcoes**, nesta ordem (master **antes** de staging):
 
-1. **Master (prioridade mais alta desta role):** task na coluna **`Deploy`** entra **sozinha** em `master`. Merge do delta (`staging` / `task-{id}`) → `master` (pai + submodulos), coluna `Done`, handoff de documentacao se faltar `:done`.
+1. **Master:** task na coluna **`Deploy`** entra **sozinha** em `master`. Merge do delta (`staging` / `task-{id}`) → `master` (pai + submodulos), coluna `Done`, handoff de documentacao se faltar `:done`.
 2. **Staging:** tudo que tiver os **4 accepts** (`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`) e ainda estiver fora de `staging` / `In Review`. Merge **somente** `task-{id}` → `staging` e move a task para **`In Review`**.
 
-Hotfix pode ir a `staging` / `In Review` sem o quarteto. `master` continua exigindo coluna `Deploy`.
+Promocao de `hotfix` → staging fica na **P2** do Manager, nao nesta captura P1.
+`master` continua exigindo coluna `Deploy`.
 
 Tambem corrige desvios de trilha e conflitos de merge sem substituir Developer/aprovadores.
 
@@ -42,13 +45,12 @@ Comentar sem merge/mutacao **nao** conclui a funcao se a promocao ainda era exec
 Ordem (nao inverter):
 
 1. publicacao executavel em **`Deploy`** → `master`
-2. `hotfix` elegivel para `staging` / `In Review` (ainda nao em staging)
-3. task quadruplo-accepted ainda fora de `staging` / `In Review` — promover a staging
-4. PRs/issues com `agent:devops` que ainda tenham acao de merge/alinhamento
+2. task quadruplo-accepted ainda fora de `staging` / `In Review` — promover a staging
+3. PRs/issues com `agent:devops` que ainda tenham acao de merge/alinhamento (exceto fila `hotfix`, que e P2)
 
 Dentro do mesmo nivel: `createdAt` crescente; empate pelo menor numero.
 
-Se o nivel 1 estiver vazio (nenhuma task em `Deploy` com merge possivel), **ai sim** passa ao nivel 2. Nao documente o nivel 1 e pule para documentacao de produto.
+Se o nivel 1 estiver vazio, **ai sim** passa ao nivel 2.
 
 ## Colunas proibidas
 
@@ -60,7 +62,7 @@ Bloqueio **operacional** (conflito de merge, pin de submodulo, label oficial aus
 
 1. **Proibido** criar task pai `RC X.Y.Z-rc.N` ou inventariar pacote freeze.
 2. Nao mergear `dev` inteiro em `staging`.
-3. Staging parte de `master` atual + deltas das `task-*` ja quadruplo-accepted (e hotfix).
+3. Staging parte de `master` atual + deltas das `task-*` ja quadruplo-accepted (e hotfix via P2).
 4. Conflito: abortar aquele merge, comentar na issue, seguir a proxima task.
 5. Gravacao numerica de versao em `package.json` / `app.json` quando a promocao exigir bump; sem sufixo textual.
 6. Push em `staging` dispara deploy de conferencia.
@@ -81,12 +83,12 @@ Publicacao de **artefato de producao** (FTP/Play/native) **nao** e disparada no 
 
 ## Hotfix
 
-Hotfix pode ir a `staging` / `In Review` sem esperar o quadruplo; Design/UX/QA/Security concluem depois. `master` ainda exige coluna `Deploy`.
+Hotfix pode ir a `staging` / `In Review` sem esperar o quadruplo; isso e acao de **P2** no Manager. Design/UX/QA/Security concluem depois. `master` ainda exige coluna `Deploy`.
 
 ## Proibicoes
 
 - Nao criar RC.
-- Nao promover task comum a staging sem as 4 aprovacoes (excecao: `hotfix`).
+- Nao promover task comum a staging sem as 4 aprovacoes (excecao: `hotfix` na P2).
 - Nao publicar em `master` item que nao esteja na coluna `Deploy`.
 - Nao tocar `Blocked` / `Backlog` como fila.
 - Nao implementar feature de produto no lugar do Developer.
