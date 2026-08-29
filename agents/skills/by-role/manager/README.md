@@ -14,8 +14,8 @@ Toda rodada **executa**. Documentacao de produto nao e fallback enquanto P1/P2/P
 
 Ordem resumida:
 
-1. **Hotfix** - QA / Security / Design / UX / DevOps em tasks `hotfix`.
-2. **DevOps** - primeiro publicar item em `Deploy` para `master`; se nao houver, promover task quadruplo-accepted para `staging` + `In Review`. Gate humano de Deploy **nao** encerra a rodada. **Nao montar RC.**
+1. **DevOps** - sempre primeiro. Publicar item em `Deploy` para `master`; se nao houver, promover task quadruplo-accepted para `staging` + `In Review`. Gate humano de Deploy **nao** encerra a rodada. **Nao montar RC.**
+2. **Hotfix** - QA / Security / Design / UX em tasks `hotfix`, e promocao hotfix → staging se ainda faltar. So depois de P1 sem acao executavel.
 3. **Documentacao** - Technical Documenter / Tutorial Assistant (so se P1/P2 sem acao executavel).
 4. **Validadores** - QA, Security, Design, UX (nesta ordem enquanto houver fila).
 5. **Higiene residual + board** - somente com P1-P4 sem acao executavel.
@@ -24,11 +24,11 @@ Ordem resumida:
 
 Antes de atuar: consulte GitHub e Project #1; descubra P1-P4; tente a primeira prioridade elegivel e executavel; `createdAt` crescente; releia a issue antes de mutar.
 
-## Fail-closed operacional vs skip de P2 humano
+## Fail-closed operacional vs skip de P1 humano
 
 Se a prioridade selecionada falhar por ferramenta/credencial/API **depois** de tentar corrigir: registre, `BLOCKED`, nao execute prioridade inferior.
 
-Excecao: P2 so com gate humano de Deploy → `P2_SKIPPED_HUMAN_DEPLOY` e continue P3-P5.
+Excecao: P1 so com gate humano de Deploy → `P1_SKIPPED_HUMAN_DEPLOY` e continue P2-P5.
 
 `In Review` e freeze da task ja em staging. Nao remover da coluna; encaminhar a DevOps com evidencia.
 
