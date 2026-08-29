@@ -13,6 +13,8 @@ const githubOperationsDoc = fs.readFileSync('workers/automate/github-operations.
 const managerWorker = fs.readFileSync('.github/actions/workers/manager/action.yml', 'utf8');
 const qaWorker = fs.readFileSync('.github/actions/workers/qa/action.yml', 'utf8');
 const securityWorker = fs.readFileSync('.github/actions/workers/security/action.yml', 'utf8');
+const agentsMd = fs.readFileSync('AGENTS.md', 'utf8');
+const developerAgent = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
 
 const completionLabels = [
   'agent:qa:accepted',
@@ -24,18 +26,24 @@ const completionLabels = [
 test('manager is fail-closed before hygiene', () => {
   assert.match(managerAgent, /prioridade fail-closed/i);
   assert.match(managerAgent, /P5 so inicia quando P1 vazia.*P2 vazia.*P3 vazia.*P4 sem/is);
+  assert.match(managerAgent, /P6 so inicia quando P1 vazia.*P2 vazia.*P3 vazia.*P4 sem.*P5 sem/is);
   assert.match(managerAgent, /Nao use higiene nem documentacao de produto como fallback/i);
   assert.match(managerSkill, /P5 permanece bloqueada/i);
+  assert.match(managerSkill, /P6 permanece bloqueada/i);
 });
 
-test('manager priority keeps DevOps before Hotfix', () => {
+test('manager priority keeps DevOps before Hotfix and Developer before hygiene', () => {
   const p1 = managerAgent.indexOf('## Prioridade 1 - DevOps');
   const p2 = managerAgent.indexOf('## Prioridade 2 - Hotfix');
+  const p5 = managerAgent.indexOf('## Prioridade 5 - Developer');
+  const p6 = managerAgent.indexOf('## Prioridade 6 - Higiene residual + organizacao do board');
   const deployFirst = devopsAgent.indexOf('1. publicacao executavel em **`Deploy`**');
   const stagingSecond = devopsAgent.indexOf('2. todas as tasks quadruplo-accepted');
 
   assert.ok(p1 >= 0, 'manager P1 must be DevOps');
   assert.ok(p2 > p1, 'manager P2 must be Hotfix after DevOps');
+  assert.ok(p5 > p2, 'manager P5 must be Developer');
+  assert.ok(p6 > p5, 'manager P6 must be hygiene after Developer');
   assert.match(managerAgent, /Publique todas as tasks em `Deploy` → `master`/);
   assert.match(managerAgent, /promova todas as tasks quadruplo-accepted → `staging`/);
   assert.ok(deployFirst >= 0, 'DevOps must publish Deploy first');
@@ -43,7 +51,14 @@ test('manager priority keeps DevOps before Hotfix', () => {
   assert.doesNotMatch(managerAgent, /hotfix.*prioridade absoluta/is);
   assert.match(managerSkill, /1\. \*\*DevOps\*/);
   assert.match(managerSkill, /2\. \*\*Hotfix\*/);
+  assert.match(managerSkill, /5\. \*\*Developer\*/);
+  assert.match(managerSkill, /6\. \*\*Higiene residual \+ board\*/);
   assert.match(devopsSkill, /`Deploy` → `master`; depois quarteto → `staging`; por ultimo PRs\/issues `agent:devops`/);
+  assert.match(developerAgent, /Prioridade 5/);
+  assert.match(agentsMd, /P5 Developer/);
+  assert.match(agentsMd, /P6 Higiene residual \+ board/);
+  assert.doesNotMatch(agentsMd, /Developer\*\* \*\*não\*\* participa deste mode/i);
+  assert.doesNotMatch(managerAgent, /roda em paralelo e nao faz parte/i);
 });
 
 test('scheduled managers recover global backlog independently of push', () => {
@@ -57,6 +72,7 @@ test('workers remain push scoped and do not become backlog schedulers', () => {
   assert.match(workerDoc, /estritamente reativos a push/i);
   assert.match(workerDoc, /nao recuperam backlog historico/i);
   assert.match(workerDoc, /nao devem receber `schedule`/i);
+  assert.match(workerDoc, /nao.*scheduler de backlog de Developer/is);
   assert.match(qaWorker, /push-scoped/i);
   assert.match(securityWorker, /push-scoped/i);
 });
@@ -68,7 +84,7 @@ test('critical worker dispatch failures are not masked', () => {
 });
 
 test('closed and Done tasks require the complete four-label contract', () => {
-  const governanceSource = `${fs.readFileSync('AGENTS.md', 'utf8')}\n${managerSkill}`;
+  const governanceSource = `${agentsMd}\n${managerSkill}`;
   for (const label of completionLabels) {
     assert.ok(governanceSource.includes(`\`${label}\``), `missing completion label: ${label}`);
   }
