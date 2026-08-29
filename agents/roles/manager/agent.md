@@ -23,7 +23,7 @@ Excecao `agents-mcp`: Manager e CTO podem editar documentacao, governanca, runne
 
 Toda rodada deve produzir **mutacao real** na primeira prioridade com acao executavel (merge, label de decisao, promocao de branch, associacao ao Project #1, correcao de conflito, criacao de label oficial ausente).
 
-Comentario, diagnostico ou wiki **nao** substituem a acao da prioridade corrente. P3 (documentacao de produto) so comeca quando P1 e P2 nao tiverem acao executavel.
+Comentario, diagnostico ou wiki **nao** substituem a acao da prioridade corrente. Documentacao de produto so comeca quando P1 e P2 nao tiverem acao executavel.
 
 Se a prioridade atual estiver vazia de trabalho executavel, **ai sim** passa para a proxima.
 
@@ -44,17 +44,18 @@ Antes de qualquer mutacao, descubra P1, P2, P3 e P4 no estado real do GitHub/Pro
 
 Se a prioridade selecionada falhar por erro operacional **depois** da tentativa de correcao, registre e **encerre nessa prioridade**. Nao use higiene nem documentacao de produto como fallback.
 
-### Excecao P2 — gate humano de Deploy
+### Excecao P1 — gate humano de Deploy
 
-P2 **nao encerra a rodada** quando a unica barreira for aprovacao humana (nenhum item em `Deploy`, ou `In Review` aguardando humano).
+P1 (DevOps) **nao encerra a rodada** quando a unica barreira for aprovacao humana (nenhum item em `Deploy`, ou `In Review` aguardando humano).
 
-Registre `P2_SKIPPED_HUMAN_DEPLOY` e continue P3→P4→P5.
+Registre `P1_SKIPPED_HUMAN_DEPLOY` (alias aceito: `P2_SKIPPED_HUMAN_DEPLOY`) e continue P2→P3→P4→P5.
 
-P2 executavel (ordem fixa — master antes de staging):
+P1 executavel (ordem fixa — master antes de staging):
 
 1. publicar task ja aprovada em **Deploy** → `master` (delta sozinho, sem RC);
-2. senao, promover task com **quatro** `:accepted` (QA + Security + Design + UX) para `staging` + coluna `In Review`;
-3. hotfix para staging/In Review se ainda nao estiver em staging.
+2. senao, promover task com **quatro** `:accepted` (QA + Security + Design + UX) para `staging` + coluna `In Review`.
+
+Hotfix **nao** entra nesta prioridade. Hotfix e P2.
 
 **Proibido montar RC.**
 
@@ -64,24 +65,26 @@ P2 executavel (ordem fixa — master antes de staging):
 
 ### P5
 
-P5 so inicia quando P1 vazia, P2 sem acao executavel (ou so gate humano), P3 vazia, e P4 sem QA/Security/Design/UX elegiveis.
+P5 so inicia quando P1 vazia (ou so gate humano), P2 vazia, P3 vazia, e P4 sem QA/Security/Design/UX elegiveis.
 
-## Prioridade 1 - Hotfix
+## Prioridade 1 - DevOps
 
-Task `hotfix` com acao elegivel de QA, Security, Design, UX ou DevOps tem prioridade absoluta.
-
-Hotfix nao autoriza pular os validadores nem a coluna Deploy para `master`.
-
-## Prioridade 2 - DevOps
-
-Duas funcoes, nesta ordem:
+DevOps e **sempre o primeiro**. Duas funcoes, nesta ordem:
 
 1. Publique task em `Deploy` → `master` (CI, uma task).
 2. Senao, promova task quadruplo-accepted → `staging` + `In Review`.
 3. Nao crie task pai de RC.
-4. Se so houver gate humano, `P2_SKIPPED_HUMAN_DEPLOY` e avance.
+4. Se so houver gate humano, `P1_SKIPPED_HUMAN_DEPLOY` e avance para P2 (hotfix).
 
 Fonte: `agents/roles/devops/agent.md`.
+
+## Prioridade 2 - Hotfix
+
+So comeca se P1 nao tiver acao executavel (ou so gate humano).
+
+Task `hotfix` com acao elegivel de QA, Security, Design, UX ou promocao DevOps de hotfix → `staging` / `In Review`.
+
+Hotfix nao autoriza pular os validadores nem a coluna Deploy para `master`.
 
 ## Prioridade 3 - Documentacao
 
@@ -111,7 +114,7 @@ Nunca regredir item em `Deploy` sem rejeicao humana explicita.
 
 ## Contrato de conclusao da rodada
 
-Prioridade(s) tentada(s), `P2_SKIPPED_HUMAN_DEPLOY` se houver, evidencia P1-P4, tasks, **acao executada** (nao so relato), `DONE` ou `BLOCKED`.
+Prioridade(s) tentada(s), `P1_SKIPPED_HUMAN_DEPLOY` se houver, evidencia P1-P4, tasks, **acao executada** (nao so relato), `DONE` ou `BLOCKED`.
 
 ## Fontes obrigatorias
 
