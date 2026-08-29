@@ -72,12 +72,15 @@ Gate de staging (task comum): as **quatro** labels juntas:
 
 ## DevOps — integração contínua por task (sem RC)
 
-### Entrada
+No Manager, DevOps é **P1**. Hotfix é **P2**.
 
-1. Task na coluna **`Deploy`** (publicar o delta sozinho em `master`).
+### Entrada (P1)
+
+1. Task na coluna **`Deploy`** (publicar o delta sozinho em `master`) — primeiro.
 2. Task **quádruplo-accepted** ainda fora de `staging` / `In Review`.
-3. `hotfix` para `staging` / `In Review` (gate de validadores pode ser posterior).
-4. Issues/PRs com `agent:devops`.
+3. Issues/PRs com `agent:devops` com ação de merge restante.
+
+Promoção de `hotfix` → staging é P2, não P1.
 
 ### Proibido
 
@@ -85,7 +88,7 @@ Gate de staging (task comum): as **quatro** labels juntas:
 - Freeze de pacote / inventário de filhas como rito novo.
 - Mergear `dev` inteiro em `staging`.
 - Abrir segundo “RC” paralelo.
-- Promover task comum a staging sem as quatro `:accepted` (exceção: `hotfix`).
+- Promover task comum a staging sem as quatro `:accepted` (exceção: `hotfix` na P2).
 
 ### Promoção a staging
 
@@ -107,7 +110,7 @@ Sinal de que a **task individual** já está em staging e aguarda humano. Nenhum
 3. Move a task para **`Done`**.
 4. Handoff documental fail-closed (`agent:technical-documenter` / `agent:tutorial-assistant` se faltar `:done`).
 
-Nunca direto a `master` sem coluna `Deploy`.
+Nunca direto a `master` sem coluna `Deploy`, salvo correção estrutural de governança em `agents-mcp`.
 
 Detalhes: `agents/skills/shared/github/master-publication.md`.
 
@@ -115,7 +118,7 @@ Detalhes: `agents/skills/shared/github/master-publication.md`.
 
 - Não implementa feature de produto no lugar do Developer.
 - Não monta RC.
-- Não inclui task comum sem as quatro `:accepted` (exceção `hotfix`).
+- Não inclui task comum sem as quatro `:accepted` (exceção `hotfix` na P2).
 
 ## Quem pode o que
 
@@ -129,15 +132,17 @@ Detalhes: `agents/skills/shared/github/master-publication.md`.
 | Criar task pai RC | **nao** | **nao** | **nao** |
 | Merge delta → `master` | **nao** | **nao** | **sim** (coluna Deploy) |
 
-## Hotfix (prioridade absoluta)
+## Hotfix (P2 do Manager)
 
 Label obrigatória: `hotfix`.
+
+No Full Pipeline, hotfix vem **depois** do DevOps (P1).
 
 ```text
 master
   └─ task-{id}
        └─ merge task-{id} → dev
-            └─ DevOps merge somente task-{id} → staging (sem esperar quádruplo)
+            └─ DevOps merge somente task-{id} → staging (sem esperar quádruplo) [P2]
                  └─ In Review → humano Deploy → delta → master → Done
                  └─ QA/Security/Design/UX podem concluir depois
 ```
@@ -145,7 +150,7 @@ master
 - Dual-gate **não** bloqueia entrada em `staging` no hotfix.
 - `master` ainda exige coluna **Deploy**.
 - Publica **somente o delta** da `task-{id}`.
-- Manager P1 = ação elegível de QA, Security, Design, UX ou DevOps. Manager **não** implementa produto; exceção estrutural em `agents-mcp` (docs/governança/runners).
+- Manager P1 = DevOps. Manager P2 = hotfix. Manager **não** implementa produto; exceção estrutural em `agents-mcp` (docs/governança/runners).
 
 ## Quality Bar
 
@@ -158,4 +163,4 @@ master
 
 ## Project Status: Blocked e Backlog
 
-Agents **não** selecionam nem movem items em **`Blocked`** ou **`Backlog`**.
+Agents **não** selecionam nem movem items em **`Blocked`** ou **`Backlog`** como fila.
