@@ -48,12 +48,14 @@ Regras adicionais:
 Antes de qualquer candidata:
 
 1. Leia o Status no Project #1.
-2. Se for **`Blocked`** ou **`Backlog`**: descarte. Nao comente, nao mova, nao valide, nao documente.
+2. Se for **`Blocked`** ou **`Backlog`**: descarte da fila normal.
 3. DevOps considera **In Review** / **Deploy** / **Done** por **task individual**. Nunca varre Blocked/Backlog. Nao monta RC.
 
 ## Proibicao: Blocked e Backlog
 
-Issues com Status Project #1 **`Blocked`** ou **`Backlog`** **nao sao candidatas** em nenhum template de elegibilidade.
+Issues com Status Project #1 **`Blocked`** ou **`Backlog`** **nao sao candidatas** da fila normal.
+
+Bloqueio operacional da rodada (API, conflito, label, board) deve ser resolvido, nao apenas documentado.
 
 ## Fonte de verdade da fila
 
@@ -122,32 +124,29 @@ Ao recusar: comentar, `agent:<papel>:rejected`, remover `agent:<papel>`, manter 
 
 ## Template de elegibilidade — `DevOps`
 
-O `DevOps` descobre trabalho sozinho quando o prompt nao informar issue. Opera **CI por task**. **Proibido** montar RC, criar pai `RC X.Y.Z-rc.N` ou freeze de pacote.
+O `DevOps` descobre trabalho sozinho quando o prompt nao informar issue. Opera **CI por task**. **Proibido** montar RC.
 
-Fonte primaria:
-
-- issues `open` na org;
-- labels `agent:devops`, quádruplo-accepted, `hotfix`, coluna Deploy / In Review;
-- PRs abertas com `agent:devops`.
+No Manager, esta captura é **P1**. Hotfix é **P2** (fora desta ordem).
 
 Candidata se **qualquer** for verdadeira:
 
 1. publicacao: task na coluna **`Deploy`** (delta individual → `master`);
 2. promocao: task **quádruplo-accepted** (QA+Security+Design+UX) ainda fora de `staging` / `In Review`;
-3. `hotfix` elegivel para `staging` / `In Review` (gate de validadores pode ser posterior);
-4. handoff: issue/PR com **`agent:devops`**.
+3. handoff: issue/PR com **`agent:devops`** e ação de merge restante.
 
-Nao candidata se o unico bloqueio for gate humano de Deploy ja documentado sem acao executavel.
+Ordem de prioridade (uma acao por execucao; master **antes** de staging):
 
-Ordem de prioridade (uma acao por execucao):
-
-1. `hotfix` / publicacao em **`Deploy`**
-2. quádruplo-accepted fora de staging / In Review
+1. publicacao em **`Deploy`** → `master`
+2. quádruplo-accepted fora de staging / In Review → `staging`
 3. PRs/issues com `agent:devops`
+
+`hotfix` → staging não entra nesta captura P1.
 
 Desempate: `createdAt` crescente; empate = menor numero.
 
 `In Review` = task individual em staging. Nao remover da coluna sem autorizacao humana.
+
+Se o nivel 1 estiver vazio, **ai sim** passa ao nivel 2.
 
 ## Output minimo da descoberta
 
