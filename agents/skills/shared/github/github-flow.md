@@ -2,15 +2,17 @@
 
 ## Overview
 
-Fonte canonica do fluxo de branches e entrega tecnica do ecossistema ControleOnline.
+Fonte canônica do fluxo de branches e entrega técnica do ecossistema ControleOnline.
+
+Integração contínua **por task**. Não se monta Release Candidate, task pai de RC, freeze de pacote nem inventário de filhas. RCs históricos (`RC X.Y.Z-rc.N`) são legado e não orientam execuções novas.
 
 ## Branches
 
 | Branch | Papel |
 | --- | --- |
-| `master` | Linha principal / producao |
-| `dev` | Integracao continua das tasks do Developer (apos implementacao) |
-| `staging` | **Somente** o pacote RC do DevOps (versionamento semântico); dispara deploy para conferencia humana |
+| `master` | Linha principal / produção |
+| `dev` | Integração contínua das tasks do Developer (após implementação) |
+| `staging` | Deltas já quádruplo-accepted (ou hotfix) para conferência humana; dispara deploy de staging |
 | `task-{id_issue}` | Branch de trabalho do Developer |
 
 ## Fluxo ponta a ponta
@@ -19,268 +21,146 @@ Fonte canonica do fluxo de branches e entrega tecnica do ecossistema ControleOnl
 master
   └─ task-{id}                         (Developer cria a partir de master)
        └─ merge em dev                 (Developer; SEM PR)
-            └─ dev                     (integracao continua das tasks)
-                 └─ QA + Security      (labels na task; sem PR)
-                      └─ DevOps empacota RC (semver)
-                           └─ staging  (pai + submodulos; dispara deploy staging)
-                                └─ task pai Deploy + subtasks  → coluna In Review
-                                     └─ humano aprova → coluna Deploy
-                                          └─ DevOps merge staging → master → coluna Done
+            └─ QA + Security + Design + UX
+                 └─ quatro :accepted
+                      └─ DevOps merge somente task-{id} → staging
+                           └─ coluna In Review (task individual)
+                                └─ humano → coluna Deploy
+                                     └─ DevOps promove o delta → master → Done
 ```
 
-## Etapas ja concluidas (pular com justificativa)
+## Etapas já concluídas (pular com justificativa)
 
-Se o estado real do GitHub mostrar que o passo da etapa **ja foi feito** (por qualquer motivo — merge manual, reexecucao, trabalho previo, hotfix operacional), o agent **nao precisa refazer** o passo. Deve:
+Se o estado real do GitHub mostrar que o passo **já foi feito**, o agent não refaz. Deve confirmar evidência (commits, merge-base, labels, coluna), pular só o concluído, avançar o próximo estágio e comentar a justificativa.
 
-1. **Confirmar** a evidencia no Git (commits, merge-base, branch atualizada, labels, coluna).
-2. **Pular** apenas o que ja estiver concluido.
-3. **Avancar** a task para o **proximo estagio** do fluxo (labels `agent:*`, handoff, coluna quando couber ao papel).
-4. **Comentar na issue** com justificativa objetiva: o que ja estava feito, como foi verificado, e qual estagio passa a valer.
-
-Exemplos:
-
-- `task-{id}` ja mergeada em `dev` → Developer nao re-mergeia; aplica `agent:qa` + `agent:security` e comenta a justificativa.
-- Conteudo do RC ja esta em `staging` nos repos do pacote → DevOps nao reconstrói o mesmo delta; segue task pai / coluna `In Review` (ou o proximo passo faltante) com comentario.
-- `staging` ja esta em `master` para o RC da task pai em `Deploy` → DevOps nao re-mergeia; move para `Done` com comentario da evidencia.
-
-**Nao** pule etapas por intuicao ou titulo da issue. So com evidencia verificavel. **Nao** use o atalho para omitir QA/Security quando a entrega ainda nao foi revisada por labels.
+**Não** pule etapas por intuição. **Não** omita QA/Security/Design/UX sem labels de decisão.
 
 ## Developer
 
-1. Captura issue elegivel.
+1. Captura issue elegível.
 2. Cria ou reutiliza `task-{id_issue}` **a partir de `master`** atualizado.
 3. Implementa e valida na branch da tarefa.
 4. Sincroniza com `origin/master` antes de continuar/encerrar.
-5. **Faz merge de `task-{id_issue}` em `dev`** (sem abrir PR) — ou **pula** se ja estiver mergeada (com comentario de justificativa).
-6. Registra evidencia na issue e handoff por labels (`agent:qa` e `agent:security`).
+5. **Faz merge de `task-{id_issue}` em `dev`** (sem abrir PR) — ou **pula** se já estiver mergeada (com comentário).
+6. Registra evidência e handoff (`agent:qa` e `agent:security`; Design/UX quando o escopo tiver UI).
 
-### Proibicoes do Developer
+### Proibições do Developer
 
-- **Nao** abre PR no fluxo normal.
-- **Nao** mergeia em `staging` nem em `master`.
-- **Nao** commit/push direto em `master`, `main`, `dev`, `staging`.
-- Trabalho so na `task-{id_issue}`; chegada em `dev` e por **merge** da task branch.
+- **Não** abre PR no fluxo normal.
+- **Não** mergeia em `staging` nem em `master`.
+- **Não** commit/push direto em `master`, `main`, `dev`, `staging`.
+- Trabalho só na `task-{id_issue}`; chegada em `dev` é por **merge** da task branch.
 
 ### Entrega = merge em `dev`
 
 - **Nunca** faça merge de `dev` inteiro em `staging`. Merge sempre **apenas** `task-{id}`.
-- O único merge de ambiente completo é `staging` (RC) → `master`.
+- Origem: `task-{id_issue}`. Destino: `dev`. Operação: merge (não PR).
 
+## Revisão (QA, Security, Design, UX)
 
-- Origem: apenas `task-{id_issue}`.
-- Destino: `dev`.
-- Operacao: merge (nao PR, nao commits soltos em `dev`).
-- Rastreabilidade: issue ↔ branch ↔ commits ↔ `dev`.
+- Atuam sobre a task/issue e a evidência da entrega (commits na task branch e o que foi mergeado em **`dev`**).
+- Registram `agent:<papel>:accepted` ou `agent:<papel>:rejected`.
+- **Não** abrem PR; **não** finalizam task; **não** mexem em branches de integração.
+- Recusa devolve prioridade ao Developer na mesma `task-{id_issue}`.
 
-## Revisao (QA e Security)
+Gate de staging (task comum): as **quatro** labels juntas:
 
-- Atuam sobre a task/issue e a evidencia da entrega (commits na task branch e o que foi mergeado em **`dev`**).
-- Registram `agent:qa:accepted` / `agent:qa:rejected` e `agent:security:accepted` / `agent:security:rejected`.
-- **Nao** abrem PR; **nao** finalizam task; **nao** mexem em branches de integracao.
-- Recusa devolve prioridade ao Developer na mesma `task-{id_issue}` (corrigir e re-mergear em `dev`).
+- `agent:qa:accepted`
+- `agent:security:accepted`
+- `agent:design:accepted`
+- `agent:ux:accepted`
 
-## DevOps — Release Candidate (RC)
+## DevOps — integração contínua por task (sem RC)
 
-### Entrada
+No Manager, DevOps é **P1**. Hotfix é **P2**.
 
-- Todas as issues **open** (ou elegiveis) que tenham **ao mesmo tempo** `agent:qa:accepted` **e** `agent:security:accepted`.
-- Essas tasks ainda **nao** estao vinculadas a um RC aberto.
+### Entrada (P1)
 
-### Regras de exclusividade do RC
+1. Task na coluna **`Deploy`** (publicar o delta sozinho em `master`) — primeiro.
+2. Task **quádruplo-accepted** ainda fora de `staging` / `In Review`.
+3. Issues/PRs com `agent:devops` com ação de merge restante.
 
-- **Nao** se cria um novo RC enquanto existir um RC aberto (task pai de deploy ainda nao publicada / nao em `Done`).
-- **Freeze:** depois de aberto o RC, **nenhuma** task nova entra nesse pacote — **exceto** issues com label `hotfix`.
-- **Exceção de freeze (hotfix):** um item com label `hotfix` **pode e deve** ser injetado no RC atual (ou ir a `staging` em trilha própria) mesmo com freeze ativo, **sem** exigir dual-gate prévio. Hotfix tem prioridade absoluta e quebra **apenas** a regra de “não entrar no RC atual” / espera de QA+Security para staging.
-- Tasks comuns (sem `hotfix`) aprovadas depois do freeze aguardam o **próximo** RC.
-- **Inalterado:** mesmo com a injeção de hotfix, o pacote (ou o caminho de promoção do hotfix) **sempre** passa por coluna **In Review** e ação humana em **Deploy** antes de ir a `master`. Nunca direto a `master`.
+Promoção de `hotfix` → staging é P2, não P1.
 
-### Montagem do pacote
+### Proibido
 
-1. Coletar **todas** as tasks elegiveis no momento da abertura do RC.
-2. Definir a **versão alvo** com **Semantic Versioning** (https://semver.org). **Controle operacional** (título da task pai, board, comentários) pode usar a forma legível **`RC X.Y.Z-rc.N`** (ex.: `RC 1.5.0-rc.1`). **Arquivos de versão** (`package.json`, `app.json`) **não podem** conter texto — somente números.
-   - **Forma gravada em `package.json` / `app.json`:** somente números. Mapeamento do RC operacional:
-     - `RC X.Y.Z-rc.1` → versão numérica **`X.Y.1`** (ex.: `1.5.0-rc.1` → `1.5.1`)
-     - `RC X.Y.Z-rc.2` → versão numérica **`X.Y.2`** (ex.: `1.5.0-rc.2` → `1.5.2`)
-     - e assim por diante (incrementa o PATCH numérico a cada reempacote do mesmo RC).
-   - **Proibido** gravar sufixo textual (`-rc.N`, `-beta`, etc.) no campo `version` de `package.json` ou `app.json`.
-   - **Proibido** usar contador sequencial de RC como versão de arquivo (ex.: `RC6`, `RC v1.4.20` como se “RC6” fosse a versão).
-   - Escolha de `MAJOR.MINOR` (e base do PATCH) a partir da **última versão estável em `master`**, conforme [SemVer 2.0.0](https://semver.org):
-     - **MAJOR** (`X+1.y.n`): mudança **incompatível** / breaking na API ou no comportamento público.
-     - **MINOR** (`x.Y+1.n`): **nova funcionalidade** compatível com o que já existe (feature).
-     - **PATCH** (só sobe o `n` na mesma linha): **somente correção de bug** compatível, sem feature nova; ou reempacote do mesmo RC.
-     - Pacote misto (bugs + features compatíveis) → sobe **MINOR**. Breaking no pacote → sobe **MAJOR**.
-   - Após uma versão numérica publicada em produção, o **próximo** RC inicia nova sequência numérica na linha SemVer escolhida (ex.: após `1.5.1` em master, próximo ciclo feature → `1.6.1` no package; reempacote do mesmo ciclo → `1.6.2`).
-   - **`app.json` (Expo / mobile) — obrigatório espelhar o `package.json`:**
-     - `"version"` do `app.json` **igual** à `"version"` do `package.json` (somente números).
-     - `"versionCode"` = `MAJOR * 10000 + MINOR * 100 + PATCH` (formato compacto tipo `x.x0.xx`).
-       - Ex.: versão `1.4.18` → `versionCode: 14018`; versão `1.5.1` → `versionCode: 15001`.
-3. Consolidar as mudancas aprovadas no branch **`staging`** fazendo merge **somente de cada `task-{id}`** aprovada (nunca merge de `dev` inteiro). Pule consolidacao ja presente com evidencia + comentario.
-4. Fazer isso nos **repositorios pai e nos submodulos** afetados (ordem: submodulos primeiro, depois pai; pins/gitlinks coerentes). Gravar a versão **numérica** (`X.Y.N`) no `package.json` e, quando existir, no `app.json` (`version` + `versionCode`) do pacote em `staging`.
-5. O push/atualizacao de `staging` **dispara o deploy** do ambiente de staging para **conferencia humana**.
+- Criar task pai `RC X.Y.Z-rc.N`.
+- Freeze de pacote / inventário de filhas como rito novo.
+- Mergear `dev` inteiro em `staging`.
+- Abrir segundo “RC” paralelo.
+- Promover task comum a staging sem as quatro `:accepted` (exceção: `hotfix` na P2).
 
-### Task pai de deploy + subtasks
+### Promoção a staging
 
-1. Criar **uma nova task pai** de deploy/RC (titulo operacional com a forma legível, ex.: `RC 1.5.0-rc.1` — **não** `RC6 v1.4.20`). A versão nos arquivos continua numérica (`1.5.1`).
-2. Associar ao [Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1).
-3. Colocar as tasks do pacote como **filhos/subtasks** da task pai (e/ou links bidirecionais claros issue pai ↔ filhas).
-4. Mover a **task pai e as filhas** para a coluna **`In Review`**.
+1. Staging parte de `master` atual + merge **somente** de `task-{id}`.
+2. Pai + submódulos afetados (submódulos primeiro; pins coerentes).
+3. Conflito: abortar aquele merge, comentar, seguir a próxima task.
+4. Versão em `package.json` / `app.json` quando o bump for necessário: **somente números** (SemVer). Sem sufixo `-rc`.
+5. Push em `staging` dispara deploy de conferência.
+6. Mover **essa** task para **`In Review`**.
 
-   Se o pacote ficar fora de `In Review` (pai/filhas ainda em Working/Ready), a **Prioridade 2 do Manager** (organizacao do board) corrige na proxima rodada colocando o item faltante em `In Review` — o humano precisa ver o pacote visualmente antes do Deploy. Dual-accepted **fora** do pacote (residual/conflito/regressao) **nao** vao para `In Review`.
+### `In Review`
 
-   **Protecao do freeze:** `In Review` e o pacote congelado do RC/hotfix em staging. Depois que uma task entra em `In Review`, nenhum Manager, higiene ou worker generico pode remove-la dessa coluna, devolver para `Working`/`Ready`, ou retira-la do inventario do RC automaticamente. Se uma task em `In Review` estiver rejeitada, conflitada ou indevida, o Manager deve registrar a evidencia e acionar `DevOps`; somente o `DevOps`, com autorizacao humana explicita, pode remover a task do RC e registrar o novo inventario/pacote em staging.
-5. Label operacional tipica na pai: `agent:devops` (ou manter ownership de deploy no board).
+Sinal de que a **task individual** já está em staging e aguarda humano. Nenhum Manager/higiene remove da coluna. Se parecer indevida: comentar + `agent:devops` + esperar humano.
 
-### Aprovacao humana e publicacao
+### Publicação (coluna Deploy)
 
-1. Humano confere o ambiente de staging.
-2. Quando aprovar o pacote, move a task pai para a coluna **`Deploy`**.
-3. Em `Deploy`, o DevOps:
-   - **mescla o pacote (`staging`) em `master`** (pai + submodulos na ordem correta) — ou confirma que ja esta em `master` e avanca;
-   - **mantém a versão numérica** já gravada no `package.json` / `app.json` (ex.: `1.5.1`); não há strip de sufixo textual porque o arquivo **nunca** contém `-rc.N`; confirma tags/versão quando aplicavel;
-   - confirma push remoto e tags/versao quando aplicavel;
-   - **obrigatório:** move a **task pai e todas as filhas/subtasks** do inventário do RC para a coluna **`Done`** na mesma passagem (Project #1);
-   - não deixar nenhuma filha do inventário em `Deploy` / `In Review` / `Working` após o pai estar em `Done`;
-   - **handoff de documentação (fail-closed):** em **cada** filha/task sem `agent:technical-documenter:done` / `agent:tutorial-assistant:done`, aplicar **sempre** labels de solicitação (`agent:technical-documenter` e `agent:tutorial-assistant`); **sem isenção**; nunca inventar `:done`; decisão documental é só dos documentadores; ver `master-publication.md` e `devops/agent.md`;
-   - se pulou merge por ja estar feito, **comente a justificativa** na task pai.
+1. Humano move a task para **`Deploy`**.
+2. DevOps mescla o delta (`staging` / `task-{id}`) → `master` (pai + submódulos).
+3. Move a task para **`Done`**.
+4. Handoff documental fail-closed (`agent:technical-documenter` / `agent:tutorial-assistant` se faltar `:done`).
 
-**Proteção de coluna Deploy (Manager e higiene):**
-- A coluna **`Deploy`** é o sinal de aprovação humana já realizada.
-- **Nenhum** agent (Manager P2/P6, higiene residual ou outro) pode mover task de **`Deploy`** de volta para **`In Review`**, Working ou Ready.
-- Única exceção: evidência explícita de rejeição humana (comentário objetivo + decisão documentada).
-- Enquanto a task pai estiver em `Deploy`, a próxima ação legítima é do **DevOps** (promover e ir para `Done`).
+Nunca direto a `master` sem coluna `Deploy`, salvo correção estrutural de governança em `agents-mcp`.
 
-**Proteção de coluna In Review (freeze):**
-- A coluna **`In Review`** é o sinal de que a task faz parte do pacote de RC/hotfix em staging e aguarda conferência humana.
-- **Nenhum** Manager, higiene residual ou worker genérico pode mover task de **`In Review`** para `Working`, `Ready`, `Backlog` ou `Blocked`, nem removê-la do inventário do RC automaticamente.
-- Única exceção: remoção conduzida pelo **DevOps**, com autorização humana explícita, comentário objetivo e novo inventário do RC registrado.
-- Rejeição de QA/Security após entrada em staging não autoriza o Manager a retirar a task do freeze; o caminho correto é handoff para DevOps decidir correção/reempacote/remocao autorizada.
+Detalhes: `agents/skills/shared/github/master-publication.md`.
 
-Detalhes de publicacao: `agents/skills/shared/github/master-publication.md`.
+### O que o DevOps não faz
 
-### O que o DevOps nao faz
-
-- Nao implementa feature de produto no lugar do Developer.
-- Nao abre RC novo com RC ainda aberto.
-- Nao inclui task **comum** sem o par `agent:qa:accepted` + `agent:security:accepted` (exceção: `hotfix`, cujo dual-gate pode ser posterior).
-- Nao injeta tasks comuns novas no RC ja freezeado (exceção: `hotfix`; dual-gate pode ser posterior).
+- Não implementa feature de produto no lugar do Developer.
+- Não monta RC.
+- Não inclui task comum sem as quatro `:accepted` (exceção `hotfix` na P2).
 
 ## Quem pode o que
 
-| Acao | Developer | QA | Security | DevOps |
-|------|-----------|----|----------|--------|
-| Branch `task-{id}` a partir de `master` | sim | nao | nao | so excecao |
-| Merge `task-{id}` → `dev` | sim | nao | nao | so se conflito/desvio |
-| Merge em `staging` (pacote RC) | **nao** | **nao** | **nao** | **sim** |
-| Abrir PR de produto / task | **nao** | **nao** | **nao** | **nao** (salvo excecao documentada) |
-| Labels `qa:*` / `security:*` | nao | sim | sim | nao |
-| Criar task pai RC + subtasks | nao | nao | nao | **sim** |
-| Merge `staging` → `master` | **nao** | **nao** | **nao** | **sim** (apos coluna Deploy) |
-| Deploy / publicacao | nao | nao | nao | sim |
-| Pular passo ja evidenciado + comentar | sim | sim* | sim* | sim |
+| Acao | Developer | Validadores | DevOps |
+|------|-----------|-------------|--------|
+| Branch `task-{id}` a partir de `master` | sim | nao | so excecao |
+| Merge `task-{id}` → `dev` | sim | nao | so se conflito/desvio |
+| Merge `task-{id}` → `staging` | **nao** | **nao** | **sim** |
+| Abrir PR de produto / task | **nao** | **nao** | **nao** (salvo excecao) |
+| Labels `:accepted` / `:rejected` | nao | sim | nao |
+| Criar task pai RC | **nao** | **nao** | **nao** |
+| Merge delta → `master` | **nao** | **nao** | **sim** (coluna Deploy) |
 
-\*QA/Security podem reconhecer merge ja feito em `dev` como evidencia, mas **nao** pulam a propria decisao de aceite/recusa sem analisar.
+## Hotfix (P2 do Manager)
 
-## Relacao com outras skills
+Label obrigatória: `hotfix`.
 
-- publicacao em master: `agents/skills/shared/github/master-publication.md`
-- ownership e handoff: `agents/skills/shared/operations/agent-handoff-governance.md`
-- criterios de conclusao: `agents/skills/shared/quality/task-completion-criteria.md`
-- board / Project #1: `agents/skills/shared/operations/issue-queue-discovery.md`
-
-
-## Hotfix (prioridade absoluta)
-
-Hotfixes são correções urgentes em produção (ou risco crítico iminente) que **não esperam** o ciclo normal de RC.
-
-### Identificação
-
-- Label obrigatória: `hotfix` (criar no repositório se ausente).
-- **Sempre** aplicar a label `hotfix` ao criar uma task pedida como hotfix.
-- Pode coexistir com `bug` / `enhancement`.
-- Developer, QA, Security e DevOps devem tratar issues com `hotfix` como **prioridade 1**. O Manager trata como prioridade 1 somente as ações elegíveis de QA, Security ou DevOps; implementação continua exclusiva do Developer.
-
-### Fluxo acelerado
+No Full Pipeline, hotfix vem **depois** do DevOps (P1).
 
 ```text
 master
-  └─ task-{id}                         (Developer cria a partir de master)
-       └─ merge task-{id} → dev        (Developer; SEM PR) — prioridade máxima
-            └─ na mesma passada / em seguida:
-                 └─ DevOps (ou Developer no handoff de hotfix) merge **somente** task-{id} → staging
-                      (NUNCA merge de `dev` inteiro em staging)
-                      └─ task hotfix → coluna **In Review** (staging já atualizado)
-                           └─ QA + Security podem atuar **depois** (labels; não bloqueiam staging)
-                           └─ humano move a task hotfix para **Deploy**
-                                └─ DevOps promove **somente o delta do hotfix** → master → Done
-                                   (NÃO é obrigatório levar o RC inteiro junto)
+  └─ task-{id}
+       └─ merge task-{id} → dev
+            └─ DevOps merge somente task-{id} → staging (sem esperar quádruplo) [P2]
+                 └─ In Review → humano Deploy → delta → master → Done
+                 └─ QA/Security/Design/UX podem concluir depois
 ```
 
-**Aceleração de hotfix (gate diferido):** no hotfix, o Developer entrega em `dev` e o delta **já pode ir para `staging` na mesma passada**, **sem** esperar `agent:qa:accepted` + `agent:security:accepted`. QA e Security **atuam depois** (revisam o que já está em staging / In Review) e aplicam labels quando concluírem. O dual-gate **não** bloqueia a entrada em `staging` no caminho de hotfix.
-
-**Obrigatório (inalterado):** o delta **não** vai direto para `master`. Após estar em `staging`, a task hotfix **deve** passar pela coluna **In Review** para conferência humana. Só após o **humano** mover a task hotfix para **Deploy** o DevOps promove a `master`.
-
-**Publicação independente:** quando o humano coloca a **task hotfix** em **Deploy**, o DevOps promove **somente o delta da `task-{id}` do hotfix** para `master`. **Não** é necessário publicar o RC completo junto. O RC aberto continua no fluxo normal com o restante do pacote.
-
-### Regra crítica de merge (hotfix e fluxo normal)
-
-- **Sempre** faça merge **apenas da branch `task-{id}`** para o destino (`dev` ou, no caminho de promoção prioritária, `staging`).
-- **Nunca** faça merge de um ambiente inteiro (`dev` → `staging`).
-- O **único** merge de ambiente completo permitido é o **RC em `staging` → `master`** (após coluna Deploy).
-- `dev` pode conter tarefas ainda quebradas / incompletas e **não pode** ir para `staging`.
-- `staging` deve permanecer **estável** (deltas de tasks dual-accepted no pacote RC **ou** hotfix prioritário — no hotfix o dual-gate pode ser posterior).
-
-### Regras
-
-1. **Developer**: captura e implementa hotfix antes de qualquer outra issue; branch `task-{id}` a partir de `master`; merge **somente** `task-{id}` → `dev`; aplica labels de handoff `agent:qa` + `agent:security` (QA/Security **podem** concluir depois). Em hotfix, o delta já está elegível para `staging` na mesma passada.
-2. **QA / Security**: no hotfix, **não bloqueiam** a entrada em `staging`. Revisam com prioridade (código já pode estar em staging / In Review) e registram `agent:qa:accepted`/`agent:security:accepted` (ou rejected) **depois**. Recusa após staging exige correção na mesma `task-{id}` e novo merge (dev + staging).
-3. **DevOps** (ou promoção prioritária de hotfix):
-   - Com label `hotfix` e entrega do Developer em `dev`, promove com prioridade **sem esperar dual-gate**:
-     - merge **somente** `task-{id}` → `staging` (nunca `dev` inteiro);
-     - ou inclui o delta no RC aberto / monta RC de item único;
-     - move a **task hotfix** para a coluna **In Review** (nunca pula In Review);
-   - **Proibido** promover hotfix direto de `staging`/`dev` para `master` sem a coluna **Deploy** (aprovação humana).
-   - Após o **humano** mover a task hotfix para **Deploy**: promove **somente o delta da `task-{id}` do hotfix** para `master` e move essa task para `Done`.
-   - **Não** é obrigatório levar o RC completo junto na publicação do hotfix. O RC aberto permanece no seu fluxo normal com as demais tasks.
-4. **Manager**: prioridade 1 = executar somente uma ação elegível de **QA, Security ou DevOps** para issue com label `hotfix`. O Manager **nunca** captura ou implementa a task, **nunca** cria `task-{id}` e **nunca** faz merge em `dev`; essas ações permanecem exclusivas do fluxo paralelo do Developer.
-5. **Não se abre segundo RC paralelo** só por causa de hotfix. Se já existir RC aberto (mesmo freezeado), o DevOps **pode** incluir o delta da `task-{id}` no pacote atual (única quebra de freeze) **ou** promover o hotfix em trilha própria (task-{id} → staging → In Review → Deploy → master). Em ambos os casos:
-   - a task hotfix **sempre** passa por **In Review**;
-   - só após o **humano** mover a task hotfix para **Deploy** o DevOps publica em master;
-   - a publicação do hotfix promove **somente o delta do hotfix** — **não** exige levar o RC inteiro para master;
-   - QA/Security podem concluir **depois** da entrada em staging.
-   - Nunca pular In Review nem ir direto a master.
-6. Após publicação, o hotfix deve permanecer refletido em `dev` e `master` para não regredir.
-
-### Quality bar de hotfix
-
-- Mudança mínima e focada no problema crítico.
-- Testes/smoke do escopo afetado (mesmo sob urgência).
-- Evidência clara na issue (commits da `task-{id}`, merge em `dev`, labels).
-- Não usar `hotfix` para feature ou melhoria não urgente.
+- Dual-gate **não** bloqueia entrada em `staging` no hotfix.
+- `master` ainda exige coluna **Deploy**.
+- Publica **somente o delta** da `task-{id}`.
+- Manager P1 = DevOps. Manager P2 = hotfix. Manager **não** implementa produto; exceção estrutural em `agents-mcp` (docs/governança/runners).
 
 ## Quality Bar
 
-- nao derive task branch de `dev`/`staging` (sempre de `master`)
-- nao entregue Developer em `staging` (destino e `dev`)
-- nao promova para `master` sem task (pai do RC **ou** task de hotfix) em coluna `Deploy` e passagem prévia por **In Review** (hotfix também não pula In Review)
-- nao promova hotfix direto para `master` sem conferência humana em staging
-- ao publicar hotfix em Deploy: promova **somente o delta do hotfix**; não é obrigatório publicar o RC completo junto
-- nao abra segundo RC em paralelo
-- nao refaca merge/passo ja concluido sem necessidade; documente o pulo com comentario
-- nao pule etapa sem evidencia verificavel no GitHub
-- nao feche issue; `closed`/Done operacional segue o board e humanos conforme governanca
-- **nao** mova task de **Deploy** de volta para **In Review** (Manager / higiene); Deploy é terminal até DevOps promover para Done
-
+- não derive task branch de `dev`/`staging` (sempre de `master`)
+- não entregue Developer em `staging` (destino é `dev`)
+- não promova para `master` sem coluna `Deploy` e passagem por `In Review`
+- não monte RC, pai de RC ou freeze de pacote
+- não pule etapa sem evidência verificável
+- não mova `Deploy` de volta para `In Review` sem rejeição humana explícita
 
 ## Project Status: Blocked e Backlog
 
-Agents **nao** selecionam nem movem items em **`Blocked`** ou **`Backlog`**. Fora de qualquer fluxo automatico (RC, Deploy, QA, DevOps, higiene). Somente humano reposiciona essas colunas.
-
-
-## RC a partir de master
-
-Ao criar ou reconstruir um RC:
-
-1. `staging` do pai e dos modulos envolvidos comeca em **`master`**.
-2. Merge individual das branches `task-*` das issues em **In Review**.
-3. Nao rebasear em cima de um `staging` velho divergente.
-4. Nao incluir issues em **Blocked** ou **Backlog**.
+Agents **não** selecionam nem movem items em **`Blocked`** ou **`Backlog`** como fila.

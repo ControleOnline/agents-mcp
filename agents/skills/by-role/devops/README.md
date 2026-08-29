@@ -1,8 +1,21 @@
 # DevOps Skills
 
-## Papel
+## Papel — duas funcoes
 
-`DevOps` monta o **RC** a partir de todas as tasks com `agent:qa:accepted` + `agent:security:accepted`, coloca o pacote em **`staging`** (pai + submodulos) com versão **numérica** nos arquivos (`package.json` / `app.json`), cria **task pai** (título operacional `RC X.Y.Z-rc.N`) com **subtasks**, move para **`In Review`**, e apos coluna **`Deploy`** mescla **`staging` → `master`**, confirma a versão numérica e vai para **`Done`** (pai + filhas).
+No Manager, DevOps e **P1**. Hotfix e **P2**.
+
+`DevOps` opera **integracao continua por task**. Nao monta RC, nao cria task pai `RC X.Y.Z-rc.N` e nao congela inventario de filhas.
+
+Ordem fixa da P1 (master **antes** de staging):
+
+1. Task na coluna **`Deploy`**: promove o delta sozinho → `master`, coluna **`Done`**, handoff documental.
+2. Task com **quatro** `:accepted` (QA + Security + Design + UX) ainda fora de staging: merge **somente** `task-{id}` → `staging` e move para **`In Review`**.
+
+Promocao de `hotfix` → staging e P2, nao P1.
+
+RCs historicos sao legado. Nao orientam execucao nova.
+
+Executar o merge. Comentario sem promocao nao fecha a funcao.
 
 ## Skills compartilhadas essenciais
 
@@ -14,22 +27,14 @@
 ## Ownership
 
 - label oficial: `agent:devops`
-- se o prompt nao informar issue, descubra a proxima prioridade no GitHub (template DevOps em `issue-queue-discovery.md`); **nao peca ao usuario**
-- prioridade: publicacao/`Deploy` e hotfix → RC aberto → montar RC → **PRs/issues** `agent:devops` (PRs soltas no board e handoffs)
-- **PRs** com `agent:devops` (ou item de PR no Project #1): decidir merge/alinhar/fechar na mesma passagem; a PR e objeto de trabalho; comentar evidencia; atualizar board
-- desempate: `createdAt` crescente; empate pelo menor numero da issue; `updatedAt` nao altera posicao
-- entrada do RC: **todas** as tasks com `agent:qa:accepted` e `agent:security:accepted` fora de RC aberto
-- **um RC por vez**; sem novo RC ate o atual estar publicado (`Done`)
-- **freeze:** nenhuma task nova entra no RC aberto — **exceto** `hotfix`; hotfix entra com prioridade **ou** trilha própria **sem** exigir dual-gate prévio (QA/Security depois); **sempre** In Review + Deploy humano; em Deploy publica **somente o delta do hotfix** (não obriga o RC inteiro)
-- versão em arquivos (`package.json` / `app.json`): **somente números** — `RC X.Y.Z-rc.1` → `X.Y.1`, `RC X.Y.Z-rc.2` → `X.Y.2`; controle operacional pode usar `RC X.Y.Z-rc.N`
-- `app.json`: `version` = `package.json`; `versionCode` = MAJOR*10000 + MINOR*100 + PATCH (ex.: `1.5.1` → `15001`)
-- SemVer: **MINOR** = feature compatível; **PATCH** = bugfix ou reempacote do RC; **MAJOR** = breaking — [semver.org](https://semver.org)
-- **freeze:** nenhuma task nova entra no RC aberto
-- branch do pacote: **`staging`** (dispara deploy de conferencia)
-- task pai + subtasks no [Project #1](https://github.com/orgs/ControleOnline/projects/1/views/1)
-- colunas: **`In Review`** (pacote montado) → humano → **`Deploy`** → merge em `master` → **`Done`**
-- `In Review` e freeze do pacote: remover uma task desta coluna altera o RC. So o `DevOps`, com autorizacao humana explicita e comentario de evidencia, pode retirar item do RC, ajustar `staging`/inventario e entao mover a task para a coluna coerente.
-- antes de publicar qualquer versão em `master`, auditar os deploys anteriores de `staging` e `master`; se algum não finalizou corretamente, descobrir o motivo e corrigir ou bloquear a publicação com evidência concreta
+- se o prompt nao informar issue, descubra no template DevOps de `issue-queue-discovery.md`
+- prioridade P1: `Deploy` → `master`; depois quarteto → `staging`; por ultimo PRs/issues `agent:devops` com acao restante (sem furar a fila hotfix da P2)
+- desempate: `createdAt` crescente; empate pelo menor numero; `updatedAt` nao altera posicao
+- gate de staging (comum): `agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`
+- hotfix: P2; pode ir a staging / In Review sem esperar o quadruplo; `master` exige Deploy
+- versao em arquivos: somente numeros (SemVer); sem sufixo textual
+- `In Review` = task individual ja em staging; nao remover sem humano
+- coluna `Deploy` = aprovacao humana; proxima acao e promover o delta a `master`
 
 ## Fontes principais
 

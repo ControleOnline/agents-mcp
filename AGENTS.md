@@ -116,31 +116,31 @@ Fonte completa: `agents/skills/shared/github/github-flow.md`.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
-- `QA` e `Security` decidem por labels na task; evidencia em `dev`; nao abrem PR
-- `DevOps` empacota **todas** as tasks com `agent:qa:accepted` + `agent:security:accepted` em um **RC semver**, coloca o pacote em **`staging`** (pai + submodulos), cria **task pai de deploy** com as demais como **subtasks**, move pai e filhas para **`In Review`**
-- **um RC por vez**; freeze — nenhuma task nova entra no RC aberto; nao ha novo RC ate publicar o atual
-- humano confere staging e move a task pai para **`Deploy`**
-- `DevOps` mescla **`staging` → `master`** e move para **`Done`**
+- `QA`, `Security`, `Design` e `UX` decidem por labels na task; evidencia em `dev`; nao abrem PR
+- `DevOps` publica tasks na coluna **`Deploy`** → `master` (deltas individuais) e, se nao houver Deploy, promove tasks com as **quatro** `:accepted` para `staging` + `In Review`
+- **Proibido montar RC** e criar task pai de RC
+- humano confere staging e move a task para **`Deploy`**
+- `DevOps` promove o delta individual `staging` → `master` e move para **`Done`**
 
 ## Ownership operacional
 
 Labels oficiais de review na task:
 
-- `agent:qa:accepted`
-- `agent:qa:rejected`
-- `agent:security:accepted`
-- `agent:security:rejected`
+- `agent:qa:accepted` / `agent:qa:rejected`
+- `agent:security:accepted` / `agent:security:rejected`
+- `agent:design:accepted` / `agent:design:rejected`
+- `agent:ux:accepted` / `agent:ux:rejected`
 
 Regras obrigatorias:
 
 - nenhuma task deve ser atribuida a pessoas, bots ou fallbacks tecnicos como mecanismo de captura de trabalho
 - assignees do GitHub nao participam do roteamento operacional e devem ser removidos quando aparecerem em tasks da fila
-- `Developer` seleciona trabalho apenas quando a issue ainda esta aberta, foi criada por membro da equipe e nao existe pendencia ativa de decisao por `QA` e `Security`
+- `Developer` seleciona trabalho apenas quando a issue ainda esta aberta, foi criada por membro da equipe e nao existe pendencia ativa de decisao por `QA`, `Security`, `Design` ou `UX`
 - `Developer` so trabalha na `task-{id_issue}` e entrega em **`dev`** por merge, sem abrir PR
 - `Developer` nao mexe diretamente em `master`, `main`, `dev`, `staging`
-- `Security` e `QA` registram apenas labels de aceite/recusa na task
-- quando `Security` ou `QA` recusarem, comentam de forma objetiva para o `Developer`
-- somente o `DevOps` monta RC em `staging`, cria a task pai de deploy e promove `staging` → `master` apos coluna `Deploy`
+- validadores registram apenas labels de aceite/recusa na task
+- quando um validador recusar, comenta de forma objetiva para o `Developer`
+- somente o `DevOps` publica `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`
 - agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
 
 ## Fronteira do CTO
@@ -149,54 +149,50 @@ O CTO supervisiona o ecossistema e corrige diretamente o `agents-mcp` quando hou
 
 O CTO nao deve substituir a execucao normal de `Developer`, `Security`, `Quality Assurance`, `DevOps` ou `Sysadmin` quando a trilha ja pertence claramente a um desses agents.
 
-Quando `agent:qa:accepted` e `agent:security:accepted` coexistirem, a trilha de RC/`staging`/`master` pertence ao `DevOps`, conforme `agents/skills/shared/github/github-flow.md` e `agents/skills/shared/github/master-publication.md`.
+Quando as quatro `:accepted` coexistirem, a trilha de `staging`/`master` pertence ao `DevOps`, conforme `agents/skills/shared/github/github-flow.md` e `agents/skills/shared/github/master-publication.md`.
 
-## Fluxos operacionais paralelos
+## Full Pipeline / Manager
 
-Existem dois fluxos independentes que rodam em paralelo:
+Existe **um** Full Pipeline. SysAdmin permanece fora deste mode (automacao separada).
 
-1. **Full Pipeline / Manager**: governa Hotfix ja implementado, DevOps, Documentacao, Validadores e higiene de board. Este fluxo **nao captura nem implementa trabalho de Developer**.
-2. **Developer**: captura autonomamente a propria fila, implementa em `task-{id_issue}` a partir de `master`, faz merge da task em `dev` e entrega para QA/Security.
+O Manager, ao chegar em P5 sem trabalho P1–P4 executavel, **le e executa** `agents/roles/developer/agent.md` sobre exatamente uma issue elegivel. Nao inventa rito proprio de codigo.
 
-O Manager pode corrigir labels/status que devolvam uma task ao `Developer`, mas nao deve executar a implementacao, escolher uma task para implementar dentro do seu ciclo, nem bloquear a propria rodada porque existe trabalho novo de Developer.
+Developer executado de forma standalone (prompt direto no papel) continua podendo capturar a propria fila; isso nao cria um segundo pipeline nem autoriza higiene a rodar na frente da implementacao.
 
 ## Mode de Acao do Agent (Full Pipeline / Manager)
 
-Quando a automação unificada (`Controle Online - Full Pipeline`) for executada, ela deve seguir **estritamente** a ordem de prioridade abaixo.  
-O princípio é: **sempre atuar no que está mais avançado no pipeline do Manager**, sem incluir a fila paralela do `Developer`.
+Quando a automacao unificada (`Controle Online - Full Pipeline`) for executada, ela deve seguir **estritamente** a ordem de prioridade abaixo.
+O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**.
 
-### Ordem de prioridade (uma ação por execução)
+### Ordem de prioridade
 
-1. **Hotfix**
-   - Qualquer issue com label `hotfix` (validar QA/Security, promover/deploy) tem prioridade absoluta
-   - **Implementação (Developer) de hotfix roda à parte** no fluxo paralelo do `Developer` e não faz parte desta automação do Manager
-   - Hotfix **pode entrar** em RC já freezeado; ainda assim **sempre** passa por **In Review** + ação humana em **Deploy** (nunca direto a master)
-   - Ao criar task hotfix: **sempre** aplicar a label `hotfix`
-   - Ver seção Hotfix em `agents/skills/shared/github/github-flow.md`
-   - Merge sempre **somente** da `task-{id}` (nunca `dev` inteiro → `staging`)
-
-2. **DevOps**
-   - Publicar release aprovada na coluna Deploy (se existir)
-   - Criar Release Candidate (se houver tasks com `agent:qa:accepted` + `agent:security:accepted` e não houver RC em andamento)
-   - No RC: merge **somente** das `task-{id}` aprovadas em `staging` (nunca `dev` inteiro)
-
-3. **Documentação** (Documentadores)
+1. **P1 DevOps**
+   - Publicar todas as tasks em `Deploy` → `master` (deltas individuais, sem RC)
+   - Senao, promover todas as tasks quadruplo-accepted → `staging` + `In Review`
+   - Gate humano de Deploy **nao** encerra a rodada (`P1_SKIPPED_HUMAN_DEPLOY`)
+   - **Proibido montar RC**
+2. **P2 Hotfix**
+   - Validar ou promover task `hotfix` ja implementada (QA / Security / Design / UX / DevOps → staging)
+   - Implementacao de hotfix e P5 Developer, nao P2
+3. **P3 Documentacao**
    - Technical Documenter
    - Tutorial Assistant
-
-4. **Validadores**
-   - QA
-   - Security
-
-5. **Developer**
+4. **P4 Validadores**
+   - QA → Security → Design → UX
+5. **P5 Developer**
+   - Exatamente uma issue elegivel
+   - Branch `task-{id}` a partir de `master`, merge em `dev`, handoff dos quatro validadores
+6. **P6 Higiene residual + board**
+   - Somente com P1–P5 sem acao executavel
 
 ### Regras deste mode
 
-- Execute **exatamente uma** ação por rodada.
-- Pare na primeira prioridade que tiver trabalho pendente.
+- Tente a prioridade mais alta com trabalho elegivel e executavel.
 - Dentro da mesma prioridade funcional, selecione a task elegivel mais antiga por `createdAt` crescente; em empate, use o menor numero da issue.
 - `updatedAt` serve apenas como evidencia de atividade e nunca reposiciona uma task na fila.
-- SysAdmin **não** participa deste mode (deve continuar rodando em paralelo em automação separada).
-- **Developer** **não** participa deste mode: sua captura, implementação e merge em `dev` rodam no fluxo paralelo próprio.
+- SysAdmin **nao** participa deste mode (deve continuar rodando em paralelo em automacao separada).
+- **Developer participa deste mode como P5.** Nao avance para P6 enquanto existir issue elegivel de Developer.
+- Falha operacional em P5 nao autoriza fallback para higiene.
 - Sempre confirme o estado real no GitHub / Project #1 antes de agir.
-- Siga integralmente as fontes canônicas de cada papel (`agents/roles/*/agent.md` e skills referenciadas).
+- Siga integralmente as fontes canonicas de cada papel (`agents/roles/*/agent.md` e skills referenciadas).
+- Colunas `Blocked` e `Backlog` sao exclusivamente humanas.

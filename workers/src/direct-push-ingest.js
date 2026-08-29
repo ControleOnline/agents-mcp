@@ -33,6 +33,7 @@ const CONFIG = {
 
 const DEVELOPER_LABEL = 'agent:developer';
 const ALL_AGENT_LABELS = ['agent:developer', 'agent:security', 'agent:qa', 'agent:devops'];
+const PROTECTED_PROJECT_STATUSES = new Set(['blocked', 'backlog']);
 
 function token() {
   const value = (process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '').trim();
@@ -216,6 +217,10 @@ function statusOf(item) {
   return item.fieldValues?.nodes?.find((value) => value?.field?.name === 'Status')?.name || null;
 }
 
+function isProtectedProjectStatus(status) {
+  return PROTECTED_PROJECT_STATUSES.has(String(status || '').trim().toLowerCase());
+}
+
 function itemRef(item) {
   const content = item.content;
   if (!content?.repository?.nameWithOwner || !content?.number) return null;
@@ -258,6 +263,9 @@ async function addIssueToProject(project, issueNodeId) {
 }
 
 async function moveProjectItem(project, itemId, targetStatus) {
+  if (isProtectedProjectStatus(targetStatus)) {
+    throw new Error(`Refusing to move ProjectV2 item to protected human-only status: ${targetStatus}`);
+  }
   const field = statusField(project);
   const option = field.options.find((o) => o.name.toLowerCase() === targetStatus.toLowerCase());
   if (!option) throw new Error(`Status option not found: ${targetStatus}`);
@@ -381,6 +389,10 @@ async function repairConfiguredProjectItems() {
     const ref = itemRef(item);
     if (!ref || !wanted.has(ref.toLowerCase())) continue;
     const currentStatus = statusOf(item);
+    if (isProtectedProjectStatus(currentStatus)) {
+      repairs.push({ ref, status: currentStatus, changed: false, skipped: 'protected-status' });
+      continue;
+    }
     if (currentStatus?.toLowerCase() === CONFIG.repairStatus.toLowerCase()) {
       repairs.push({ ref, status: currentStatus, changed: false });
       continue;
@@ -395,6 +407,7 @@ async function repairConfiguredProjectItems() {
 async function hasActiveDeveloperExecution() {
   const project = await loadProjectItems();
   return (project.items.nodes || []).some((item) => {
+    if (isProtectedProjectStatus(statusOf(item))) return false;
     if (statusOf(item)?.toLowerCase() !== CONFIG.status.toLowerCase()) return false;
     const content = item.content;
     if (!content || content.__typename !== 'Issue') return false;
