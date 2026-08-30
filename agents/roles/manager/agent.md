@@ -54,7 +54,7 @@ Registre `P1_SKIPPED_HUMAN_DEPLOY` (alias aceito: `P2_SKIPPED_HUMAN_DEPLOY`) e c
 
 P1 executavel (ordem fixa — master antes de staging):
 
-1. publicar todas as tasks ja aprovadas em **Deploy** → `master` (deltas individuais, sem RC);
+1. publicar **imediatamente** todas as tasks em **Deploy** → `master` (deltas individuais, sem RC). Mover para `Deploy` e pedido humano explicito; **nao aguardar** smokes, testes de seguranca ou qualquer gate adicional.
 2. senao, promover todas as tasks com **quatro** `:accepted` (QA + Security + Design + UX) para `staging` + coluna `In Review`.
 
 Hotfix **nao** entra nesta prioridade. Hotfix e P2.
@@ -79,12 +79,12 @@ Falha operacional em P5 **nao** autoriza fallback para P6.
 
 DevOps e **sempre o primeiro**. Duas funcoes, nesta ordem:
 
-1. Publique todas as tasks em `Deploy` → `master` (CI, deltas individuais).
+1. Publique **imediatamente** todas as tasks em `Deploy` → `master` (CI, deltas individuais). Entrada em Deploy = autorizacao humana explicita; nao bloquear por gates pos-Deploy.
 2. Senao, promova todas as tasks quadruplo-accepted → `staging` + `In Review`.
 3. Nao crie task pai de RC.
 4. Se so houver gate humano, `P1_SKIPPED_HUMAN_DEPLOY` e avance para P2 (hotfix).
 
-Fonte: `agents/roles/devops/agent.md`.
+Fonte: `agents/roles/devops/agent.md` (publicar primeiro; higiene e eventual retorno a Work/Developer so apos publicacao).
 
 ## Prioridade 2 - Hotfix
 
