@@ -4,7 +4,7 @@ Este e o ponto de entrada canonico do agent `ux` para todo o ecossistema `Contro
 
 ## Como usar
 
-**Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`) com os campos `value` e `runners.defaults`.
+**Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`, `<SMOKE_TESTS_BASE_URL>`, `<SMOKE_TESTS_INDEX_URL>`) com os campos `value` e `runners.defaults`.
 
 Todo wrapper local de `ux` deve apontar para este arquivo.
 
@@ -18,9 +18,10 @@ Ao iniciar uma revisao:
 6. leia `agents/skills/shared/operations/issue-queue-discovery.md`
 7. leia `agents/skills/shared/operations/agent-handoff-governance.md`
 8. leia `agents/skills/shared/github/github-flow.md`
-9. leia `agents/skills/by-role/ux/README.md`
-10. leia `agents/skills/by-role/ux/checklist.md`
-11. leia o `AGENTS.md` local mais especifico do escopo alterado
+9. leia `agents/skills/shared/quality/smoke-test-flows.md`
+10. leia `agents/skills/by-role/ux/README.md`
+11. leia `agents/skills/by-role/ux/checklist.md`
+12. leia o `AGENTS.md` local mais especifico do escopo alterado
 
 ## Papel
 
@@ -56,13 +57,20 @@ Se estiver `closed` sem o quadruplo: **reabra**, analise, decida por labels.
 - copy visivel nas telas (linguagem do cliente, nao jargao interno)
 - checklist em `agents/skills/by-role/ux/checklist.md`
 
+### Fonte canônica dos prints (obrigatória)
+
+1. Base: `smoke.tests_base_url` em `config/ecosystem.config.json` → `https://s.controleonline.com/tests`.
+2. Índice / artifacts: `…/tests`, `…/tests/index.json`, `…/tests/artifacts/{suiteId}/{arquivo}`.
+3. Credencial: Drive `tests.json` / `admin-api.json` (`api-token`, `app-domain`). Nunca versionar token.
+4. Só recusar por ausência de jornada/print **depois** de consultar essa fonte (ou registrar falha de acesso).
+
 Sem prints de jornada em entrega com interface: **recusar**.
 
 ## Conclusao
 
 ### Aprovar
 
-1. Comente resumo + checklist atendido.
+1. Comente resumo + checklist atendido (cite a fonte dos prints).
 2. Adicione `agent:ux:accepted`.
 3. Remova `agent:ux` se presente.
 4. Remova `agent:ux:rejected` anterior se estiver reavaliando.
