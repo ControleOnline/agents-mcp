@@ -70,6 +70,37 @@
     }
   },
 
+  "smoke": {
+    "tests_base_url": {
+      "placeholder": "<SMOKE_TESTS_BASE_URL>",
+      "env": "SMOKE_TESTS_BASE_URL",
+      "value": "https://s.controleonline.com/tests",
+      "description": "URL base do índice de suites/artifacts de smoke (sem secret). Credencial api-token fica no Drive tests.json / admin-api.json."
+    },
+    "tests_index_url": {
+      "placeholder": "<SMOKE_TESTS_INDEX_URL>",
+      "env": "SMOKE_TESTS_INDEX_URL",
+      "value": "https://s.controleonline.com/tests/index.json",
+      "description": "Índice JSON agregado das suites de smoke."
+    },
+    "api_entrypoint": {
+      "placeholder": "<API_ENTRYPOINT>",
+      "env": "API_ENTRYPOINT",
+      "value": "https://api.controleonline.com",
+      "description": "Entrypoint HTTP da API (flowcharts e demais endpoints). Token não fica aqui."
+    },
+    "admin_origin": {
+      "placeholder": "<ADMIN_ORIGIN>",
+      "env": "ADMIN_ORIGIN",
+      "value": "https://admin.controleonline.com",
+      "description": "Origin do admin (app-domain correlato)."
+    },
+    "credentials_drive": {
+      "value": "tests.json e admin-api.json na pasta de credenciais do Drive",
+      "description": "Onde os agents leem api-token e headers. Nunca versionar token no git."
+    }
+  },
+
   "runners": {
     "defaults": {
       "QA_TASK_LIMIT": "5",
@@ -84,8 +115,12 @@
       "DEVOPS_PROJECT_NUMBER": "1",
       "AGENTS_MCP_REPOSITORY": "ControleOnline/agents-mcp",
       "CTO_CORE_REPOSITORY": "ControleOnline/agents-mcp",
-      "TECHNICAL_LEAD_CORE_REPOSITORY": "ControleOnline/agents-mcp"
+      "TECHNICAL_LEAD_CORE_REPOSITORY": "ControleOnline/agents-mcp",
+      "SMOKE_TESTS_BASE_URL": "https://s.controleonline.com/tests",
+      "SMOKE_TESTS_INDEX_URL": "https://s.controleonline.com/tests/index.json",
+      "API_ENTRYPOINT": "https://api.controleonline.com",
+      "ADMIN_ORIGIN": "https://admin.controleonline.com"
     },
-    "description": "Defaults de runtime. Secrets (GITHUB_TOKEN) nao ficam neste arquivo."
+    "description": "Defaults de runtime. Secrets (GITHUB_TOKEN, api-token) nao ficam neste arquivo."
   }
 }
