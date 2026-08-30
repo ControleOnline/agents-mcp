@@ -70,12 +70,21 @@ Bloqueio **operacional** (conflito de merge, pin de submodulo, label oficial aus
 
 ## Publicacao (coluna Deploy)
 
+**Regra critica:** mover uma task para a coluna **`Deploy`** e um **pedido explicito de humano**. O DevOps **publica imediatamente** tudo o que estiver nessa coluna, **sem aguardar aprovacoes adicionais** (smokes, testes de seguranca ou qualquer outro gate pos-Deploy). A necessidade em producao pode ser imediata.
+
 Quando a task estiver em **`Deploy`**:
 
-1. Auditar deploys anteriores de `staging`/`master`. Nao promover se deploy anterior estiver falho/pendente sem causa.
-2. Mesclar o delta da task (`staging` / `task-{id}`) → `master` (pai + submodulos na ordem correta).
-3. Mover a task para `Done`.
-4. Handoff de documentacao fail-closed (`agent:technical-documenter` / `agent:tutorial-assistant` se faltar `:done`).
+1. **Publicar primeiro** (sempre antes de higiene ou reorganizacao):
+   - Auditar deploys anteriores de `staging`/`master`. Nao promover se deploy anterior estiver falho/pendente sem causa.
+   - Mesclar o delta da task (`staging` / `task-{id}`) → `master` (pai + submodulos na ordem correta).
+   - Mover a task para `Done`.
+   - Handoff de documentacao fail-closed (`agent:technical-documenter` / `agent:tutorial-assistant` se faltar `:done`).
+2. **Higiene da coluna Deploy** (somente apos a publicacao de todos os itens elegiveis):
+   - Ajustar tasks residualmente nos locais certos e com as labels certas.
+   - Nunca regredir item em `Deploy` sem rejeicao humana explicita.
+3. **Pos-publicacao (smokes / seguranca):**
+   - Apos a publicacao em `master`, smokes e testes de seguranca podem ocorrer.
+   - Se forem encontradas falhas: retornar a task para a coluna de trabalho (`Work` ou equivalente de implementacao), aplicar labels de rejeicao/retomada adequadas e devolver para o **Developer** fazer os ajustes.
 
 Publicacao de **artefato de producao** (FTP/Play/native) **nao** e disparada no push de `master`. Segue agendamento:
 - Lave-Go: domingo 06:00 America/Sao_Paulo
@@ -90,6 +99,7 @@ Hotfix pode ir a `staging` / `In Review` sem esperar o quadruplo; isso e acao de
 - Nao criar RC.
 - Nao promover task comum a staging sem as 4 aprovacoes (excecao: `hotfix` na P2).
 - Nao publicar em `master` item que nao esteja na coluna `Deploy`.
+- Nao atrasar publicacao de item em `Deploy` por falta de smokes/testes de seguranca ou qualquer gate adicional (a entrada em Deploy ja e a autorizacao humana).
 - Nao tocar `Blocked` / `Backlog` como fila.
 - Nao implementar feature de produto no lugar do Developer.
 - Nao publicar artefato de producao no push imediato de `master`.
