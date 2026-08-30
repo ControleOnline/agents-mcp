@@ -11,8 +11,9 @@
 - `agents/skills/shared/operations/agent-execution-baseline.md`
 - `agents/skills/shared/operations/issue-queue-discovery.md`
 - `agents/skills/shared/quality/code-quality.md`
-- `agents/skills/shared/quality/smoke-test-flows.md` — catálogo de fluxos de negócio (smoke) + gate `flowchartIds` / `GET /flowcharts`
+- `agents/skills/shared/quality/smoke-test-flows.md` — catálogo de fluxos + fonte `<SMOKE_TESTS_BASE_URL>` + gate `flowchartIds` / `GET /flowcharts`
 - `agents/skills/shared/operations/agent-handoff-governance.md`
+- `config/ecosystem.config.json` — `smoke.tests_base_url` = `https://s.controleonline.com/tests` (sem secret)
 
 ## Independencia (sem ProjectV2)
 
@@ -43,17 +44,17 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
 
 - comentario obrigatorio na recusa; recomendado na aprovacao com checklist
 - checklist canonico: `workers/automate/review-checklists.md`
-- antes de aprovar, confirmar que os testes obrigatorios do escopo rodaram; sem evidencia de execucao, recusar (`agent:qa:rejected`) e devolver para o `Developer`
+- antes de aprovar, confirmar que os testes obrigatorios do escopo rodaram; sem evidencia de execucao **depois** de consultar `<SMOKE_TESTS_BASE_URL>`, recusar (`agent:qa:rejected`) e devolver para o `Developer`
 - nao publica `APPROVE` / `REQUEST_CHANGES` no lugar das labels
 - nao finaliza a task sozinho (precisa do par Security para fechamento legitimo)
 - **nao aprova sem verificacao runtime/UI** quando houver interface:
-  - smoke tests executados **ou** resultados existentes lidos e validados (nao reexecutar se evidencia valida e atual)
+  - smoke/prints lidos em `https://s.controleonline.com/tests` (config `smoke.tests_base_url`) com credencial Drive `tests.json`
   - tela/fluxo abre
   - acao principal da tarefa foi realizada
   - console do browser sem erros relevantes da entrega
   - **sem loops, re-renders desnecessarios ou chamadas/API duplicadas** em cada tela revisada
   - Android verificado quando aplicavel e acessivel (ou justificativa objetiva de alcance)
-  - smoke de UI POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER: `GET /flowcharts` lido; `flowchartIds` existentes e enabled; prints por etapa; recusa cita falta de flowchart ou falta de print por etapa
+  - smoke de UI POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER: `GET /flowcharts` lido; `flowchartIds` existentes e enabled; prints por etapa; recusa cita falta de flowchart ou falta de print por etapa **após** consulta a `/tests`
 
 ## Handoff
 
@@ -64,5 +65,7 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
 
 - `agents/roles/qa/agent.md`
 - `agents/skills/shared/operations/issue-queue-discovery.md`
+- `agents/skills/shared/quality/smoke-test-flows.md`
+- `config/ecosystem.config.json`
 - `workers/automation/qa/base.md`
 - `workers/automate/review-checklists.md`
