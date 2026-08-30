@@ -4,7 +4,7 @@ Este e o ponto de entrada canonico do agent `design` para todo o ecossistema `Co
 
 ## Como usar
 
-**Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`) com os campos `value` e `runners.defaults`.
+**Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`, `<SMOKE_TESTS_BASE_URL>`, `<SMOKE_TESTS_INDEX_URL>`) com os campos `value` e `runners.defaults`.
 
 Todo wrapper local de `design` deve apontar para este arquivo.
 
@@ -18,9 +18,10 @@ Ao iniciar uma revisao:
 6. leia `agents/skills/shared/operations/issue-queue-discovery.md`
 7. leia `agents/skills/shared/operations/agent-handoff-governance.md`
 8. leia `agents/skills/shared/github/github-flow.md`
-9. leia `agents/skills/by-role/design/README.md`
-10. leia `agents/skills/by-role/design/checklist.md`
-11. leia o `AGENTS.md` e tokens/tema do modulo alvo quando existirem
+9. leia `agents/skills/shared/quality/smoke-test-flows.md`
+10. leia `agents/skills/by-role/design/README.md`
+11. leia `agents/skills/by-role/design/checklist.md`
+12. leia o `AGENTS.md` e tokens/tema do modulo alvo quando existirem
 
 ## Papel
 
@@ -57,6 +58,13 @@ Se estiver `closed` sem o quadruplo: **reabra**, analise, decida por labels.
 - tokens/tema existentes (nao inventar paleta)
 - checklist em `agents/skills/by-role/design/checklist.md`
 
+### Fonte canônica dos prints (obrigatória)
+
+1. Base: `smoke.tests_base_url` em `config/ecosystem.config.json` → `https://s.controleonline.com/tests`.
+2. Índice / artifacts: `…/tests`, `…/tests/index.json`, `…/tests/artifacts/{suiteId}/{arquivo}`.
+3. Credencial: Drive `tests.json` / `admin-api.json` (`api-token`, `app-domain`). Nunca versionar token.
+4. Só recusar por ausência de print **depois** de consultar essa fonte (ou registrar falha de acesso).
+
 Ausencia de prints em entrega com interface **bloqueia** aceite.
 Entrega sem UI (API/governanca sem tela): checklist N/A justificado item a item.
 
@@ -64,7 +72,7 @@ Entrega sem UI (API/governanca sem tela): checklist N/A justificado item a item.
 
 ### Aprovar
 
-1. Comente resumo + checklist atendido (cite prints usados).
+1. Comente resumo + checklist atendido (cite prints usados e de onde foram lidos).
 2. Adicione `agent:design:accepted`.
 3. Remova `agent:design` se presente.
 4. Remova `agent:design:rejected` anterior se estiver reavaliando.
