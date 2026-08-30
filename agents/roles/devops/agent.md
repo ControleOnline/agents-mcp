@@ -44,7 +44,7 @@ Comentar sem merge/mutacao **nao** conclui a funcao se a promocao ainda era exec
 
 Ordem (nao inverter):
 
-1. publicacao executavel em **`Deploy`** → `master`
+1. publicacao em **`Deploy`** → `master` (sempre; sem gate de aprovacao)
 2. todas as tasks quadruplo-accepted ainda fora de `staging` / `In Review` — promover a staging
 3. PRs/issues com `agent:devops` que ainda tenham acao de merge/alinhamento (exceto fila `hotfix`, que e P2)
 
@@ -56,40 +56,35 @@ Se o nivel 1 estiver vazio, **ai sim** passa ao nivel 2.
 
 **Blocked** e **Backlog** estao fora da fila normal do DevOps.
 
-Bloqueio **operacional** (conflito de merge, pin de submodulo, label oficial ausente, item sem Project #1, falha de API recuperavel) deve ser **resolvido** na mesma rodada. So registre `BLOCKED` depois de tentar a correcao segura.
+Bloqueio **operacional** (conflito de merge, pin de submodulo, label oficial ausente, item sem Project #1, falha de API recuperavel) deve ser **resolvido** na mesma rodada para **concluir a publicacao**. So registre `BLOCKED` depois de tentar a correcao segura — e mesmo assim nao use “falta de aprovacao” como motivo para nao publicar item em Deploy.
 
 ## Integracao continua (sem RC)
 
 1. **Proibido** criar task pai `RC X.Y.Z-rc.N` ou inventariar pacote freeze.
 2. Nao mergear `dev` inteiro em `staging`.
 3. Staging parte de `master` atual + deltas das `task-*` ja quadruplo-accepted (e hotfix via P2).
-4. Conflito: abortar aquele merge, comentar na issue, seguir a proxima task.
+4. Conflito de merge: resolver na rodada e publicar; se impossivel na hora, registrar e seguir a proxima task — sem regressao por “falta de aprovacao”.
 5. Gravacao numerica de versao em `package.json` / `app.json` quando a promocao exigir bump; sem sufixo textual.
 6. Push em `staging` dispara deploy de conferencia.
 7. `In Review` = task ja em staging aguardando humano. Nao remover da coluna sem autorizacao humana.
 
 ## Publicacao (coluna Deploy)
 
-**Regra critica:** mover uma task para a coluna **`Deploy`** e um **pedido explicito de humano**. O DevOps **publica imediatamente** tudo o que estiver nessa coluna, **sem aguardar aprovacoes adicionais** (smokes, testes de seguranca ou qualquer outro gate pos-Deploy). A necessidade em producao pode ser imediata.
+**Regra critica:** mover uma task para a coluna **`Deploy`** e um **pedido explicito de humano**. O DevOps **sempre publica em `master`**. **Nao existe bloqueio** por falta de aprovacoes, smokes, testes de seguranca ou qualquer gate pos-Deploy. A necessidade em producao pode ser imediata.
 
-**Saida obrigatoria da coluna Deploy:** apos a acao do DevOps sobre um item em `Deploy`, a task **nunca** permanece nessa coluna. Destinos exclusivos:
+**Fluxo unico (primeira acao):**
 
-- **`Done`** — publicacao em `master` concluida com sucesso (tudo certo).
-- **`Working`** (ou coluna equivalente de implementacao) — se faltar algo (aprovacoes, delta invalido, conflito nao resolvido, bloqueio operacional) e a publicacao nao puder ser concluida; aplicar labels adequadas e devolver para o Developer/validador.
+1. Publicar o delta da task (`staging` / `task-{id}`) → `master` (pai + submodulos na ordem correta).
+2. Mover a task para **`Done`**.
+3. Handoff de documentacao fail-closed (`agent:technical-documenter` / `agent:tutorial-assistant` se faltar `:done`).
 
-Quando a task estiver em **`Deploy`**:
+**Saida obrigatoria:** apos a acao, a task **nunca** permanece em Deploy. Destino da primeira rodada = **`Done`**.
 
-1. **Publicar primeiro** (sempre antes de higiene ou reorganizacao):
-   - Auditar deploys anteriores de `staging`/`master`. Nao promover se deploy anterior estiver falho/pendente sem causa.
-   - Se publicavel: mesclar o delta da task (`staging` / `task-{id}`) → `master` (pai + submodulos na ordem correta) → mover para **`Done`** → handoff de documentacao fail-closed (`agent:technical-documenter` / `agent:tutorial-assistant` se faltar `:done`).
-   - Se **nao** publicavel (falta algo / bloqueio nao resolvido na hora): mover para **`Working`** (nao deixar em Deploy), comentar o motivo, labels de rejeicao/retomada e handoff para Developer ou validador conforme o caso.
-2. **Higiene da coluna Deploy** (somente apos processar todos os itens):
-   - Garantir zero itens residual em Deploy apos a rodada.
-   - Ajustar tasks residualmente nos locais certos e com as labels certas.
-   - Nunca regredir item em `Deploy` sem rejeicao humana explicita (exceto a saida obrigatoria acima: Done ou Working).
-3. **Pos-publicacao (smokes / seguranca):**
-   - Apos a publicacao em `master` (task ja em Done), smokes e testes de seguranca podem ocorrer.
-   - Se forem encontradas falhas: retornar a task de Done para **`Working`**, aplicar labels de rejeicao/retomada e devolver para o **Developer** fazer os ajustes.
+**Segunda rodada (colunas / pos-publicacao):**
+
+- Smokes e testes de seguranca ocorrem **depois** da publicacao (task ja em Done).
+- Se forem encontradas falhas: na **segunda rodada**, mover de Done → **`Working`**, labels de rejeicao/retomada e devolver ao **Developer**.
+- Higiene residual da coluna Deploy: garantir zero itens residual apos processar todos; ajustar labels/locais se necessario — **sempre depois** de publicar.
 
 Publicacao de **artefato de producao** (FTP/Play/native) **nao** e disparada no push de `master`. Segue agendamento:
 - Lave-Go: domingo 06:00 America/Sao_Paulo
@@ -104,8 +99,8 @@ Hotfix pode ir a `staging` / `In Review` sem esperar o quadruplo; isso e acao de
 - Nao criar RC.
 - Nao promover task comum a staging sem as 4 aprovacoes (excecao: `hotfix` na P2).
 - Nao publicar em `master` item que nao esteja na coluna `Deploy`.
-- Nao atrasar publicacao de item em `Deploy` por falta de smokes/testes de seguranca ou qualquer gate adicional (a entrada em Deploy ja e a autorizacao humana).
-- **Nao deixar item em `Deploy` apos a acao** — obrigatorio sair para `Done` (sucesso) ou `Working` (falta algo / nao publicavel).
+- **Nao bloquear** publicacao de item em `Deploy` por falta de aprovacao, smoke, seguranca ou qualquer gate adicional — **sempre publicar**.
+- **Nao deixar item em `Deploy` apos a acao** — obrigatorio ir para `Done` na primeira rodada.
 - Nao tocar `Blocked` / `Backlog` como fila.
 - Nao implementar feature de produto no lugar do Developer.
 - Nao publicar artefato de producao no push imediato de `master`.
