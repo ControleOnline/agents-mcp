@@ -96,18 +96,20 @@ test('queue ordering is oldest first and never updatedAt', () => {
   assert.match(managerAgent, /updatedAt.*nao ordena/i);
 });
 
-test('In Review is protected as frozen RC inventory', () => {
+test('In Review is protected as per-task human review, not an RC package', () => {
   assert.match(managerAgent, /In Review.*task ja em staging aguardando conferencia humana/is);
   assert.match(managerAgent, /Nao remover da coluna/i);
-  assert.match(managerSkill, /In Review.*task ja em staging/i);
+  assert.match(managerSkill, /In Review.*task individual ja em staging/i);
   assert.match(githubFlow, /In Review[\s\S]*Nenhum Manager\/higiene remove da coluna/is);
+  assert.doesNotMatch(githubOperations, /frozen RC package/i);
+  assert.doesNotMatch(githubOperationsDoc, /remocao de item do RC/i);
 });
 
 test('generic project_status runner refuses automatic In Review removal', () => {
   assert.match(githubOperations, /function assertAllowedProjectStatusTransition/);
   assert.match(githubOperations, /from !== 'in review'/);
-  assert.match(githubOperations, /human_authorized_rc_removal=true/);
-  assert.match(githubOperationsDoc, /Protecao de freeze/i);
+  assert.match(githubOperations, /human_authorized_in_review_removal=true/);
+  assert.match(githubOperationsDoc, /Protecao de `In Review`/i);
   assert.match(githubOperationsDoc, /recusa `In Review` → `Working`\/`Ready`/i);
 });
 

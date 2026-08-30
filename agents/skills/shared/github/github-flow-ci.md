@@ -1,6 +1,6 @@
-# GitHub Flow — CI (substitui RC)
+# GitHub Flow — CI por task
 
-Este arquivo **prevalece** sobre as secoes de Release Candidate em `github-flow.md` a partir de 2026-08-28 (issues #181–#184).
+Este arquivo descreve o fluxo canônico de integração contínua por task (issues #181–#184 e #188). Não existe Release Candidate operacional.
 
 ## Branches
 
