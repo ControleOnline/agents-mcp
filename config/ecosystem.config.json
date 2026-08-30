@@ -59,13 +59,13 @@
     "help_center_host": {
       "placeholder": "<HELP_CENTER_HOST>",
       "env": "HELP_CENTER_HOST",
-      "value": "",
+      "value": "ajuda.controleonline.com",
       "description": "Host da central de ajuda sem esquema."
     },
     "team_email": {
       "placeholder": "<TEAM_EMAIL>",
       "env": "TEAM_EMAIL",
-      "value": "",
+      "value": "ti@controleonline.com",
       "description": "E-mail para avisos de documentacao publicada."
     }
   },
