@@ -10,10 +10,32 @@ Fonte única de verdade para associação de smokes a fluxos. Alterações no ca
 - Agents (Developer, QA, qualquer papel) **não inventam** novos fluxos.
 - Ao criar ou alterar um smoke test, o agent **deve declarar** o fluxo associado (um dos listados abaixo ou `outros`).
 - Se o smoke não se encaixa em nenhum fluxo do catálogo, use o fluxo reservado **`outros`** e justifique na issue.
-- Esta skill deve ser lida por Developer, QA e qualquer papel que escreva ou valide smoke.
+- Esta skill deve ser lida por Developer, QA, Design, UX e qualquer papel que escreva ou valide smoke.
 - A wiki técnica do produto deve espelhar estes fluxos em:
   - `https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows`
   - `https://github.com/ControleOnline/api-community/wiki/Smoke-Test-Flows`
+
+## Fonte canônica de suites e artifacts (aprovadores)
+
+URL base e índice vêm de `config/ecosystem.config.json` (sem secrets):
+
+| Chave | Valor canônico |
+| --- | --- |
+| `smoke.tests_base_url` | `https://s.controleonline.com/tests` |
+| `smoke.tests_index_url` | `https://s.controleonline.com/tests/index.json` |
+| `smoke.api_entrypoint` | `https://api.controleonline.com` |
+
+Rotas de consumo:
+
+| Fonte | Uso |
+| --- | --- |
+| `GET <SMOKE_TESTS_BASE_URL>` / `index.json` / `api` | Índice agregado de suites |
+| `GET <SMOKE_TESTS_BASE_URL>/artifacts/{suiteId}/{arquivo}` | Reports e prints |
+| `POST …/run` | Runner (quando habilitado no ambiente) |
+
+**Credencial (secret):** Drive `tests.json` e `admin-api.json` (pasta de credenciais). Headers típicos: `api-token`, `app-domain`, `accept`. **Nunca** versionar token no git, issue, PR ou wiki.
+
+QA, Design e UX **só** recusam por falta de print/smoke **depois** de consultar essa fonte (ou registrar falha de acesso com evidência).
 
 ## Gate obrigatório de evidência visual
 
@@ -29,7 +51,7 @@ Para cada smoke de UI/browser, a evidência mínima é:
    - ação principal;
    - feedback visual de sucesso, erro esperado ou estado final;
    - qualquer transição que prove integração entre módulos.
-4. Artefatos persistidos em diretório de resultados do smoke, com manifesto ou resumo indicando o fluxo.
+4. Artefatos persistidos acessíveis via `<SMOKE_TESTS_BASE_URL>/artifacts/...` (ou caminho equivalente documentado no índice), com manifesto ou resumo indicando o fluxo.
 5. Justificativa explícita quando um passo não puder gerar print por limitação técnica.
 
 Falta de prints por etapa, prints que não permitem reconstruir a jornada ou smoke sem fluxo declarado bloqueiam `agent:qa:accepted`.
@@ -40,9 +62,9 @@ O catálogo desta skill **não substitui** os flowcharts do tenant admin. Soma-s
 
 Antes de dar `agent:qa:accepted` em smoke de UI dos produtos POS, SHOP, PPC, DELIVERY, CHECKOUT ou MANAGER, o QA **deve ler** os flowcharts habilitados:
 
-1. `GET https://api.controleonline.com/flowcharts` (e `/flowcharts/{id}` quando precisar do diagrama).
-2. Headers permitidos (token **nunca** no git): `api-token` e `app-domain: admin.controleonline.com`.
-3. Credencial: Drive `admin-api.json` (pasta de credenciais do ecossistema). Não colar o token em issue, PR, wiki ou arquivo versionado.
+1. `GET <API_ENTRYPOINT>/flowcharts` (e `/flowcharts/{id}` quando precisar do diagrama).
+2. Headers permitidos (token **nunca** no git): `api-token` e `app-domain` do Drive.
+3. Credencial: Drive `admin-api.json` / `tests.json`. Não colar o token em issue, PR, wiki ou arquivo versionado.
 4. UI de conferência: `https://admin.controleonline.com/admin/flowcharts/{id}`.
 
 O smoke só é aceito se:
@@ -51,7 +73,7 @@ O smoke só é aceito se:
 - tiver prints/screenshot de cada etapa relevante da jornada daquele flowchart;
 - continuar declarando `fluxo: <id>` deste catálogo.
 
-Smoke órfão (`fluxo: outros` **sem** `flowchartId` válido) em entrega de UI desses produtos **bloqueia** aceite. Comentário de recusa deve citar falta de flowchart ou falta de print por etapa.
+Smoke órfão (`fluxo: outros` **sem** `flowchartId` válido) em entrega de UI desses produtos **bloqueia** aceite. Comentário de recusa deve citar falta de flowchart ou falta de print por etapa **após** consulta a `/tests` e `/flowcharts`.
 
 ## Catálogo oficial
 
