@@ -53,7 +53,7 @@
     "help_center_url": {
       "placeholder": "<HELP_CENTER_URL>",
       "env": "HELP_CENTER_URL",
-      "value": "",
+      "value": "ajuda.controleonline.com",
       "description": "URL base da central de ajuda."
     },
     "help_center_host": {
