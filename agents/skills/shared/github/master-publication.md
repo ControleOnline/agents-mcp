@@ -2,78 +2,67 @@
 
 ## Overview
 
-Use esta skill quando `DevOps` for promover o **pacote RC** de `staging` para `master` (apos a task pai estar na coluna **`Deploy`**).
+Use esta skill quando `DevOps` for promover o **delta de uma task individual** que está na coluna **`Deploy`** para `master`.
+
+Integração contínua **por task**. **Não** existe pacote RC, task pai de RC, freeze de pacote nem inventário de filhas.
 
 ## Pre-requisitos
 
-1. Existe um RC aberto com task pai de deploy e subtasks.
-2. O pacote ja esta em **`staging`** (pai + submodulos) com versão **numérica** `X.Y.N` no `package.json` / `app.json` (ex.: `1.5.1`; controle operacional pode ainda referir `RC X.Y.Z-rc.N`).
-3. A task pai foi movida por humano para a coluna **`Deploy`**.
-4. Nao ha segundo RC concorrente.
+1. A task está na coluna **`Deploy`** (movida por humano a partir de `In Review`).
+2. O delta da task já está em **`staging`** (merge prévio de `task-{id}` → `staging` feito pelo DevOps).
+3. Não há deploy anterior de `staging`/`master` falho/pendente sem causa resolvida.
 
 ## Workflow
 
-1. confirme o repositorio principal e os subprojetos em `.gitmodules`
-2. trate **`staging`** como origem da publicacao para **`master`**
-3. antes de promover qualquer versão, audite os deploys/workflows anteriores mais recentes de `staging` e `master` do projeto pai e dos submodulos obrigatorios; se algum estiver falho, cancelado, pendente, em andamento sem conclusão, ou sem evidência clara de sucesso, descubra a causa, corrija ou registre bloqueio concreto, e **pare sem publicar em `master`**
-   - **Smokes de browser/UI com problema:** quando a auditoria encontrar smoke falho que nao faca parte do delta imediato a publicar, nao transforme isso em comentario solto nem misture com a task de deploy/RC. Abra ou atualize uma issue tecnica separada no repositorio afetado, em `Ready`, com labels `hotfix` + `bug` + `agent:developer` (e label de pagina quando identificavel), referenciando o workflow/job/run, fluxo (`fluxo: <id>` ou `outros`) e resumo sanitizado da falha. A publicacao so permanece bloqueada se a falha provar que o pacote atual nao esta publicavel; caso contrario, a correcao fica para a **P5 Developer** do Manager.
-4. publique **primeiro cada submodulo** obrigatorio com delta, depois o projeto pai (gitlinks coerentes)
-5. para cada repositorio com delta real entre `staging` e `master`, faça o merge/promocao autorizada (`staging` → `master`); use PR apenas se a politica do repo exigir — o rito operacional e a promocao do pacote RC, nao PR de task de produto
-6. faca merge somente sem conflito e com a task pai em `Deploy`
-7. depois do merge, **confirme a versão numérica** já presente no pacote (`X.Y.N` em `package.json` e, se existir, `app.json` com `version` igual e `versionCode = MAJOR*10000 + MINOR*100 + PATCH`); **não** existe sufixo textual para remover; tags usam a mesma versão numérica
-8. confirme que `master` recebeu o commit esperado e que o push remoto aconteceu
-9. registre quais repositorios foram promovidos e quais ficaram bloqueados
-10. **obrigatório:** mova a **task pai e todas as filhas/subtasks** do inventário do RC para **`Done`** na mesma passagem (Project #1); não deixe filha atrás do pai
-11. **handoff de documentação (obrigatório no publish):** para **cada filha de produto** do inventário que ainda **não** tenha `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done`, aplique as labels de **solicitação** ausentes (`agent:technical-documenter` e/ou `agent:tutorial-assistant`). **Nunca** invente `:done`. Issues só de governança/docs (`agents-mcp` puro) e hotfixes sem delta de UI/API de produto podem ficar isentas com comentário de exceção estrutural. Comente no pai do RC a lista do que recebeu label de docs.
-12. se o projeto principal ficar com conflito, nao force update nem reescreva `master`; registre o bloqueio e pare na fronteira segura
+Quando a task estiver em **`Deploy`**:
 
-## Front Rule
+1. Auditar deploys/workflows anteriores mais recentes de `staging` e `master` (pai + submódulos obrigatórios). Se algum estiver falho, cancelado, pendente ou sem evidência de sucesso: descubra a causa, corrija ou registre bloqueio concreto e **pare sem publicar**.
+   - **Smokes de browser/UI com problema:** se a auditoria encontrar smoke falho que não faça parte do delta imediato, abra/atualize issue técnica separada no repositório afetado, em `Ready`, com labels `hotfix` + `bug` + `agent:developer` (e label de página quando identificável), referenciando workflow/job/run e resumo sanitizado. A publicação só permanece bloqueada se a falha provar que **este** delta não é publicável; caso contrário a correção fica para P5 Developer.
+2. Publique **primeiro cada submódulo** com delta real, depois o projeto pai (gitlinks coerentes).
+3. Para cada repositório com delta entre `staging` e `master` relativo à task: merge/promoção autorizada (`staging` / `task-{id}` → `master`). Use PR apenas se a política do repo exigir — o rito é promoção do **delta da task**, não PR de produto do Developer.
+4. Merge somente sem conflito e com a task em `Deploy`.
+5. Quando a promoção exigir bump: grave versão **numérica** `X.Y.N` em `package.json` / `app.json` (sem sufixo textual). Tags usam a mesma versão.
+6. Confirme que `master` recebeu o commit esperado e que o push remoto aconteceu.
+7. **Mova a task para `Done`**.
+8. **Handoff de documentação fail-closed:** se a task de produto ainda não tiver `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done`, aplique as labels de **solicitação** ausentes. Nunca invente `:done`. Issues só de governança/docs (`agents-mcp` puro) e hotfixes sem delta de UI/API de produto podem ficar isentas com comentário de exceção estrutural.
 
-Quando o pedido for "publicar o front":
+## Submódulos e projeto principal
 
-- trate o projeto principal como `app-community`, salvo contexto local mais especifico
-- descubra os subprojetos em `.gitmodules`
-- publique os subprojetos do front antes do projeto principal
-- valide que os gitlinks do projeto principal apontam para commits ja publicados nos subprojetos
-
-
-## Hotfix / deploy: ponteiro + versão no projeto principal
+Descubra os subprojetos em `.gitmodules`. Publique os subprojetos do front antes do projeto principal. Valide que os gitlinks do pai apontam para commits já publicados nos filhos.
 
 **Sem atualizar o gitlink do submódulo e a versão no projeto principal (`app-community`), o delta do subprojeto não entra no deploy** — mesmo que `ui-*` já esteja em `staging`/`master`.
 
-Em **todo** deploy (RC normal ou hotfix):
+Em **todo** publish de task que toque submódulo + pai:
 
 1. Publique o delta nos **subprojetos** afetados (`staging` → `master` de cada um).
 2. No **pai** (`app-community`):
    - atualize o **gitlink** (submodule pin) para o commit já publicado no subprojeto;
-   - faça **bump semver** em `package.json` (patch para hotfix);
-   - push em `staging` e em `master` (pai sempre depois dos filhos);
-   - crie/atualize a **tag** da versão no pai (`vX.Y.Z`).
-3. Confirme que o workflow de **Deploy** do `app-community` disparou no commit do pai.
+   - faça **bump semver** numérico quando a promoção exigir;
+   - push em `master` (pai sempre depois dos filhos);
+   - crie/atualize a **tag** da versão no pai (`vX.Y.Z`) quando houver bump.
+3. Confirme que o workflow de deploy do pai disparou no commit do pai quando aplicável.
 
-Publicar só o submódulo (ex.: `ui-people`) **não** publica o Manager em produção.
+Publicação de **artefato de produção** (FTP/Play/native) **não** é disparada no push imediato de `master`. Segue agendamento (ver `agents/roles/devops/agent.md`).
 
 ## Output Contract
 
 Ao concluir, informe:
 
-- versão pre-release do RC e versão estável publicada em master
-- quais repositorios foram publicados em `master`
-- quais submodulos e o pai foram promovidos
+- quais repositórios foram publicados em `master`
+- quais submódulos e o pai foram promovidos
 - quais ficaram bloqueados e por que
-- confirmacao de push remoto e coluna `Done`
+- confirmação de push remoto e coluna `Done`
+- handoff documental aplicado (labels de solicitação) ou isenção justificada
 
 ## Quality Bar
 
-- nao promova sem coluna `Deploy` na task pai
-- nao promova se os deploys anteriores de `staging`/`master` nao tiverem finalizado corretamente e com causa de falha resolvida
-- nao deixe smoke de browser/UI falho sem issue tecnica de follow-up em `Ready` com `hotfix` + `bug` + `agent:developer`
-- nao pule subprojetos obrigatorios
-- nao publique o projeto principal antes dos subprojetos
-- nao force ref em `master` para contornar conflito
-- nao abra novo RC ate este estar em `Done`
-- nao marque só o pai em `Done` sem mover todas as filhas/subtasks do inventário do RC
-- nao mover filhas de produto para `Done` no publish **sem** garantir labels de solicitação documental (`agent:technical-documenter` / `agent:tutorial-assistant`) quando `:done` ainda estiver ausente — handoff de docs é parte do rito de master
-- nao grave sufixo textual (`-rc.N`) em `package.json` / `app.json`; versão de arquivo é sempre somente números (`X.Y.N`)
-- nao use contador sequencial de RC (RC1/RC2) no lugar do SemVer nos arquivos de versão
+- não promova item que não esteja na coluna `Deploy`
+- não promova se deploys anteriores de `staging`/`master` não tiverem finalizado corretamente
+- não deixe smoke de browser/UI falho sem issue técnica de follow-up em `Ready` com `hotfix` + `bug` + `agent:developer`
+- não pule subprojetos obrigatórios com delta
+- não publique o projeto principal antes dos subprojetos
+- não force ref em `master` para contornar conflito
+- **não** monte RC, task pai de RC, freeze de pacote ou inventário de filhas
+- não grave sufixo textual (`-rc.N`) em `package.json` / `app.json`
 - em `app.json`: `version` = `package.json` version; `versionCode` = MAJOR*10000 + MINOR*100 + PATCH
+- handoff de docs é parte do rito de master para tasks de produto

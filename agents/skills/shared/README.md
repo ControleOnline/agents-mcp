@@ -74,8 +74,8 @@ A skill `github-flow.md` e a fonte canonica de:
 - branch `task-{id_issue}` derivada de `master`
 - entrega do Developer em **`dev`** por **merge** (sem PR)
 - proibicao de PR para `Developer`, `QA` e `Security` no fluxo normal
-- `staging` = somente pacote RC do `DevOps` (semver, pai + submodulos)
-- apos `Deploy`: `DevOps` mescla `staging` → `master` → `Done`
+- `staging` = deltas de `task-{id}` já quádruplo-accepted (ou hotfix) para conferência humana
+- após coluna `Deploy` (humano): `DevOps` mescla o delta → `master` → `Done` (sem RC)
 
 Todo agent que toque em branch, integracao ou promocao deve seguir essa skill.
 
@@ -84,5 +84,5 @@ Todo agent que toque em branch, integracao ou promocao deve seguir essa skill.
 - `Developer` entrega em **`dev`**, sem PR
 - `QA` / `Security` decidem por labels; evidencia = merge em **`dev`**
 - recusa: Developer corrige e re-mergeia em **`dev`**
-- `DevOps` monta RC em **`staging`**, task pai + subtasks, `In Review` → `Deploy` → `master` → `Done`
+- `DevOps` promove **somente** `task-{id}` → **`staging`** + coluna `In Review`; humano → `Deploy`; `DevOps` → `master` → `Done` (sem RC)
 - nenhum agent fecha task no lugar do rito humano/board quando aplicavel

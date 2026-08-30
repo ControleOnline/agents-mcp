@@ -31,7 +31,7 @@ Se a prioridade selecionada falhar por ferramenta/credencial/API **depois** de t
 
 Excecao: P1 so com gate humano de Deploy → `P1_SKIPPED_HUMAN_DEPLOY` e continue P2-P6.
 
-`In Review` e freeze da task ja em staging. Nao remover da coluna; encaminhar a DevOps com evidencia.
+`In Review` = task individual ja em staging aguardando conferencia humana. Nao remover da coluna sem autorizacao humana; se parecer indevida, comentar + handoff `agent:devops` e esperar humano. Nao e freeze de pacote RC.
 
 ## Prioridade 4 - validadores
 

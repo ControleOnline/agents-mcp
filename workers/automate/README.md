@@ -4,44 +4,38 @@ Esta pasta concentra a politica e a base executavel dos runners operacionais do 
 
 ## Agentes cobertos
 
-- `Developer`: seleciona issue aberta de membro da equipe com prioridade em `Ready`, executa a mudanca na propria branch e mantém a task em `Working` ate o handoff para a fase compartilhada de `Quality Assurance` e `Security`
-- `Quality Assurance`: valida a entrega recebida do `Developer`, registra `agent:qa:accepted` ou `agent:qa:rejected` na issue e remove `agent:qa`
-- `Security`: valida a entrega recebida de `Quality Assurance`, registra `agent:security:accepted` ou `agent:security:rejected` na issue e remove `agent:security`
-- `DevOps`: seleciona tarefas com `agent:qa:accepted` e `agent:security:accepted`, cria a release, aguarda a aprovacao humana que move a task para `Deploy` e, a partir de `Deploy`, publica a build em producao ate a finalizacao
+- `Developer`: seleciona issue elegivel, implementa em `task-{id}` a partir de `master`, merge em `dev`, handoff com as quatro labels de validador, task em `Working`
+- `Quality Assurance` / `Security` / `Design` / `UX`: validam a entrega, registram `:accepted` ou `:rejected` e removem a label de solicitacao
+- `DevOps`: (1) publica tasks em coluna **`Deploy`** → `master` → `Done`; (2) promove tasks com quatro `:accepted` → `staging` + coluna **`In Review`**
 - `GitHub Operations Runner`: executa mutacoes de GitHub a partir do proprio GitHub Actions quando o runtime local dos agents nao consegue concluir a operacao
 
 ## Arquivos principais
 
 - `workers/scripts/developer-pr-dispatch.mjs`: selecao do backlog do `Developer`
-- `workers/scripts/pr-label-review-runner.mjs`: review runner compartilhado entre `Quality Assurance` e `Security` para fluxo por labels e issue
-- `workers/scripts/github-operations.mjs`: executor genérico de mutações REST, GraphQL e atualizacoes de projeto no GitHub
+- `workers/scripts/pr-label-review-runner.mjs`: review runner compartilhado entre validadores para fluxo por labels e issue
+- `workers/scripts/github-operations.mjs`: executor generico de mutacoes REST, GraphQL e atualizacoes de projeto no GitHub
 - `review-checklists.md`: checklists canonicos que devem ser copiados para a task durante a revisao
-- `pull-request-review.md`: politica atual de review de `QA`
-- `security-pull-request-review.md`: politica atual de review de `Security`
-- `master-publication.md`: regra de aprovacao e promocao exclusiva do `DevOps` na publicacao de `master`
+- `staging-merge.md`: regra de promocao `task-{id}` → `staging` / `In Review` (sem RC)
+- politica de master: `agents/skills/shared/github/master-publication.md`
 
 ## Objetivo
 
-Permitir que o GitHub execute o fluxo padronizado:
+Fluxo padronizado (integracao continua **por task**, **sem RC**):
 
-1. `Developer` le apenas issue aberta criada por membro da equipe com prioridade em `Ready`
-2. `Developer` trabalha somente na propria branch da tarefa, contendo o numero da issue
-3. `Developer` nao encerra o fluxo tecnico normal com PR
-4. `Developer` mantém a task em `Working` e repassa a responsabilidade para a fase compartilhada de `Quality Assurance` e `Security` via `agent:qa` e `agent:security`
-5. `Quality Assurance` registra `agent:qa:accepted` ou `agent:qa:rejected` na issue, copia o checklist de aprovacao para a task e remove `agent:qa`
-6. `Security` registra `agent:security:accepted` ou `agent:security:rejected` na issue, copia o checklist de seguranca para a task e remove `agent:security`
-7. quando houver recusa, o runner comenta a issue de forma direta e explicativa, informando o motivo objetivo e o checklist que nao foi atendido
-8. quando `agent:qa:accepted` e `agent:security:accepted` coexistirem sem novas solicitacoes nos comentarios, `DevOps` seleciona a task e cria a release
-9. o humano aprova a entrega movendo a task para `Deploy`
-10. em `Deploy`, `DevOps` pega as tasks contidas na build e publica a build em producao ate a finalizacao
-11. depois de publicar, `DevOps` move a task para `Documentation` e aplica `agent:tutorial-assistant` e/ou `agent:technical-documenter` para iniciar a trilha documental correspondente
+1. `Developer` captura issue elegivel em `Ready` / fila P5
+2. `Developer` trabalha somente na `task-{id}` derivada de `master`
+3. `Developer` faz **merge** de `task-{id}` → `dev` (sem PR)
+4. Handoff obrigatorio: `agent:qa` + `agent:security` + `agent:design` + `agent:ux`
+5. Validadores registram `:accepted` / `:rejected` e removem a label de solicitacao
+6. Com as **quatro** `:accepted`, `DevOps` faz merge **somente** `task-{id}` → `staging` e move a task para **`In Review`**
+7. **Humano** confere staging e move a task para **`Deploy`**
+8. Em **`Deploy`**, `DevOps` mescla o delta → `master` e move a task para **`Done`**
+9. No publish, handoff documental fail-closed (`agent:technical-documenter` / `agent:tutorial-assistant` se faltar `:done`)
 
 ## Observacoes
 
-- `Quality Assurance` e `Security` nao publicam `APPROVE` ou `REQUEST_CHANGES` no GitHub Review.
-- `Quality Assurance` e `Security` operam por labels e comentario na issue.
-- a fila oficial de entrada e `Ready`; `Working` e o estado de ownership ativo ate `Developer`, `Quality Assurance` e `Security` concluirem a trilha tecnica
-- a fase compartilhada de QA/Security deve carregar as duas labels de entrada enquanto ainda nao houver decisao estruturada
-- tasks recusadas por `QA` ou `Security` devem voltar a prioridade do `Developer` antes de capturas novas
-- quando `agent:qa:accepted` e `agent:security:accepted` coexistirem sem novas solicitacoes nos comentarios, `DevOps` assume a task para preparar a release tecnica
-- quando houver conflito entre script e politica, siga os arquivos `.md` desta pasta.
+- Validadores operam por labels e comentario na issue (nao APPROVE/REQUEST_CHANGES de PR de produto).
+- A fila oficial de entrada e `Ready`; `Working` e ownership ativo ate o handoff dos validadores.
+- Tasks recusadas voltam ao `Developer` antes de capturas novas.
+- **Nao** montar RC, task pai de RC, freeze de pacote ou inventario de filhas.
+- Quando houver conflito entre script e politica, siga os arquivos `.md` canonicos em `agents/roles/` e `agents/skills/shared/github/`.
