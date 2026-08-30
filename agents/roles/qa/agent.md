@@ -4,8 +4,7 @@ Este e o ponto de entrada canonico do agent `qa` para todo o ecossistema `Contro
 
 ## Como usar
 
-**Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`) com os campos `value` e `runners.defaults`.
-
+**Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`, `<SMOKE_TESTS_BASE_URL>`, `<SMOKE_TESTS_INDEX_URL>`, `<API_ENTRYPOINT>`, `<ADMIN_ORIGIN>`) com os campos `value` e `runners.defaults`.
 
 Todo wrapper local de `qa` deve apontar para este arquivo.
 
@@ -20,10 +19,11 @@ Ao iniciar uma revisao:
 5. leia `agents/skills/shared/operations/issue-queue-discovery.md`
 6. leia `agents/skills/shared/operations/agent-handoff-governance.md`
 7. leia `agents/skills/shared/quality/code-quality.md`
-8. leia `agents/skills/shared/github/github-flow.md`
-9. leia `agents/skills/by-role/qa/README.md`
-10. leia `workers/automation/qa/base.md` e o checklist em `workers/automate/review-checklists.md`
-11. leia o `AGENTS.md` local mais especifico do escopo alterado
+8. leia `agents/skills/shared/quality/smoke-test-flows.md`
+9. leia `agents/skills/shared/github/github-flow.md`
+10. leia `agents/skills/by-role/qa/README.md`
+11. leia `workers/automation/qa/base.md` e o checklist em `workers/automate/review-checklists.md`
+12. leia o `AGENTS.md` local mais especifico do escopo alterado
 
 ## Papel
 
@@ -53,26 +53,35 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 
 ## Evidencia a analisar
 
-- branch `task-{id}`, commits e **merge em `dev`** (nao em `staging` — `staging` e so o RC do DevOps)
+- branch `task-{id}`, commits e **merge em `dev`** (nao em `staging`)
 - comentarios, checklist e escopo da issue
 - testes/smoke quando houver interface
 - evidencia de que os testes obrigatorios do escopo rodaram antes da aprovacao
 - composicoes cross-repo quando a entrega atravessar modulos
 
+### Fonte canônica de smokes e prints (obrigatória)
+
+Antes de concluir falta de evidência visual, o QA **deve** consultar o índice de smokes:
+
+1. Base URL: valor de `smoke.tests_base_url` em `config/ecosystem.config.json` (canônico: `https://s.controleonline.com/tests`).
+2. Índice: `smoke.tests_index_url` (`…/tests/index.json`) e rotas irmãs (`/tests`, `/tests/api`, `/tests/artifacts/{suiteId}/{arquivo}`).
+3. Headers: ler **Drive** `tests.json` (e/ou `admin-api.json`) — pasta de credenciais do ecossistema. Campos típicos: `api-token`, `app-domain`, `accept`. **Nunca** colar token em issue, PR, wiki ou git.
+4. Só recusar por “falta de print/smoke” **depois** de buscar no índice/artifacts acima (ou registrar falha de acesso à fonte com evidência).
+
 ### Verificacoes runtime/UI obrigatorias (quando houver interface ou fluxo visual)
 
-1. **Smoke tests**: execute se ainda nao houver evidencia valida e atual; se ja rodaram, leia prompts + resultados e valide. Nao reexecute sem necessidade.
+1. **Smoke tests**: execute se ainda nao houver evidencia valida e atual; se ja rodaram, leia índice + artifacts em `<SMOKE_TESTS_BASE_URL>` e valide. Nao reexecute sem necessidade.
 2. **Tela abre**: confirme que a tela/fluxo afetado carrega sem erro bloqueante.
 3. **Acao da tarefa realizada**: verifique o comportamento esperado da issue (nao apenas o codigo).
 4. **Console do browser**: nao deve haver erros/warnings relevantes ligados a entrega.
 5. **Loops e chamadas duplicadas**: em cada tela/fluxo revisado, nao deve haver loops, re-renders desnecessarios ou requests/API duplicados.
 6. **Android** (quando aplicavel e houver build/artefato acessivel): verifique bugs obvios de runtime ou justifique explicitamente o que ficou fora de alcance.
-7. **Evidencia visual completa do fluxo**: para smoke de UI/browser, confirme que existe `fluxo: <id>` do catalogo canonico e prints/screenshot para cada etapa relevante da jornada. Evidencia parcial, print solto, ausencia de manifesto ou teste espalhado sem encaixe em fluxo bloqueia aprovacao.
-8. **Flowcharts do admin**: antes de aceitar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER, leia `GET /flowcharts` em `https://api.controleonline.com` com headers `api-token` + `app-domain: admin.controleonline.com` (token só no Drive `admin-api.json`, nunca no git). Exija `flowchartIds` existentes e `enabled` **e** prints por etapa. Recuse smoke órfão (`outros` sem flowchartId). O comentário de recusa cita falta de flowchart ou falta de print por etapa.
+7. **Evidencia visual completa do fluxo**: para smoke de UI/browser, confirme que existe `fluxo: <id>` do catalogo canonico e prints/screenshot para cada etapa relevante da jornada (preferir artifacts em `<SMOKE_TESTS_BASE_URL>/artifacts/...`). Evidencia parcial, print solto, ausencia de manifesto ou teste espalhado sem encaixe em fluxo bloqueia aprovacao.
+8. **Flowcharts do admin**: antes de aceitar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER, leia `GET /flowcharts` em `<API_ENTRYPOINT>` (canônico `https://api.controleonline.com`) com headers `api-token` + `app-domain` do Drive. Exija `flowchartIds` existentes e `enabled` **e** prints por etapa. Recuse smoke órfão (`outros` sem flowchartId). O comentário de recusa cita falta de flowchart ou falta de print por etapa **após** consulta a `/tests` e `/flowcharts`.
 
 Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao. Falta de qualquer item acima em entrega com interface bloqueia `agent:qa:accepted`.
 
-Se os testes obrigatorios do escopo nao rodaram, ou nao houver evidencia objetiva de execucao, o QA deve recusar imediatamente: aplicar `agent:qa:rejected`, manter/reabrir a issue `open`, comentar o que faltou e devolver para o `Developer` corrigir na `task-{id}`.
+Se os testes obrigatorios do escopo nao rodaram, ou nao houver evidencia objetiva de execucao **depois** de consultar `<SMOKE_TESTS_BASE_URL>`, o QA deve recusar: aplicar `agent:qa:rejected`, manter/reabrir a issue `open`, comentar o que faltou e devolver para o `Developer` corrigir na `task-{id}`.
 
 ## Conclusao
 
@@ -92,4 +101,4 @@ Se os testes obrigatorios do escopo nao rodaram, ou nao houver evidencia objetiv
 
 Em ambos os casos o trabalho desta passagem **termina**.
 
-Apos o par QA+Security aceitar, o **DevOps** empacota o RC (nao o QA).
+Apos o quadruplo de aprovacoes, o **DevOps** promove a task (nao o QA).
