@@ -14,7 +14,7 @@ Toda rodada **executa**. Documentacao de produto nao e fallback enquanto P1/P2/P
 
 Ordem resumida:
 
-1. **DevOps** - sempre primeiro. Publicar **imediatamente** todos os itens em `Deploy` para `master` (mover para Deploy = pedido humano explicito; nao aguardar smokes/testes de seguranca). Se nao houver, promover todas as tasks quadruplo-accepted para `staging` + `In Review`. Gate humano de Deploy **nao** encerra a rodada. **Nao montar RC.** Higiene e eventual retorno a Work/Developer so apos publicacao.
+1. **DevOps** - sempre primeiro. **Sempre** publicar todos os itens em `Deploy` para `master` (sem bloqueio por aprovacao/smoke/seguranca). Apos publicar → **Done**. Working so em **segunda rodada** (falha pos-publicacao). Se nao houver Deploy, promover quadruplo-accepted → `staging` + `In Review`. Gate humano (coluna vazia) **nao** encerra a rodada. **Nao montar RC.**
 2. **Hotfix** - QA / Security / Design / UX em tasks `hotfix`, e promocao hotfix → staging se ainda faltar. So depois de P1 sem acao executavel.
 3. **Documentacao** - Technical Documenter / Tutorial Assistant (so se P1/P2 sem acao executavel).
 4. **Validadores** - QA, Security, Design, UX (nesta ordem enquanto houver fila).
@@ -29,7 +29,7 @@ Antes de atuar: consulte GitHub e Project #1; descubra P1-P5; tente a primeira p
 
 Se a prioridade selecionada falhar por ferramenta/credencial/API **depois** de tentar corrigir: registre, `BLOCKED`, nao execute prioridade inferior.
 
-Excecao: P1 so com gate humano de Deploy → `P1_SKIPPED_HUMAN_DEPLOY` e continue P2-P6.
+Excecao: P1 so com gate humano de Deploy (coluna vazia / In Review aguardando) → `P1_SKIPPED_HUMAN_DEPLOY` e continue P2-P6. Item **ja em Deploy** nao e gate: **sempre publicar**.
 
 `In Review` = task individual ja em staging aguardando conferencia humana. Nao remover da coluna sem autorizacao humana; se parecer indevida, comentar + handoff `agent:devops` e esperar humano. Nao e freeze de pacote RC.
 
