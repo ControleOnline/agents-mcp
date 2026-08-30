@@ -54,7 +54,7 @@ Registre `P1_SKIPPED_HUMAN_DEPLOY` (alias aceito: `P2_SKIPPED_HUMAN_DEPLOY`) e c
 
 P1 executavel (ordem fixa — master antes de staging):
 
-1. publicar **imediatamente** todas as tasks em **Deploy** → `master` (deltas individuais, sem RC). Mover para `Deploy` e pedido humano explicito; **nao aguardar** smokes, testes de seguranca ou qualquer gate adicional. Apos a acao: task **sai** de Deploy → **`Done`** (sucesso) ou **`Working`** (se faltar algo / nao publicavel). **Nunca** permanecer em Deploy.
+1. **Sempre** publicar todas as tasks em **Deploy** → `master` (deltas individuais, sem RC). Mover para Deploy = pedido humano explicito. **Nao existe bloqueio** por falta de aprovacao/smoke/seguranca. Apos publicar → **`Done`**. Nunca permanecer em Deploy. Retorno a Working so em **segunda rodada** (pos-publicacao).
 2. senao, promover todas as tasks com **quatro** `:accepted` (QA + Security + Design + UX) para `staging` + coluna `In Review`.
 
 Hotfix **nao** entra nesta prioridade. Hotfix e P2.
@@ -79,12 +79,12 @@ Falha operacional em P5 **nao** autoriza fallback para P6.
 
 DevOps e **sempre o primeiro**. Duas funcoes, nesta ordem:
 
-1. Publique **imediatamente** todas as tasks em `Deploy` → `master` (CI, deltas individuais). Entrada em Deploy = autorizacao humana explicita; nao bloquear por gates pos-Deploy. Apos acao: **obrigatorio** sair de Deploy → `Done` (ok) ou `Working` (falta algo).
+1. **Sempre** publique todas as tasks em `Deploy` → `master` (CI, deltas individuais). Entrada em Deploy = autorizacao humana; **sem bloqueio**. Apos publicar → **`Done`**. Working so em segunda rodada (falha pos-publicacao).
 2. Senao, promova todas as tasks quadruplo-accepted → `staging` + `In Review`.
 3. Nao crie task pai de RC.
-4. Se so houver gate humano, `P1_SKIPPED_HUMAN_DEPLOY` e avance para P2 (hotfix).
+4. Se so houver gate humano (nenhum item em Deploy), `P1_SKIPPED_HUMAN_DEPLOY` e avance para P2 (hotfix).
 
-Fonte: `agents/roles/devops/agent.md` (publicar primeiro; saida obrigatoria de Deploy; higiene apos processar todos).
+Fonte: `agents/roles/devops/agent.md`.
 
 ## Prioridade 2 - Hotfix
 
@@ -130,7 +130,7 @@ Handoff obrigatorio apos entrega: `agent:qa` + `agent:security` + `agent:design`
 
 Siga `agents/skills/by-role/manager/README.md`.
 
-Nunca regredir item em `Deploy` sem rejeicao humana explicita. Item processado pelo DevOps **nao** permanece em Deploy (vai para Done ou Working).
+Nunca regredir item em `Deploy` sem rejeicao humana explicita. Item processado pelo DevOps sai de Deploy para **Done** na primeira rodada; Working so em segunda rodada pos-publicacao.
 
 ## Contrato de conclusao da rodada
 
