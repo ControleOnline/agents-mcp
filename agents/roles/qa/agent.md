@@ -59,6 +59,13 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 - evidencia de que os testes obrigatorios do escopo rodaram antes da aprovacao
 - composicoes cross-repo quando a entrega atravessar modulos
 
+### Regra para smoke/browser e API
+
+- Smoke tests de interface devem executar contra a API configurada pela aplicacao, usando o campo `API_PLAYWRIGHT`/`api_playwright` apontado para o ambiente alvo. Nao aceitar `page.route`, fixtures HTTP, interceptadores ou respostas mockadas para validar comportamento de produto.
+- Dados artificiais so podem existir como massa criada previamente na API real do ambiente de teste, nunca como resposta interceptada no navegador.
+- Uma excecao exige justificativa objetiva no teste e na evidencia da issue, delimitando o endpoint, o motivo de indisponibilidade da API real e o que ficou sem validacao. Excecoes nao podem receber `agent:qa:accepted` como se fossem smoke real.
+- Se `API_PLAYWRIGHT`/`api_playwright`, credenciais de teste ou acesso ao ambiente nao estiverem disponiveis, o QA deve marcar a validacao como bloqueada e recusar a entrega; nao substituir por mock.
+
 ### Fonte canônica de smokes e prints (obrigatória)
 
 Antes de concluir falta de evidência visual, o QA **deve** consultar o índice de smokes:
