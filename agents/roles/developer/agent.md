@@ -41,6 +41,8 @@ A selecao deve escolher exatamente uma issue elegivel, nesta ordem de **tipo**:
 3. `bug`
 4. demais tipos (`enhancement`, `feature` ou sem tipo)
 
+Antes dessa ordem, aplique a precedencia de coluna: `Working` primeiro; `Ready` somente se nao houver issue elegivel em `Working`. `Ready` e `Working` sao exclusivos da trilha Developer/validadores. `DevOps` opera em `Deploy`, `In Review` e `Done`.
+
 **Desempate dentro de cada linha de tipo** (nesta ordem):
 
 1. labels de prioridade `p0`, `p1`, `p2`, … (menor numero = maior prioridade; issue **sem** label `p*` fica depois das que tem)

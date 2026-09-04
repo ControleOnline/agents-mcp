@@ -247,6 +247,12 @@ function isEligibleForRole(item, role, workStatuses, deployStatuses) {
   return statusMatches(status, workStatuses) && hasAgentLabel(issue, ROLE_META[role].label);
 }
 
+function prioritizeWorkingItems(items, role) {
+  if (role === 'devops') return items;
+  const workingItems = items.filter((item) => getStatusValue(item).trim().toLowerCase() === 'working');
+  return workingItems.length > 0 ? workingItems : items;
+}
+
 function serializeItem(item) {
   const issue = item.content;
   return {
@@ -288,7 +294,10 @@ async function main() {
   if (!project) throw new Error(`Project not found: ${org}/projects/${projectNumber}`);
 
   const items = sortByCreatedAt(project.items?.nodes || []);
-  const candidateItems = items.filter((item) => isEligibleForRole(item, role, workStatuses, deployStatuses));
+  const candidateItems = prioritizeWorkingItems(
+    items.filter((item) => isEligibleForRole(item, role, workStatuses, deployStatuses)),
+    role
+  );
   if (role === 'developer') {
     candidateItems.sort((left, right) => {
       const leftPriority = issuePriority(left.content);

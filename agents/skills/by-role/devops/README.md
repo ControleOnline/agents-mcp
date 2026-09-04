@@ -27,6 +27,7 @@ Executar o merge. Comentario sem promocao nao fecha a funcao.
 ## Ownership
 
 - label oficial: `agent:devops`
+- `Ready` e `Working` sao exclusivos de Developer e validadores; DevOps nunca captura nesses status
 - se o prompt nao informar issue, descubra no template DevOps de `issue-queue-discovery.md`
 - prioridade P1: `Deploy` → `master`; depois quarteto → `staging`; por ultimo PRs/issues `agent:devops` com acao restante (sem furar a fila hotfix da P2)
 - desempate: `createdAt` crescente; empate pelo menor numero; `updatedAt` nao altera posicao
