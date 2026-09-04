@@ -60,6 +60,14 @@ Issues com Status Project #1 **`Blocked`** ou **`Backlog`** **nao sao candidatas
 - Nao mover item para fora de `Blocked`/`Backlog` sem ordem humana explicita na issue.
 - Nao usar `Backlog` como fila de recuperacao automatica.
 
+## Ownership de colunas por trilha
+
+As colunas **`Ready`** e **`Working`** pertencem exclusivamente ao fluxo de `Developer` e aos validadores (`QA`, `Security`, `Design` e `UX`). Elas nao sao fila de `DevOps`.
+
+`DevOps` opera somente em **`Deploy`**, **`In Review`** e **`Done`**. Uma task com `agent:devops` em `Ready` ou `Working` nao deve ser capturada pelo DevOps.
+
+Para cada papel que usa `Ready`/`Working`, a precedencia e obrigatoria: consultar primeiro todas as candidatas em `Working`; se existir ao menos uma candidata, descartar todas as candidatas em `Ready` nesta rodada; so consultar `Ready` quando `Working` estiver vazio. Labels, tipo, prioridade, `createdAt` e numero da issue so podem ser aplicados depois da filtragem por status.
+
 ## Fonte de verdade da fila
 
 - Issues do GitHub na org `ControleOnline` (ou escopo restrito pelo prompt).

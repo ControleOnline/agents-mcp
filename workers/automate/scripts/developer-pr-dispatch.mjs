@@ -272,6 +272,11 @@ function issueInWorkStatus(item, workStatuses) {
   return workStatuses.has(currentStatus.toLowerCase());
 }
 
+function prioritizeWorkingItems(items) {
+  const workingItems = items.filter((item) => getProjectStatus(item).trim().toLowerCase() === 'working');
+  return workingItems.length > 0 ? workingItems : items;
+}
+
 function serializeIssue(item) {
   const issue = item.content;
   const pullRequests = normalizePullRequests(issue);
@@ -345,8 +350,8 @@ async function main() {
   if (!project) throw new Error(`Project not found: ${org}/projects/${projectNumber}`);
 
   const items = sortByCreatedAt(project.items?.nodes || []);
-  const candidateItems = items
-    .filter((item) => isDeveloperCandidate(item, allowedAssociations, workStatuses))
+  const candidateItems = prioritizeWorkingItems(items
+    .filter((item) => isDeveloperCandidate(item, allowedAssociations, workStatuses)))
     .sort((left, right) => {
       const leftPriority = issuePriority(left.content);
       const rightPriority = issuePriority(right.content);

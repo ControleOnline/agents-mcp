@@ -129,12 +129,17 @@ function getStatusValue(item) {
   return value?.name || null;
 }
 
-function listWorkItems(project, workStatus) {
+function isProtectedProjectStatus(status) {
+  return PROTECTED_PROJECT_STATUSES.has(String(status || '').trim().toLowerCase());
+}
+
+function listWorkItems(project, workStatuses) {
   return (project.items?.nodes || []).filter((item) => {
     if (!item?.content?.repository?.nameWithOwner) return false;
     if (item.content.state !== 'OPEN') return false;
     const status = getStatusValue(item);
-    return status?.toLowerCase() === workStatus.toLowerCase();
+    if (isProtectedProjectStatus(status)) return false;
+    return workStatuses.has(status?.toLowerCase());
   });
 }
 
@@ -279,7 +284,9 @@ async function main() {
   const org = env('DEVELOPER_PROJECT_ORG', 'ControleOnline');
   const projectNumber = Number(env('DEVELOPER_PROJECT_NUMBER', '1'));
   const dryRun = env('DEVELOPER_DRY_RUN', 'true').toLowerCase() !== 'false';
-  const workStatus = env('DEVELOPER_WORK_STATUS', 'Ready');
+  const workStatuses = new Set(parseCsv(env('DEVELOPER_WORK_STATUSES', 'Ready,Working')).map((value) => value.toLowerCase()));
+  const readyStatus = env('DEVELOPER_READY_STATUS', 'Ready').toLowerCase();
+  const workingStatus = env('DEVELOPER_WORKING_STATUS', 'Working').toLowerCase();
   const preferredAgentLogin = env('DEVELOPER_AGENT_LOGIN', DEFAULT_AGENT_LOGIN).toLowerCase();
   const agentLogins = new Set(
     parseCsv(env('DEVELOPER_AGENT_LOGINS', DEFAULT_AGENT_LOGINS)).map((login) => login.toLowerCase())
@@ -291,13 +298,15 @@ async function main() {
   const project = data?.organization?.projectV2;
   if (!project) throw new Error(`Project not found: ${org}/projects/${projectNumber}`);
 
-  const workItems = sortByCreatedAt(listWorkItems(project, workStatus));
+  const workItems = sortByCreatedAt(listWorkItems(project, workStatuses));
+  const workingItems = workItems.filter((item) => (getStatusValue(item) || '').toLowerCase() === workingStatus);
   const activeItems = workItems.filter((item) => {
     if (!hasAgentAssignee(item.content, agentLogins)) return false;
     return !hasHumanAssignee(item.content, agentLogins);
   });
   const humanOwnedItems = workItems.filter((item) => hasHumanOnlyAssignee(item.content, agentLogins));
   const candidateItems = workItems.filter((item) => {
+    if ((getStatusValue(item) || '').toLowerCase() !== readyStatus) return false;
     if (hasAgentAssignee(item.content, agentLogins)) return false;
     if (hasHumanOnlyAssignee(item.content, agentLogins)) return false;
     return true;
@@ -312,7 +321,10 @@ async function main() {
       id: project.id,
       title: project.title,
     },
-    workStatus,
+    workStatuses: Array.from(workStatuses),
+    readyStatus,
+    workingStatus,
+    workingCount: workingItems.length,
     activeCount: activeItems.length,
     humanOwnedCount: humanOwnedItems.length,
     candidateCount: candidateItems.length,
@@ -321,10 +333,10 @@ async function main() {
     candidateItems: candidateItems.map((item) => serializeItem(item, agentLogins, preferredAgentLogin)),
   };
 
-  if (activeItems.length > 0) {
+  if (activeItems.length > 0 || workingItems.length > 0) {
     result.ok = true;
     result.skipped = true;
-    result.reason = 'Já existe task em execução pelo Developer na coluna Ready.';
+    result.reason = 'Existe task em Working; Ready fica bloqueado até a conclusão ou retomada da execução em andamento.';
     const outPath = writeOutputFile(result);
     console.log(JSON.stringify({ ok: true, skipped: true, reason: result.reason, outPath }, null, 2));
     return;

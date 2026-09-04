@@ -17,6 +17,8 @@
 
 - se o prompt nao informar issue, descubra a proxima prioridade no GitHub; **nao peca ao usuario para escolher a issue**
 - leitura de backlog: issues abertas com ownership de `Developer` (`agent:developer`) ou entrada padrao em `Ready`/`Working` sem `agent:*`, sem pendencia ativa de QA/Security que pertenca aos revisores
+- precedencia obrigatoria: terminar/retomar candidatas em `Working` antes de capturar qualquer candidata em `Ready`; `Ready` so e consultado quando `Working` estiver vazio para o Developer
+- `Ready` e `Working` sao exclusivos de Developer e validadores. DevOps opera apenas em `Deploy`, `In Review` e `Done`
 - prioridade por **tipo**: `hotfix` → recusas QA/Security (`agent:qa:rejected` ou `agent:security:rejected`) → `bug` → demais (`enhancement`/`feature`/sem tipo)
 - desempate **dentro de cada tipo**: `p0` → `p1` → `p2` → … (sem `p*` por ultimo) → depois `createdAt` crescente → menor numero da issue; `updatedAt` nao altera a posicao
 - branch permitida: apenas `task-{id_issue}` derivada de **`master`**

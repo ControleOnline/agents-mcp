@@ -10,3 +10,5 @@ Funcoes P1, nesta ordem:
 Sem RC. Executar o merge; comentario sem promocao nao fecha a funcao.
 
 Gate de staging: `agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
+
+`Ready` e `Working` sao exclusivos de Developer e validadores; DevOps nunca captura nesses status. DevOps opera em `Deploy`, `In Review` e `Done`.

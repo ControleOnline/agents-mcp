@@ -50,6 +50,16 @@ test('lower issue number is the stable tie breaker', () => {
   assert.equal(items.sort(compareQueueItems)[0].number, 11);
 });
 
+test('Working takes precedence over Ready before priority ordering', () => {
+  const items = [
+    { status: 'Ready', priority: 0, number: 1 },
+    { status: 'Working', priority: 4, number: 2 },
+  ];
+  const working = items.filter((item) => item.status === 'Working');
+  const eligible = working.length > 0 ? working : items;
+  assert.deepEqual(eligible.map((item) => item.number), [2]);
+});
+
 test('canonical instructions reject updatedAt ordering', () => {
   for (const path of canonicalFiles) {
     const source = fs.readFileSync(path, 'utf8');
@@ -67,4 +77,19 @@ test('canonical instructions reject updatedAt ordering', () => {
   const developerAgent = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
   assert.match(developerAgent, /createdAt` crescente/i);
   assert.doesNotMatch(developerAgent, /`updated` mais recente/i);
+  assert.match(developerAgent, /`Working` primeiro.*`Ready` somente/i);
+});
+
+test('Developer and validators own Ready/Working while DevOps owns release columns', () => {
+  const discovery = fs.readFileSync('agents/skills/shared/operations/issue-queue-discovery.md', 'utf8');
+  const devops = fs.readFileSync('agents/skills/by-role/devops/README.md', 'utf8');
+  const dispatch = fs.readFileSync('workers/automate/scripts/agent-project-dispatch.mjs', 'utf8');
+  const projectDispatch = fs.readFileSync('workers/automate/scripts/developer-project-dispatch.mjs', 'utf8');
+
+  assert.match(discovery, /`Ready`[\s\S]*`Working`[\s\S]*pertencem exclusivamente/i);
+  assert.match(discovery, /DevOps[\s\S]*`Deploy`[\s\S]*`In Review`[\s\S]*`Done`/i);
+  assert.match(devops, /`Ready`[\s\S]*`Working`[\s\S]*DevOps nunca captura/i);
+  assert.match(dispatch, /prioritizeWorkingItems/);
+  assert.match(projectDispatch, /workingItems/);
+  assert.match(projectDispatch, /Ready fica bloqueado até a conclusão/is);
 });
