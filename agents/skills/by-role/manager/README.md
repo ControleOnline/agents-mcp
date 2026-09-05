@@ -31,7 +31,7 @@ Se a prioridade selecionada falhar por ferramenta/credencial/API **depois** de t
 
 Excecao: P1 so com gate humano de Deploy (coluna vazia / In Review aguardando) → `P1_SKIPPED_HUMAN_DEPLOY` e continue P2-P6. Item **ja em Deploy** nao e gate: **sempre publicar**.
 
-`In Review` = task individual ja em staging aguardando conferencia humana. Nao remover da coluna sem autorizacao humana; se parecer indevida, comentar + handoff `agent:devops` e esperar humano. Nao e freeze de pacote RC.
+`In Review` = task individual ja em staging aguardando conferencia humana. Nao remover da coluna sem autorizacao humana; se parecer indevida, comentar + handoff `agent:devops` e esperar humano. Nao e freeze nem inventario de filhas.
 
 ## Prioridade 4 - validadores
 

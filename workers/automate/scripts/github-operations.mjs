@@ -659,9 +659,17 @@ function isProtectedProjectStatus(status) {
   return PROTECTED_PROJECT_STATUSES.has(normalizeStatusName(status));
 }
 
-function hasHumanAuthorizedRcRemoval(input) {
-  const reason = String(input.rc_removal_reason || input.human_authorization_reason || '').trim();
-  return input.human_authorized_rc_removal === true && input.devops_rc_removal === true && reason.length > 0;
+function hasHumanAuthorizedInReviewRemoval(input) {
+  const reason = String(
+    input.in_review_removal_reason ||
+      input.rc_removal_reason ||
+      input.human_authorization_reason ||
+      ''
+  ).trim();
+  const humanOk =
+    input.human_authorized_in_review_removal === true || input.human_authorized_rc_removal === true;
+  const devopsOk = input.devops_in_review_removal === true || input.devops_rc_removal === true;
+  return humanOk && devopsOk && reason.length > 0;
 }
 
 function assertAllowedProjectStatusTransition(item, input) {
@@ -686,16 +694,15 @@ function assertAllowedProjectStatusTransition(item, input) {
     return;
   }
 
-  // In Review is the frozen RC/human-review package. Removing a task from it
-  // changes the RC inventory, so automation must fail closed unless DevOps is
-  // acting on an explicit human authorization and records the reason.
-  if (hasHumanAuthorizedRcRemoval(input)) {
+  // In Review = task individual already on staging awaiting human conference.
+  // Leaving that column (except Deploy/Done) needs explicit human + DevOps.
+  if (hasHumanAuthorizedInReviewRemoval(input)) {
     return;
   }
 
   throw new Error(
     `Refusing ProjectV2 status transition ${fromStatus || 'In Review'} -> ${input.target_status} for ${issueRef}: ` +
-    'In Review is a frozen RC package/human-review column. Only DevOps may remove an item from the RC after explicit human authorization; provide human_authorized_rc_removal=true, devops_rc_removal=true and rc_removal_reason.'
+    'In Review is a per-task human-review column. Only DevOps may remove an item after explicit human authorization; provide human_authorized_in_review_removal=true, devops_in_review_removal=true and in_review_removal_reason.'
   );
 }
 

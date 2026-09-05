@@ -96,7 +96,7 @@ test('queue ordering is oldest first and never updatedAt', () => {
   assert.match(managerAgent, /updatedAt.*nao ordena/i);
 });
 
-test('In Review is protected as frozen RC inventory', () => {
+test('In Review is protected as a per-task human-review column', () => {
   assert.match(managerAgent, /In Review.*task ja em staging aguardando conferencia humana/is);
   assert.match(managerAgent, /Nao remover da coluna/i);
   assert.match(managerSkill, /In Review.*task ja em staging/i);

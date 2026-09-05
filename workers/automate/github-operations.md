@@ -77,13 +77,13 @@ Campos aceitos:
 - `target_status`
 - `item_id` opcional quando o item ja for conhecido
 - `repo_full_name` e `issue_number` quando for preciso localizar o item pela issue
-- `human_authorized_rc_removal` obrigatorio como `true` para remover item de `In Review` para qualquer coluna que nao seja `Deploy` ou `Done`
-- `devops_rc_removal` obrigatorio como `true` junto da autorizacao humana para remocao de item do RC
-- `rc_removal_reason` obrigatorio com o motivo humano documentado para remocao de item do RC
+- `human_authorized_in_review_removal` (alias aceito: `human_authorized_rc_removal`) obrigatorio como `true` para remover item de `In Review` para qualquer coluna que nao seja `Deploy` ou `Done`
+- `devops_in_review_removal` (alias aceito: `devops_rc_removal`) obrigatorio como `true` junto da autorizacao humana
+- `in_review_removal_reason` (alias aceito: `rc_removal_reason`) obrigatorio com o motivo humano documentado
 
 Quando `repo_full_name` e `issue_number` forem informados, o runner garante que a issue esteja vinculada ao ProjectV2 antes de alterar o status. Se o item ainda nao existir no projeto, ele e incluido automaticamente e depois movido para o status solicitado.
 
-Protecao de `In Review`: a coluna significa task **individual** ja em staging aguardando conferencia humana. O runner recusa `In Review` → `Working`/`Ready`/outras colunas operacionais quando a operacao nao declara autorizacao humana explicita e remocao conduzida por DevOps. Transicoes normais permitidas: permanecer em `In Review`, seguir para `Deploy` por aprovacao humana, ou ir para `Done` apos publicacao DevOps (Deploy → master). Nao existe freeze de pacote RC.
+Protecao de `In Review`: a coluna significa task **individual** ja em staging aguardando conferencia humana. O runner recusa `In Review` → `Working`/`Ready`/outras colunas operacionais quando a operacao nao declara autorizacao humana explicita e remocao conduzida por DevOps. Transicoes normais permitidas: permanecer em `In Review`, seguir para `Deploy` por aprovacao humana, ou ir para `Done` apos publicacao DevOps (Deploy → master). Nao existe freeze nem inventario de filhas.
 
 ### `issue_comment`
 
