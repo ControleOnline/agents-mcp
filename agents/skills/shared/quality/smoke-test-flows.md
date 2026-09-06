@@ -89,9 +89,16 @@ Cada entrada possui `id` estável, ator principal e nome legível.
 | `compra-fluxo` | comprador / loja / POS | Compra |
 | `device-configuracao` | admin / operador | Configuração de devices |
 | `pedido-criacao` | vendedor / operador | Criação de pedido |
+| `cliente-cadastro` | CRM / atendimento | Cadastro de cliente |
+| `funcionario-cadastro` | RH / gestor | Cadastro de funcionário |
+| `minhas-empresas-cadastro` | titular / gestor | Minhas empresas |
+| `franquia-cadastro` | franqueador / gestor | Franquias vinculadas à empresa |
+| `fornecedor-cadastro` | compras / gestor | Cadastro de fornecedor |
+| `vendedor-cadastro` | vendedor / gestor | Cadastro, usuário e operação de vendedor |
+| `motoboy-cadastro` | logística | Cadastro e operação de motoboy |
+| `transportador-cadastro` | logística | Cadastro e operação de transportador |
 | `sales-production` | venda / produção transversal | Venda, produção, pagamento e saída entre apps |
 | `producao-fluxo` | produção / operação | Produção |
-| `cliente-cadastro` | CRM / atendimento | Cadastro de cliente |
 | `usuario-permissao` | admin | Usuários, permissões e autenticação |
 | `financeiro-cobranca` | financeiro | Cobrança, pagamento e conciliação |
 | `logistica-entrega` | logística / entrega | Entrega e logística |

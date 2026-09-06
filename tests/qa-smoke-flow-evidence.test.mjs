@@ -42,7 +42,7 @@ test('canonical smoke flow catalog matches ControleOnline business flows', () =>
     assert.match(smokeFlows, new RegExp(`\\\`${flowId}\\\``));
   }
 
-  assert.doesNotMatch(smokeFlows, /leilao|embarcador|transportador|viagem/i);
+  assert.doesNotMatch(smokeFlows, /leilao|embarcador|viagem/i);
 });
 
 test('QA gate requires screenshots for every UI/browser smoke step', () => {
