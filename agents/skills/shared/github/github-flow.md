@@ -110,7 +110,7 @@ Sinal de que a **task individual** já está em staging e aguarda humano. Nenhum
 3. Move a task para **`Done`**.
 4. Handoff documental fail-closed (`agent:technical-documenter` / `agent:tutorial-assistant` se faltar `:done`).
 
-Nunca direto a `master` sem coluna `Deploy`, salvo correção estrutural de governança em `agents-mcp`. Mudanças de governança no próprio `agents-mcp` são exceção permanente: podem ser publicadas como `hotfix` diretamente em `master`, com revisão do diff, testes e confirmação do push; não exigem QA de produto, staging ou coluna `Deploy`.
+Nunca promova código de produto de uma branch que não esteja em `Deploy`. Exceções permanentes: (1) governança/regras do ecossistema, em branch `task-{id}` do `agents-mcp`; (2) documentação pura, em branch `task-{id}` do repositório documental afetado; e (3) task exclusivamente de testes, sem alteração de runtime de produto, em branch `task-{id}`. Todas seguem `task-{id}` → `master` como hotfix e exigem issue/task, diff revisado, testes pertinentes e confirmação do push; não exigem QA de produto, staging ou coluna `Deploy`, mas a issue/task deve ser movida para **`Done`** depois do push remoto confirmado.
 
 Detalhes: `agents/skills/shared/github/master-publication.md`.
 
@@ -148,7 +148,7 @@ master
 ```
 
 - Dual-gate **não** bloqueia entrada em `staging` no hotfix.
-- `master` ainda exige coluna **Deploy** para produto; hotfix estrutural do `agents-mcp` pode ir diretamente para `master`.
+- `master` ainda exige coluna **Deploy** para produto; governança, documentação pura e test-only podem seguir `task-{id}` → `master` como hotfix, respeitando os gates documentais e de evidência deste arquivo.
 - Publica **somente o delta** da `task-{id}`.
 - Manager P1 = DevOps. Manager P2 = hotfix. Manager **não** implementa produto; exceção estrutural em `agents-mcp` (docs/governança/runners).
 
@@ -156,7 +156,7 @@ master
 
 - não derive task branch de `dev`/`staging` (sempre de `master`)
 - não entregue Developer em `staging` (destino é `dev`)
-- não promova produto para `master` sem coluna `Deploy` e passagem por `In Review`; a exceção é hotfix estrutural de governança no `agents-mcp`
+- não promova produto para `master` sem coluna `Deploy` e passagem por `In Review`; as exceções são branches `task-{id}` de governança no `agents-mcp`, documentação pura e tasks exclusivamente de testes
 - não monte RC, pai de RC ou freeze de pacote
 - não pule etapa sem evidência verificável
 - não mova `Deploy` de volta para `In Review` sem rejeição humana explícita

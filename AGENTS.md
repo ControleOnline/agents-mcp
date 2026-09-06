@@ -121,7 +121,7 @@ Fonte completa: `agents/skills/shared/github/github-flow.md`.
 - **Proibido montar RC** e criar task pai de RC
 - humano confere staging e move a task para **`Deploy`**
 - `DevOps` promove o delta individual `staging` → `master` e move para **`Done`**
-- **Exceção estrutural:** alterações de governança, regras, runners ou workflows no próprio `agents-mcp` podem ser publicadas como `hotfix` diretamente em `master`, após diff/testes e confirmação do push; não passam pelo QA de produto, staging ou coluna `Deploy`.
+- **Exceções de promoção:** alterações de governança/regras do ecossistema, documentação pura (sem runtime de produto) e tasks exclusivamente de testes podem ser promovidas pela branch `task-{id}` diretamente para `master` como `hotfix`, após issue/task, diff revisado, testes pertinentes e confirmação do push. Não passam pelo QA de produto, staging ou coluna `Deploy`, mas a issue/task deve acompanhar a promoção e ser movida para **`Done`** após a confirmação remota. A exceção vale para o `agents-mcp` quando a mudança é de governança e para o repositório documental/test-only efetivamente alterado; qualquer código de produto junto mantém o fluxo normal.
 
 ## Ownership operacional
 
@@ -141,7 +141,7 @@ Regras obrigatorias:
 - `Developer` nao mexe diretamente em `master`, `main`, `dev`, `staging`
 - validadores registram apenas labels de aceite/recusa na task
 - quando um validador recusar, comenta de forma objetiva para o `Developer`
-- somente o `DevOps` publica `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`
+- somente o `DevOps` publica produto `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`; governança, documentação pura e tasks exclusivamente de testes seguem a exceção `task-{id}` → `master` como hotfix
 - agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
 
 ## Fronteira do CTO

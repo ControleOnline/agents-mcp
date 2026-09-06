@@ -89,6 +89,7 @@ Cada entrada possui `id` estável, ator principal e nome legível.
 | `compra-fluxo` | comprador / loja / POS | Compra |
 | `device-configuracao` | admin / operador | Configuração de devices |
 | `pedido-criacao` | vendedor / operador | Criação de pedido |
+| `sales-production` | venda / produção transversal | Venda, produção, pagamento e saída entre apps |
 | `producao-fluxo` | produção / operação | Produção |
 | `cliente-cadastro` | CRM / atendimento | Cadastro de cliente |
 | `usuario-permissao` | admin | Usuários, permissões e autenticação |

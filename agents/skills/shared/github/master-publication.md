@@ -6,25 +6,25 @@ Use esta skill quando `DevOps` for promover o **delta de uma task individual** q
 
 Integração contínua **por task**. **Não** existe pacote RC, task pai de RC, freeze de pacote nem inventário de filhas.
 
-## Exceção estrutural: agents-mcp
+## Exceção estrutural: agents-mcp, documentação e test-only
 
-Quando o repositório afetado for o próprio `ControleOnline/agents-mcp` e a mudança corrigir governança, regras, runners ou workflows do ecossistema, a publicação é um `hotfix` estrutural autorizado diretamente em `master`. Não exigir coluna `Deploy`, staging, QA de produto ou o pipeline de submódulos. Ainda são obrigatórios: issue/task, diff revisado, testes locais pertinentes, push não forçado e confirmação do SHA remoto.
+O **hotfix estrutural do `agents-mcp`** e as mudanças de documentação pura ou tasks exclusivamente de testes sem runtime de produto podem ser promovidos da branch `task-{id}` diretamente para `master`. Isso não autoriza trabalho sem branch nem commit na própria `master`. Não exigir coluna `Deploy`, staging, QA de produto ou pipeline de submódulos. Ainda são obrigatórios: issue/task, classificação explícita da exceção, diff revisado, testes locais pertinentes, push não forçado e confirmação do SHA remoto; após a confirmação, mova a issue/task para **`Done`**. Se houver qualquer alteração de runtime de produto, esta exceção não se aplica.
 
 ## Pre-requisitos
 
-1. A task está na coluna **`Deploy`** (movida por humano a partir de `In Review`), exceto pela regra de hotfix estrutural do `agents-mcp` acima.
+1. A task está na coluna **`Deploy`** (movida por humano a partir de `In Review`), exceto pelas regras de promoção `task-{id}` → `master` para governança, documentação pura e test-only acima.
 2. O delta da task já está em **`staging`** (merge prévio de `task-{id}` → `staging` feito pelo DevOps).
 3. Não há deploy anterior de `staging`/`master` falho/pendente sem causa resolvida.
 
 ## Workflow
 
-Quando a task estiver em **`Deploy`**:
+Quando a task estiver em **`Deploy`**, ou quando a exceção de promoção `task-{id}` → `master` estiver classificada e comprovada:
 
 1. Auditar deploys/workflows anteriores mais recentes de `staging` e `master` (pai + submódulos obrigatórios). Se algum estiver falho, cancelado, pendente ou sem evidência de sucesso: descubra a causa, corrija ou registre bloqueio concreto e **pare sem publicar**.
    - **Smokes de browser/UI com problema:** se a auditoria encontrar smoke falho que não faça parte do delta imediato, abra/atualize issue técnica separada no repositório afetado, em `Ready`, com labels `hotfix` + `bug` + `agent:developer` (e label de página quando identificável), referenciando workflow/job/run e resumo sanitizado. A publicação só permanece bloqueada se a falha provar que **este** delta não é publicável; caso contrário a correção fica para P5 Developer.
 2. Publique **primeiro cada submódulo** com delta real, depois o projeto pai (gitlinks coerentes).
 3. Para cada repositório com delta entre `staging` e `master` relativo à task: merge/promoção autorizada (`staging` / `task-{id}` → `master`). Use PR apenas se a política do repo exigir — o rito é promoção do **delta da task**, não PR de produto do Developer.
-4. Merge somente sem conflito e com a task em `Deploy`.
+4. Merge somente sem conflito e com a task em `Deploy`, salvo as exceções `task-{id}` → `master` classificadas nesta página; depois do push confirmado, mova a issue/task para `Done`.
 5. Quando a promoção exigir bump: grave versão **numérica** `X.Y.N` em `package.json` / `app.json` (sem sufixo textual). Tags usam a mesma versão.
 6. Confirme que `master` recebeu o commit esperado e que o push remoto aconteceu.
 7. **Mova a task para `Done`**.
@@ -60,7 +60,8 @@ Ao concluir, informe:
 
 ## Quality Bar
 
-- não promova item que não esteja na coluna `Deploy`
+- não promova código de produto que não esteja na coluna `Deploy`; governança, documentação pura e test-only precisam da classificação de exceção e da branch `task-{id}`
+- não deixe issue/task de exceção publicada fora de `Done` após confirmação do push
 - não promova se deploys anteriores de `staging`/`master` não tiverem finalizado corretamente
 - não deixe smoke de browser/UI falho sem issue técnica de follow-up em `Ready` com `hotfix` + `bug` + `agent:developer`
 - não pule subprojetos obrigatórios com delta

@@ -15,6 +15,11 @@ const masterPublication = fs.readFileSync(
   'agents/skills/shared/github/master-publication.md',
   'utf8',
 );
+const githubFlow = fs.readFileSync(
+  'agents/skills/shared/github/github-flow.md',
+  'utf8',
+);
+const agentsMd = fs.readFileSync('AGENTS.md', 'utf8');
 const githubIssueHandling = fs.readFileSync(
   'agents/skills/shared/github/github-issue-handling.md',
   'utf8',
@@ -29,6 +34,7 @@ test('canonical smoke flow catalog matches ControleOnline business flows', () =>
     'compra-fluxo',
     'device-configuracao',
     'pedido-criacao',
+    'sales-production',
     'producao-fluxo',
     'integracao-api',
     'outros',
@@ -58,9 +64,22 @@ test('QA gate requires central wiki flow, top-level page step, and per-step prin
   }
 
   assert.match(smokeFlows, /índice central/);
+  assert.match(smokeFlows, /`sales-production`/);
   assert.match(smokeFlows, /comentário de topo/);
   assert.doesNotMatch(smokeFlows, /GET .*\/flowcharts|admin\.controleonline\.com\/admin\/flowcharts/);
   assert.doesNotMatch(qaAgent, /GET .*\/flowcharts|admin\.controleonline\.com\/admin\/flowcharts/);
+});
+
+test('direct-master exceptions are explicit and bounded', () => {
+  const sources = `${agentsMd}\n${githubFlow}\n${masterPublication}`;
+  assert.match(sources, /documentação pura/i);
+  assert.match(sources, /exclusivamente de testes/i);
+  assert.match(sources, /sem runtime de produto/i);
+  assert.match(sources, /task-\{id\}.*master/is);
+  assert.match(sources, /issue\/task.*Done|task.*Done/is);
+  assert.match(sources, /issue\/task/i);
+  assert.match(sources, /diff revisado/i);
+  assert.match(sources, /confirmação do push|confirmação do SHA remoto/i);
 });
 
 test('browser smoke failures become developer follow-up tasks', () => {
