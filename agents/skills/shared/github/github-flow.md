@@ -42,7 +42,8 @@ Se o estado real do GitHub mostrar que o passo **já foi feito**, o agent não r
 3. Implementa e valida na branch da tarefa.
 4. Sincroniza com `origin/master` antes de continuar/encerrar.
 5. **Faz merge de `task-{id_issue}` em `dev`** (sem abrir PR) — ou **pula** se já estiver mergeada (com comentário).
-6. Registra evidência e handoff (`agent:qa` e `agent:security`; Design/UX quando o escopo tiver UI).
+6. Executa o gate compartilhado de entrega local: toda alteração em projeto principal, submódulo ou gitlink deve estar publicada; cada checkout afetado deve ser conferido contra `origin/master` e ficar sem staged/unstaged/untracked. Registra exceções de branch com SHA e ref remoto.
+7. Registra evidência e handoff (`agent:qa` e `agent:security`; Design/UX quando o escopo tiver UI), incluindo o inventário dos projetos/submódulos e a conferência de `origin/master`.
 
 ### Proibições do Developer
 
@@ -156,6 +157,7 @@ master
 
 - não derive task branch de `dev`/`staging` (sempre de `master`)
 - não entregue Developer em `staging` (destino é `dev`)
+- não faça handoff com mudança local, commit não publicado ou projeto/submódulo afetado sem conferência contra `origin/master`
 - não promova para `master` sem coluna `Deploy` e passagem por `In Review`
 - não monte RC, pai de RC ou freeze de pacote
 - não pule etapa sem evidência verificável

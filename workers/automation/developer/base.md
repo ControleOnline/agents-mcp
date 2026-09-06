@@ -53,6 +53,7 @@ Siga `agents/skills/shared/github/github-flow.md`.
 - se a branch já existir, reutilize-a
 - sincronize com `origin/master` antes de implementar e antes de encerrar
 - resolva conflitos antes de continuar
+- antes do handoff, publique toda alteração local, incluindo commits de submódulos e o gitlink do pai; inventarie todos os projetos principais e submódulos afetados, confirme cada um contra `origin/master` e não deixe staged/unstaged/untracked. Se a branch de task ou integração precisar permanecer diferente de `origin/master`, registre SHA, ref remoto e motivo; isso não substitui a publicação.
 
 ## Entrega em dev (merge, sem PR)
 
@@ -62,6 +63,7 @@ Quando a entrega resultar em mudança de código ou arquivos:
 - faça **merge** de `task-{id_issue}` em **`dev`**
 - **não** mergeie em `staging` nem em `master` (`staging` é exclusivo do RC do DevOps)
 - deixe claro na issue qual branch e quais commits foram mergeados em `dev`
+- no mesmo comentário, liste os projetos/submódulos afetados, SHAs e refs remotos publicados e o resultado da conferência contra `origin/master`
 - mantenha rastreabilidade issue ↔ `task-{id_issue}` ↔ `dev`
 
 ## Implementação
@@ -82,6 +84,7 @@ Envie adiante apenas quando:
 
 - o trabalho foi executado
 - existe evidência concreta (commits na task branch e **merge em `dev`**)
+- todos os projetos principais e submódulos afetados foram publicados ou a pendência foi registrada como bloqueio; não há alteração local solta
 - não restam pendências que contradigam revisão
 
 Ao concluir:

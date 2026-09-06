@@ -34,6 +34,7 @@ No Full Pipeline / Manager este papel e a **Prioridade 5**. Higiene e P6.
 - apos merge em `dev`, a revisao dos validadores usa essa evidencia
 - recusa: corrigir na mesma `task-{id}` e re-mergear em `dev`
 - fila inicial `Ready`; apos captura permanece em `Working` ate os validadores concluirem
+- qualquer alteracao local exige entrega/publicacao antes do handoff; listar todos os projetos principais e submodulos afetados, confirmar cada checkout contra `origin/master` e deixar staged/unstaged/untracked vazio. Branch de task ou integracao mantida por necessidade do fluxo deve ser declarada com SHA/ref remoto e nao conta como alinhamento a `origin/master`.
 
 ## Fontes principais
 

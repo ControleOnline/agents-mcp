@@ -138,6 +138,7 @@ Regras obrigatorias:
 - `Developer` seleciona trabalho apenas quando a issue ainda esta aberta, foi criada por membro da equipe e nao existe pendencia ativa de decisao por `QA`, `Security`, `Design` ou `UX`
 - `Developer` so trabalha na `task-{id_issue}` e entrega em **`dev`** por merge, sem abrir PR
 - `Developer` nao mexe diretamente em `master`, `main`, `dev`, `staging`
+- se qualquer agent mexer localmente, a entrega precisa estar publicada antes do handoff: todos os projetos principais e submodulos afetados devem ser conferidos contra `origin/master`, sem alteracoes staged/unstaged/untracked; excecoes de branch necessarias ao fluxo devem ser declaradas com SHA e ref remoto, nunca tratadas como entrega local concluida
 - validadores registram apenas labels de aceite/recusa na task
 - quando um validador recusar, comenta de forma objetiva para o `Developer`
 - somente o `DevOps` publica `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`
