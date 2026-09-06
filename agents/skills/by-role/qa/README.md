@@ -11,7 +11,7 @@
 - `agents/skills/shared/operations/agent-execution-baseline.md`
 - `agents/skills/shared/operations/issue-queue-discovery.md`
 - `agents/skills/shared/quality/code-quality.md`
-- `agents/skills/shared/quality/smoke-test-flows.md` — catálogo de fluxos + fonte `<SMOKE_TESTS_BASE_URL>` + gate `flowchartIds` / `GET /flowcharts`
+- `agents/skills/shared/quality/smoke-test-flows.md` — catálogo e índice central das wikis + fonte `<SMOKE_TESTS_BASE_URL>` + gate de manifesto, etapas e comentários de topo
 - `agents/skills/shared/operations/agent-handoff-governance.md`
 - `config/ecosystem.config.json` — `smoke.tests_base_url` = `https://s.controleonline.com/tests` (sem secret)
 
@@ -54,7 +54,7 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
   - console do browser sem erros relevantes da entrega
   - **sem loops, re-renders desnecessarios ou chamadas/API duplicadas** em cada tela revisada
   - Android verificado quando aplicavel e acessivel (ou justificativa objetiva de alcance)
-  - smoke de UI POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER: `GET /flowcharts` lido; `flowchartIds` existentes e enabled; prints por etapa; recusa cita falta de flowchart ou falta de print por etapa **após** consulta a `/tests`
+  - qualquer smoke de UI/API: índice central da wiki consultado; `fluxo: <id>` válido; arquivos alterados com `fluxo: <id> | etapa: <id>` no topo; prints por etapa; recusa cita a etapa/página ausente
 
 ## Handoff
 

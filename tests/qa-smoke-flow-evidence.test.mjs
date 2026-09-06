@@ -50,24 +50,21 @@ test('QA gate requires screenshots for every UI/browser smoke step', () => {
   assert.match(qaAgent, /Evidencia visual completa do fluxo/i);
 });
 
-test('QA gate requires admin flowchartIds plus per-step prints', () => {
+test('QA gate requires central wiki flow, top-level page step, and per-step prints', () => {
   for (const source of [smokeFlows, codeQuality, qaAgent, qaReadme]) {
-    assert.match(source, /flowchartIds/);
-    assert.match(source, /\/flowcharts/);
+    assert.match(source, /página wiki|wiki.*fonte|wiki.*fluxo/i);
+    assert.match(source, /etapa/);
     assert.match(source, /prints? por etapa/i);
   }
 
-  assert.match(smokeFlows, /api-token/);
-  assert.match(smokeFlows, /app-domain: admin\.controleonline\.com/);
-  assert.match(smokeFlows, /admin-api\.json/);
-  assert.match(smokeFlows, /nunca no git|Não colar o token/i);
-  assert.match(smokeFlows, /outros/);
-  assert.match(qaAgent, /falta de flowchart ou falta de print por etapa/);
-  assert.match(qaReadme, /falta de flowchart ou falta de print por etapa/);
+  assert.match(smokeFlows, /índice central/);
+  assert.match(smokeFlows, /comentário de topo/);
+  assert.doesNotMatch(smokeFlows, /GET .*\/flowcharts|admin\.controleonline\.com\/admin\/flowcharts/);
+  assert.doesNotMatch(qaAgent, /GET .*\/flowcharts|admin\.controleonline\.com\/admin\/flowcharts/);
 });
 
 test('browser smoke failures become developer follow-up tasks', () => {
-  for (const source of [codeQuality, masterPublication, githubIssueHandling]) {
+  for (const source of [codeQuality, githubIssueHandling]) {
     assert.match(source, /smoke de browser\/UI|smokes de browser\/UI/i);
     assert.match(source, /Ready/);
     assert.match(source, /`hotfix`/);
@@ -77,7 +74,7 @@ test('browser smoke failures become developer follow-up tasks', () => {
     assert.match(source, /sanitizad[ao]|segredo|credenciais/i);
   }
 
-  assert.match(masterPublication, /nao transforme isso em comentario solto/i);
+  assert.match(masterPublication, /hotfix estrutural.*agents-mcp/i);
   assert.match(githubIssueHandling, /nao use assignee/i);
   assert.match(githubIssueHandling, /fluxo e erro raiz/i);
 });

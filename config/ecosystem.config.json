@@ -87,7 +87,7 @@
       "placeholder": "<API_ENTRYPOINT>",
       "env": "API_ENTRYPOINT",
       "value": "https://api.controleonline.com",
-      "description": "Entrypoint HTTP da API (flowcharts e demais endpoints). Token não fica aqui."
+      "description": "Entrypoint HTTP da API para smoke tests; fluxos de negócio são mantidos na wiki, não neste endpoint. Token não fica aqui."
     },
     "admin_origin": {
       "placeholder": "<ADMIN_ORIGIN>",

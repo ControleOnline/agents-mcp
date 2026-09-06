@@ -84,11 +84,11 @@ Antes de concluir falta de evidência visual, o QA **deve** consultar o índice 
 5. **Loops e chamadas duplicadas**: em cada tela/fluxo revisado, nao deve haver loops, re-renders desnecessarios ou requests/API duplicados.
 6. **Android** (quando aplicavel e houver build/artefato acessivel): verifique bugs obvios de runtime ou justifique explicitamente o que ficou fora de alcance.
 7. **Evidencia visual completa do fluxo**: para smoke de UI/browser, confirme que existe `fluxo: <id>` do catalogo canonico e prints/screenshot para cada etapa relevante da jornada (preferir artifacts em `<SMOKE_TESTS_BASE_URL>/artifacts/...`). Evidencia parcial, print solto, ausencia de manifesto ou teste espalhado sem encaixe em fluxo bloqueia aprovacao.
-8. **Flowcharts do admin**: antes de aceitar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER, leia `GET /flowcharts` em `<API_ENTRYPOINT>` (canônico `https://api.controleonline.com`) com headers `api-token` + `app-domain` do Drive. Exija `flowchartIds` existentes e `enabled` **e** prints por etapa. Recuse smoke órfão (`outros` sem flowchartId). O comentário de recusa cita falta de flowchart ou falta de print por etapa **após** consulta a `/tests` e `/flowcharts`.
+8. **Fluxo da wiki**: antes de aceitar qualquer smoke de UI/API, consulte o índice central de `app-community` ou `api-community`, confirme `fluxo: <id>` e o manifesto de etapas. Cada arquivo/página alterado deve ter comentário de topo `fluxo: <id> | etapa: <id>`. Sem entrada no índice, etapa no topo ou print por etapa, recuse citando a ausência objetiva.
 
 Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao. Falta de qualquer item acima em entrega com interface bloqueia `agent:qa:accepted`.
 
-Se os testes obrigatorios do escopo nao rodaram, ou nao houver evidencia objetiva de execucao **depois** de consultar `<SMOKE_TESTS_BASE_URL>`, o QA deve recusar: aplicar `agent:qa:rejected`, manter/reabrir a issue `open`, comentar o que faltou e devolver para o `Developer` corrigir na `task-{id}`.
+Se os testes obrigatorios do escopo nao rodaram, ou nao houver evidencia objetiva de execucao **depois** de consultar `<SMOKE_TESTS_BASE_URL>`, o QA deve recusar imediatamente: aplicar `agent:qa:rejected`, manter/reabrir a issue `open`, comentar o que faltou e devolver para o `Developer` corrigir na `task-{id}`.
 
 ## Conclusao
 

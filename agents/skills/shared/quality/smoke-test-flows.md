@@ -11,9 +11,13 @@ Fonte única de verdade para associação de smokes a fluxos. Alterações no ca
 - Ao criar ou alterar um smoke test, o agent **deve declarar** o fluxo associado (um dos listados abaixo ou `outros`).
 - Se o smoke não se encaixa em nenhum fluxo do catálogo, use o fluxo reservado **`outros`** e justifique na issue.
 - Esta skill deve ser lida por Developer, QA, Design, UX e qualquer papel que escreva ou valide smoke.
-- A wiki técnica do produto deve espelhar estes fluxos em:
+- A wiki técnica do produto é a fonte canônica destes fluxos e deve mantê-los em:
   - `https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows`
-  - `https://github.com/ControleOnline/api-community/wiki/Smoke-Test-Flows`
+  - `https://github.com/ControleOnline/api-community/wiki/Fluxos-de-Smoke`
+- O índice central obrigatório para QA é o par sincronizado:
+  - app: `https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows`
+  - API: `https://github.com/ControleOnline/api-community/wiki/Fluxos-de-Smoke`
+- Se o `fluxo: <id>` não aparecer nesse índice central, o QA deve recusar, mesmo que exista uma página local de submódulo.
 
 ## Fonte canônica de suites e artifacts (aprovadores)
 
@@ -56,24 +60,24 @@ Para cada smoke de UI/browser, a evidência mínima é:
 
 Falta de prints por etapa, prints que não permitem reconstruir a jornada ou smoke sem fluxo declarado bloqueiam `agent:qa:accepted`.
 
-## Flowcharts publicados no admin (vínculo operacional)
+## Fluxos publicados na wiki (vínculo operacional)
 
-O catálogo desta skill **não substitui** os flowcharts do tenant admin. Soma-se a eles.
+O catálogo desta skill e os índices centrais das wikis substituem integralmente os diagramas mantidos no tenant admin.
 
-Antes de dar `agent:qa:accepted` em smoke de UI dos produtos POS, SHOP, PPC, DELIVERY, CHECKOUT ou MANAGER, o QA **deve ler** os flowcharts habilitados:
+Antes de dar `agent:qa:accepted`, o QA deve abrir o índice central da wiki correspondente:
 
-1. `GET <API_ENTRYPOINT>/flowcharts` (e `/flowcharts/{id}` quando precisar do diagrama).
-2. Headers permitidos (token **nunca** no git): `api-token` e `app-domain` do Drive.
-3. Credencial: Drive `admin-api.json` / `tests.json`. Não colar o token em issue, PR, wiki ou arquivo versionado.
-4. UI de conferência: `https://admin.controleonline.com/admin/flowcharts/{id}`.
+1. App: `https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows`.
+2. API: `https://github.com/ControleOnline/api-community/wiki/Fluxos-de-Smoke`.
+3. O índice deve conter o `fluxo: <id>` e linkar a página detalhada da jornada.
+4. Cada arquivo/página alterado deve possuir comentário de topo `fluxo: <id> | etapa: <id>`.
 
 O smoke só é aceito se:
 
-- declarar um ou mais `flowchartIds` **existentes e `enabled`** no admin;
-- tiver prints/screenshot de cada etapa relevante da jornada daquele flowchart;
-- continuar declarando `fluxo: <id>` deste catálogo.
+- estar listado no índice central da wiki;
+- ter manifesto, comentário de topo e prints/screenshot de cada etapa relevante;
+- declarar exatamente um `fluxo: <id>` deste catálogo.
 
-Smoke órfão (`fluxo: outros` **sem** `flowchartId` válido) em entrega de UI desses produtos **bloqueia** aceite. Comentário de recusa deve citar falta de flowchart ou falta de print por etapa **após** consulta a `/tests` e `/flowcharts`.
+Smoke órfão, fora do índice central, sem comentário de etapa ou sem print por etapa bloqueia aceite. O comentário de recusa deve citar a página/etapa ausente e o fluxo declarado.
 
 ## Catálogo oficial
 

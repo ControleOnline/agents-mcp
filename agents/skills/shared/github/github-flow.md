@@ -110,7 +110,7 @@ Sinal de que a **task individual** já está em staging e aguarda humano. Nenhum
 3. Move a task para **`Done`**.
 4. Handoff documental fail-closed (`agent:technical-documenter` / `agent:tutorial-assistant` se faltar `:done`).
 
-Nunca direto a `master` sem coluna `Deploy`, salvo correção estrutural de governança em `agents-mcp`.
+Nunca direto a `master` sem coluna `Deploy`, salvo correção estrutural de governança em `agents-mcp`. Mudanças de governança no próprio `agents-mcp` são exceção permanente: podem ser publicadas como `hotfix` diretamente em `master`, com revisão do diff, testes e confirmação do push; não exigem QA de produto, staging ou coluna `Deploy`.
 
 Detalhes: `agents/skills/shared/github/master-publication.md`.
 
@@ -148,7 +148,7 @@ master
 ```
 
 - Dual-gate **não** bloqueia entrada em `staging` no hotfix.
-- `master` ainda exige coluna **Deploy**.
+- `master` ainda exige coluna **Deploy** para produto; hotfix estrutural do `agents-mcp` pode ir diretamente para `master`.
 - Publica **somente o delta** da `task-{id}`.
 - Manager P1 = DevOps. Manager P2 = hotfix. Manager **não** implementa produto; exceção estrutural em `agents-mcp` (docs/governança/runners).
 
@@ -156,7 +156,7 @@ master
 
 - não derive task branch de `dev`/`staging` (sempre de `master`)
 - não entregue Developer em `staging` (destino é `dev`)
-- não promova para `master` sem coluna `Deploy` e passagem por `In Review`
+- não promova produto para `master` sem coluna `Deploy` e passagem por `In Review`; a exceção é hotfix estrutural de governança no `agents-mcp`
 - não monte RC, pai de RC ou freeze de pacote
 - não pule etapa sem evidência verificável
 - não mova `Deploy` de volta para `In Review` sem rejeição humana explícita

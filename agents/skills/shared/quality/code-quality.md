@@ -35,7 +35,7 @@ Se houver conflito entre um AGENTS local e esta skill para criterios de qualidad
 - lint, testes e smoke devem ser executados ou explicitamente bloqueados com justificativa objetiva
 - o resultado da validacao deve ser descrito com o escopo real do que foi coberto
 - em smoke test de UI/browser, as capturas, prints, screenshots ou artefatos devem cobrir **todo o fluxo** por etapa; evidencia parcial bloqueia QA
-- o manifesto ou comentario do smoke deve permitir reconstruir a jornada sem interpretacao verbal: `fluxo: <id>`, `flowchartIds` (IDs existentes e enabled no admin), passos executados, prints por passo e resultado final
+- o manifesto ou comentario do smoke deve permitir reconstruir a jornada sem interpretacao verbal: página no índice central da wiki, `fluxo: <id>`, etapa no comentário de topo, passos executados, prints por passo e resultado final
 - o `Documentor` deve conseguir reutilizar o material gerado pelo smoke sem depender de interpretacao verbal da entrega
 
 
@@ -46,7 +46,7 @@ Smokes devem ser associados a um fluxo do catálogo canônico em `quality/smoke-
 - Agents **não** inventam novos fluxos; só humanos autorizam mudanças no catálogo.
 - Ao criar/alterar smoke, declarar o fluxo (`fluxo: <id>`). Sem coerência → usar `outros`.
 - QA deve recusar smoke de UI/browser que não tenha prints/screenshot cobrindo todas as etapas relevantes do fluxo.
-- QA deve recusar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER sem `flowchartIds` válido no admin (`GET /flowcharts`) ou sem prints por etapa.
+- QA deve recusar qualquer smoke de UI/API sem entrada no índice central da wiki, comentário de topo `fluxo: <id> | etapa: <id>` ou sem prints por etapa.
 - Ver a skill completa para o catálogo e regras de governança.
 
 ## Falhas de smoke encontradas fora da entrega atual
@@ -85,7 +85,7 @@ Devolva a entrega quando:
 
 - faltar teste apropriado
 - faltar smoke test em mudanca de UI
-- smoke de UI/browser sem prints por etapa, sem `fluxo: <id>` ou sem `flowchartIds` válido no admin (produtos POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER)
+- smoke de UI/browser/API sem página no índice central, comentário de topo com fluxo/etapa, prints por etapa ou sem `fluxo: <id>`
 - houver componente ou arquivo grande demais sem quebra aceitavel
 - a mudanca duplicar contrato que ja existe em shared/store/component
 - a mudanca tornar o codigo mais centralizado, dificil de reaproveitar ou dificil de testar

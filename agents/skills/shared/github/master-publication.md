@@ -6,9 +6,13 @@ Use esta skill quando `DevOps` for promover o **delta de uma task individual** q
 
 Integração contínua **por task**. **Não** existe pacote RC, task pai de RC, freeze de pacote nem inventário de filhas.
 
+## Exceção estrutural: agents-mcp
+
+Quando o repositório afetado for o próprio `ControleOnline/agents-mcp` e a mudança corrigir governança, regras, runners ou workflows do ecossistema, a publicação é um `hotfix` estrutural autorizado diretamente em `master`. Não exigir coluna `Deploy`, staging, QA de produto ou o pipeline de submódulos. Ainda são obrigatórios: issue/task, diff revisado, testes locais pertinentes, push não forçado e confirmação do SHA remoto.
+
 ## Pre-requisitos
 
-1. A task está na coluna **`Deploy`** (movida por humano a partir de `In Review`).
+1. A task está na coluna **`Deploy`** (movida por humano a partir de `In Review`), exceto pela regra de hotfix estrutural do `agents-mcp` acima.
 2. O delta da task já está em **`staging`** (merge prévio de `task-{id}` → `staging` feito pelo DevOps).
 3. Não há deploy anterior de `staging`/`master` falho/pendente sem causa resolvida.
 

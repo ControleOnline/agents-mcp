@@ -121,6 +121,7 @@ Fonte completa: `agents/skills/shared/github/github-flow.md`.
 - **Proibido montar RC** e criar task pai de RC
 - humano confere staging e move a task para **`Deploy`**
 - `DevOps` promove o delta individual `staging` → `master` e move para **`Done`**
+- **Exceção estrutural:** alterações de governança, regras, runners ou workflows no próprio `agents-mcp` podem ser publicadas como `hotfix` diretamente em `master`, após diff/testes e confirmação do push; não passam pelo QA de produto, staging ou coluna `Deploy`.
 
 ## Ownership operacional
 
