@@ -53,7 +53,7 @@ Se estiver `closed` sem o quadruplo: **reabra**, analise, decida por labels.
 ## Evidencia a analisar
 
 - prints de smoke por etapa da jornada (obrigatorio quando houver UI)
-- manifesto `fluxo:` / `flowchartIds` quando a entrega for tela de produto
+- manifesto `fluxo:` / página wiki / etapa identificável quando a entrega for tela de produto
 - tokens/tema existentes (nao inventar paleta)
 - checklist em `agents/skills/by-role/design/checklist.md`
 

@@ -50,20 +50,16 @@ test('QA gate requires screenshots for every UI/browser smoke step', () => {
   assert.match(qaAgent, /Evidencia visual completa do fluxo/i);
 });
 
-test('QA gate requires admin flowchartIds plus per-step prints', () => {
+test('QA gate requires published wiki flow plus per-step prints', () => {
   for (const source of [smokeFlows, codeQuality, qaAgent, qaReadme]) {
-    assert.match(source, /flowchartIds/);
-    assert.match(source, /\/flowcharts/);
+    assert.match(source, /wiki/i);
+    assert.match(source, /etapa/i);
     assert.match(source, /prints? por etapa/i);
   }
 
-  assert.match(smokeFlows, /api-token/);
-  assert.match(smokeFlows, /app-domain: admin\.controleonline\.com/);
-  assert.match(smokeFlows, /admin-api\.json/);
-  assert.match(smokeFlows, /nunca no git|Não colar o token/i);
   assert.match(smokeFlows, /outros/);
-  assert.match(qaAgent, /falta de flowchart ou falta de print por etapa/);
-  assert.match(qaReadme, /falta de flowchart ou falta de print por etapa/);
+  assert.match(qaAgent, /fluxo wiki|fluxo publicado na wiki/i);
+  assert.match(qaReadme, /fluxo publicado na wiki|página wiki/i);
 });
 
 test('browser smoke failures become developer follow-up tasks', () => {
