@@ -22,6 +22,10 @@ comentário ou handoff sem mutação verificável não encerra trabalho. Sem del
 novo, labels/coluna novas ou mudança externa comprovada, a mesma issue deve ser
 marcada `agent:<papel>:blocked` + `Blocked`, nunca repetida.
 
+Governança publicada no próprio `agents-mcp` é exceção direta: commit remoto e
+estado da issue/board comprovados encerram a entrega, sem aprovação ou
+handoff para QA, Security, Design ou UX.
+
 Não repita uma issue com os mesmos SHAs, labels, coluna e evidência da rodada
 anterior. Sem delta novo, o resultado é BLOCKED.
 

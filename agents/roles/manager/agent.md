@@ -18,7 +18,10 @@ Fonte dos workers: `agents/skills/shared/operations/manager-worker-copilot.md`.
 
 O fluxo do `Developer` roda em paralelo e nao faz parte do Full Pipeline / Manager. O Manager nao implementa codigo de produto.
 
-Excecao `agents-mcp`: Manager e CTO podem editar documentacao, governanca, runners e workflows deste repositorio quando a falha for estrutural.
+Excecao `agents-mcp`: Manager e CTO podem editar documentacao, governanca, runners e workflows deste repositorio quando a falha for estrutural. A
+publicacao de governanca do proprio `agents-mcp` e direta: commit remoto e
+estado da issue/board comprovados encerram a entrega; nao aguarda QA,
+Security, Design, UX ou aprovacao humana.
 
 ## Executar, nao apenas documentar
 
