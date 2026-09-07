@@ -35,8 +35,7 @@ Se houver conflito entre um AGENTS local e esta skill para criterios de qualidad
 - lint, testes e smoke devem ser executados ou explicitamente bloqueados com justificativa objetiva
 - o resultado da validacao deve ser descrito com o escopo real do que foi coberto
 - em smoke test de UI/browser, as capturas, prints, screenshots ou artefatos devem cobrir **todo o fluxo** por etapa; evidencia parcial bloqueia QA
-- o manifesto ou comentario do smoke deve permitir reconstruir a jornada sem interpretacao verbal: `fluxo: <id>`, pagina wiki do fluxo, etapa, passos executados, prints por passo e resultado final
-- todo arquivo de código da jornada tocado pelo Developer deve começar com `fluxo: <id> | etapa: <id>` e o link da página wiki; o smoke pode declarar o vínculo somente no JSON gerado, com `wikiPage` como primeiro campo
+- o manifesto ou comentario do smoke deve permitir reconstruir a jornada sem interpretacao verbal: `fluxo: <id>`, `flowchartIds` (IDs existentes e enabled no admin), passos executados, prints por passo e resultado final
 - o `Documentor` deve conseguir reutilizar o material gerado pelo smoke sem depender de interpretacao verbal da entrega
 
 
@@ -47,23 +46,8 @@ Smokes devem ser associados a um fluxo do catálogo canônico em `quality/smoke-
 - Agents **não** inventam novos fluxos; só humanos autorizam mudanças no catálogo.
 - Ao criar/alterar smoke, declarar o fluxo (`fluxo: <id>`). Sem coerência → usar `outros`.
 - QA deve recusar smoke de UI/browser que não tenha prints/screenshot cobrindo todas as etapas relevantes do fluxo.
-- QA deve recusar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER sem fluxo publicado na wiki, etapa identificável ou prints por etapa.
+- QA deve recusar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER sem `flowchartIds` válido no admin (`GET /flowcharts`) ou sem prints por etapa.
 - Ver a skill completa para o catálogo e regras de governança.
-
-## Falhas de smoke encontradas fora da entrega atual
-
-Quando um agent encontrar smoke de browser/UI com problema durante auditoria de CI, publicacao, higiene ou validacao indireta, e a correcao nao pertencer claramente ao delta imediato em revisao, a falha deve virar issue tecnica de follow-up para o `Developer`.
-
-Regras obrigatorias:
-
-- abrir ou atualizar issue separada no repositorio afetado
-- colocar em `Ready`
-- aplicar labels `hotfix`, `bug` e `agent:developer`
-- declarar o smoke/fluxo afetado (`fluxo: <id>` ou `outros`)
-- referenciar run/job/workflow e branch/SHA com resumo sanitizado da falha
-- nao expor credenciais, headers sensiveis, dados reais ou logs brutos
-
-Esse follow-up nao substitui a recusa de QA quando a falha pertence ao delta em revisao; nesse caso, o QA continua devolvendo a task original ao `Developer`.
 
 ## Uso por papel
 
@@ -86,7 +70,7 @@ Devolva a entrega quando:
 
 - faltar teste apropriado
 - faltar smoke test em mudanca de UI
-- smoke de UI/browser sem prints por etapa, sem `fluxo: <id>`, pagina wiki ou etapa identificável (produtos POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER)
+- smoke de UI/browser sem prints por etapa, sem `fluxo: <id>` ou sem `flowchartIds` válido no admin (produtos POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER)
 - houver componente ou arquivo grande demais sem quebra aceitavel
 - a mudanca duplicar contrato que ja existe em shared/store/component
 - a mudanca tornar o codigo mais centralizado, dificil de reaproveitar ou dificil de testar

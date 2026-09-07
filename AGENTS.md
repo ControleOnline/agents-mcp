@@ -2,6 +2,18 @@
 
 Este repositorio e a fonte oficial para automacoes, agents, runners, workflows e instrucoes operacionais do ecossistema ControleOnline.
 
+## Escopo operacional permitido (obrigatório — todos os agents)
+
+**Único escopo permitido:** organização GitHub [`Frethical`](https://github.com/Frethical/).
+
+- É **proibido** comentar, alterar labels/status, abrir/editar issues ou PRs, fazer requests, handoffs ou qualquer mutação em repositórios **fora** de `github.com/Frethical/*`.
+- É **proibido** tratar `ControleOnline/*` (ou qualquer outra org/usuário) como escopo de produto, board, fila ou validação, salvo a exceção abaixo.
+- Consultas de leitura em outros escopos só são aceitáveis quando estritamente necessárias para resolver referência histórica; **nunca** gerar comentário, label ou solicitação fora de Frethical.
+
+**Exceção estrutural única:** edição de governança, runners, workflows e documentação **deste** repositório canônico de agents quando a falha for estrutural (`agents-mcp`). Preferir o mirror/fonte sob `Frethical/agents-mcp` quando existir; mutações de produto continuam restritas a `Frethical/*`.
+
+Qualquer agent (Manager, Developer, QA, Security, DevOps, Sysadmin, Documentadores, CTO) que detectar trabalho elegível fora de Frethical deve **ignorar** e registrar no contrato de conclusão: `OUT_OF_SCOPE` (org/repo).
+
 ## Fonte canonica
 
 Tudo o que nao for memoria persistente deve estar disponivel aqui.
@@ -116,7 +128,6 @@ Fonte completa: `agents/skills/shared/github/github-flow.md`.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
-- Toda promoção entre branches deve ser feita por **merge da branch de origem na branch de destino**. Nunca trate um commit isolado, SHA ou simples atualização de gitlink como substituto do merge; o gitlink só pode ser atualizado como parte do merge coerente do submódulo já integrado.
 - `QA`, `Security`, `Design` e `UX` decidem por labels na task; evidencia em `dev`; nao abrem PR
 - `DevOps` publica tasks na coluna **`Deploy`** → `master` (deltas individuais) e, se nao houver Deploy, promove tasks com as **quatro** `:accepted` para `staging` + `In Review`
 - **Proibido montar RC** e criar task pai de RC
@@ -139,11 +150,9 @@ Regras obrigatorias:
 - `Developer` seleciona trabalho apenas quando a issue ainda esta aberta, foi criada por membro da equipe e nao existe pendencia ativa de decisao por `QA`, `Security`, `Design` ou `UX`
 - `Developer` so trabalha na `task-{id_issue}` e entrega em **`dev`** por merge, sem abrir PR
 - `Developer` nao mexe diretamente em `master`, `main`, `dev`, `staging`
-- se qualquer agent mexer localmente, a entrega precisa estar publicada antes do handoff: todos os projetos principais e submodulos afetados devem ser conferidos contra `origin/master`, sem alteracoes staged/unstaged/untracked; excecoes de branch necessarias ao fluxo devem ser declaradas com SHA e ref remoto, nunca tratadas como entrega local concluida
 - validadores registram apenas labels de aceite/recusa na task
 - quando um validador recusar, comenta de forma objetiva para o `Developer`
 - somente o `DevOps` publica `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`
-- Em repositórios com submódulos, faça o merge da task em `dev` dentro do submódulo, depois o merge da integração correspondente no pai, e repita o mesmo rito para `staging` e `master`. Conflitos devem ser resolvidos preservando a intenção de ambos os lados e validados antes do commit; não é permitido contornar conflito apontando diretamente para um commit.
 - agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
 
 ## Fronteira do CTO
@@ -157,6 +166,15 @@ Quando as quatro `:accepted` coexistirem, a trilha de `staging`/`master` pertenc
 ## Full Pipeline / Manager
 
 Existe **um** Full Pipeline. SysAdmin permanece fora deste mode (automacao separada).
+
+Ordem:
+
+1. P1 DevOps
+2. P2 Hotfix
+3. P3 Documentacao
+4. P4 Validadores (QA → Security → Design → UX)
+5. P5 Developer
+6. P6 Higiene residual + board
 
 O Manager, ao chegar em P5 sem trabalho P1–P4 executavel, **le e executa** `agents/roles/developer/agent.md` sobre exatamente uma issue elegivel. Nao inventa rito proprio de codigo.
 

@@ -11,7 +11,7 @@
 - `agents/skills/shared/operations/agent-execution-baseline.md`
 - `agents/skills/shared/operations/issue-queue-discovery.md`
 - `agents/skills/shared/quality/code-quality.md`
-- `agents/skills/shared/quality/smoke-test-flows.md` — catálogo de fluxos publicados na wiki, etapas e evidência visual por passo
+- `agents/skills/shared/quality/smoke-test-flows.md` — catálogo de fluxos de negócio (smoke) + gate `flowchartIds` / `GET /flowcharts`
 - `agents/skills/shared/operations/agent-handoff-governance.md`
 
 ## Independencia (sem ProjectV2)
@@ -43,23 +43,21 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
 
 - comentario obrigatorio na recusa; recomendado na aprovacao com checklist
 - checklist canonico: `workers/automate/review-checklists.md`
-- antes de aprovar, confirmar que os testes obrigatorios do escopo rodaram; sem evidencia de execucao, recusar (`agent:qa:rejected`) e devolver para o `Developer`
 - nao publica `APPROVE` / `REQUEST_CHANGES` no lugar das labels
 - nao finaliza a task sozinho (precisa do par Security para fechamento legitimo)
 - **nao aprova sem verificacao runtime/UI** quando houver interface:
   - smoke tests executados **ou** resultados existentes lidos e validados (nao reexecutar se evidencia valida e atual)
-  - cada arquivo de código da jornada começa com `fluxo: <id> | etapa: <id>` e link da página wiki; o smoke pode declarar o vínculo somente no JSON gerado, com `wikiPage` como primeiro campo
   - tela/fluxo abre
   - acao principal da tarefa foi realizada
   - console do browser sem erros relevantes da entrega
   - **sem loops, re-renders desnecessarios ou chamadas/API duplicadas** em cada tela revisada
   - Android verificado quando aplicavel e acessivel (ou justificativa objetiva de alcance)
-  - smoke de UI POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER: fluxo publicado na wiki, etapa identificável e prints por etapa; recusa cita a página/etapa ausente ou falta de print por etapa
+  - smoke de UI POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER: `GET /flowcharts` lido; `flowchartIds` existentes e enabled; prints por etapa; recusa cita falta de flowchart ou falta de print por etapa
 
 ## Handoff
 
 - **Aceitar:** `agent:qa:accepted`, remover `agent:qa`, checklist na issue
-- **Recusar:** `agent:qa:rejected`, remover `agent:qa`, comentario objetivo, issue **open**, retorno para o `Developer`
+- **Recusar:** `agent:qa:rejected`, remover `agent:qa`, comentario objetivo, issue **open**
 
 ## Fontes principais
 

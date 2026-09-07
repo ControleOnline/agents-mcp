@@ -34,19 +34,24 @@ Para cada smoke de UI/browser, a evidência mínima é:
 
 Falta de prints por etapa, prints que não permitem reconstruir a jornada ou smoke sem fluxo declarado bloqueiam `agent:qa:accepted`.
 
-## Fluxos publicados na wiki (fonte vigente)
+## Flowcharts publicados no admin (vínculo operacional)
 
-A página de fluxo publicada na wiki é a fonte de verdade para a jornada que o smoke deve cobrir. Integrações administrativas antigas são referências históricas e **não são gate de aceite**.
+O catálogo desta skill **não substitui** os flowcharts do tenant admin. Soma-se a eles.
 
-Antes de dar `agent:qa:accepted` em smoke de UI, o QA deve conferir o índice central da wiki e a página publicada do fluxo:
+Antes de dar `agent:qa:accepted` em smoke de UI dos produtos POS, SHOP, PPC, DELIVERY, CHECKOUT ou MANAGER, o QA **deve ler** os flowcharts habilitados:
 
-1. `fluxo: <id>` deve ser um item existente no catálogo;
-2. o teste, manifesto ou comentário deve apontar para a página wiki do fluxo;
-3. cada arquivo de **código da jornada** tocado deve declarar no topo `fluxo: <id> | etapa: <id>` e o link da página wiki correspondente; o smoke pode carregar esse vínculo no JSON gerado, usando `wikiPage` como primeiro campo porque comentários não são válidos;
-4. o manifesto deve listar os passos executados e os prints correspondentes;
-5. a evidência deve cobrir cada etapa relevante da jornada publicada, com justificativa explícita para qualquer etapa não executada.
+1. `GET https://api.controleonline.com/flowcharts` (e `/flowcharts/{id}` quando precisar do diagrama).
+2. Headers permitidos (token **nunca** no git): `api-token` e `app-domain: admin.controleonline.com`.
+3. Credencial: Drive `admin-api.json` (pasta de credenciais do ecossistema). Não colar o token em issue, PR, wiki ou arquivo versionado.
+4. UI de conferência: `https://admin.controleonline.com/admin/flowcharts/{id}`.
 
-Smoke órfão (sem `fluxo: <id>`, página wiki, etapa ou manifesto de evidência) em entrega de UI **bloqueia** aceite. O comentário de recusa deve citar a página/etapa ausente ou a falta de print por etapa.
+O smoke só é aceito se:
+
+- declarar um ou mais `flowchartIds` **existentes e `enabled`** no admin;
+- tiver prints/screenshot de cada etapa relevante da jornada daquele flowchart;
+- continuar declarando `fluxo: <id>` deste catálogo.
+
+Smoke órfão (`fluxo: outros` **sem** `flowchartId` válido) em entrega de UI desses produtos **bloqueia** aceite. Comentário de recusa deve citar falta de flowchart ou falta de print por etapa.
 
 ## Catálogo oficial
 
@@ -71,10 +76,10 @@ Cada entrada possui `id` estável, ator principal e nome legível.
 
 1. Todo smoke novo ou alterado deve referenciar **exatamente um** `id` da tabela (preferir o mais específico).
 2. Preferir o fluxo de negócio real exercitado pelo teste; usar `outros` só quando não houver correspondência razoável.
-3. Em comentários de issue, evidência de QA ou descrição do smoke, declarar: `fluxo: <id>` e a página wiki correspondente.
+3. Em comentários de issue, evidência de QA ou descrição do smoke, declarar: `fluxo: <id>`.
 4. Não criar aliases, sub-fluxos ou nomes paralelos sem atualização humana desta skill.
 5. Smokes de infraestrutura, login genérico, healthcheck ou UI pontual sem jornada de negócio → `outros`, com justificativa objetiva.
-6. Testes espalhados por módulo devem ser encaixados em um manifesto por fluxo publicado na wiki; o módulo/arquivo executado é detalhe de implementação.
+6. Testes espalhados por módulo devem ser encaixados em um manifesto por fluxo; o módulo/arquivo executado é detalhe de implementação.
 
 ## Relação com code-quality
 

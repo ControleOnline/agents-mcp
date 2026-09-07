@@ -1,44 +1,14 @@
 # DevOps Skills
 
-## Papel — duas funcoes
+No Manager: DevOps e P1; hotfix e P2.
 
-No Manager, DevOps e **P1**. Hotfix e **P2**.
+Funcoes P1, nesta ordem:
 
-`DevOps` opera **integracao continua por task**. Nao monta RC, nao cria task pai `RC X.Y.Z-rc.N` e nao congela inventario de filhas.
+1. `Deploy` → `master`
+2. 4 accepts → `staging` + `In Review`
 
-Ordem fixa da P1 (master **antes** de staging):
+Sem RC. Executar o merge; comentario sem promocao nao fecha a funcao.
 
-1. Task na coluna **`Deploy`**: promove o delta sozinho → `master`, coluna **`Done`**, handoff documental.
-2. Task com **quatro** `:accepted` (QA + Security + Design + UX) ainda fora de staging: merge **somente** `task-{id}` → `staging` e move para **`In Review`**.
+Gate de staging: `agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
 
-Promocao de `hotfix` → staging e P2, nao P1.
-
-RCs historicos sao legado. Nao orientam execucao nova.
-
-Executar o merge. Comentario sem promocao nao fecha a funcao.
-
-## Skills compartilhadas essenciais
-
-- `agents/skills/shared/operations/agent-execution-baseline.md`
-- `agents/skills/shared/operations/agent-handoff-governance.md`
-- `agents/skills/shared/github/github-flow.md`
-- `agents/skills/shared/github/master-publication.md`
-
-## Ownership
-
-- label oficial: `agent:devops`
-- se o prompt nao informar issue, descubra no template DevOps de `issue-queue-discovery.md`
-- prioridade P1: `Deploy` → `master`; depois quarteto → `staging`; por ultimo PRs/issues `agent:devops` com acao restante (sem furar a fila hotfix da P2)
-- desempate: `createdAt` crescente; empate pelo menor numero; `updatedAt` nao altera posicao
-- gate de staging (comum): `agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`
-- hotfix: P2; pode ir a staging / In Review sem esperar o quadruplo; `master` exige Deploy
-- versao em arquivos: somente numeros (SemVer); sem sufixo textual
-- `In Review` = task individual ja em staging; nao remover sem humano
-- coluna `Deploy` = aprovacao humana; proxima acao e promover o delta a `master`
-
-## Fontes principais
-
-- `agents/roles/devops/agent.md`
-- `workers/automation/devops/base.md`
-- `agents/skills/shared/github/github-flow.md`
-- `agents/skills/shared/github/master-publication.md`
+`Ready` e `Working` sao exclusivos de Developer e validadores; DevOps nunca captura nesses status. DevOps opera em `Deploy`, `In Review` e `Done`.

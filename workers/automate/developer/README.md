@@ -8,7 +8,7 @@ O runner de `Developer` nao implementa a issue por conta propria.
 
 Ele:
 
-- procura tasks abertas na coluna `Ready`
+- procura primeiro tasks abertas na coluna `Working`; somente quando não houver nenhuma elegível consulta a coluna `Ready`
 - trata task sem `agent:*` em `Ready` como entrada padrao do fluxo
 - ignora tasks que estejam exclusivamente com pessoas
 - distingue execucao recente, execucao stale e override manual antes de decidir a proxima captura
@@ -31,7 +31,8 @@ Ele:
 ## Regras operacionais
 
 - nao retirar task que esteja exclusivamente com pessoas
-- task nova em `Ready` sem `agent:*` pertence inicialmente a `Developer`
+- task nova em `Ready` sem `agent:*` pertence inicialmente a `Developer`, mas nunca passa à frente de uma task elegível em `Working`
+- `Ready` e `Working` são exclusivos de Developer e validadores; DevOps usa `Deploy`, `In Review` e `Done`
 - execucao stale do proprio `Developer` deve ser retomada antes de abrir nova captura
 - override manual ativo deve ser tratado como estado distinto, nao como captura first-party do Copilot
 - usar `master` como branch base operacional

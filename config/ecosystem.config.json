@@ -1,16 +1,17 @@
 {
   "$schema": "./ecosystem.config.schema.json",
-  "description": "Valores canônicos ControleOnline. Tokens/secrets NÃO entram neste arquivo.",
-
+  "description": "Valores canônicos. Escopo operacional de mutação: SOMENTE org Frethical (https://github.com/Frethical/). Tokens/secrets NÃO entram neste arquivo.",
   "owner": {
     "placeholder": "<OWNER>",
     "env": "OWNER",
     "value": "ControleOnline",
-    "description": "Organizacao ou usuario GitHub dono dos repositorios."
+    "description": "Organizacao legada de referencia; mutações operacionais de produto SO em Frethical. Ver allowed_scope."
   },
-
   "github": {
-    "token_env": ["GITHUB_TOKEN", "GH_TOKEN"],
+    "token_env": [
+      "GITHUB_TOKEN",
+      "GH_TOKEN"
+    ],
     "core_repository": {
       "placeholder": "<OWNER>/agents-mcp",
       "env": "AGENTS_MCP_REPOSITORY",
@@ -20,14 +21,16 @@
     "product_repositories": {
       "env": "PRODUCT_REPOSITORIES",
       "value": [
-        "ControleOnline/app-community",
-        "ControleOnline/api-community",
-        "ControleOnline/api-whatsapp"
+        "Frethical/frethical",
+        "Frethical/frethical-app",
+        "Frethical/bid-backend",
+        "Frethical/bid-front",
+        "Frethical/site-frethical",
+        "Frethical/agents-mcp"
       ],
-      "description": "Repositorios de produto cobertos pelos agents."
+      "description": "Repositorios de produto no escopo permitido (org Frethical apenas)."
     }
   },
-
   "project": {
     "url": {
       "placeholder": "<PROJECT_URL>",
@@ -37,18 +40,25 @@
     },
     "org": {
       "placeholder": "<OWNER>",
-      "env": ["PROJECT_ORG", "QA_PROJECT_ORG", "DEVOPS_PROJECT_ORG"],
+      "env": [
+        "PROJECT_ORG",
+        "QA_PROJECT_ORG",
+        "DEVOPS_PROJECT_ORG"
+      ],
       "value": "ControleOnline",
       "description": "Organizacao do ProjectV2."
     },
     "number": {
       "placeholder": "<PROJECT_NUMBER>",
-      "env": ["PROJECT_NUMBER", "QA_PROJECT_NUMBER", "DEVOPS_PROJECT_NUMBER"],
+      "env": [
+        "PROJECT_NUMBER",
+        "QA_PROJECT_NUMBER",
+        "DEVOPS_PROJECT_NUMBER"
+      ],
       "value": 1,
       "description": "Numero do ProjectV2 operacional."
     }
   },
-
   "documentation": {
     "help_center_url": {
       "placeholder": "<HELP_CENTER_URL>",
@@ -69,7 +79,6 @@
       "description": "E-mail para avisos de documentacao publicada."
     }
   },
-
   "runners": {
     "defaults": {
       "QA_TASK_LIMIT": "5",
@@ -87,5 +96,12 @@
       "TECHNICAL_LEAD_CORE_REPOSITORY": "ControleOnline/agents-mcp"
     },
     "description": "Defaults de runtime. Secrets (GITHUB_TOKEN) nao ficam neste arquivo."
+  },
+  "allowed_scope": {
+    "orgs": [
+      "Frethical"
+    ],
+    "rule": "Único escopo permitido para comentar, alterar, rotular, abrir issues/PRs ou solicitações. Fora de Frethical/* = OUT_OF_SCOPE.",
+    "exception": "Governança estrutural em agents-mcp."
   }
 }

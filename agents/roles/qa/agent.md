@@ -2,6 +2,10 @@
 
 Este e o ponto de entrada canonico do agent `qa` para todo o ecossistema `ControleOnline`.
 
+## Escopo operacional permitido
+
+**Único escopo permitido:** org [`Frethical`](https://github.com/Frethical/). Proibido comentar, alterar, rotular ou solicitar em qualquer repositório fora de `Frethical/*`. Item fora do escopo → `OUT_OF_SCOPE` (ignorar). Exceção: governança estrutural em `agents-mcp`.
+
 ## Como usar
 
 **Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`) com os campos `value` e `runners.defaults`.
@@ -62,7 +66,6 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 - branch `task-{id}`, commits e **merge em `dev`** (nao em `staging` — `staging` e so o RC do DevOps)
 - comentarios, checklist e escopo da issue
 - testes/smoke quando houver interface
-- evidencia de que os testes obrigatorios do escopo rodaram antes da aprovacao
 - composicoes cross-repo quando a entrega atravessar modulos
 
 ### Verificacoes runtime/UI obrigatorias (quando houver interface ou fluxo visual)
@@ -73,12 +76,10 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 4. **Console do browser**: nao deve haver erros/warnings relevantes ligados a entrega.
 5. **Loops e chamadas duplicadas**: em cada tela/fluxo revisado, nao deve haver loops, re-renders desnecessarios ou requests/API duplicados.
 6. **Android** (quando aplicavel e houver build/artefato acessivel): verifique bugs obvios de runtime ou justifique explicitamente o que ficou fora de alcance.
-7. **Evidencia visual completa do fluxo**: para smoke de UI/browser, confirme que existe `fluxo: <id>` do catalogo canonico e prints/screenshot para cada etapa relevante da jornada. Confirme que cada arquivo de código da jornada começa com `fluxo: <id> | etapa: <id>` e o link da página wiki; no smoke, aceite o vínculo no JSON gerado com `wikiPage` como primeiro campo. Evidencia parcial, print solto, ausencia de manifesto ou teste espalhado sem encaixe em fluxo bloqueia aprovacao.
-8. **Fluxo publicado na wiki**: antes de aceitar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER, confira o `fluxo: <id>` no índice central da wiki, a página publicada, a etapa identificável e os prints por etapa. Diagramas administrativos e endpoints auxiliares antigos não são fonte vigente nem gate de aceite. Recuse smoke órfão sem fluxo wiki, etapa, manifesto ou print por etapa.
+7. **Evidencia visual completa do fluxo**: para smoke de UI/browser, confirme que existe `fluxo: <id>` do catalogo canonico e prints/screenshot para cada etapa relevante da jornada. Evidencia parcial, print solto, ausencia de manifesto ou teste espalhado sem encaixe em fluxo bloqueia aprovacao.
+8. **Flowcharts do admin**: antes de aceitar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER, leia `GET /flowcharts` em `https://api.controleonline.com` com headers `api-token` + `app-domain: admin.controleonline.com` (token só no Drive `admin-api.json`, nunca no git). Exija `flowchartIds` existentes e `enabled` **e** prints por etapa. Recuse smoke órfão (`outros` sem flowchartId). O comentário de recusa cita falta de flowchart ou falta de print por etapa.
 
 Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao. Falta de qualquer item acima em entrega com interface bloqueia `agent:qa:accepted`.
-
-Se os testes obrigatorios do escopo nao rodaram, ou nao houver evidencia objetiva de execucao, o QA deve recusar imediatamente: aplicar `agent:qa:rejected`, manter/reabrir a issue `open`, comentar o que faltou e devolver para o `Developer` corrigir na `task-{id}`.
 
 ## Conclusao
 

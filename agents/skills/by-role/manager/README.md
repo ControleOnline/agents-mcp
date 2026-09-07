@@ -1,78 +1,56 @@
 ## Proibicao de fila Blocked / Backlog
 
-Em **qualquer** prioridade (incluindo P6 higiene): **nao usar** issues/PRs com Status **`Blocked`** ou **`Backlog`** como fila.
-
-Bloqueio operacional da rodada (API, conflito, label, board) deve ser resolvido, nao apenas documentado.
+Nao usar `Blocked`/`Backlog` como fila. Bloqueio operacional da rodada deve ser resolvido.
 
 # Manager Skills
 
 ## Papel
 
-O `Manager` executa o Full Pipeline na ordem definida em `agents/roles/manager/agent.md`. O Developer e a Prioridade 5 desse ciclo.
-
-Toda rodada **executa**. Documentacao de produto nao e fallback enquanto P1/P2/P4 tiverem acao. Higiene nao e fallback enquanto P5 tiver Developer elegivel.
-
-Toda rodada tambem segue `agents/skills/shared/operations/delivery-proof-contract.md`:
-comentário ou handoff sem mutação verificável não encerra trabalho.
-
 Ordem resumida:
 
-1. **DevOps** - sempre primeiro. Publicar todos os itens em `Deploy` para `master`; se nao houver, promover todas as tasks quadruplo-accepted para `staging` + `In Review`. Gate humano de Deploy **nao** encerra a rodada. **Nao montar RC.**
-2. **Hotfix** - QA / Security / Design / UX em tasks `hotfix`, e promocao hotfix → staging se ainda faltar. So depois de P1 sem acao executavel.
-3. **Documentacao** - Technical Documenter / Tutorial Assistant (so se P1/P2 sem acao executavel).
-4. **Validadores** - QA, Security, Design, UX (nesta ordem enquanto houver fila).
-5. **Developer** - exatamente uma issue elegivel; executar `agents/roles/developer/agent.md`.
-6. **Higiene residual + board** - somente com P1-P5 sem acao executavel.
+1. **DevOps** — sempre primeiro. `Deploy` → `master`; se vazio, quarteto → `staging` + `In Review`. Sem RC.
+2. **Hotfix** — validadores e promocao hotfix → staging.
+3. **Documentacao**
+4. **Validadores** comuns (QA → Security → Design → UX)
+5. **Developer** — exatamente uma issue elegível, depois de P1–P4.
+6. **Higiene** — fallback estrito, somente sem Developer elegível.
 
-## Entrada obrigatoria
+Toda rodada executa. Documentacao nao e fallback de P1/P2.
 
-Antes de atuar: consulte GitHub e Project #1; descubra P1-P5; tente a primeira prioridade elegivel e executavel; `createdAt` crescente; releia a issue antes de mutar.
+Toda rodada segue `agents/skills/shared/operations/delivery-proof-contract.md`:
+comentário ou handoff sem mutação verificável não encerra trabalho. Sem delta
+novo, labels/coluna novas ou mudança externa comprovada, a mesma issue deve ser
+marcada `agent:<papel>:blocked` + `Blocked`, nunca repetida.
 
-## Fail-closed operacional vs skip de P1 humano
+Governança publicada no próprio `agents-mcp` é exceção direta: commit remoto e
+estado da issue/board comprovados encerram a entrega, sem aprovação ou
+handoff para QA, Security, Design ou UX.
 
-Se a prioridade selecionada falhar por ferramenta/credencial/API **depois** de tentar corrigir: aplique `agent:<papel>:blocked` e `Blocked` no item atual, registre a evidência com `DELIVERY_PROOF`, e encerre nessa prioridade. Nao execute prioridade inferior.
+Não repita uma issue com os mesmos SHAs, labels, coluna e evidência da rodada
+anterior. Sem delta novo, o resultado é BLOCKED.
 
-Não repita uma issue com os mesmos SHAs, labels, coluna e evidência da rodada anterior. Sem delta novo ou mudança externa comprovada, o resultado obrigatório é `BLOCKED`, não outro comentário/handoff.
+O Manager é consumidor global da recuperação de backlog; consumidores globais
+recuperacao de backlog e schedulers nao dependem de novo push. P5 (Developer)
+permanece bloqueada enquanto houver fila elegível, e P6 é fallback estrito.
 
-Excecao: P1 so com gate humano de Deploy → `P1_SKIPPED_HUMAN_DEPLOY` e continue P2-P6.
+## Gate de staging
 
-`In Review` e freeze da task ja em staging. Nao remover da coluna; encaminhar a DevOps com evidencia.
-
-## Prioridade 4 - validadores
-
-Ordem: QA → Security → Design → UX.
-
-Enquanto existir qualquer um desses elegivel sem decisao final (`:accepted` / `:rejected`), P5 permanece bloqueada e DevOps nao promove task comum. A decisão deve ser nova e acompanhada da label/coluna correspondente; comentário sem label não conta.
-
-Agendamento Manager executa o validador diretamente quando o runtime puder; senao `BLOCKED` em P4.
-
-## Prioridade 5 - Developer
-
-Enquanto existir issue elegivel de Developer, P6 permanece bloqueada.
-
-Agendamento Manager executa o papel Developer diretamente quando o runtime puder; senao `BLOCKED` em P5. Nao use higiene como fallback.
-
-## Gate de staging (quatro aprovacoes)
-
-DevOps so promove task comum quando existirem juntas:
-
-- `agent:qa:accepted`
-- `agent:security:accepted`
-- `agent:design:accepted`
-- `agent:ux:accepted`
-
-Documentadores (`:done`) nao fazem parte dessas quatro.
+`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
+As formas históricas qa:accepted e security:accepted não substituem as labels
+oficiais agent:*.
+Conclusão também exige `qa:accepted`, `security:accepted`,
+`agent:technical-documenter:done` e `agent:tutorial-assistant:done` quando
+aplicável.
 
 ## Output Contract
 
-Prioridade tentada, evidencia P1-P5, tasks, acao executada, `DONE` ou `BLOCKED`.
+Prioridade tentada, acao executada, `DELIVERY_PROOF`, `DONE` ou `BLOCKED`.
+Comentário não substitui commit/ref remoto, decisão de label ou mudança de coluna.
+Issues closed e itens Done exigem o quarteto completo de aceite.
 
 ## Fontes principais
 
 - `agents/roles/manager/agent.md`
-- `agents/roles/developer/agent.md`
-- `agents/roles/design/agent.md`
-- `agents/roles/ux/agent.md`
-- `agents/skills/shared/operations/issue-queue-discovery.md`
-- `agents/skills/shared/operations/agent-handoff-governance.md`
+- `agents/roles/devops/agent.md`
 - `agents/skills/shared/github/github-flow.md`
+- `agents/skills/shared/operations/delivery-proof-contract.md`
