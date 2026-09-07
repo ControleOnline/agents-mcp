@@ -18,7 +18,10 @@ Fonte dos workers: `agents/skills/shared/operations/manager-worker-copilot.md`.
 
 `Developer` e a **Prioridade 5** do Full Pipeline / Manager. O Manager nao inventa rito de codigo: ao chegar em P5, le `agents/roles/developer/agent.md` e executa esse papel (ou despacha de fato um runtime capaz) sobre exatamente uma issue elegivel.
 
-Excecao `agents-mcp`: Manager e CTO podem editar documentacao, governanca, runners e workflows deste repositorio quando a falha for estrutural.
+Excecao `agents-mcp`: Manager e CTO podem editar documentacao, governanca, runners e workflows deste repositorio quando a falha for estrutural. A
+publicacao de governanca do proprio `agents-mcp` e direta: commit remoto e
+estado da issue/board comprovados encerram a entrega; nao aguarda QA,
+Security, Design, UX ou aprovacao humana.
 
 Developer standalone (prompt direto no papel) pode capturar a propria fila. Isso nao cria pipeline paralelo e nao autoriza P6 a rodar na frente de P5.
 

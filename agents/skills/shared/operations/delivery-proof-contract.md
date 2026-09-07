@@ -14,8 +14,9 @@ compatível com a prioridade:
   `agent:<papel>:rejected`), remoção da solicitação anterior e coluna coerente.
 - **DevOps/board:** merge ou promoção da task individual e mudança confirmada
   de coluna/labels.
-- **Governança:** commit publicado no `agents-mcp`, issue associada ao Project
-  #1 e handoff/coluna atualizados.
+- **Governança (`agents-mcp`):** commit publicado no `agents-mcp`, issue
+  associada ao Project #1 e estado/coluna atualizados. Esta é uma entrega
+  direta: não aguarda QA, Security, Design, UX ou aprovação humana.
 
 Um comentário só pode acompanhar a mutação. Nunca pode substituí-la.
 
@@ -24,6 +25,11 @@ Um comentário só pode acompanhar a mutação. Nunca pode substituí-la.
 Antes de emitir `DONE`, registre na issue a ação executada, SHA(s)/ref(s)
 remotos ou IDs das labels/coluna, verificação pós-ação e próximo papel/coluna.
 Se qualquer item faltar, o resultado não é `DONE`.
+
+Para governança do próprio `agents-mcp`, o fechamento ocorre após a publicação
+remota do commit e a atualização verificável da issue/board. Não se cria
+handoff para validadores e não se mantém a issue em `Working` aguardando
+aprovação.
 
 ## Bloqueio operacional
 

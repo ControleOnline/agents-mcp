@@ -49,6 +49,13 @@ test('manager cannot close a round with commentary-only progress', () => {
   assert.match(deliveryProof, /DELIVERY_PROOF:/);
 });
 
+test('agents-mcp governance is published directly without validator approval', () => {
+  assert.match(deliveryProof, /Governança \(`agents-mcp`\)[\s\S]*não aguarda QA, Security, Design, UX ou aprovação humana/i);
+  assert.match(deliveryProof, /governança do próprio `agents-mcp`[\s\S]*Não se cria[\s\S]*handoff para validadores/i);
+  assert.match(managerAgent, /publicacao de governanca do proprio `agents-mcp`[\s\S]*nao aguarda QA/is);
+  assert.match(managerSkill, /Governança publicada no próprio `agents-mcp`[\s\S]*sem aprovação ou[\s\S]*handoff para QA/is);
+});
+
 test('handoff requires a remote delivery proof', () => {
   const handoff = fs.readFileSync(
     'agents/skills/shared/operations/agent-handoff-governance.md',

@@ -15,6 +15,10 @@ Toda rodada **executa**. Documentacao de produto nao e fallback enquanto P1/P2/P
 Toda rodada tambem segue `agents/skills/shared/operations/delivery-proof-contract.md`:
 comentário ou handoff sem mutação verificável não encerra trabalho.
 
+Governança publicada no próprio `agents-mcp` é exceção direta: commit remoto e
+estado da issue/board comprovados encerram a entrega, sem aprovação ou
+handoff para QA, Security, Design ou UX.
+
 Ordem resumida:
 
 1. **DevOps** - sempre primeiro. Publicar todos os itens em `Deploy` para `master`; se nao houver, promover todas as tasks quadruplo-accepted para `staging` + `In Review`. Gate humano de Deploy **nao** encerra a rodada. **Nao montar RC.**
