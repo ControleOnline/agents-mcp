@@ -75,6 +75,31 @@ pare na fronteira segura, registre a divergência e atualize/rebaseie a origem
 ou peça a correção ao responsável. Resolução automática de conflito, merge sem
 conflito ou branch de origem aparentemente limpa não substitui este gate.
 
+### Recuperação obrigatória de conflito grande
+
+Quando a origem estiver muito divergente, apresentar conflito amplo ou não
+permitir separar com segurança o delta da task, o agent deve interromper e não
+forçar a resolução. Nesse caso:
+
+1. aborte o merge/rebase e preserve a evidência do conflito;
+2. confirme que a branch remota de task é descartável e, somente então, apague
+   `task-{id_issue}`;
+3. recrie `task-{id_issue}` a partir do `master` remoto atualizado;
+4. reaplique a correção do zero, com escopo e testes da issue;
+5. retorne a task para **`Working`**, remova as decisões/aceites herdados da
+   entrega descartada e reative as solicitações dos validadores (`agent:qa`,
+   `agent:security`, `agent:design` e `agent:ux` quando aplicável);
+6. publique a nova branch e siga novamente o caminho obrigatório de merge ou PR
+   em `dev`, `staging` e `master`.
+
+Apagar e recriar a branch não autoriza copiar o gitlink, escolher “ours” ou
+“theirs” cegamente, fazer force-push, ou marcar a task como concluída. O
+resultado recriado deve passar pelo mesmo gate semântico e deixar comentário
+com a branch descartada, a nova base `master`, os SHAs e os testes executados.
+Uma task recriada não pode permanecer em `Done`, `Deploy` ou `In Review`, nem
+ser validada com labels antigas: a validação começa novamente após o novo
+merge em `dev`.
+
 ## Developer
 
 1. Captura issue elegível.
