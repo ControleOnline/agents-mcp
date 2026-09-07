@@ -165,11 +165,14 @@ Promoção de `hotfix` → staging é P2, não P1.
    não dispensa a revisão semântica do resultado.
 4. Versão em `package.json` / `app.json` quando o bump for necessário: **somente números** (SemVer). Sem sufixo `-rc`.
 5. Push em `staging` dispara deploy de conferência.
-6. Mover **essa** task para **`In Review`**.
+6. A passagem para **`In Review`** é feita pelo humano após staging e os quatro
+   accepts; o DevOps não move a task para essa coluna.
 
 ### `In Review`
 
-Sinal de que a **task individual** já está em staging e aguarda humano. Nenhum Manager/higiene remove da coluna. Se parecer indevida: comentar + `agent:devops` + esperar humano.
+Sinal de que a **task individual** já está em staging, possui os quatro accepts
+e aguarda revisão humana. Nenhum agent move tasks para dentro ou para fora desta
+coluna. Se parecer indevida: comentar + `agent:devops` + esperar humano.
 
 ### Publicação (coluna Deploy)
 
