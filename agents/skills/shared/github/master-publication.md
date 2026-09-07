@@ -18,7 +18,7 @@ Use esta skill quando `DevOps` for promover o **pacote RC** de `staging` para `m
 3. antes de promover qualquer versão, audite os deploys/workflows anteriores mais recentes de `staging` e `master` do projeto pai e dos submodulos obrigatorios; se algum estiver falho, cancelado, pendente, em andamento sem conclusão, ou sem evidência clara de sucesso, descubra a causa, corrija ou registre bloqueio concreto, e **pare sem publicar em `master`**
    - **Smokes de browser/UI com problema:** quando a auditoria encontrar smoke falho que nao faca parte do delta imediato a publicar, nao transforme isso em comentario solto nem misture com a task de deploy/RC. Abra ou atualize uma issue tecnica separada no repositorio afetado, em `Ready`, com labels `hotfix` + `bug` + `agent:developer` (e label de pagina quando identificavel), referenciando o workflow/job/run, fluxo (`fluxo: <id>` ou `outros`) e resumo sanitizado da falha. A publicacao so permanece bloqueada se a falha provar que o pacote atual nao esta publicavel; caso contrario, a correcao fica para a **P5 Developer** do Manager.
 4. publique **primeiro cada submodulo** obrigatorio com delta, depois o projeto pai (gitlinks coerentes)
-5. para cada repositorio com delta real entre `staging` e `master`, faça o merge/promocao autorizada (`staging` → `master`); use PR apenas se a politica do repo exigir — o rito operacional e a promocao do pacote RC, nao PR de task de produto
+5. para cada repositorio com delta real entre `staging` e `master`, faça o merge/promocao autorizada (`staging` → `master`); use PR apenas se a politica do repo exigir — o rito operacional e a promocao do pacote RC, nao PR de task de produto. Nunca substitua esse merge por apontamento direto para SHA, commit de task ou simples atualização de gitlink.
 6. faca merge somente sem conflito e com a task pai em `Deploy`
 7. depois do merge, **confirme a versão numérica** já presente no pacote (`X.Y.N` em `package.json` e, se existir, `app.json` com `version` igual e `versionCode = MAJOR*10000 + MINOR*100 + PATCH`); **não** existe sufixo textual para remover; tags usam a mesma versão numérica
 8. confirme que `master` recebeu o commit esperado e que o push remoto aconteceu
@@ -45,7 +45,7 @@ Em **todo** deploy (RC normal ou hotfix):
 
 1. Publique o delta nos **subprojetos** afetados (`staging` → `master` de cada um).
 2. No **pai** (`app-community`):
-   - atualize o **gitlink** (submodule pin) para o commit já publicado no subprojeto;
+   - atualize o **gitlink** (submodule pin) somente dentro do commit de merge que promove a branch integrada do subprojeto; não publique um SHA de task isolado como substituto do merge;
    - faça **bump semver** em `package.json` (patch para hotfix);
    - push em `staging` e em `master` (pai sempre depois dos filhos);
    - crie/atualize a **tag** da versão no pai (`vX.Y.Z`).

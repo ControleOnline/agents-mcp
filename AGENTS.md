@@ -116,6 +116,7 @@ Fonte completa: `agents/skills/shared/github/github-flow.md`.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
+- Toda promoção entre branches deve ser feita por **merge da branch de origem na branch de destino**. Nunca trate um commit isolado, SHA ou simples atualização de gitlink como substituto do merge; o gitlink só pode ser atualizado como parte do merge coerente do submódulo já integrado.
 - `QA`, `Security`, `Design` e `UX` decidem por labels na task; evidencia em `dev`; nao abrem PR
 - `DevOps` publica tasks na coluna **`Deploy`** → `master` (deltas individuais) e, se nao houver Deploy, promove tasks com as **quatro** `:accepted` para `staging` + `In Review`
 - **Proibido montar RC** e criar task pai de RC
@@ -142,6 +143,7 @@ Regras obrigatorias:
 - validadores registram apenas labels de aceite/recusa na task
 - quando um validador recusar, comenta de forma objetiva para o `Developer`
 - somente o `DevOps` publica `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`
+- Em repositórios com submódulos, faça o merge da task em `dev` dentro do submódulo, depois o merge da integração correspondente no pai, e repita o mesmo rito para `staging` e `master`. Conflitos devem ser resolvidos preservando a intenção de ambos os lados e validados antes do commit; não é permitido contornar conflito apontando diretamente para um commit.
 - agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
 
 ## Fronteira do CTO
