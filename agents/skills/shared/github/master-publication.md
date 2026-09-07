@@ -4,6 +4,12 @@
 
 Use esta skill quando `DevOps` for promover o **pacote RC** de `staging` para `master` (apos a task pai estar na coluna **`Deploy`**).
 
+**Contrato obrigatório:** toda promoção deve ser feita por merge ou por Pull
+Request aprovado e mergeado. Nunca publique alterando apenas um gitlink, SHA,
+branch protegida ou commit isolado. O submódulo deve ser integrado primeiro e
+o pai deve receber, em seguida, um commit de merge com o gitlink desse commit
+já integrado.
+
 ## Pre-requisitos
 
 1. Existe um RC aberto com task pai de deploy e subtasks.
