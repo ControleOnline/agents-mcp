@@ -10,6 +10,16 @@ branch protegida ou commit isolado. O submódulo deve ser integrado primeiro e
 o pai deve receber, em seguida, um commit de merge com o gitlink desse commit
 já integrado.
 
+Se houver conflito amplo ou divergência que impeça revisar o delta, aborte a
+operação. Após confirmar que a branch de task pode ser descartada, apague-a,
+recrie-a do `master` remoto atualizado e reaplique a correção do zero; depois
+repita os merges/PRs e os testes de `dev`, `staging` e `master`. Nunca contorne
+conflito com force-push, gitlink direto, SHA isolado ou escolha cega de lado.
+Ao recriar a task, retorne-a para `Working`, remova decisões/aceites herdados e
+reative as labels de solicitação dos validadores (`agent:qa`,
+`agent:security`, `agent:design`, `agent:ux`). Só depois do novo merge em `dev`
+ela pode voltar a percorrer `In Review`/`Deploy`.
+
 ## Pre-requisitos
 
 1. Existe um RC aberto com task pai de deploy e subtasks.
