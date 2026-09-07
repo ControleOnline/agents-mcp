@@ -111,7 +111,8 @@ Antes de redigir:
 Exemplo de encaixe:
 
 - `ui-crm` = entrada comercial (`APP_TYPE=CRM`)
-- `ui-customers` = detalhe compartilhado (comportamento muda com `APP_TYPE`)
+- `ui-people` = biblioteca central do detalhe de toda pessoa física/jurídica e seus contextos
+- `ui-customers` = consumidor de contexto, sem duplicar contratos centrais de pessoa
 - `api-platform-people` = backend de vinculos e enforcement
 
 ## Ownership

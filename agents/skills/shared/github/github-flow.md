@@ -35,6 +35,32 @@ Se o estado real do GitHub mostrar que o passo **já foi feito**, o agent não r
 
 **Não** pule etapas por intuição. **Não** omita QA/Security/Design/UX sem labels de decisão.
 
+## Gate de atenção redobrada antes de qualquer merge
+
+Merge não é apenas uma operação textual nem fica validado porque o Git não
+reportou conflito. Antes de confirmar **qualquer** merge entre uma task e uma
+branch de integração, ou entre `staging` e `master`, o agent responsável deve:
+
+1. confirmar a origem, o destino, os dois SHAs atuais e o `merge-base`; se a
+   origem foi criada antes de uma alteração relevante já presente no destino,
+   atualizar/revisar a task sobre o destino atual antes de promover;
+2. inspecionar o diff do resultado final (`merge-base`/origem/destino e
+   `git diff` do commit de merge), não somente a tela de conflitos;
+3. conferir explicitamente que cada requisito negativo da task continua
+   verdadeiro (por exemplo, uma aba removida não pode reaparecer), que nenhum
+   arquivo fora do escopo foi restaurado e que as alterações independentes de
+   outras tasks foram preservadas;
+4. em projetos com submódulos, revisar o diff de cada submódulo e o gitlink do
+   pai, confirmando que o SHA apontado é o commit integrado esperado e não uma
+   versão antiga carregada pela branch de origem;
+5. executar os testes/verificações focados no comportamento alterado e registrar
+   a evidência do estado pós-merge antes do push.
+
+Se qualquer item não puder ser confirmado, **não faça o merge nem o push**:
+pare na fronteira segura, registre a divergência e atualize/rebaseie a origem
+ou peça a correção ao responsável. Resolução automática de conflito, merge sem
+conflito ou branch de origem aparentemente limpa não substitui este gate.
+
 ## Developer
 
 1. Captura issue elegível.
@@ -95,7 +121,9 @@ Promoção de `hotfix` → staging é P2, não P1.
 
 1. Staging parte de `master` atual + merge **somente** de `task-{id}`.
 2. Pai + submódulos afetados (submódulos primeiro; pins coerentes).
-3. Conflito: abortar aquele merge, comentar, seguir a próxima task.
+3. Aplicar o **Gate de atenção redobrada antes de qualquer merge**. Conflito:
+   abortar aquele merge, comentar, seguir a próxima task. Ausência de conflito
+   não dispensa a revisão semântica do resultado.
 4. Versão em `package.json` / `app.json` quando o bump for necessário: **somente números** (SemVer). Sem sufixo `-rc`.
 5. Push em `staging` dispara deploy de conferência.
 6. Mover **essa** task para **`In Review`**.
@@ -107,7 +135,8 @@ Sinal de que a **task individual** já está em staging e aguarda humano. Nenhum
 ### Publicação (coluna Deploy)
 
 1. Humano move a task para **`Deploy`**.
-2. DevOps mescla o delta (`staging` / `task-{id}`) → `master` (pai + submódulos).
+2. DevOps aplica o **Gate de atenção redobrada antes de qualquer merge** e
+   mescla o delta (`staging` / `task-{id}`) → `master` (pai + submódulos).
 3. Move a task para **`Done`**.
 4. Handoff documental fail-closed (`agent:technical-documenter` / `agent:tutorial-assistant` se faltar `:done`).
 
