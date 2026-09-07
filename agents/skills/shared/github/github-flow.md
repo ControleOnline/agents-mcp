@@ -18,7 +18,63 @@ atualização isolada de SHA e gitlink apontando diretamente para commit de task
 **não são publicação**. Em repositórios com submódulos, primeiro faça o merge
 da entrega no branch do submódulo; depois faça o merge do commit pai que atualiza
 o gitlink para esse commit já integrado. Se o merge ou PR não puder ser
-revisado semanticamente, aborte e registre o bloqueio.
+revisado semanticamente, aborte, recrie a task quando aplicável e continue o rito.
+
+## Atualizacao obrigatoria com `origin/master`
+
+Toda execução que possa gerar commit começa com o merge de `origin/master` em
+cada módulo envolvido. Isso vale também para qualquer retomada de uma
+`task-{id}` após devolução, validação, handoff ou passagem por outra branch.
+
+```bash
+git fetch origin master
+git merge --no-ff origin/master
+```
+
+Em uma task retomada, esse comando ocorre antes de qualquer edição, teste ou
+novo commit. Antes de integrar uma task em `dev` ou `staging`, o mesmo comando
+deve ser executado dentro da branch de destino, em todos os módulos; somente
+depois pode ocorrer o merge da task. Para `staging`, esse é sempre o primeiro
+trabalho operacional da promoção. Submódulos vêm antes do projeto pai.
+
+Fast-forward, cherry-pick, rebase, gitlink isolado ou `git status` não
+substituem este gate. O handoff deve registrar o SHA de `origin/master`, o SHA
+do merge e cada módulo validado.
+
+## Execução autogerenciável: nunca parar
+
+Nenhum agent ou worker pode parar uma task, aguardar
+destravamento humano ou apenas registrar que não conseguiu avançar. Se uma
+etapa falhar, deve voltar à última etapa consistente, corrigir o desvio,
+recriar a branch, refazer a task do zero quando necessário, ou reencaminhar a
+task para o papel correto e continuar o fluxo. A saída operacional sempre é
+uma correção, uma nova tentativa ou uma transição válida.
+
+As colunas `Blocked` e `Backlog` são exceções de segurança exclusivamente
+humanas. Agents, workers e automações não podem selecioná-las, movê-las,
+limpá-las ou editar seus itens.
+
+## Rito obrigatório para conflitos de task
+
+Quando houver conflito relevante, divergência ampla ou qualquer resultado que
+não possa ser revisado com segurança, não resolva escolhendo lados e não faça
+commit, push ou handoff da branch conflitante. O agent deve:
+
+1. abortar o merge/rebase e preservar a evidência do conflito;
+2. confirmar que a branch da task é descartável e registrar os SHAs, arquivos
+   conflitantes e o motivo;
+3. apagar a branch `task-{id}` local e remota somente após essa confirmação;
+4. atualizar `master` com `git fetch origin master`;
+5. recriar `task-{id}` a partir de `origin/master` atualizado;
+6. refazer a implementação **do zero**, atendendo novamente todos os
+   requisitos da task e repetindo os testes do escopo;
+7. repetir o merge `git merge --no-ff origin/master` em todos os módulos
+   necessários antes de qualquer nova integração;
+8. publicar a nova branch e reiniciar o fluxo de merge, validação e handoff.
+
+A task recriada não herda commits, aceite, evidência ou labels de validação da
+branch descartada. Ela deve registrar o branch antigo, a nova base
+`origin/master`, os SHAs, requisitos reimplementados e testes executados.
 
 ## Branches
 
@@ -84,7 +140,7 @@ forçar a resolução. Nesse caso:
 1. aborte o merge/rebase e preserve a evidência do conflito;
 2. confirme que a branch remota de task é descartável e, somente então, apague
    `task-{id_issue}`;
-3. recrie `task-{id_issue}` a partir do `master` remoto atualizado;
+3. recrie `task-{id_issue}` a partir de `origin/master` atualizado;
 4. reaplique a correção do zero, com escopo e testes da issue;
 5. retorne a task para **`Working`**, remova as decisões/aceites herdados da
    entrega descartada e reative as solicitações dos validadores (`agent:qa`,
@@ -161,15 +217,20 @@ Promoção de `hotfix` → staging é P2, não P1.
 1. Staging parte de `master` atual + merge **somente** de `task-{id}`.
 2. Pai + submódulos afetados (submódulos primeiro; pins coerentes).
 3. Aplicar o **Gate de atenção redobrada antes de qualquer merge**. Conflito:
-   abortar aquele merge, comentar, seguir a próxima task. Ausência de conflito
-   não dispensa a revisão semântica do resultado.
+   abortar, confirmar que a task é descartável, recriar a task a partir de
+   `origin/master` e refazer sua implementação do zero antes de nova promoção.
+   Não tratar a task conflitante como entregue. Ausência de conflito não
+   dispensa a revisão semântica do resultado.
 4. Versão em `package.json` / `app.json` quando o bump for necessário: **somente números** (SemVer). Sem sufixo `-rc`.
 5. Push em `staging` dispara deploy de conferência.
-6. Mover **essa** task para **`In Review`**.
+6. A passagem para **`In Review`** é feita pelo humano após staging e os quatro
+   accepts; o DevOps não move a task para essa coluna.
 
 ### `In Review`
 
-Sinal de que a **task individual** já está em staging e aguarda humano. Nenhum Manager/higiene remove da coluna. Se parecer indevida: comentar + `agent:devops` + esperar humano.
+Sinal de que a **task individual** já está em staging, possui os quatro accepts
+e aguarda revisão humana. Nenhum agent move tasks para dentro ou para fora desta
+coluna. Se parecer indevida: comentar + `agent:devops` + esperar humano.
 
 ### Publicação (coluna Deploy)
 
@@ -231,6 +292,8 @@ master
 - não pule etapa sem evidência verificável
 - não mova `Deploy` de volta para `In Review` sem rejeição humana explícita
 
-## Project Status: Blocked e Backlog
+## `Blocked` e `Backlog`: estados exclusivamente humanos
 
-Agents **não** selecionam nem movem items em **`Blocked`** ou **`Backlog`** como fila.
+Agents não selecionam, movem, limpam ou editam itens em **`Blocked`** ou
+**`Backlog`**. Essas colunas são uma barreira de segurança controlada por
+humanos e ficam fora de toda fila automática.

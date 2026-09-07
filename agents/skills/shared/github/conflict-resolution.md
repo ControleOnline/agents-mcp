@@ -9,10 +9,10 @@ semanticamente com segurança.
 ## Regra principal
 
 Conflito não é autorização para escolher `ours`, `theirs`, fazer force-push ou
-mesclar diretamente em `master`. A task deve voltar para **In Review** para
-registrar a necessidade de revisão e interromper a promoção. Nenhuma task com
-conflito resolvido pode ser marcada como `Done` sem passar novamente pelo fluxo
-normal.
+mesclar diretamente em `master`. O agent não move tasks no board. Quando a
+task precisa ser refeita sem os quatro accepts, o estado operacional é
+**Working**; **In Review** é reservado à revisão humana depois que os quatro
+accepts existirem e a task tiver chegado a staging.
 
 ## Fluxo obrigatório
 
@@ -20,8 +20,10 @@ normal.
    arquivos conflitantes e o requisito afetado.
 2. Aborte o merge/rebase e preserve a evidência; não publique a branch
    conflitante em `dev`, `staging` ou `master`.
-3. Mova a task para **In Review** e remova decisões/aceites que dependam da
-   versão descartada. Reative os validadores aplicáveis após a reaplicação.
+3. Não altere a coluna pelo agent. Registre a devolução e, se a task estiver
+   sendo refeita sem os quatro accepts, o estado esperado é **Working**;
+   remova decisões/aceites que dependam da versão descartada e reative os
+   validadores aplicáveis após a reaplicação.
 4. Se a branch for aproveitável, atualize-a a partir de `origin/master`,
    resolva manualmente preservando as duas intenções e valide o diff final.
 5. Se a branch estiver muito divergente, contaminada por commits de outras
@@ -45,4 +47,6 @@ normal.
   evidência e com `--force-with-lease`; nunca em `master`, `dev` ou `staging`.
 - `TESTADO:ALE` e quaisquer labels de validação não substituem revisão do
   resultado recriado e não podem ser herdadas automaticamente.
-
+- Agents não movem tasks entre colunas. A passagem para `In Review` só ocorre
+  no rito humano após staging e os quatro accepts; não é uma ação de recuperação
+  de conflito.
