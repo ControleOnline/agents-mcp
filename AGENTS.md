@@ -55,6 +55,15 @@ workers/            # tudo que executa
 
 ## Regra central de skills
 
+### Autogerenciamento obrigatório
+
+Nenhum agent pode parar o ecossistema ou deixar uma task aguardando
+destravamento. Ao encontrar falha, conflito ou etapa incompleta, deve voltar à
+última etapa consistente, corrigir, reencaminhar ou refazer a task — inclusive
+recriando a branch a partir de `origin/master` — e continuar até uma transição
+válida. `Blocked` e `Backlog` são estados de segurança exclusivamente humanos;
+agents, workers e automações não podem tocar nessas colunas.
+
 Toda regra nova deve entrar primeiro na camada certa, em vez de ser repetida entre agents, wrappers e instrucoes locais.
 
 Distribuicao obrigatoria:
@@ -113,6 +122,9 @@ Ao consultar ou operar no GitHub, os agents podem usar qualquer busca, API, list
 ## GitHub Flow (resumo)
 
 Fonte completa: `agents/skills/shared/github/github-flow.md`.
+Para qualquer conflito ou divergência ampla, aplicar também
+`agents/skills/shared/github/conflict-resolution.md`; a task volta para
+`In Review` e nunca é mesclada diretamente em `master`.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
@@ -198,4 +210,6 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
 - Falha operacional em P5 nao autoriza fallback para higiene.
 - Sempre confirme o estado real no GitHub / Project #1 antes de agir.
 - Siga integralmente as fontes canonicas de cada papel (`agents/roles/*/agent.md` e skills referenciadas).
-- Colunas `Blocked` e `Backlog` sao exclusivamente humanas.
+- As colunas `Blocked` e `Backlog` são estados de segurança exclusivamente
+  humanos. Nenhum agent, worker ou automação pode selecionar, mover, limpar ou
+  editar itens nessas colunas.
