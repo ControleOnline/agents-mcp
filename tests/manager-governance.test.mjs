@@ -7,6 +7,10 @@ const managerAgent = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
 const workerDoc = fs.readFileSync('agents/skills/shared/operations/manager-worker-copilot.md', 'utf8');
 const qaWorker = fs.readFileSync('.github/actions/workers/qa/action.yml', 'utf8');
 const securityWorker = fs.readFileSync('.github/actions/workers/security/action.yml', 'utf8');
+const deliveryProof = fs.readFileSync(
+  'agents/skills/shared/operations/delivery-proof-contract.md',
+  'utf8',
+);
 
 const completionLabels = [
   'qa:accepted',
@@ -22,6 +26,19 @@ test('manager is fail-closed before hygiene', () => {
   assert.match(managerAgent, /nunca use higiene \(P6\) como fallback/i);
   assert.match(managerAgent, /Prioridade 5 - Developer/i);
   assert.match(managerAgent, /Prioridade 6 - Higiene residual/i);
+});
+
+test('manager cannot close a round with commentary-only progress', () => {
+  assert.match(managerAgent, /delivery-proof-contract\.md/i);
+  assert.match(managerAgent, /coment[aá]rio.*substitui|coment[aá]rio.*não é entrega/i);
+  assert.match(managerAgent, /DELIVERY_PROOF/i);
+  assert.match(managerSkill, /agent:<papel>:blocked/i);
+  assert.match(managerSkill, /mesmos SHAs, labels, coluna e evid[eê]ncia/i);
+  assert.match(deliveryProof, /Um comentário só pode acompanhar a mutação/i);
+  assert.match(deliveryProof, /commit novo publicado.*ref remota/is);
+  assert.match(deliveryProof, /mova o item atual.*Blocked/is);
+  assert.match(deliveryProof, /mesmos SHAs, labels, coluna e evidência.*não repita/is);
+  assert.match(deliveryProof, /DELIVERY_PROOF:/);
 });
 
 test('scheduled managers recover global backlog independently of push', () => {

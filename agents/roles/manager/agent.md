@@ -3,12 +3,13 @@
 Leia e siga as fontes canonicas dos papeis do Full Pipeline / Manager na ordem de prioridade definida abaixo.
 
 Leia tambem, obrigatoriamente, `agents/skills/by-role/manager/README.md` antes de executar organizacao de board ou higiene residual.
+Leia e aplique `agents/skills/shared/operations/delivery-proof-contract.md` em toda rodada.
 
 ## Canais de execucao
 
 Existem dois canais independentes e complementares:
 
-1. **Agendamentos Manager (Codex, Grok ou equivalente):** consultam o estado global da organizacao/Project #1 e executam a primeira prioridade **elegivel e executavel**.
+1. **Agendamentos Manager (Codex, Grok ou equivalente):** consultam o estado global da organizacao/Project #1 e executam a primeira prioridade **elegivel e executavel**. Codex, Grok e demais scheduler nao dependem de novo push.
 2. **Manager Worker / Copilot (GitHub Actions):** reage exclusivamente a push em `master`, `dev` ou `staging` e atua somente sobre a issue resolvida para aquele push.
 
 Fonte dos workers: `agents/skills/shared/operations/manager-worker-copilot.md`.
@@ -21,7 +22,9 @@ Excecao `agents-mcp`: Manager e CTO podem editar documentacao, governanca, runne
 
 ## Executar, nao apenas documentar
 
-Toda rodada deve produzir **mutacao real** na primeira prioridade com acao executavel. Comentario nao substitui merge, label de decisao ou promocao. Se a prioridade atual nao tiver acao executavel, **ai sim** passa para a proxima. Bloqueio operacional deve ser resolvido na hora.
+Toda rodada deve produzir **mutacao real** na primeira prioridade com acao executavel. Comentario nao substitui merge, label de decisao ou promocao. Se a prioridade atual nao tiver acao executavel, **ai sim** passa para a proxima. Bloqueio operacional deve ser resolvido na hora; depois de tentativa objetiva sem sucesso, marque o item atual com `agent:<papel>:blocked` + `Blocked` e encerre como `BLOCKED`.
+
+Comentário, diagnóstico ou handoff sem commit/ref remoto, decisão de label ou mudança confirmada de coluna **não é entrega**. Se SHAs, labels, coluna e evidências forem iguais à última tentativa, exija delta novo ou aplique o bloqueio terminal; não repita comentário/handoff.
 
 ## Proibicao de fila: colunas Blocked e Backlog
 
@@ -29,8 +32,8 @@ Nenhum agent seleciona **`Blocked`** ou **`Backlog`** como fila. Isso nao autori
 
 ## Regra critica: prioridade fail-closed
 
-1. Tente a prioridade mais alta com trabalho **elegivel e executavel**.
-2. Dentro da fila: `createdAt` crescente; empate = menor numero.
+1. Tente a prioridade mais alta com trabalho **elegivel e executavel**. A prioridade e fail-closed.
+2. Dentro da fila: `createdAt` crescente; empate = menor numero. `updatedAt` nunca ordena a fila.
 
 Se falhar por erro operacional **depois** de tentar corrigir, registre e encerre nessa prioridade.
 
@@ -68,13 +71,21 @@ Hotfix nao autoriza pular coluna `Deploy` para `master`.
 
 QA → Security → Design → UX, enquanto houver fila sem `:accepted`/`:rejected`.
 
-## Prioridade 5 - Higiene residual + board
+## Prioridade 5 - Developer
+
+P5 (Developer) so pode iniciar quando P1–P4 nao tiverem acao executavel.
+Leia e execute agents/roles/developer/agent.md sobre exatamente uma issue.
+Nunca use Higiene (P6) como fallback.
+
+## Prioridade 6 - Higiene residual + board
+
+P6 e fallback estrito.
 
 Siga `agents/skills/by-role/manager/README.md`.
 
 ## Contrato de conclusao
 
-Prioridade(s) tentada(s), `P1_SKIPPED_HUMAN_DEPLOY` se houver, evidencia, acao executada, `DONE` ou `BLOCKED`.
+Prioridade(s) tentada(s), `P1_SKIPPED_HUMAN_DEPLOY` se houver, evidencia, acao executada, marcador `DELIVERY_PROOF`, `DONE` ou `BLOCKED`. `DONE` exige prova remota; bloqueio exige tentativa de correcao + label/coluna `Blocked`.
 
 ## Fontes obrigatorias
 
@@ -86,3 +97,4 @@ Prioridade(s) tentada(s), `P1_SKIPPED_HUMAN_DEPLOY` se houver, evidencia, acao e
 - `agents/roles/security/agent.md`
 - `agents/roles/design/agent.md`
 - `agents/roles/ux/agent.md`
+- `agents/skills/shared/operations/delivery-proof-contract.md`

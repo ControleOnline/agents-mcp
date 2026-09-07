@@ -36,6 +36,7 @@ const ALL_AGENT_LABELS = [
   'agent:sysadmin',
 ];
 
+const PROTECTED_PROJECT_STATUSES = new Set(['blocked', 'backlog']);
 const RETRY = githubRetryConfig('AGENT');
 
 function env(name, fallback = '') {
@@ -223,12 +224,17 @@ function statusMatches(status, allowedStatuses) {
   return allowedStatuses.some((entry) => entry.toLowerCase() === normalized);
 }
 
+function isProtectedProjectStatus(status) {
+  return PROTECTED_PROJECT_STATUSES.has(String(status || '').trim().toLowerCase());
+}
+
 function isEligibleForRole(item, role, workStatuses, deployStatuses) {
   const issue = item.content;
   if (!issue?.repository?.nameWithOwner) return false;
 
   const stageLabel = currentAgentLabel(issue);
   const status = getStatusValue(item);
+  if (isProtectedProjectStatus(status)) return false;
 
   if (role === 'developer') {
     return statusMatches(status, workStatuses) && (!stageLabel || stageLabel === ROLE_META.developer.label);

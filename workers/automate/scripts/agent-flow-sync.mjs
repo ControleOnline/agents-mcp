@@ -44,6 +44,7 @@ const COMMENT_TYPES = {
   cleanupAssignees: 'cleanup-assignees',
   cleanupReview: 'cleanup-review',
 };
+const PROTECTED_PROJECT_STATUSES = new Set(['blocked', 'backlog']);
 
 function env(name, fallback = '') {
   return (process.env[name] || fallback).trim();
@@ -338,6 +339,10 @@ function statusMatches(status, allowedStatuses) {
   return allowedStatuses.some((entry) => entry.toLowerCase() === normalized);
 }
 
+function isProtectedProjectStatus(status) {
+  return PROTECTED_PROJECT_STATUSES.has(String(status || '').trim().toLowerCase());
+}
+
 async function ensureLabelExists(repoFullName, labelName) {
   const [owner, repo] = repoFullName.split('/');
   const meta = LABEL_META[labelName] || { color: '1f6feb', description: labelName };
@@ -518,6 +523,7 @@ async function main() {
 
     const issueRef = `${issue.repository.nameWithOwner}#${issue.number}`;
     const status = getStatusValue(item);
+    if (isProtectedProjectStatus(status)) continue;
     const labels = issueLabels(issue);
     const stageLabel = currentAgentLabel(issue);
     const assignees = assigneeLogins(issue);

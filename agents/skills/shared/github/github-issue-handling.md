@@ -90,6 +90,18 @@ Use a coluna `Ready` ou `Working` quando houver:
 - melhoria
 - novo recurso
 
+Falhas de smoke de browser/UI descobertas em auditoria de CI, DevOps, Manager, QA ou publicacao devem virar acompanhamento tecnico separado para resolucao posterior:
+
+- antes de criar nova issue, procure issue aberta para o mesmo repositorio, smoke/fluxo e erro raiz; se existir, atualize-a
+- crie/atualize no repositorio afetado, nao necessariamente no repositorio pai do RC
+- coluna: `Ready`
+- labels obrigatorias: `hotfix`, `bug` e `agent:developer`
+- label de pagina obrigatoria quando a rota/tela for identificavel
+- corpo/comentario: link do workflow/job/run, branch/SHA, smoke afetado, `fluxo: <id>` ou `outros`, resumo sanitizado da falha, impacto observado e referencia para a task/RC/deploy que encontrou o problema
+- nao cole tokens, headers sensiveis, screenshots com dados reais ou logs brutos contendo segredo
+- nao use assignee para direcionar; a label `agent:developer` e o roteamento oficial
+- nao marque como bloqueio da publicacao se a falha for legado, flaky, fora do delta publicado ou tiver sido explicitamente diferida; nesse caso, registre que a correcao segue na **P5 Developer** do Manager, com prioridade de `hotfix`
+
 Em casos de seguranca, mantenha a issue em `Ready`, mas reduza detalhes exploraveis e preserve somente o contexto seguro necessario.
 
 Toda issue criada para trabalho tecnico deve receber uma label de tipo correspondente:
@@ -130,7 +142,7 @@ Quando houver indicio de problema de seguranca:
 - faca o registro no GitHub por esta skill, sem criar fluxo separado fora dela
 - coloque a issue em `Ready` ou `Working`
 - descreva risco, impacto potencial, sintomas observados, escopo afetado e evidencias nao sensiveis
-- omita detalhes que aumentem risco de exploracao ou revelem segredos desnecessariamente
+- omita detalhes que aumentam risco de exploracao ou revelem segredos desnecessariamente
 - preserve rastreabilidade suficiente para continuidade da investigacao
 
 ## Output Contract

@@ -13,6 +13,11 @@ Este e o ponto de entrada canonico do agent `developer` para todo o ecossistema 
 
 Todo wrapper local de `developer` deve apontar para este arquivo.
 
+Entrega só existe com `agents/skills/shared/operations/delivery-proof-contract.md`:
+commit publicado, merge remoto em `dev`, labels de handoff e coluna confirmada.
+Sem runtime/teste obrigatório, tente corrigir o bloqueio; persistindo, marque
+`agent:developer:blocked` + `Blocked` e não repita a rodada com o mesmo delta.
+
 Ao iniciar uma execucao:
 
 1. leia este arquivo
@@ -61,6 +66,7 @@ Antes dessa ordem, aplique a precedencia de coluna: `Working` primeiro; `Ready` 
 1. Branch `task-{id_issue}` a partir de `master`.
 2. Implementar, testar, sincronizar com `origin/master`.
 3. **Merge** de `task-{id_issue}` → **`dev`**.
-4. Handoff: labels `agent:qa` e `agent:security` + evidencia na issue.
+4. Handoff: labels `agent:qa` e `agent:security` + evidencia na issue,
+   com `DELIVERY_PROOF:`; sem prova remota não declarar entrega.
 
 Fonte completa: `agents/skills/shared/github/github-flow.md`.

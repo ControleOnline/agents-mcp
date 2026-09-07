@@ -48,6 +48,7 @@ runs:
       run: |
         set -euo pipefail
 
+        PROJECT_NUMBER="${PROJECT_NUMBER:-1}"
         # Padrão da org: master (nunca main como branch de trabalho)
         BRANCH="$BRANCH_IN"
         if [ "$BRANCH" = "main" ]; then
@@ -113,6 +114,46 @@ runs:
           echo "issue_number=$NUM" >> "$GITHUB_OUTPUT"
           echo "Issue criada: #$NUM"
         fi
+
+        REPO_OWNER="${REPO%%/*}"
+        REPO_NAME="${REPO#*/}"
+        PROJECT_STATUS=$(gh api graphql \
+          -f owner="$REPO_OWNER" \
+          -f name="$REPO_NAME" \
+          -F number="$NUM" \
+          -f query='
+            query($owner:String!, $name:String!, $number:Int!) {
+              repository(owner:$owner, name:$name) {
+                issue(number:$number) {
+                  projectItems(first:20) {
+                    nodes {
+                      project { number }
+                      fieldValues(first:20) {
+                        nodes {
+                          ... on ProjectV2ItemFieldSingleSelectValue {
+                            name
+                            field { ... on ProjectV2SingleSelectField { name } }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }' \
+          --jq ".data.repository.issue.projectItems.nodes[] | select(.project.number == ${PROJECT_NUMBER}) | .fieldValues.nodes[] | select(.field.name == \"Status\") | .name" \
+          2>/dev/null | head -1 || true)
+
+        case "${PROJECT_STATUS,,}" in
+          blocked|backlog)
+            echo "Issue #$NUM está em ${PROJECT_STATUS}; Manager Worker não despacha, não comenta, não valida e não move item protegido."
+            echo "run_qa=false" >> "$GITHUB_OUTPUT"
+            echo "run_security=false" >> "$GITHUB_OUTPUT"
+            echo "run_docs=false" >> "$GITHUB_OUTPUT"
+            echo "run_gates=false" >> "$GITHUB_OUTPUT"
+            exit 0
+            ;;
+        esac
 
         # Manager decide quais workers invocar
         run_qa=false
