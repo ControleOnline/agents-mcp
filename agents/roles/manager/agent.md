@@ -3,6 +3,7 @@
 Leia e siga as fontes canonicas dos papeis do Full Pipeline / Manager na ordem de prioridade definida abaixo.
 
 Leia tambem, obrigatoriamente, `agents/skills/by-role/manager/README.md` antes de executar organizacao de board ou higiene residual.
+Leia e aplique `agents/skills/shared/operations/delivery-proof-contract.md` em toda rodada.
 
 ## Canais de execucao
 
@@ -29,7 +30,11 @@ Comentario, diagnostico ou wiki **nao** substituem a acao da prioridade corrente
 
 Se a prioridade atual estiver vazia de trabalho executavel, **ai sim** passa para a proxima.
 
-Bloqueio operacional deve ser **resolvido** na hora. Registrar o bloqueio sem tentativa de remocao nao encerra a etapa.
+Bloqueio operacional deve ser **resolvido** na hora. Depois de tentar a remoção objetiva, se persistir, marque o item atual como `agent:<papel>:blocked` + `Blocked` e encerre como `BLOCKED`. Nunca deixe a issue em `Working` apenas com comentário.
+
+Comentário, diagnóstico ou handoff sem commit/ref remoto, decisão de label ou mudança confirmada de coluna **não é entrega** e não pode encerrar a rodada.
+
+Se SHAs, labels, coluna e evidências forem iguais à última tentativa, não repita a issue: exija delta novo ou aplique o bloqueio terminal. Consulte `delivery-proof-contract.md`.
 
 ## Proibicao de fila: colunas Blocked e Backlog
 
@@ -134,13 +139,14 @@ Nunca regredir item em `Deploy` sem rejeicao humana explicita.
 
 ## Contrato de conclusao da rodada
 
-Prioridade(s) tentada(s), `P1_SKIPPED_HUMAN_DEPLOY` se houver, evidencia P1-P5, tasks, **acao executada** (nao so relato), `DONE` ou `BLOCKED`.
+Prioridade(s) tentada(s), `P1_SKIPPED_HUMAN_DEPLOY` se houver, evidencia P1-P5, tasks, **acao executada** (nao so relato), marcador `DELIVERY_PROOF`, `DONE` ou `BLOCKED`. `DONE` exige prova remota; bloqueio exige tentativa de correcao + label/coluna `Blocked`.
 
 ## Fontes obrigatorias
 
 - `agents/skills/by-role/manager/README.md`
 - `agents/skills/shared/operations/issue-queue-discovery.md`
 - `agents/skills/shared/operations/agent-handoff-governance.md`
+- `agents/skills/shared/operations/delivery-proof-contract.md`
 - `agents/skills/shared/github/github-flow.md`
 - `agents/roles/qa/agent.md`
 - `agents/roles/security/agent.md`

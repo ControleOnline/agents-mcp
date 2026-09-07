@@ -12,6 +12,9 @@ O `Manager` executa o Full Pipeline na ordem definida em `agents/roles/manager/a
 
 Toda rodada **executa**. Documentacao de produto nao e fallback enquanto P1/P2/P4 tiverem acao. Higiene nao e fallback enquanto P5 tiver Developer elegivel.
 
+Toda rodada tambem segue `agents/skills/shared/operations/delivery-proof-contract.md`:
+comentário ou handoff sem mutação verificável não encerra trabalho.
+
 Ordem resumida:
 
 1. **DevOps** - sempre primeiro. Publicar todos os itens em `Deploy` para `master`; se nao houver, promover todas as tasks quadruplo-accepted para `staging` + `In Review`. Gate humano de Deploy **nao** encerra a rodada. **Nao montar RC.**
@@ -27,7 +30,9 @@ Antes de atuar: consulte GitHub e Project #1; descubra P1-P5; tente a primeira p
 
 ## Fail-closed operacional vs skip de P1 humano
 
-Se a prioridade selecionada falhar por ferramenta/credencial/API **depois** de tentar corrigir: registre, `BLOCKED`, nao execute prioridade inferior.
+Se a prioridade selecionada falhar por ferramenta/credencial/API **depois** de tentar corrigir: aplique `agent:<papel>:blocked` e `Blocked` no item atual, registre a evidência com `DELIVERY_PROOF`, e encerre nessa prioridade. Nao execute prioridade inferior.
+
+Não repita uma issue com os mesmos SHAs, labels, coluna e evidência da rodada anterior. Sem delta novo ou mudança externa comprovada, o resultado obrigatório é `BLOCKED`, não outro comentário/handoff.
 
 Excecao: P1 so com gate humano de Deploy → `P1_SKIPPED_HUMAN_DEPLOY` e continue P2-P6.
 
@@ -37,7 +42,7 @@ Excecao: P1 so com gate humano de Deploy → `P1_SKIPPED_HUMAN_DEPLOY` e continu
 
 Ordem: QA → Security → Design → UX.
 
-Enquanto existir qualquer um desses elegivel sem decisao final (`:accepted` / `:rejected`), P5 permanece bloqueada e DevOps nao promove task comum.
+Enquanto existir qualquer um desses elegivel sem decisao final (`:accepted` / `:rejected`), P5 permanece bloqueada e DevOps nao promove task comum. A decisão deve ser nova e acompanhada da label/coluna correspondente; comentário sem label não conta.
 
 Agendamento Manager executa o validador diretamente quando o runtime puder; senao `BLOCKED` em P4.
 
