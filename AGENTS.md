@@ -126,8 +126,9 @@ Ao consultar ou operar no GitHub, os agents podem usar qualquer busca, API, list
 
 Fonte completa: `agents/skills/shared/github/github-flow.md`.
 Para qualquer conflito ou divergência ampla, aplicar também
-`agents/skills/shared/github/conflict-resolution.md`; a task volta para
-`In Review` e nunca é mesclada diretamente em `master`.
+`agents/skills/shared/github/conflict-resolution.md`; a task permanece em
+`Working` para ser refeita e nunca é mesclada diretamente em `master`. Agents
+não movem tasks para `In Review`; essa coluna é humana após os quatro accepts.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
