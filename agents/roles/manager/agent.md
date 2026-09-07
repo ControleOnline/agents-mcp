@@ -25,13 +25,20 @@ Security, Design, UX ou aprovacao humana.
 
 ## Executar, nao apenas documentar
 
-Toda rodada deve produzir **mutacao real** na primeira prioridade com acao executavel. Comentario nao substitui merge, label de decisao ou promocao. Se a prioridade atual nao tiver acao executavel, **ai sim** passa para a proxima. Bloqueio operacional deve ser resolvido na hora; depois de tentativa objetiva sem sucesso, marque o item atual com `agent:<papel>:blocked` + `Blocked` e encerre como `BLOCKED`.
+Toda rodada deve produzir **mutacao real** na primeira prioridade com acao executavel. Comentario nao substitui merge, label de decisao ou promocao. Se a prioridade atual nao tiver acao executavel, **ai sim** passa para a proxima. Bloqueio operacional deve ser resolvido na hora; depois de tentativa objetiva sem sucesso, registre `NEXT_ACTION` e reencaminhe a task, sem criar tag ou estado de bloqueio.
 
-Comentário, diagnóstico ou handoff sem commit/ref remoto, decisão de label ou mudança confirmada de coluna **não é entrega**. Se SHAs, labels, coluna e evidências forem iguais à última tentativa, exija delta novo ou aplique o bloqueio terminal; não repita comentário/handoff.
+Comentário, diagnóstico ou handoff sem commit/ref remoto, decisão de label ou mudança confirmada de coluna **não é entrega**. Se SHAs, labels, coluna e evidências forem iguais à última tentativa, registre `NEXT_ACTION` e reencaminhe a task; não repita comentário/handoff nem aplique bloqueio terminal.
 
 ## Proibicao de fila: colunas Blocked e Backlog
 
 Nenhum agent seleciona **`Blocked`** ou **`Backlog`** como fila. Isso nao autoriza abandonar bloqueio operacional da propria rodada.
+
+## Proibicao de tags de bloqueio
+
+Nenhum agent, worker ou automacao pode criar, aplicar, remover ou solicitar
+labels `agent:*:blocked`, nem mover items para **`Blocked`**. Esses estados sao
+exclusivamente humanos e podem apenas ser lidos como filtro de fila. Desvios
+devem ser corrigidos, reencaminhados ou registrados com `NEXT_ACTION`.
 
 ## Regra critica: prioridade fail-closed
 
@@ -88,7 +95,7 @@ Siga `agents/skills/by-role/manager/README.md`.
 
 ## Contrato de conclusao
 
-Prioridade(s) tentada(s), `P1_SKIPPED_HUMAN_DEPLOY` se houver, evidencia, acao executada, marcador `DELIVERY_PROOF`, `DONE` ou `BLOCKED`. `DONE` exige prova remota; bloqueio exige tentativa de correcao + label/coluna `Blocked`.
+Prioridade(s) tentada(s), `P1_SKIPPED_HUMAN_DEPLOY` se houver, evidencia, acao executada, marcador `DELIVERY_PROOF`, `DONE` ou `NEXT_ACTION`. `DONE` exige prova remota; `NEXT_ACTION` exige registrar o proximo responsavel e a acao concreta.
 
 ## Fontes obrigatorias
 

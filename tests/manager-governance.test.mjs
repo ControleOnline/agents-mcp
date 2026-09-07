@@ -32,11 +32,12 @@ test('manager cannot close a round with commentary-only progress', () => {
   assert.match(managerAgent, /delivery-proof-contract\.md/i);
   assert.match(managerAgent, /coment[aá]rio.*substitui|coment[aá]rio.*não é entrega/i);
   assert.match(managerAgent, /DELIVERY_PROOF/i);
-  assert.match(managerSkill, /agent:<papel>:blocked/i);
+  assert.match(managerSkill, /NEXT_ACTION/i);
+  assert.doesNotMatch(managerSkill, /agent:<papel>:blocked/i);
   assert.match(managerSkill, /mesmos SHAs, labels, coluna e evid[eê]ncia/i);
   assert.match(deliveryProof, /Um comentário só pode acompanhar a mutação/i);
   assert.match(deliveryProof, /commit novo publicado.*ref remota/is);
-  assert.match(deliveryProof, /mova o item atual.*Blocked/is);
+  assert.match(deliveryProof, /não crie,[\s\S]*tag `agent:\*:blocked`/is);
   assert.match(deliveryProof, /mesmos SHAs, labels, coluna e evidência.*não repita/is);
   assert.match(deliveryProof, /DELIVERY_PROOF:/);
 });
@@ -86,4 +87,13 @@ test('closed and Done tasks require the complete four-label contract', () => {
 test('queue ordering is oldest first and never updatedAt', () => {
   assert.match(managerAgent, /createdAt.*crescente/i);
   assert.match(managerAgent, /updatedAt.*nunca.*orden/i);
+});
+
+test('agents cannot create or apply blocking labels or terminal blocks', () => {
+  assert.match(managerAgent, /Proibicao de tags de bloqueio/i);
+  assert.match(managerAgent, /labels `agent:\*:blocked`/i);
+  assert.match(managerSkill, /labels `agent:\*:blocked`/i);
+  assert.match(deliveryProof, /não crie[\s\S]*tag `agent:\*:blocked`/i);
+  assert.doesNotMatch(managerAgent, /`agent:<papel>:blocked`/i);
+  assert.doesNotMatch(managerSkill, /`agent:<papel>:blocked`/i);
 });

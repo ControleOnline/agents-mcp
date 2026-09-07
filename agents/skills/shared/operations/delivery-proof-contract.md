@@ -38,21 +38,20 @@ Quando uma dependência impedir a ação:
 1. tente a correção objetiva disponível (permissão, conflito, credencial,
    checkout, runtime ou API);
 2. repita a verificação somente depois da correção;
-3. se continuar bloqueado, aplique `agent:<papel>:blocked`, mova o item atual
-   para `Blocked` e registre o bloqueador, a tentativa, a evidência e a ação
-   externa necessária.
+3. se a dependência continuar impedindo o avanço, registre `NEXT_ACTION` com
+   responsável, tentativa, evidência e ação externa necessária; não crie,
+   aplique ou solicite tag `agent:*:blocked` e não mova o item para `Blocked`.
 
-`Blocked` não é fila normal e nenhum agent pode selecionar esse item depois.
-Esta exceção permite apenas marcar o item atualmente trabalhado como bloqueio
-terminal; não permite higienizar, promover ou validar itens já bloqueados.
+`Blocked` não é fila normal e permanece sob controle humano; nenhum agent,
+worker ou automação pode criar, mover ou editar esse estado.
 
 ## Anti-repetição
 
 Uma nova rodada não pode selecionar a mesma issue quando o estado de entrada é
 igual ao da última tentativa: mesmos SHAs, labels, coluna e evidência. Exige-se
-um novo delta publicado ou uma mudança externa verificável. Sem isso, marque o
-bloqueio terminal; não publique outro comentário, não repita o handoff e não
-mantenha a issue em `Working`.
+um novo delta publicado ou uma mudança externa verificável. Sem isso, registre
+`NEXT_ACTION`; não publique outro comentário, não repita o handoff e não
+aplique tag ou estado de bloqueio.
 
 O comentário de encerramento deve conter:
 `DELIVERY_PROOF: action=<...> refs=<...> state=<...>`.
