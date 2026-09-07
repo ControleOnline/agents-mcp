@@ -55,6 +55,7 @@ A selecao deve escolher exatamente uma issue elegivel, nesta ordem de **tipo**:
 2. Implementar, testar, sincronizar com `origin/master`.
 3. **Merge** de `task-{id_issue}` → **`dev`**.
 4. Executar o **gate obrigatorio de entrega local** da governanca compartilhada: entregar/publicar toda alteracao feita em projetos principais e submodulos, conferir cada um contra `origin/master`, e nao deixar mudanca local solta.
-5. Handoff **obrigatorio** (as quatro tags, sempre que a entrega existir): `agent:qa` + `agent:security` + `agent:design` + `agent:ux` + evidencia na issue. A evidencia deve listar os projetos/submodulos, SHAs e refs remotos publicados, alem do resultado da conferencia contra `origin/master`.
+5. Antes do handoff, em toda entrega de UI/browser/smoke, confirme que cada arquivo de código da jornada tocado começa com `fluxo: <id> | etapa: <id>` e o link da página wiki; no smoke, confirme o vínculo no JSON gerado com `wikiPage` como primeiro campo.
+6. Handoff **obrigatorio** (as quatro tags, sempre que a entrega existir): `agent:qa` + `agent:security` + `agent:design` + `agent:ux` + evidencia na issue. A evidencia deve listar os projetos/submodulos, SHAs e refs remotos publicados, alem do resultado da conferencia contra `origin/master`.
 
 Fonte completa: `agents/skills/shared/github/github-flow.md`.

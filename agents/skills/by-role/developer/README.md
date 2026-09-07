@@ -36,6 +36,15 @@ No Full Pipeline / Manager este papel e a **Prioridade 5**. Higiene e P6.
 - fila inicial `Ready`; apos captura permanece em `Working` ate os validadores concluirem
 - qualquer alteracao local exige entrega/publicacao antes do handoff; listar todos os projetos principais e submodulos afetados, confirmar cada checkout contra `origin/master` e deixar staged/unstaged/untracked vazio. Branch de task ou integracao mantida por necessidade do fluxo deve ser declarada com SHA/ref remoto e nao conta como alinhamento a `origin/master`.
 
+## Checklist obrigatório de fluxo publicado
+
+Quando a issue tocar UI, browser ou smoke, antes do handoff o Developer deve:
+
+- declarar no topo de **cada arquivo de código da jornada tocado** `fluxo: <id> | etapa: <id>`;
+- colocar no mesmo topo o link da página wiki publicada do fluxo;
+- no smoke, o vínculo pode ser declarado somente no manifesto JSON gerado, usando `wikiPage` como primeiro campo e declarando `fluxo`, `wikiFlow`, `steps` e prints por etapa;
+- devolver a entrega se algum arquivo de código aplicável ou manifesto não tiver fluxo, etapa ou link wiki identificável.
+
 ## Fontes principais
 
 - `agents/roles/developer/agent.md`

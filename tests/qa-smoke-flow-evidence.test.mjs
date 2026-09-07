@@ -20,6 +20,11 @@ const githubIssueHandling = fs.readFileSync(
   'utf8',
 );
 const qaReadme = fs.readFileSync('agents/skills/by-role/qa/README.md', 'utf8');
+const developerAgent = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
+const developerReadme = fs.readFileSync(
+  'agents/skills/by-role/developer/README.md',
+  'utf8',
+);
 const qaBase = fs.readFileSync('workers/automation/qa/base.md', 'utf8');
 const reviewChecklist = fs.readFileSync('workers/automate/review-checklists.md', 'utf8');
 
@@ -60,6 +65,20 @@ test('QA gate requires published wiki flow plus per-step prints', () => {
   assert.match(smokeFlows, /outros/);
   assert.match(qaAgent, /fluxo wiki|fluxo publicado na wiki/i);
   assert.match(qaReadme, /fluxo publicado na wiki|página wiki/i);
+});
+
+test('Developer and QA require a wiki link on touched code and generated smoke JSON', () => {
+  for (const source of [smokeFlows, codeQuality, qaAgent, qaReadme, developerAgent, developerReadme]) {
+    assert.match(source, /fluxo: <id> \| etapa: <id>/);
+    assert.match(source, /página wiki|pagina wiki/i);
+  }
+
+  for (const source of [qaAgent, qaReadme, developerAgent, developerReadme]) {
+    assert.match(source, /cada arquivo .*código da jornada|cada arquivo de código da jornada/i);
+  }
+
+  assert.match(developerReadme, /wikiPage/);
+  assert.match(qaReadme, /wikiPage/);
 });
 
 test('browser smoke failures become developer follow-up tasks', () => {

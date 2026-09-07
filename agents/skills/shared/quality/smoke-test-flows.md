@@ -42,7 +42,7 @@ Antes de dar `agent:qa:accepted` em smoke de UI, o QA deve conferir o índice ce
 
 1. `fluxo: <id>` deve ser um item existente no catálogo;
 2. o teste, manifesto ou comentário deve apontar para a página wiki do fluxo;
-3. cada arquivo de smoke alterado deve declarar `fluxo: <id> | etapa: <id>` no topo, quando aplicável;
+3. cada arquivo de **código da jornada** tocado deve declarar no topo `fluxo: <id> | etapa: <id>` e o link da página wiki correspondente; o smoke pode carregar esse vínculo no JSON gerado, usando `wikiPage` como primeiro campo porque comentários não são válidos;
 4. o manifesto deve listar os passos executados e os prints correspondentes;
 5. a evidência deve cobrir cada etapa relevante da jornada publicada, com justificativa explícita para qualquer etapa não executada.
 

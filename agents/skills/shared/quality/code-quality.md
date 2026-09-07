@@ -36,6 +36,7 @@ Se houver conflito entre um AGENTS local e esta skill para criterios de qualidad
 - o resultado da validacao deve ser descrito com o escopo real do que foi coberto
 - em smoke test de UI/browser, as capturas, prints, screenshots ou artefatos devem cobrir **todo o fluxo** por etapa; evidencia parcial bloqueia QA
 - o manifesto ou comentario do smoke deve permitir reconstruir a jornada sem interpretacao verbal: `fluxo: <id>`, pagina wiki do fluxo, etapa, passos executados, prints por passo e resultado final
+- todo arquivo de código da jornada tocado pelo Developer deve começar com `fluxo: <id> | etapa: <id>` e o link da página wiki; o smoke pode declarar o vínculo somente no JSON gerado, com `wikiPage` como primeiro campo
 - o `Documentor` deve conseguir reutilizar o material gerado pelo smoke sem depender de interpretacao verbal da entrega
 
 

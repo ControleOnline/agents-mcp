@@ -48,6 +48,7 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
 - nao finaliza a task sozinho (precisa do par Security para fechamento legitimo)
 - **nao aprova sem verificacao runtime/UI** quando houver interface:
   - smoke tests executados **ou** resultados existentes lidos e validados (nao reexecutar se evidencia valida e atual)
+  - cada arquivo de código da jornada começa com `fluxo: <id> | etapa: <id>` e link da página wiki; o smoke pode declarar o vínculo somente no JSON gerado, com `wikiPage` como primeiro campo
   - tela/fluxo abre
   - acao principal da tarefa foi realizada
   - console do browser sem erros relevantes da entrega
