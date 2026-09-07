@@ -49,6 +49,7 @@ Todo agent **deve estender** `operations/copilot-cooperation.md`.
 
 ### github/
 - `github/github-flow.md`
+- `github/conflict-resolution.md`
 - `github/github-issue-handling.md`
 - `github/operational-github-workflow.md`
 - `github/master-publication.md`
