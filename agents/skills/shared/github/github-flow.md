@@ -6,6 +6,20 @@ Fonte canônica do fluxo de branches e entrega técnica do ecossistema ControleO
 
 Integração contínua **por task**. Não se monta Release Candidate, task pai de RC, freeze de pacote nem inventário de filhas. RCs históricos (`RC X.Y.Z-rc.N`) são legado e não orientam execuções novas.
 
+## Regra inviolável de integração
+
+Todo código que sair de uma branch de trabalho ou de integração para outra
+branch deve chegar ao destino por **merge** ou por **Pull Request aprovado e
+mergeado**. Isso vale para `dev`, `staging`, `master`, projetos agregadores e
+submódulos.
+
+Push direto em branch de integração, cherry-pick como substituto do merge,
+atualização isolada de SHA e gitlink apontando diretamente para commit de task
+**não são publicação**. Em repositórios com submódulos, primeiro faça o merge
+da entrega no branch do submódulo; depois faça o merge do commit pai que atualiza
+o gitlink para esse commit já integrado. Se o merge ou PR não puder ser
+revisado semanticamente, aborte e registre o bloqueio.
+
 ## Branches
 
 | Branch | Papel |
