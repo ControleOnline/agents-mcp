@@ -15,6 +15,10 @@ const qaWorker = fs.readFileSync('.github/actions/workers/qa/action.yml', 'utf8'
 const securityWorker = fs.readFileSync('.github/actions/workers/security/action.yml', 'utf8');
 const agentsMd = fs.readFileSync('AGENTS.md', 'utf8');
 const developerAgent = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
+const deliveryProof = fs.readFileSync(
+  'agents/skills/shared/operations/delivery-proof-contract.md',
+  'utf8',
+);
 
 const completionLabels = [
   'agent:qa:accepted',
@@ -30,6 +34,30 @@ test('manager is fail-closed before hygiene', () => {
   assert.match(managerAgent, /Nao use higiene nem documentacao de produto como fallback/i);
   assert.match(managerSkill, /P5 permanece bloqueada/i);
   assert.match(managerSkill, /P6 permanece bloqueada/i);
+});
+
+test('manager cannot close a round with commentary-only progress', () => {
+  assert.match(managerAgent, /delivery-proof-contract\.md/i);
+  assert.match(managerAgent, /coment[aá]rio.*nao e entrega|coment[aá]rio.*não é entrega/i);
+  assert.match(managerAgent, /DELIVERY_PROOF/i);
+  assert.match(managerSkill, /agent:<papel>:blocked/i);
+  assert.match(managerSkill, /mesmos SHAs, labels, coluna e evid[eê]ncia/i);
+  assert.match(deliveryProof, /Um comentário só pode acompanhar a mutação/i);
+  assert.match(deliveryProof, /commit novo publicado.*ref remota/is);
+  assert.match(deliveryProof, /mova o item atual.*Blocked/is);
+  assert.match(deliveryProof, /mesmos SHAs, labels, coluna e evidência.*não repita/is);
+  assert.match(deliveryProof, /DELIVERY_PROOF:/);
+});
+
+test('handoff requires a remote delivery proof', () => {
+  const handoff = fs.readFileSync(
+    'agents/skills/shared/operations/agent-handoff-governance.md',
+    'utf8',
+  );
+  assert.match(handoff, /commit\/ref remoto.*decisão de label.*merge.*coluna/is);
+  assert.match(handoff, /agent:<papel>:blocked.*Blocked/is);
+  assert.match(developerAgent, /commit publicado.*merge remoto em/is);
+  assert.match(developerAgent, /DELIVERY_PROOF:/);
 });
 
 test('manager priority keeps DevOps before Hotfix and Developer before hygiene', () => {

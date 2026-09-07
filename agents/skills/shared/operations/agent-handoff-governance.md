@@ -4,6 +4,9 @@
 
 Use esta skill para padronizar tags, transicao de etapa, handoff tecnico e desvio operacional entre agents.
 
+Regra transversal: leia `delivery-proof-contract.md`. Comentário, diagnóstico,
+handoff textual ou commit apenas local não são entrega.
+
 ## Workflow
 
 1. confirme a tag `agent:*` esperada para a etapa atual
@@ -26,6 +29,13 @@ Use esta skill para padronizar tags, transicao de etapa, handoff tecnico e desvi
 9. cada agent so troca a tag da propria proxima etapa quando sua etapa estiver concluida (ou pulada com evidencia)
 10. **nao ha RC.** Nao criar task pai `RC X.Y.Z-rc.N`. Nao freeze de pacote. Cada task quádruplo-accepted sobe sozinha para staging/In Review.
 11. nao faca handoff sem evidencia concreta
+12. o handoff só é válido com mutação verificável: commit/ref remoto e merge
+    para entrega de código, decisão de label para validação, ou merge + coluna
+    para DevOps/board;
+13. se a tentativa falhar após correção objetiva, aplique
+    `agent:<papel>:blocked` + coluna `Blocked` no item atual e encerre como
+    `BLOCKED`; não deixe `Working` sustentado por comentário;
+14. não repita a mesma issue sem SHA/label/coluna/evidência novos.
 
 ## Gate obrigatorio de entrega local
 
@@ -47,6 +57,9 @@ O handoff deve declarar separadamente: (a) o que foi publicado, (b) o estado de 
 - proxima tag / coluna
 - evidencia do handoff, bloqueio ou pulo
 - se houve devolucao, por que
+
+O comentário de conclusão deve conter `DELIVERY_PROOF:` com a ação, refs/IDs e
+estado pós-ação.
 
 ## Quality Bar
 

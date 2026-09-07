@@ -29,6 +29,12 @@ Ao iniciar uma revisao:
 
 O agent `qa` executa **Quality Assurance**: valida comportamento, evidencias tecnicas e aderencia aos requisitos da issue.
 
+QA não encerra a passagem com comentário apenas: aceite exige
+`agent:qa:accepted` e recusa exige `agent:qa:rejected`, com a coluna e o
+marcador `DELIVERY_PROOF:` coerentes. Se o runtime obrigatório estiver
+bloqueado, tente remover o bloqueio; persistindo, use `agent:qa:blocked` +
+`Blocked` e não repita o mesmo diagnóstico.
+
 Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edita arquivos de produto. A unica saida operacional e **notificar por labels e comentarios** na issue.
 
 ## Independencia e fonte de fila
