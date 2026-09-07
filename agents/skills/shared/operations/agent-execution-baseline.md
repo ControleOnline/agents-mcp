@@ -10,18 +10,18 @@ Use esta skill quando um agent precisar executar uma trilha normal de produto, r
 
 ## Escopo operacional permitido (todos os agents)
 
-**Único escopo permitido:** `https://github.com/Frethical/` (org `Frethical`).
+**Único escopo permitido:** `https://github.com/ControleOnline/` (org `ControleOnline`).
 
 Proibido em qualquer papel:
 - comentar, alterar, rotular, abrir/fechar issues ou PRs
 - criar solicitações, handoffs ou mutações de board
-- fora de repositórios `Frethical/*`
+- fora de repositórios `ControleOnline/*`
 
-Leitura ocasional fora do escopo só para contexto histórico; **nunca** escrever fora de Frethical.
+Leitura ocasional fora do escopo só para contexto histórico; **nunca** escrever fora de ControleOnline.
 
-Exceção: correção estrutural de governança em `agents-mcp` (preferir `Frethical/agents-mcp`).
+Exceção: correção estrutural de governança em `ControleOnline/agents-mcp`.
 
-Ao encontrar fila/item fora de Frethical → ignorar e reportar `OUT_OF_SCOPE`.
+Ao encontrar fila/item fora de ControleOnline → ignorar e reportar `OUT_OF_SCOPE`.
 
 ## Workflow
 
@@ -51,7 +51,7 @@ Ao concluir, deixe claro:
 
 ## Board / Project #1 (hands-on)
 
-Todo agent, em qualquer papel, ao **criar** ou **capturar** issue **ou PR** deve garantir associacao ao Project #1 da org operacional do escopo Frethical (ver `config/ecosystem.config.json`; nunca org fora de Frethical) **na mesma hora**, com Status coerente. Tudo e Project #1. Item solto e desvio; falha de vinculo deve ser registrada. Ver `agents/skills/shared/operations/issue-queue-discovery.md`.
+Todo agent, em qualquer papel, ao **criar** ou **capturar** issue **ou PR** deve garantir associacao ao Project #1 da org operacional do escopo ControleOnline (ver `config/ecosystem.config.json`; nunca org fora de ControleOnline) **na mesma hora**, com Status coerente. Tudo e Project #1. Item solto e desvio; falha de vinculo deve ser registrada. Ver `agents/skills/shared/operations/issue-queue-discovery.md`.
 
 ## Quality Bar
 

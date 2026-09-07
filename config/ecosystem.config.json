@@ -1,11 +1,11 @@
 {
   "$schema": "./ecosystem.config.schema.json",
-  "description": "Valores canônicos. Escopo operacional de mutação: SOMENTE org Frethical (https://github.com/Frethical/). Tokens/secrets NÃO entram neste arquivo.",
+  "description": "Valores canônicos. Escopo operacional de mutação: SOMENTE org ControleOnline (https://github.com/ControleOnline/). Tokens/secrets NÃO entram neste arquivo.",
   "owner": {
     "placeholder": "<OWNER>",
     "env": "OWNER",
     "value": "ControleOnline",
-    "description": "Organizacao legada de referencia; mutações operacionais de produto SO em Frethical. Ver allowed_scope."
+      "description": "Organizacao canônica de referência e mutação operacional. Ver allowed_scope."
   },
   "github": {
     "token_env": [
@@ -21,14 +21,13 @@
     "product_repositories": {
       "env": "PRODUCT_REPOSITORIES",
       "value": [
-        "Frethical/frethical",
-        "Frethical/frethical-app",
-        "Frethical/bid-backend",
-        "Frethical/bid-front",
-        "Frethical/site-frethical",
-        "Frethical/agents-mcp"
+        "ControleOnline/agents-mcp",
+        "ControleOnline/app-community",
+        "ControleOnline/api-community",
+        "ControleOnline/ui-common",
+        "ControleOnline/ui-tests"
       ],
-      "description": "Repositorios de produto no escopo permitido (org Frethical apenas)."
+      "description": "Repositorios no escopo permitido (org ControleOnline apenas)."
     }
   },
   "project": {
@@ -99,9 +98,9 @@
   },
   "allowed_scope": {
     "orgs": [
-      "Frethical"
+      "ControleOnline"
     ],
-    "rule": "Único escopo permitido para comentar, alterar, rotular, abrir issues/PRs ou solicitações. Fora de Frethical/* = OUT_OF_SCOPE.",
+    "rule": "Único escopo permitido para comentar, alterar, rotular, abrir issues/PRs ou solicitações. Fora de ControleOnline/* = OUT_OF_SCOPE.",
     "exception": "Governança estrutural em agents-mcp."
   }
 }

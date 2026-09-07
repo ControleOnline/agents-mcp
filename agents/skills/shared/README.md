@@ -4,11 +4,11 @@ Esta biblioteca cobre as skills compartilhadas do ecossistema.
 
 ## Ecosystem Centrality
 
-Trate `agents-mcp` (preferir `Frethical/agents-mcp`) como a fonte primaria para agents, runners, ownership, handoffs e regras estruturais do fluxo.
+Trate `ControleOnline/agents-mcp` como a fonte primaria para agents, runners, ownership, handoffs e regras estruturais do fluxo.
 
 ## Escopo operacional permitido
 
-**Único escopo permitido para mutações:** org [`Frethical`](https://github.com/Frethical/). Proibido comentar, alterar, rotular ou solicitar fora de `Frethical/*`. Fora = `OUT_OF_SCOPE`.
+**Único escopo permitido para mutações:** org [`ControleOnline`](https://github.com/ControleOnline/). Proibido comentar, alterar, rotular ou solicitar fora de `ControleOnline/*`. Fora = `OUT_OF_SCOPE`.
 
 ## Task-First Policy
 
@@ -23,14 +23,13 @@ Toda solicitacao precisa estar vinculada a pelo menos uma task ou issue valida n
 
 ## Priority Projects Policy
 
-Somente org `Frethical`:
+Somente org `ControleOnline`:
 
-- `Frethical/frethical`
-- `Frethical/frethical-app`
-- `Frethical/bid-backend`
-- `Frethical/bid-front`
-- `Frethical/site-frethical`
-- `Frethical/agents-mcp`
+- `ControleOnline/agents-mcp`
+- `ControleOnline/app-community`
+- `ControleOnline/api-community`
+- `ControleOnline/ui-common`
+- `ControleOnline/ui-tests`
 
 ## Agent Delegation Policy
 
