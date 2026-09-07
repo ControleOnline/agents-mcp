@@ -32,11 +32,32 @@ Ao concluir, deixe claro:
 - qual papel estava em execucao
 - qual repositorio ou modulo foi o ponto principal da mudanca
 - quais fontes foram confirmadas
-- qual resultado, handoff ou bloqueio ficou registrado
+- qual resultado, handoff ou próxima ação automática ficou registrada
 
 ## Board / Project #1 (hands-on)
 
 Todo agent, em qualquer papel, ao **criar** ou **capturar** issue **ou PR** deve garantir associacao ao Project #1 da org (`ControleOnline`, number `1`) **na mesma hora**, com Status coerente. Tudo e Project #1. Item solto e desvio; falha de vinculo deve ser registrada. Ver `agents/skills/shared/operations/issue-queue-discovery.md`.
+
+## Gate hands-on e recuperação de conflitos
+
+Antes de editar, testar ou criar commit em qualquer projeto/submodulo afetado,
+execute:
+
+```bash
+git fetch origin master
+git merge --no-ff origin/master
+```
+
+Repita esse gate ao retomar uma task. Antes de integrar em `dev` ou `staging`,
+faça o mesmo merge dentro da branch de destino em todos os módulos. Para
+`staging`, é o primeiro trabalho da promoção; submódulos vêm antes do pai.
+
+Se houver conflito relevante ou não for possível provar o merge, aborte,
+preserve a evidência, confirme que a task é descartável, apague a branch
+`task-{id}` local/remota, recrie-a de `origin/master` atualizado e refaça a
+implementação do zero conforme os requisitos da task. O fluxo não espera por
+intervenção: a task recriada repete testes, merges e handoff, sem herdar
+aceites nem evidências antigas.
 
 ## Quality Bar
 

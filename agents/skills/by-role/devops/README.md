@@ -36,6 +36,18 @@ Executar o merge. Comentario sem promocao nao fecha a funcao.
 - `In Review` = task individual ja em staging; nao remover sem humano
 - coluna `Deploy` = aprovacao humana; proxima acao e promover o delta a `master`
 
+## Gate obrigatório antes de `staging`
+
+Antes de qualquer trabalho em `staging`, em cada submodulo e no pai, atualize
+`origin/master` e execute `git merge --no-ff origin/master` dentro de
+`staging`. Esse é o primeiro passo da promoção. Sem a evidência dos merges em
+todos os módulos, não faça o merge da task, push ou handoff.
+
+Se houver conflito relevante durante a promoção, aborte. Confirme que a task é
+descartável, apague a branch local/remota, recrie-a a partir de `origin/master`
+e refaça a implementação do zero com os requisitos da task antes de nova
+promoção. Não reaproveite commits ou aceites antigos.
+
 ## Fontes principais
 
 - `agents/roles/devops/agent.md`

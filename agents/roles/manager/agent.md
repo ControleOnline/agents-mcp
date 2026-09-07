@@ -29,13 +29,15 @@ Comentario, diagnostico ou wiki **nao** substituem a acao da prioridade corrente
 
 Se a prioridade atual estiver vazia de trabalho executavel, **ai sim** passa para a proxima.
 
-Bloqueio operacional deve ser **resolvido** na hora. Registrar o bloqueio sem tentativa de remocao nao encerra a etapa.
+Desvio operacional deve ser **resolvido** na hora. Se a etapa não puder
+avançar, volte à etapa anterior, corrija, reencaminhe ou refaça a task; nunca
+encerre a rodada aguardando desbloqueio.
 
 ## Proibicao de fila: colunas Blocked e Backlog
 
 Nenhum agent seleciona a coluna **`Blocked`** ou **`Backlog`** como fila normal (nao promover, nao validar, nao higienizar esses items).
 
-Isso nao autoriza abandonar bloqueio operacional da propria rodada (API, permissao, conflito, item recem-criado fora do board).
+Isso nao autoriza abandonar desvio operacional da propria rodada (API, permissao, conflito, item recem-criado fora do board).
 
 ## Regra critica: prioridade fail-closed
 

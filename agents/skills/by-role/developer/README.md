@@ -29,6 +29,13 @@ No Full Pipeline / Manager este papel e a **Prioridade 5**. Higiene e P6.
 ## Regras de execucao
 
 - siga `agents/skills/shared/github/github-flow.md`
+- antes de editar, testar ou commitar, faça `git fetch origin master` e
+  `git merge --no-ff origin/master` na task; antes de integrar em `dev`, faça
+  o mesmo merge em `dev` em todos os módulos;
+- em conflito relevante, aborte, confirme que a task é descartável, apague
+  `task-{id}` local/remota, recrie-a de `origin/master` e refaça a implementação
+  do zero com os requisitos da task; não faça commit, push ou handoff da branch
+  conflitante;
 - investigacao com acao segura no escopo → implemente na mesma rodada
 - handoff por labels `agent:qa` + `agent:security` + `agent:design` + `agent:ux` e evidencia, **nao por PR**
 - apos merge em `dev`, a revisao dos validadores usa essa evidencia

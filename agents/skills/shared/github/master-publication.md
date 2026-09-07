@@ -12,7 +12,7 @@ já integrado.
 
 Se houver conflito amplo ou divergência que impeça revisar o delta, aborte a
 operação. Após confirmar que a branch de task pode ser descartada, apague-a,
-recrie-a do `master` remoto atualizado e reaplique a correção do zero; depois
+recrie-a de `origin/master` atualizado e reaplique a correção do zero; depois
 repita os merges/PRs e os testes de `dev`, `staging` e `master`. Nunca contorne
 conflito com force-push, gitlink direto, SHA isolado ou escolha cega de lado.
 Ao recriar a task, retorne-a para `Working`, remova decisões/aceites herdados e

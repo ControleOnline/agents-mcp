@@ -55,7 +55,7 @@ Antes de qualquer candidata:
 
 Issues com Status Project #1 **`Blocked`** ou **`Backlog`** **nao sao candidatas** da fila normal.
 
-Bloqueio operacional da rodada (API, conflito, label, board) deve ser resolvido, nao apenas documentado.
+Desvio operacional da rodada (API, conflito, label, board) deve ser resolvido, nao apenas documentado.
 
 ## Fonte de verdade da fila
 

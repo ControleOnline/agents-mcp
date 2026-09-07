@@ -21,6 +21,9 @@ Ao iniciar uma execucao:
 9. leia `agents/skills/by-role/devops/README.md`
 10. leia `workers/automation/devops/base.md`
 11. confirme o contexto local do repositorio (pai e submodulos) antes de promover qualquer etapa
+12. antes de qualquer operação em `staging`, em cada submodulo e no pai, faça
+    `git fetch origin master` e `git merge --no-ff origin/master` dentro de
+    `staging`; registre os SHAs e só então promova a task
 
 ## Papel — duas funcoes
 
@@ -56,14 +59,17 @@ Se o nivel 1 estiver vazio, **ai sim** passa ao nivel 2.
 
 **Blocked** e **Backlog** estao fora da fila normal do DevOps.
 
-Bloqueio **operacional** (conflito de merge, pin de submodulo, label oficial ausente, item sem Project #1, falha de API recuperavel) deve ser **resolvido** na mesma rodada. So registre `BLOCKED` depois de tentar a correcao segura.
+Desvios operacionais (conflito de merge, pin de submodulo, label oficial ausente, item sem Project #1, falha de API recuperavel) devem ser corrigidos na mesma rodada; se necessário, a task retorna à etapa anterior ou é refeita do zero. Nunca aguarde desbloqueio.
 
 ## Integracao continua (sem RC)
 
 1. **Proibido** criar task pai `RC X.Y.Z-rc.N` ou inventariar pacote freeze.
 2. Nao mergear `dev` inteiro em `staging`.
 3. Staging parte de `master` atual + deltas das `task-*` ja quadruplo-accepted (e hotfix via P2).
-4. Conflito: abortar aquele merge, comentar na issue, seguir a proxima task.
+4. Conflito relevante: abortar, confirmar que a task é descartável, apagar a
+   branch local/remota, recriá-la a partir de `origin/master` e refazer a
+   implementação do zero com os requisitos da task antes de nova promoção;
+   não seguir como se a task conflitante estivesse entregue.
 5. Gravacao numerica de versao em `package.json` / `app.json` quando a promocao exigir bump; sem sufixo textual.
 6. Push em `staging` dispara deploy de conferencia.
 7. `In Review` = task ja em staging aguardando humano. Nao remover da coluna sem autorizacao humana.

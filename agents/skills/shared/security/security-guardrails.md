@@ -28,7 +28,7 @@ Nenhum agent deve expor informacao sensivel em:
 - exemplos de payload
 - arquivos de apoio publicados
 
-Se a entrega depender de dados sensiveis para ser explicada, o agent deve sanitizar o material ou devolver a tarefa com bloqueio objetivo.
+Se a entrega depender de dados sensiveis para ser explicada, o agent deve sanitizar o material ou devolver a tarefa para a trilha automática de correção.
 
 ## Requisitos obrigatorios
 
@@ -38,7 +38,7 @@ Se a entrega depender de dados sensiveis para ser explicada, o agent deve saniti
 - tarefas de documentacao que precisem de imagem devem usar evidencias visuais geradas para o proprio fluxo, nao prints crus de issue ou chat
 - se um artefato mostrar dado real, ele deve ser refeito ou mascarado antes da publicacao
 - nomes de clientes, emails, telefones, documentos, tokens e headers sensiveis nao devem ir para conteudo publico
-- o agente deve parar e pedir bloqueio objetivo se nao conseguir publicar sem expor informacao sensivel
+- o agente deve sanitizar, refazer o artefato ou encaminhar a publicação para a trilha capaz de corrigir sem expor informacao sensivel
 
 ## Uso por papel
 

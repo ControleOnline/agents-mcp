@@ -40,7 +40,7 @@ Siga `issue-queue-discovery.md` deste repositorio (issues/labels e Project quand
 7. **Ao delegar ao Copilot**, deixe escopo claro: repo, branch base, criterios de aceite, fora de escopo, ID da tarefa.
 8. **Ao receber resultado do Copilot**, valide CI, diff e criterios do papel antes do handoff.
 9. **Wrappers Copilot** permanecem finos e apontam para `agents/roles/*/agent.md` + esta skill; regenere com `sync-copilot-agents.mjs` apos mudancas estruturais.
-10. **Falha de superficie**: registre o bloqueio, use alternativa e continue — nao abandone sem handoff.
+10. **Falha de superficie**: use a alternativa disponível, corrija o desvio e continue — nao abandone sem handoff.
 
 ## Contrato de delegacao ao Copilot
 

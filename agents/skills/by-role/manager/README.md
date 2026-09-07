@@ -2,7 +2,7 @@
 
 Em **qualquer** prioridade (incluindo P6 higiene): **nao usar** issues/PRs com Status **`Blocked`** ou **`Backlog`** como fila.
 
-Bloqueio operacional da rodada (API, conflito, label, board) deve ser resolvido, nao apenas documentado.
+Desvio operacional da rodada (API, conflito, label, board) deve ser resolvido, nao apenas documentado.
 
 # Manager Skills
 
@@ -37,13 +37,13 @@ Excecao: P1 so com gate humano de Deploy → `P1_SKIPPED_HUMAN_DEPLOY` e continu
 
 Ordem: QA → Security → Design → UX.
 
-Enquanto existir qualquer um desses elegivel sem decisao final (`:accepted` / `:rejected`), P5 permanece bloqueada e DevOps nao promove task comum.
+Enquanto existir qualquer um desses elegivel sem decisao final (`:accepted` / `:rejected`), P5 aguarda a decisão automática dos validadores e DevOps nao promove task comum.
 
 Agendamento Manager executa o validador diretamente quando o runtime puder; senao `BLOCKED` em P4.
 
 ## Prioridade 5 - Developer
 
-Enquanto existir issue elegivel de Developer, P6 permanece bloqueada.
+Enquanto existir issue elegivel de Developer, P6 permanece aguardando a conclusão da prioridade P5.
 
 Agendamento Manager executa o papel Developer diretamente quando o runtime puder; senao `BLOCKED` em P5. Nao use higiene como fallback.
 

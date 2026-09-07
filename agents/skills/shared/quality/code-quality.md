@@ -32,7 +32,7 @@ Se houver conflito entre um AGENTS local e esta skill para criterios de qualidad
 - qualquer mudanca funcional deve ter testes automatizados adequados ao risco
 - a ausencia de smoke test bloqueia a aprovacao de UI, fluxo visual ou contrato de navegador
 - a ausencia de teste automatizado adequado bloqueia a aprovacao de mudanca funcional
-- lint, testes e smoke devem ser executados ou explicitamente bloqueados com justificativa objetiva
+- lint, testes e smoke devem ser executados; falhas devem gerar correção, retry ou reencaminhamento automático
 - o resultado da validacao deve ser descrito com o escopo real do que foi coberto
 - em smoke test de UI/browser, as capturas, prints, screenshots ou artefatos devem cobrir **todo o fluxo** por etapa; evidencia parcial bloqueia QA
 - o manifesto ou comentario do smoke deve permitir reconstruir a jornada sem interpretacao verbal: `fluxo: <id>`, pagina wiki do fluxo, etapa, passos executados, prints por passo e resultado final
@@ -76,7 +76,7 @@ Uma entrega so avanca quando:
 
 - a base ficou modularizada
 - os arquivos e componentes ficaram pequenos o suficiente
-- os testes relevantes existem e passam, ou existe bloqueio externo documentado
+- os testes relevantes existem e passam; falhas externas devem seguir a trilha automática de recuperação
 - os smoke tests existem para fluxos visiveis no browser
 - a evidência cobre o comportamento que mudou e, quando houver UI/browser, contém prints por etapa do fluxo inteiro
 

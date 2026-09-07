@@ -28,8 +28,8 @@ test('manager is fail-closed before hygiene', () => {
   assert.match(managerAgent, /P5 so inicia quando P1 vazia.*P2 vazia.*P3 vazia.*P4 sem/is);
   assert.match(managerAgent, /P6 so inicia quando P1 vazia.*P2 vazia.*P3 vazia.*P4 sem.*P5 sem/is);
   assert.match(managerAgent, /Nao use higiene nem documentacao de produto como fallback/i);
-  assert.match(managerSkill, /P5 permanece bloqueada/i);
-  assert.match(managerSkill, /P6 permanece bloqueada/i);
+  assert.match(managerSkill, /P5 aguarda a decisão automática dos validadores/i);
+  assert.match(managerSkill, /P6 permanece aguardando a conclusão da prioridade P5/i);
 });
 
 test('manager priority keeps DevOps before Hotfix and Developer before hygiene', () => {
@@ -100,7 +100,7 @@ test('In Review is protected as frozen RC inventory', () => {
   assert.match(managerAgent, /In Review.*task ja em staging aguardando conferencia humana/is);
   assert.match(managerAgent, /Nao remover da coluna/i);
   assert.match(managerSkill, /In Review.*task ja em staging/i);
-  assert.match(githubFlow, /In Review[\s\S]*Nenhum Manager\/higiene remove da coluna/is);
+  assert.match(githubFlow, /Nenhum agent move tasks para dentro ou para fora desta\s+coluna/is);
 });
 
 test('generic project_status runner refuses automatic In Review removal', () => {

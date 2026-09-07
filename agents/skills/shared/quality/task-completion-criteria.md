@@ -10,7 +10,7 @@ Use esta skill para padronizar quando uma tarefa pode ser considerada concluida.
 2. antes de encerrar, confirme que o alvo correto foi identificado
 3. confirme que as checagens aplicaveis ao caso foram executadas
 4. confirme que as acoes corretivas necessarias e seguras foram realizadas, ou explicitamente descartadas com justificativa
-5. se a propria investigacao encontrou problema corrigivel dentro do escopo atual, confirme que essa correcao foi executada ou que existe bloqueio verificavel impedindo a execucao
+5. se a propria investigacao encontrou problema corrigivel dentro do escopo atual, confirme que essa correcao foi executada na mesma rodada
 6. nao aceite comentario, hipotese ou diagnostico como substituto de execucao quando ainda houver acao segura cabivel na etapa atual
 7. confirme que o resultado foi registrado no controle ou historico operacional adequado
 8. deixe claras as pendencias, riscos residuais e a proxima execucao ou validacao necessaria, quando houver
