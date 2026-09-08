@@ -47,11 +47,16 @@ devem ser corrigidos, reencaminhados ou registrados com `NEXT_ACTION`.
 
 Se falhar por erro operacional **depois** de tentar corrigir, registre e encerre nessa prioridade.
 
-### Excecao P1 — gate humano de Deploy
+### Autorizacao explicita de publicacao — coluna Deploy
 
-P1 **nao encerra a rodada** quando a unica barreira for aprovacao humana. Registre `P1_SKIPPED_HUMAN_DEPLOY` (alias `P2_SKIPPED_HUMAN_DEPLOY`) e continue P2→P6.
+A coluna **`Deploy`** e a autorizacao humana explicita para publicar o delta em
+`master`. Se o item esta em `Deploy`, o Manager/DevOps deve executar a
+publicacao; nao existe uma aprovacao humana adicional a aguardar e nao se deve
+registrar um marcador de salto de P1 por suposta aprovacao pendente.
 
-**Proibido montar RC.**
+Se a publicacao falhar por um problema operacional, tente a correcao objetiva e,
+persistindo a falha, registre `NEXT_ACTION` com a evidencia e encerre nessa
+prioridade conforme o contrato de entrega. **Proibido montar RC.**
 
 ## Prioridade 1 - DevOps
 
@@ -66,7 +71,7 @@ Fonte: `agents/roles/devops/agent.md`.
 
 ## Prioridade 2 - Hotfix
 
-So comeca se P1 nao tiver acao executavel (ou so gate humano).
+So comeca se P1 nao tiver acao executavel.
 
 Task `hotfix` com acao elegivel de QA, Security, Design, UX ou promocao hotfix → `staging` / `In Review`.
 
@@ -109,7 +114,7 @@ Siga `agents/skills/by-role/manager/README.md`.
 
 ## Contrato de conclusao
 
-Prioridade(s) tentada(s), `P1_SKIPPED_HUMAN_DEPLOY` se houver, evidencia, acao executada, marcador `DELIVERY_PROOF`, `DONE` ou `NEXT_ACTION`. `DONE` exige prova remota; `NEXT_ACTION` exige registrar o proximo responsavel e a acao concreta.
+Prioridade(s) tentada(s), evidencia, acao executada, marcador `DELIVERY_PROOF`, `DONE` ou `NEXT_ACTION`. `DONE` exige prova remota; `NEXT_ACTION` exige registrar o proximo responsavel e a acao concreta.
 
 ## Fontes obrigatorias
 

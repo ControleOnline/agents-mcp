@@ -197,7 +197,7 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
 1. **P1 DevOps**
    - Publicar todas as tasks em `Deploy` → `master` (deltas individuais, sem RC)
    - Senao, promover todas as tasks quadruplo-accepted → `staging` + `In Review`
-   - Gate humano de Deploy **nao** encerra a rodada (`P1_SKIPPED_HUMAN_DEPLOY`)
+   - A coluna `Deploy` e autorizacao humana explicita de publicacao em `master`; o Manager/DevOps executa o delta sem aguardar aprovacao adicional
    - **Proibido montar RC**
 2. **P2 Hotfix**
    - Validar ou promover task `hotfix` ja implementada (QA / Security / Design / UX / DevOps → staging)

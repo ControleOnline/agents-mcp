@@ -4,6 +4,10 @@ import test from 'node:test';
 
 const managerSkill = fs.readFileSync('agents/skills/by-role/manager/README.md', 'utf8');
 const managerAgent = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
+const queueDiscovery = fs.readFileSync(
+  'agents/skills/shared/operations/issue-queue-discovery.md',
+  'utf8',
+);
 const workerDoc = fs.readFileSync('agents/skills/shared/operations/manager-worker-copilot.md', 'utf8');
 const qaWorker = fs.readFileSync('.github/actions/workers/qa/action.yml', 'utf8');
 const securityWorker = fs.readFileSync('.github/actions/workers/security/action.yml', 'utf8');
@@ -37,6 +41,13 @@ test('manager prioritizes rejected work before validators and new development', 
   assert.ok(order, 'expected rejection -> validators -> new development -> hygiene order');
   assert.match(managerAgent, /agent:qa:rejected/);
   assert.match(managerAgent, /agent:security:rejected/);
+});
+
+test('Deploy is explicit human publication authorization', () => {
+  assert.match(managerAgent, /coluna \*\*`Deploy`\*\*[\s\S]*autorizacao humana explicita[\s\S]*deve executar/i);
+  assert.doesNotMatch(managerAgent, /P1_SKIPPED_HUMAN_DEPLOY/);
+  assert.match(queueDiscovery, /coluna \*\*`Deploy`\*\*[\s\S]*autorizacao humana explicita[\s\S]*publicar em `master`/i);
+  assert.doesNotMatch(queueDiscovery, /unico bloqueio for gate humano de Deploy/i);
 });
 
 test('rejection recovery includes GitHub workflow and publication repair', () => {
