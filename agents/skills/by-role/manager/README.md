@@ -16,9 +16,10 @@ Ordem resumida:
 1. **DevOps** — sempre primeiro. `Deploy` → `master`; se vazio, quarteto → `staging` + `In Review`. Sem RC.
 2. **Hotfix** — validadores e promocao hotfix → staging.
 3. **Documentacao**
-4. **Validadores** comuns (QA → Security → Design → UX)
-5. **Developer** — exatamente uma issue elegível, depois de P1–P4.
-6. **Higiene** — fallback estrito, somente sem Developer elegível.
+4. **Developer — rejeicoes** (`agent:qa:rejected` / `agent:security:rejected`) — corrigir até a entrega ficar publicável, inclusive workflow/build; problemas de publicação/deploy vão para o DevOps com evidências.
+5. **Validadores** comuns (QA → Security → Design → UX)
+6. **Developer — novos desenvolvimentos** — exatamente uma issue elegível.
+7. **Higiene** — fallback estrito, somente sem trabalho elegível em P1–P6.
 
 Toda rodada executa. Documentacao nao e fallback de P1/P2.
 
@@ -36,8 +37,9 @@ Não repita uma issue com os mesmos SHAs, labels, coluna e evidência da rodada
 anterior. Sem delta novo, o resultado é `NEXT_ACTION`.
 
 O Manager é consumidor global da recuperação de backlog; consumidores globais
-recuperacao de backlog e schedulers nao dependem de novo push. P5 (Developer)
-permanece bloqueada enquanto houver fila elegível, e P6 é fallback estrito.
+recuperacao de backlog e schedulers nao dependem de novo push. P4 (rejeicoes)
+tem precedencia sobre P5 (validadores) e P6 (novos desenvolvimentos). P7 é
+fallback estrito.
 
 ## Gate de staging
 

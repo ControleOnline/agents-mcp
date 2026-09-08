@@ -176,11 +176,12 @@ Ordem:
 1. P1 DevOps
 2. P2 Hotfix
 3. P3 Documentacao
-4. P4 Validadores (QA → Security → Design → UX)
-5. P5 Developer
-6. P6 Higiene residual + board
+4. P4 Developer — rejeicoes de QA/Security
+5. P5 Validadores (QA → Security → Design → UX)
+6. P6 Developer — novas tarefas
+7. P7 Higiene residual + board
 
-O Manager, ao chegar em P5 sem trabalho P1–P4 executavel, **le e executa** `agents/roles/developer/agent.md` sobre exatamente uma issue elegivel. Nao inventa rito proprio de codigo.
+O Manager, ao chegar em P4 ou P6 com trabalho elegivel, **le e executa** `agents/roles/developer/agent.md` sobre exatamente uma issue elegivel. Em P4, somente corrige rejeicoes de QA/Security; em P6, captura novos desenvolvimentos. Nao inventa rito proprio de codigo.
 
 Developer executado de forma standalone (prompt direto no papel) continua podendo capturar a propria fila; isso nao cria um segundo pipeline nem autoriza higiene a rodar na frente da implementacao.
 
@@ -198,17 +199,22 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
    - **Proibido montar RC**
 2. **P2 Hotfix**
    - Validar ou promover task `hotfix` ja implementada (QA / Security / Design / UX / DevOps → staging)
-   - Implementacao de hotfix e P5 Developer, nao P2
+   - Implementacao de hotfix e P6 Developer, nao P2
 3. **P3 Documentacao**
    - Technical Documenter
    - Tutorial Assistant
-4. **P4 Validadores**
+4. **P4 Developer — rejeicoes**
+   - Corrigir issues com `agent:qa:rejected` ou `agent:security:rejected`
+   - A correcao vai ate a entrega publicavel: o Developer deve resolver falhas de workflow, Actions, build, branch, merge ou evidencia que impeçam a entrega
+   - Se o workflow/build estiver falhando, deve investigar, corrigir, repetir a execucao, rerotear ou reconstruir a etapa; se o problema for a publicacao/deploy, deve encaminhar ao DevOps com evidencia objetiva
+   - Uma correcao por rodada, antes de qualquer nova validacao
+5. **P5 Validadores**
    - QA → Security → Design → UX
-5. **P5 Developer**
+6. **P6 Developer — novos desenvolvimentos**
    - Exatamente uma issue elegivel
    - Branch `task-{id}` a partir de `master`, merge em `dev`, handoff dos quatro validadores
-6. **P6 Higiene residual + board**
-   - Somente com P1–P5 sem acao executavel
+7. **P7 Higiene residual + board**
+   - Somente com P1–P6 sem acao executavel
 
 ### Regras deste mode
 
@@ -216,8 +222,8 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
 - Dentro da mesma prioridade funcional, selecione a task elegivel mais antiga por `createdAt` crescente; em empate, use o menor numero da issue.
 - `updatedAt` serve apenas como evidencia de atividade e nunca reposiciona uma task na fila.
 - SysAdmin **nao** participa deste mode (deve continuar rodando em paralelo em automacao separada).
-- **Developer participa deste mode como P5.** Nao avance para P6 enquanto existir issue elegivel de Developer.
-- Falha operacional em P5 nao autoriza fallback para higiene.
+- **Developer participa deste mode como P4 para rejeicoes e P6 para novos desenvolvimentos.** Nao avance para P5 enquanto existir rejeicao elegivel; nao avance para P7 enquanto existir trabalho elegivel em P1–P6.
+- Falha operacional em P4 ou P6 nao autoriza fallback para higiene.
 - Sempre confirme o estado real no GitHub / Project #1 antes de agir.
 - Siga integralmente as fontes canonicas de cada papel (`agents/roles/*/agent.md` e skills referenciadas).
 - Colunas `Blocked` e `Backlog` sao exclusivamente humanas.

@@ -49,7 +49,7 @@ Se falhar por erro operacional **depois** de tentar corrigir, registre e encerre
 
 ### Excecao P1 — gate humano de Deploy
 
-P1 **nao encerra a rodada** quando a unica barreira for aprovacao humana. Registre `P1_SKIPPED_HUMAN_DEPLOY` (alias `P2_SKIPPED_HUMAN_DEPLOY`) e continue P2→P5.
+P1 **nao encerra a rodada** quando a unica barreira for aprovacao humana. Registre `P1_SKIPPED_HUMAN_DEPLOY` (alias `P2_SKIPPED_HUMAN_DEPLOY`) e continue P2→P6.
 
 **Proibido montar RC.**
 
@@ -77,19 +77,33 @@ Hotfix nao autoriza pular coluna `Deploy` para `master`.
 1. Technical Documenter.
 2. Tutorial Assistant.
 
-## Prioridade 4 - Validadores
+## Prioridade 4 - Developer: rejeicoes
+
+Corrija primeiro issues abertas com `agent:qa:rejected` ou
+`agent:security:rejected`. Esta prioridade trata somente devolucoes dos
+validadores e tem precedencia sobre novas capturas de QA, Security ou
+Developer. A responsabilidade do Developer vai ate a entrega publicavel:
+inclui codigo, testes, branches, merges, GitHub Actions, workflow e build. Se
+workflow ou build falhar no GitHub, o Developer deve investigar e corrigir,
+repetir a execucao, rerotear ou reconstruir a etapa. Se o problema for a
+publicacao/deploy, deve encaminhar ao DevOps com evidencia objetiva; nao pode
+simplesmente devolver a task por falha operacional.
+
+## Prioridade 5 - Validadores
 
 QA → Security → Design → UX, enquanto houver fila sem `:accepted`/`:rejected`.
 
-## Prioridade 5 - Developer
+## Prioridade 6 - Developer: novos desenvolvimentos
 
-P5 (Developer) so pode iniciar quando P1–P4 nao tiverem acao executavel.
+P6 (Developer) so pode iniciar quando P1–P5 nao tiverem acao executavel.
 Leia e execute agents/roles/developer/agent.md sobre exatamente uma issue.
-Nunca use Higiene (P6) como fallback.
+Nesta prioridade entram `hotfix`, `bug`, `enhancement`, `feature` e demais
+tipos que nao sejam rejeicoes de QA/Security.
+Nunca use Higiene (P7) como fallback.
 
-## Prioridade 6 - Higiene residual + board
+## Prioridade 7 - Higiene residual + board
 
-P6 e fallback estrito.
+P7 e fallback estrito.
 
 Siga `agents/skills/by-role/manager/README.md`.
 

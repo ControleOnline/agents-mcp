@@ -21,11 +21,35 @@ const completionLabels = [
 
 test('manager is fail-closed before hygiene', () => {
   assert.match(managerAgent, /prioridade e fail-closed/i);
-  assert.match(managerAgent, /P6 e fallback estrito/i);
-  assert.match(managerAgent, /P5 \(Developer\) so pode iniciar/i);
-  assert.match(managerAgent, /nunca use higiene \(P6\) como fallback/i);
-  assert.match(managerAgent, /Prioridade 5 - Developer/i);
-  assert.match(managerAgent, /Prioridade 6 - Higiene residual/i);
+  assert.match(managerAgent, /P7 e fallback estrito/i);
+  assert.match(managerAgent, /P6 \(Developer\) so pode iniciar/i);
+  assert.match(managerAgent, /nunca use Higiene \(P7\) como fallback/i);
+  assert.match(managerAgent, /Prioridade 4 - Developer: rejeicoes/i);
+  assert.match(managerAgent, /Prioridade 5 - Validadores/i);
+  assert.match(managerAgent, /Prioridade 6 - Developer: novos desenvolvimentos/i);
+  assert.match(managerAgent, /Prioridade 7 - Higiene residual/i);
+});
+
+test('manager prioritizes rejected work before validators and new development', () => {
+  const order = managerAgent.match(
+    /Prioridade 4 - Developer: rejeicoes[\s\S]*Prioridade 5 - Validadores[\s\S]*Prioridade 6 - Developer: novos desenvolvimentos[\s\S]*Prioridade 7 - Higiene residual/,
+  );
+  assert.ok(order, 'expected rejection -> validators -> new development -> hygiene order');
+  assert.match(managerAgent, /agent:qa:rejected/);
+  assert.match(managerAgent, /agent:security:rejected/);
+});
+
+test('rejection recovery includes GitHub workflow and publication repair', () => {
+  assert.match(managerAgent, /responsabilidade do Developer vai ate a entrega publicavel/i);
+  assert.match(managerAgent, /GitHub Actions.*workflow.*build/is);
+  assert.match(managerAgent, /repetir a execucao, rerotear ou reconstruir/is);
+  assert.match(managerAgent, /publicacao\/deploy.*DevOps/is);
+
+  const developerAgent = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
+  assert.match(developerAgent, /Obrigacao reforcada para rejeicoes/i);
+  assert.match(developerAgent, /workflow.*build/is);
+  assert.match(developerAgent, /publicacao\/deploy.*DevOps/is);
+  assert.match(developerAgent, /Nao mascare\s+falhas/i);
 });
 
 test('manager cannot close a round with commentary-only progress', () => {
@@ -53,7 +77,7 @@ test('scheduled managers recover global backlog independently of push', () => {
   assert.match(managerAgent, /Codex, Grok.*scheduler/is);
   assert.match(managerAgent, /nao dependem de novo push/i);
   assert.match(managerSkill, /consumidores globais.*recuperacao de backlog/is);
-  assert.match(managerAgent, /QA.*Security.*P5|Developer/is);
+  assert.match(managerAgent, /QA.*Security.*P6|Developer/is);
 });
 
 test('workers remain push scoped and do not become backlog schedulers', () => {

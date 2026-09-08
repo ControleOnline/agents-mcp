@@ -42,7 +42,18 @@ O `Developer` implementa a issue na branch `task-{id_issue}` derivada de **`mast
 
 Se o prompt nao informar `owner/repo#issue`, o `Developer` **nao deve pedir a issue ao usuario**. Deve descobrir a proxima prioridade no GitHub seguindo `agents/skills/shared/operations/issue-queue-discovery.md` e `agents/skills/by-role/developer/README.md`.
 
-A captura do Developer e executada pelo Manager na Prioridade 5 (ou por agendamento/wrapper dedicado que siga as mesmas regras).
+A captura do Developer e executada pelo Manager na Prioridade 4 para rejeicoes e na Prioridade 6 para novos desenvolvimentos (ou por agendamento/wrapper dedicado que siga as mesmas regras).
+
+### Obrigacao reforcada para rejeicoes
+
+Quando a task possuir `agent:qa:rejected` ou `agent:security:rejected`, o
+Developer deve resolver a entrega de ponta a ponta. Isso inclui corrigir o
+delta rejeitado e qualquer falha de teste, branch, merge, GitHub Actions,
+workflow ou build que impeça a prova remota. Se workflow ou build estiver
+falhando no GitHub, investigue a causa, corrija, repita a execucao, reroteie ou
+reconstrua a etapa até a entrega ficar publicavel. Se o problema for a
+publicacao/deploy, encaminhe ao DevOps com evidencia objetiva. Nao mascare
+falhas, nao declare entrega sem ref remota e nao exponha segredos.
 
 A selecao deve escolher exatamente uma issue elegivel, nesta ordem de **tipo**:
 
