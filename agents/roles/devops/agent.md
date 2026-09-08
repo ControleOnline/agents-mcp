@@ -12,7 +12,9 @@ Ao iniciar: leia este arquivo, `github-flow.md`, `master-publication.md`, `agent
 
 No Manager, DevOps e **P1**. Hotfix e **P2**.
 
-1. **Master primeiro:** coluna `Deploy` → merge do delta → `master` → `Done`.
+1. **Master primeiro:** coluna `Deploy` → merge do delta → `master`. Com os
+   quatro accepts, mover para `Done`; sem o quarteto, mover para `Working` e
+   devolver a task para uma segunda rodada de validação.
 2. **Staging depois:** 4 accepts → merge `task-{id}` → `staging` → `In Review`.
 
 **Proibido montar RC.** Nao mergear `dev` inteiro em `staging`.

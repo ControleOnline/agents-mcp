@@ -62,7 +62,10 @@ prioridade conforme o contrato de entrega. **Proibido montar RC.**
 
 DevOps e **sempre o primeiro**. Duas funcoes, master **antes** de staging:
 
-1. Task na coluna **`Deploy`** → merge do delta → `master` → `Done`.
+1. Task na coluna **`Deploy`** → merge do delta → `master`; com os quatro
+   accepts (`agent:qa:accepted`, `agent:security:accepted`,
+   `agent:design:accepted`, `agent:ux:accepted`) → `Done`; sem o quarteto →
+   `Working` para uma segunda rodada de validação.
 2. Se nao houver Deploy executavel: task com **4 accepts** (`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`) → merge `task-{id}` → `staging` → `In Review`.
 
 Hotfix **nao** entra nesta prioridade.

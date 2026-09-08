@@ -20,8 +20,8 @@ handoff textual ou commit apenas local não são entrega.
    - `Design` registra `agent:design:accepted` ou `agent:design:rejected` (prints de smoke)
    - `UX` registra `agent:ux:accepted` ou `agent:ux:rejected` (jornada nos prints)
    - quando a task tiver as **quatro** aprovacoes, `DevOps` promove **somente** `task-{id}` → `staging` e move a task para **`In Review`**
-   - humano confere staging e move a task para **`Deploy`**
-   - item em **`Deploy`** entra **sozinho** em `master`: `DevOps` mescla o delta `staging`/`task-{id}` → `master` e move para **`Done`**
+   - humano move a task para **`Deploy`**, com ou sem o quarteto; a mudança é a autorização explícita de publicação
+   - item em **`Deploy`** entra **sozinho** em `master`: `DevOps` mescla o delta `staging`/`task-{id}` → `master`; com o quarteto move para **`Done`**, sem o quarteto move para **`Working`** para segunda rodada de validação
    - documentacao (`tutorial-assistant` / `technical-documenter`): no publish (fail-closed) aplicar labels de solicitacao ausentes; so os documentadores marcam `:done`
 6. **Pulo de etapa ja concluida:** se o passo ja estiver feito (evidencia no GitHub), pule, avance e comente a justificativa. QA/Security/Design/UX ainda registram aceite/recusa da propria etapa.
 7. qualquer etapa pode abrir task paralela de infraestrutura com `agent:sysadmin`; nunca substitui a tarefa-mae

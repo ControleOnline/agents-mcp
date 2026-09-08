@@ -13,7 +13,7 @@ exclusivamente humanos; o fluxo deve corrigir, reencaminhar ou registrar
 
 Ordem resumida:
 
-1. **DevOps** — sempre primeiro. `Deploy` → `master`; se vazio, quarteto → `staging` + `In Review`. Sem RC.
+1. **DevOps** — sempre primeiro. `Deploy` → `master`; com quarteto → `Done`, sem quarteto → `Working` para segunda rodada; se vazio, quarteto → `staging` + `In Review`. Sem RC.
 2. **Hotfix** — validadores e promocao hotfix → staging.
 3. **Documentacao**
 4. **Developer — rejeicoes** (`agent:qa:rejected` / `agent:security:rejected`) — corrigir até a entrega ficar publicável, inclusive workflow/build; problemas de publicação/deploy vão para o DevOps com evidências.
@@ -54,7 +54,9 @@ aplicável.
 
 Prioridade tentada, acao executada, `DELIVERY_PROOF`, `DONE` ou `NEXT_ACTION`.
 Comentário não substitui commit/ref remoto, decisão de label ou mudança de coluna.
-Issues closed e itens Done exigem o quarteto completo de aceite.
+Issues closed e itens Done exigem o quarteto completo de aceite. Uma task
+publicada em `master` sem o quarteto permanece aberta e volta para `Working`
+para uma segunda rodada de validacao.
 
 ## Fontes principais
 

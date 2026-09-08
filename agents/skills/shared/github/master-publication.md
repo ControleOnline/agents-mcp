@@ -24,7 +24,7 @@ ela pode voltar a percorrer `In Review`/`Deploy`.
 
 1. Existe um RC aberto com task pai de deploy e subtasks.
 2. O pacote ja esta em **`staging`** (pai + submodulos) com versão **numérica** `X.Y.N` no `package.json` / `app.json` (ex.: `1.5.1`; controle operacional pode ainda referir `RC X.Y.Z-rc.N`).
-3. A task pai foi movida por humano para a coluna **`Deploy`**.
+3. A task pai foi movida por humano para a coluna **`Deploy`**, com ou sem os quatro accepts; essa mudança é a autorização explícita de publicação.
 4. Nao ha segundo RC concorrente.
 
 ## Workflow
@@ -46,7 +46,7 @@ ela pode voltar a percorrer `In Review`/`Deploy`.
 8. depois do merge, **confirme a versão numérica** já presente no pacote (`X.Y.N` em `package.json` e, se existir, `app.json` com `version` igual e `versionCode = MAJOR*10000 + MINOR*100 + PATCH`); **não** existe sufixo textual para remover; tags usam a mesma versão numérica
 9. confirme que `master` recebeu o commit esperado e que o push remoto aconteceu
 10. registre quais repositorios foram promovidos e quais ficaram bloqueados
-11. **obrigatório:** mova a **task pai e todas as filhas/subtasks** do inventário do RC para **`Done`** na mesma passagem (Project #1); não deixe filha atrás do pai
+11. Após a publicação, mova a task para **`Done`** somente se ela possuir os quatro accepts (`agent:qa:accepted`, `agent:security:accepted`, `agent:design:accepted`, `agent:ux:accepted`). Se faltar qualquer accept, mantenha a issue aberta, mova-a para **`Working`** e reative a segunda rodada de validação; não trate a publicação como aceite dos validadores.
 12. **handoff de documentação (obrigatório no publish):** para **cada filha de produto** do inventário que ainda **não** tenha `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done`, aplique as labels de **solicitação** ausentes (`agent:technical-documenter` e/ou `agent:tutorial-assistant`). **Nunca** invente `:done`. Issues só de governança/docs (`agents-mcp` puro) e hotfixes sem delta de UI/API de produto podem ficar isentas com comentário de exceção estrutural. Comente no pai do RC a lista do que recebeu label de docs.
 13. se o projeto principal ficar com conflito, nao force update nem reescreva `master`; registre o bloqueio e pare na fronteira segura
 
@@ -84,7 +84,7 @@ Ao concluir, informe:
 - quais repositorios foram publicados em `master`
 - quais submodulos e o pai foram promovidos
 - quais ficaram bloqueados e por que
-- confirmacao de push remoto e coluna `Done`
+- confirmacao de push remoto e coluna final: `Done` com quarteto; `Working` sem quarteto para segunda validacao
 
 ## Quality Bar
 

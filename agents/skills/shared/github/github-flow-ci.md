@@ -19,7 +19,8 @@ master → task-{id} → merge dev
   → 4x :accepted
   → DevOps merge SOMENTE task-{id} → staging + coluna In Review
   → humano → coluna Deploy
-  → DevOps merge delta → master + Done
+  → DevOps merge delta → master
+  → quatro accepts: Done | sem quarteto: Working + segunda validação
 ```
 
 - Nao criar task pai RC.

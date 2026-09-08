@@ -138,7 +138,7 @@ tasks para `In Review`: essa coluna só é usada após os quatro accepts.
 - `DevOps` publica tasks na coluna **`Deploy`** → `master` (deltas individuais) e, se nao houver Deploy, promove tasks com as **quatro** `:accepted` para `staging` + `In Review`
 - **Proibido montar RC** e criar task pai de RC
 - humano confere staging e move a task para **`Deploy`**
-- `DevOps` promove o delta individual `staging` → `master` e move para **`Done`**
+- `DevOps` promove o delta individual `staging` → `master`; com o quarteto move para **`Done`**, sem o quarteto move para **`Working`** para segunda rodada de validacao
 
 ## Ownership operacional
 
@@ -195,7 +195,7 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
 ### Ordem de prioridade
 
 1. **P1 DevOps**
-   - Publicar todas as tasks em `Deploy` → `master` (deltas individuais, sem RC)
+   - Publicar todas as tasks em `Deploy` → `master` (deltas individuais, sem RC); com quarteto mover para `Done`, sem quarteto voltar para `Working` para segunda validacao
    - Senao, promover todas as tasks quadruplo-accepted → `staging` + `In Review`
    - A coluna `Deploy` e autorizacao humana explicita de publicacao em `master`; o Manager/DevOps executa o delta sem aguardar aprovacao adicional
    - **Proibido montar RC**

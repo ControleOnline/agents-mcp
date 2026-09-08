@@ -50,6 +50,12 @@ test('Deploy is explicit human publication authorization', () => {
   assert.doesNotMatch(queueDiscovery, /unico bloqueio for gate humano de Deploy/i);
 });
 
+test('Deploy publication branches by validator quartet', () => {
+  assert.match(managerAgent, /coluna \*\*`Deploy`\*\*[\s\S]*master[\s\S]*quatro[\s\S]*Done[\s\S]*sem o quarteto[\s\S]*Working[\s\S]*segunda rodada/i);
+  const devopsAgent = fs.readFileSync('agents/roles/devops/agent.md', 'utf8');
+  assert.match(devopsAgent, /coluna `Deploy`[\s\S]*master[\s\S]*quatro accepts[\s\S]*Done[\s\S]*sem o quarteto[\s\S]*Working/i);
+});
+
 test('rejection recovery includes GitHub workflow and publication repair', () => {
   assert.match(managerAgent, /responsabilidade do Developer vai ate a entrega publicavel/i);
   assert.match(managerAgent, /GitHub Actions.*workflow.*build/is);

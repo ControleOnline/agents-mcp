@@ -40,7 +40,9 @@ master
                       └─ DevOps merge somente task-{id} → staging
                            └─ coluna In Review (task individual)
                                 └─ humano → coluna Deploy
-                                     └─ DevOps promove o delta → master → Done
+                                     └─ DevOps promove o delta → master
+                                          ├─ quatro :accepted → Done
+                                          └─ sem quarteto → Working → segunda validação
 ```
 
 ## Etapas já concluídas (pular com justificativa)
@@ -195,11 +197,18 @@ coluna. Se parecer indevida: comentar + `agent:devops` + esperar humano.
 
 ### Publicação (coluna Deploy)
 
-1. Humano move a task para **`Deploy`**.
+1. Humano move a task para **`Deploy`**, com ou sem o quarteto; essa mudança
+   de coluna é a autorização explícita para publicar em `master`.
 2. DevOps aplica o **Gate de atenção redobrada antes de qualquer merge** e
    mescla o delta (`staging` / `task-{id}`) → `master` (pai + submódulos).
-3. Move a task para **`Done`**.
-4. Handoff documental fail-closed (`agent:technical-documenter` / `agent:tutorial-assistant` se faltar `:done`).
+3. Se a task possuir os quatro accepts (`agent:qa:accepted`,
+   `agent:security:accepted`, `agent:design:accepted`, `agent:ux:accepted`),
+   move para **`Done`**.
+4. Se faltar qualquer accept, mantenha a issue aberta, mova para **`Working`**
+   e reative as solicitações dos validadores ainda pendentes para a segunda
+   rodada de validação.
+5. Handoff documental fail-closed (`agent:technical-documenter` /
+   `agent:tutorial-assistant` se faltar `:done`).
 
 Nunca direto a `master` sem coluna `Deploy`, salvo correção estrutural de governança em `agents-mcp`.
 
@@ -234,8 +243,9 @@ master
   └─ task-{id}
        └─ merge task-{id} → dev
             └─ DevOps merge somente task-{id} → staging (sem esperar quádruplo) [P2]
-                 └─ In Review → humano Deploy → delta → master → Done
-                 └─ QA/Security/Design/UX podem concluir depois
+                 └─ In Review → humano Deploy → delta → master
+                      ├─ quatro accepts → Done
+                      └─ sem quarteto → Working → segunda validação
 ```
 
 - Dual-gate **não** bloqueia entrada em `staging` no hotfix.
