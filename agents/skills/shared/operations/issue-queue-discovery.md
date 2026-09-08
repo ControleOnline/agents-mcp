@@ -62,17 +62,18 @@ Issues com Status Project #1 **`Blocked`** ou **`Backlog`** **nao sao candidatas
 
 ## Ownership de colunas por trilha
 
-As colunas **`Ready`** e **`Working`** pertencem exclusivamente ao fluxo de `Developer` e aos validadores (`QA`, `Security`, `Design` e `UX`). Elas nao sao fila de `DevOps`.
+As colunas **`Ready`** e **`Working`** formam a fila operacional compartilhada
+dos agents. Todos priorizam `Working` antes de `Ready`, respeitando o limite
+atual lido no Project #1. O `DevOps` tem uma excecao de ordem: consulta
+**`Deploy`** primeiro e, depois, `Working`.
 
-`DevOps` opera somente em **`Deploy`**, **`In Review`** e **`Done`**. Uma task com `agent:devops` em `Ready` ou `Working` nao deve ser capturada pelo DevOps.
-
-Para o Developer, a capacidade operacional maxima e de **5 tasks simultaneas
-em `Working`**. Consulte primeiro as tasks em `Working` para retomadas; quando
-`Working` estiver abaixo de 5, `Ready` continua elegivel para uma nova captura.
-Quando `Working` atingir 5, nao capture outra task de `Ready` ate uma task sair
-de `Working`. Para os validadores, mantenha a precedencia de suas candidatas
-ativas conforme o papel. Labels, tipo, prioridade, `createdAt` e numero da
-issue so podem ser aplicados depois da filtragem por status.
+Para todos os agentes, leia no Project #1 o limite atual configurado para a
+coluna `Working` antes de capturar trabalho. Consulte primeiro as tasks em
+`Working`; enquanto houver capacidade abaixo do limite lido, `Ready` continua
+elegivel. Quando `Working` atingir o limite, nao capture outra task de `Ready`
+ate uma task sair de `Working`. Para o DevOps, `Deploy` vem antes de
+`Working`; depois de `Deploy`, aplique a mesma regra de capacidade. Nunca fixe
+um numero no agent ou no runner.
 
 ## Fonte de verdade da fila
 

@@ -280,6 +280,15 @@ function writeOutputFile(payload) {
   return outPath;
 }
 
+function getWorkingColumnLimit(project) {
+  const configuredLimit = project?.workingLimit ?? env('DEVELOPER_WORKING_LIMIT');
+  const workingLimit = Number(configuredLimit);
+  if (!Number.isInteger(workingLimit) || workingLimit < 1) {
+    throw new Error('Working column limit is unavailable; read the current Project #1 column limit before dispatching.');
+  }
+  return workingLimit;
+}
+
 async function main() {
   const org = env('DEVELOPER_PROJECT_ORG', 'ControleOnline');
   const projectNumber = Number(env('DEVELOPER_PROJECT_NUMBER', '1'));
@@ -287,10 +296,6 @@ async function main() {
   const workStatuses = new Set(parseCsv(env('DEVELOPER_WORK_STATUSES', 'Ready,Working')).map((value) => value.toLowerCase()));
   const readyStatus = env('DEVELOPER_READY_STATUS', 'Ready').toLowerCase();
   const workingStatus = env('DEVELOPER_WORKING_STATUS', 'Working').toLowerCase();
-  const maxWorkingItems = Number(env('DEVELOPER_MAX_WORKING_ITEMS', '5'));
-  if (!Number.isInteger(maxWorkingItems) || maxWorkingItems < 1) {
-    throw new Error('DEVELOPER_MAX_WORKING_ITEMS must be a positive integer.');
-  }
   const preferredAgentLogin = env('DEVELOPER_AGENT_LOGIN', DEFAULT_AGENT_LOGIN).toLowerCase();
   const agentLogins = new Set(
     parseCsv(env('DEVELOPER_AGENT_LOGINS', DEFAULT_AGENT_LOGINS)).map((login) => login.toLowerCase())
@@ -301,6 +306,7 @@ async function main() {
   const data = await getProjectSnapshot(org, projectNumber);
   const project = data?.organization?.projectV2;
   if (!project) throw new Error(`Project not found: ${org}/projects/${projectNumber}`);
+  const workingColumnLimit = getWorkingColumnLimit(project);
 
   const workItems = sortByCreatedAt(listWorkItems(project, workStatuses));
   const workingItems = workItems.filter((item) => (getStatusValue(item) || '').toLowerCase() === workingStatus);
@@ -328,7 +334,7 @@ async function main() {
     workStatuses: Array.from(workStatuses),
     readyStatus,
     workingStatus,
-    maxWorkingItems,
+    workingColumnLimit,
     workingCount: workingItems.length,
     activeCount: activeItems.length,
     humanOwnedCount: humanOwnedItems.length,
@@ -338,10 +344,10 @@ async function main() {
     candidateItems: candidateItems.map((item) => serializeItem(item, agentLogins, preferredAgentLogin)),
   };
 
-  if (workingItems.length >= maxWorkingItems) {
+  if (workingItems.length >= workingColumnLimit) {
     result.ok = true;
     result.skipped = true;
-    result.reason = `Working atingiu o limite de ${maxWorkingItems} tasks; Ready fica bloqueado até uma task avançar para In Review após os quatro gates ou sair de Working.`;
+    result.reason = `Working atingiu o limite configurado de ${workingColumnLimit} tasks; Ready fica bloqueado até uma task avançar para In Review após os quatro gates ou sair de Working.`;
     const outPath = writeOutputFile(result);
     console.log(JSON.stringify({ ok: true, skipped: true, reason: result.reason, outPath }, null, 2));
     return;

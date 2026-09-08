@@ -60,10 +60,10 @@ test('Working takes precedence over Ready before priority ordering', () => {
   assert.deepEqual(eligible.map((item) => item.number), [2]);
 });
 
-test('Developer respects the five-task Working capacity', () => {
-  const maxWorkingItems = 5;
-  assert.equal([1, 2, 3, 4].length < maxWorkingItems, true);
-  assert.equal([1, 2, 3, 4, 5].length >= maxWorkingItems, true);
+test('Developer respects the Working capacity read from Project #1', () => {
+  const workingColumnLimit = 3;
+  assert.equal([1, 2].length < workingColumnLimit, true);
+  assert.equal([1, 2, 3].length >= workingColumnLimit, true);
 });
 
 test('canonical instructions reject updatedAt ordering', () => {
@@ -83,21 +83,24 @@ test('canonical instructions reject updatedAt ordering', () => {
   const developerAgent = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
   assert.match(developerAgent, /createdAt` crescente/i);
   assert.doesNotMatch(developerAgent, /`updated` mais recente/i);
-  assert.match(developerAgent, /`Working`[\s\S]*menos de 5[\s\S]*`Ready`/i);
+  assert.match(developerAgent, /limite atual da coluna `Working` lido no Project #1/i);
 });
 
-test('Developer and validators own Ready/Working while DevOps owns release columns', () => {
+test('all agents prioritize Working and DevOps prioritizes Deploy first', () => {
   const discovery = fs.readFileSync('agents/skills/shared/operations/issue-queue-discovery.md', 'utf8');
   const devops = fs.readFileSync('agents/skills/by-role/devops/README.md', 'utf8');
   const dispatch = fs.readFileSync('workers/automate/scripts/agent-project-dispatch.mjs', 'utf8');
   const projectDispatch = fs.readFileSync('workers/automate/scripts/developer-project-dispatch.mjs', 'utf8');
 
-  assert.match(discovery, /`Ready`[\s\S]*`Working`[\s\S]*pertencem exclusivamente/i);
-  assert.match(discovery, /DevOps[\s\S]*`Deploy`[\s\S]*`In Review`[\s\S]*`Done`/i);
-  assert.match(devops, /`Ready`[\s\S]*`Working`[\s\S]*DevOps nunca captura/i);
+  assert.match(discovery, /todos os agentes[\s\S]*limite atual[\s\S]*`Working`/i);
+  assert.match(discovery, /DevOps,[\s\S]*`Deploy`[\s\S]*`Working`/i);
+  assert.match(devops, /`In Review`/i);
+  assert.match(devops, /`Done`/i);
+  assert.match(devops, /`Deploy`[\s\S]*`Working`[\s\S]*`Ready`/i);
   assert.match(dispatch, /prioritizeWorkingItems/);
   assert.match(projectDispatch, /workingItems/);
-  assert.match(projectDispatch, /maxWorkingItems/);
-  assert.match(projectDispatch, /atingiu o limite de .*tasks.*In Review/is);
+  assert.match(projectDispatch, /workingColumnLimit/);
+  assert.match(projectDispatch, /Working column limit is unavailable/is);
+  assert.match(projectDispatch, /atingiu o limite configurado de .*tasks.*In Review/is);
   assert.match(projectDispatch, /Ready fica bloqueado até uma task avançar para In Review/is);
 });

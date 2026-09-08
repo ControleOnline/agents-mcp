@@ -10,9 +10,10 @@ semanticamente com segurança.
 
 Conflito não é autorização para escolher `ours`, `theirs`, fazer force-push ou
 mesclar diretamente em `master`. Quando a task precisa ser refeita sem os
-quatro accepts, o estado operacional é **Working**, respeitando o limite de 5
-tasks simultâneas; **In Review** continua reservado à revisão humana depois
-que os quatro accepts existirem e a task tiver chegado a staging.
+quatro accepts, o estado operacional é **Working**, respeitando o limite atual
+configurado para essa coluna no Project #1; **In Review** continua reservado à
+revisão humana depois que os quatro accepts existirem e a task tiver chegado a
+staging.
 
 ## Fluxo obrigatório
 

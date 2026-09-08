@@ -11,4 +11,8 @@ Sem RC. Executar o merge; comentario sem promocao nao fecha a funcao.
 
 Gate de staging: `agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
 
-`Ready` e `Working` sao exclusivos de Developer e validadores; DevOps nunca captura nesses status. DevOps opera em `Deploy`, `In Review` e `Done`.
+Todos os agents devem priorizar tasks em `Working` antes de capturar `Ready`,
+respeitando o limite atual da coluna lido no Project #1. Para o DevOps, a
+ordem e `Deploy` primeiro e depois `Working`; `Ready` so entra quando houver
+capacidade. `In Review` so ocorre depois dos quatro accepts, e `Done` depois
+da publicacao.

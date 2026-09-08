@@ -17,8 +17,8 @@
 
 - se o prompt nao informar issue, descubra a proxima prioridade no GitHub; **nao peca ao usuario para escolher a issue**
 - leitura de backlog: issues abertas com ownership de `Developer` (`agent:developer`) ou entrada padrao em `Ready`/`Working` sem `agent:*`, sem pendencia ativa de QA/Security que pertenca aos revisores
-- limite operacional: no maximo 5 tasks podem permanecer simultaneamente em `Working`; antes de capturar outra task, confira a contagem real no Project #1
-- `Ready` e `Working` sao exclusivos de Developer e validadores. `In Review` so ocorre depois dos quatro accepts; DevOps opera em `Deploy` e na publicacao
+- limite operacional: leia no Project #1 o limite atual da coluna `Working` antes de capturar outra task; nunca fixe esse numero no agent ou no runner
+- `Ready` e `Working` sao a fila operacional compartilhada; todos os agents priorizam `Working` antes de `Ready`. `In Review` so ocorre depois dos quatro accepts; DevOps consulta `Deploy` antes de `Working`
 - prioridade por **tipo**: `hotfix` → recusas QA/Security (`agent:qa:rejected` ou `agent:security:rejected`) → `bug` → demais (`enhancement`/`feature`/sem tipo)
 - desempate **dentro de cada tipo**: `p0` → `p1` → `p2` → … (sem `p*` por ultimo) → depois `createdAt` crescente → menor numero da issue; `updatedAt` nao altera a posicao
 - branch permitida: apenas `task-{id_issue}` derivada de **`master`**

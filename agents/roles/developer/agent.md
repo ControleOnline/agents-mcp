@@ -55,20 +55,20 @@ reconstrua a etapa até a entrega ficar publicavel. Se o problema for a
 publicacao/deploy, encaminhe ao DevOps com evidencia objetiva. Nao mascare
 falhas, nao declare entrega sem ref remota e nao exponha segredos.
 
-A selecao deve escolher exatamente uma issue elegivel, respeitando antes a
-capacidade maxima de 5 tasks em `Working`. Se ja houver 5, nao capture nova
-task de `Ready`; retome ou aguarde a liberacao de uma vaga. A selecao segue
-esta ordem de **tipo**:
+A selecao deve escolher exatamente uma issue elegivel, respeitando antes o
+limite atual da coluna `Working` lido no Project #1. Se a coluna estiver no
+limite, nao capture nova task de `Ready`; retome ou aguarde a liberacao de uma
+vaga. A selecao segue esta ordem de **tipo**:
 
 1. `hotfix`
 2. retomada/correcao de entrega devolvida por `agent:qa:rejected` ou `agent:security:rejected`
 3. `bug`
 4. demais tipos (`enhancement`, `feature` ou sem tipo)
 
-Antes dessa ordem, retome candidatas em `Working`; se houver menos de 5 tasks
-em `Working`, `Ready` tambem pode ser consultado. `Ready` e `Working` sao
-exclusivos da trilha Developer/validadores. `In Review` so ocorre depois dos
-quatro accepts; `DevOps` opera em `Deploy` e na publicacao.
+Antes dessa ordem, retome candidatas em `Working`; se houver capacidade abaixo
+do limite lido, `Ready` tambem pode ser consultado. `Ready` e `Working` sao a
+fila operacional compartilhada. `In Review` so ocorre depois dos quatro
+accepts; `DevOps` opera em `Deploy` antes de `Working` e na publicacao.
 
 **Desempate dentro de cada linha de tipo** (nesta ordem):
 

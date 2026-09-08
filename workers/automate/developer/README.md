@@ -8,7 +8,7 @@ O runner de `Developer` nao implementa a issue por conta propria.
 
 Ele:
 
-- consulta `Working` para retomadas e respeita o limite operacional de 5 tasks; consulta `Ready` enquanto houver capacidade disponível em `Working`
+- consulta `Working` para retomadas e lê o limite operacional atual da coluna no Project #1; consulta `Ready` enquanto houver capacidade disponível em `Working`
 - trata task sem `agent:*` em `Ready` como entrada padrao do fluxo
 - ignora tasks que estejam exclusivamente com pessoas
 - distingue execucao recente, execucao stale e override manual antes de decidir a proxima captura
@@ -31,8 +31,8 @@ Ele:
 ## Regras operacionais
 
 - nao retirar task que esteja exclusivamente com pessoas
-- task nova em `Ready` sem `agent:*` pertence inicialmente a `Developer`; nenhuma nova captura ocorre quando já existem 5 tasks em `Working`
-- `Ready` e `Working` são exclusivos de Developer e validadores; `In Review` só ocorre após os quatro gates aprovados, e DevOps usa `Deploy`/publicação
+- task nova em `Ready` sem `agent:*` pertence inicialmente a `Developer`; nenhuma nova captura ocorre quando `Working` atingir o limite lido no Project #1
+- `Ready` e `Working` são a fila operacional compartilhada; todos os agents priorizam `Working` antes de `Ready`. `In Review` só ocorre após os quatro gates aprovados, e DevOps usa `Deploy` antes de `Working`
 - execucao stale do proprio `Developer` deve ser retomada antes de abrir nova captura
 - override manual ativo deve ser tratado como estado distinto, nao como captura first-party do Copilot
 - usar `master` como branch base operacional

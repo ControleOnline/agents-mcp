@@ -127,8 +127,9 @@ Ao consultar ou operar no GitHub, os agents podem usar qualquer busca, API, list
 Fonte completa: `agents/skills/shared/github/github-flow.md`.
 Para qualquer conflito ou divergência ampla, aplicar também
 `agents/skills/shared/github/conflict-resolution.md`; a task permanece em
-`Working` para ser refeita e nunca é mesclada diretamente em `master`. O
-limite operacional de `Working` é de 5 tasks simultâneas. Agents não movem
+`Working` para ser refeita e nunca é mesclada diretamente em `master`. Todos
+os agents devem ler no Project #1 o limite atual da coluna `Working` antes de
+capturar uma nova task; nunca fixe esse limite no código. Agents não movem
 tasks para `In Review`: essa coluna só é usada após os quatro accepts.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
@@ -157,7 +158,7 @@ Regras obrigatorias:
 - `Developer` nao mexe diretamente em `master`, `main`, `dev`, `staging`
 - validadores registram apenas labels de aceite/recusa na task
 - quando um validador recusar, comenta de forma objetiva para o `Developer`
-- somente o `DevOps` publica `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`
+- somente o `DevOps` publica `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`; para o DevOps, `Deploy` vem antes de `Working`
 - agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
 
 ## Fronteira do CTO
