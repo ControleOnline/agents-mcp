@@ -66,6 +66,11 @@ test('Developer respects the Working capacity read from Project #1', () => {
   assert.equal([1, 2, 3].length >= workingColumnLimit, true);
 });
 
+test('Working capacity is configured centrally in agents-mcp', () => {
+  const config = JSON.parse(fs.readFileSync('config/ecosystem.config.json', 'utf8'));
+  assert.equal(config.runners.defaults.DEVELOPER_WORKING_LIMIT, '5');
+});
+
 test('canonical instructions reject updatedAt ordering', () => {
   for (const path of canonicalFiles) {
     const source = fs.readFileSync(path, 'utf8');
@@ -100,6 +105,8 @@ test('all agents prioritize Working and DevOps prioritizes Deploy first', () => 
   assert.match(dispatch, /prioritizeWorkingItems/);
   assert.match(projectDispatch, /workingItems/);
   assert.match(projectDispatch, /workingColumnLimit/);
+  assert.match(projectDispatch, /ecosystem\.config\.json/);
+  assert.match(projectDispatch, /DEVELOPER_WORKING_LIMIT/);
   assert.match(projectDispatch, /Working column limit is unavailable/is);
   assert.match(projectDispatch, /atingiu o limite configurado de .*tasks.*In Review/is);
   assert.match(projectDispatch, /Ready fica bloqueado até uma task avançar para In Review/is);

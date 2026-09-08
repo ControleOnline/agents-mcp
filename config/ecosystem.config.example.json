@@ -75,6 +75,7 @@
       "QA_SECURITY_STATUS": "",
       "QA_UNTRACKED_STATUS": "",
       "QA_TASK_LIMIT": "5",
+      "DEVELOPER_WORKING_LIMIT": "5",
       "QA_AUTO_MERGE": "false",
       "DEVOPS_TARGET_STATUS": "",
       "DEVOPS_UNTRACKED_STATUS": "",

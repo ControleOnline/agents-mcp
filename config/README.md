@@ -24,6 +24,12 @@ A documentacao em `agents/` pode usar placeholders genericos. Os valores reais d
 | `<HELP_CENTER_HOST>` | `documentation.help_center_host.value` |
 | `<TEAM_EMAIL>` | `documentation.team_email.value` |
 
+## Limite operacional
+
+`runners.defaults.DEVELOPER_WORKING_LIMIT` define a capacidade máxima
+simultânea da coluna `Working`. O dispatcher lê esse valor a cada execução;
+não existe limite fixo no código do runner.
+
 ## Fork checklist
 
 1. Preencher `owner.value`, `project.*`, `github.product_repositories`

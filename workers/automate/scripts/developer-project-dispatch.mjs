@@ -281,7 +281,16 @@ function writeOutputFile(payload) {
 }
 
 function getWorkingColumnLimit(project) {
-  const configuredLimit = project?.workingLimit ?? env('DEVELOPER_WORKING_LIMIT');
+  let configLimit;
+  try {
+    const configUrl = new URL('../../../config/ecosystem.config.json', import.meta.url);
+    const config = JSON.parse(fs.readFileSync(configUrl, 'utf8'));
+    configLimit = config?.runners?.defaults?.DEVELOPER_WORKING_LIMIT;
+  } catch (error) {
+    throw new Error(`Unable to read config/ecosystem.config.json for Working limit: ${error.message}`);
+  }
+
+  const configuredLimit = configLimit ?? project?.workingLimit ?? env('DEVELOPER_WORKING_LIMIT');
   const workingLimit = Number(configuredLimit);
   if (!Number.isInteger(workingLimit) || workingLimit < 1) {
     throw new Error('Working column limit is unavailable; read the current Project #1 column limit before dispatching.');
