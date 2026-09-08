@@ -15,6 +15,10 @@ const deliveryProof = fs.readFileSync(
   'agents/skills/shared/operations/delivery-proof-contract.md',
   'utf8',
 );
+const conflictResolution = fs.readFileSync(
+  'agents/skills/shared/github/conflict-resolution.md',
+  'utf8',
+);
 
 const completionLabels = [
   'qa:accepted',
@@ -67,6 +71,15 @@ test('rejection recovery includes GitHub workflow and publication repair', () =>
   assert.match(developerAgent, /workflow.*build/is);
   assert.match(developerAgent, /publicacao\/deploy.*DevOps/is);
   assert.match(developerAgent, /Nao mascare\s+falhas/i);
+});
+
+test('confusing merges restart the task from remote master and reset Notion flow', () => {
+  assert.match(conflictResolution, /em qualquer etapa.*confuso/is);
+  assert.match(conflictResolution, /apagar a branch.*recri[aá].*master.*passos iniciais/is);
+  assert.match(conflictResolution, /retroceda o item no Notion.*Working/is);
+  assert.match(conflictResolution, /Nunca herde labels, accepts, screenshots.*execução apagada/is);
+  assert.match(managerAgent, /descartar a branch.*recriar.*master.*passos iniciais/is);
+  assert.match(managerAgent, /retroceder a task no Notion.*labels.*evidências/is);
 });
 
 test('manager cannot close a round with commentary-only progress', () => {

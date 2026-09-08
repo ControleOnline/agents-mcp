@@ -127,7 +127,14 @@ Ao consultar ou operar no GitHub, os agents podem usar qualquer busca, API, list
 Fonte completa: `agents/skills/shared/github/github-flow.md`.
 Para qualquer conflito ou divergência ampla, aplicar também
 `agents/skills/shared/github/conflict-resolution.md`; a task permanece em
-`Working` para ser refeita e nunca é mesclada diretamente em `master`. Todos
+`Working` para ser refeita e nunca é mesclada diretamente em `master`. Se a
+resolução semântica ficar confusa em qualquer etapa, é preferível descartar a
+branch `task-{id_issue}`, recriá-la a partir do `master` remoto atualizado e
+reexecutar a task desde o início. Nessa recuperação, é permitido ao agent
+retroceder a task no Notion/Project #1 para os passos iniciais, limpar labels,
+aceites e evidências da entrega descartada e reativar os handoffs aplicáveis;
+isso é uma exceção explícita às regras usuais de não movimentação de coluna.
+Agents nunca mesclam diretamente em `master`. Todos
 os agents devem ler no Project #1 o limite atual da coluna `Working` antes de
 capturar uma nova task; nunca fixe esse limite no código. Agents não movem
 tasks para `In Review`: essa coluna só é usada após os quatro accepts.
@@ -158,6 +165,9 @@ Regras obrigatorias:
 - `Developer` nao mexe diretamente em `master`, `main`, `dev`, `staging`
 - validadores registram apenas labels de aceite/recusa na task
 - quando um validador recusar, comenta de forma objetiva para o `Developer`
+- se um merge ou rebase se tornar confuso, não force a resolução: descarte e
+  recrie a branch da task desde `master`, refaça a implementação e retroceda a
+  task no Notion aos passos iniciais para uma nova rodada de evidências
 - somente o `DevOps` publica `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`; para o DevOps, `Deploy` vem antes de `Working`
 - agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
 
