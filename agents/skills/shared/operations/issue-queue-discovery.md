@@ -66,7 +66,13 @@ As colunas **`Ready`** e **`Working`** pertencem exclusivamente ao fluxo de `Dev
 
 `DevOps` opera somente em **`Deploy`**, **`In Review`** e **`Done`**. Uma task com `agent:devops` em `Ready` ou `Working` nao deve ser capturada pelo DevOps.
 
-Para cada papel que usa `Ready`/`Working`, a precedencia e obrigatoria: consultar primeiro todas as candidatas em `Working`; se existir ao menos uma candidata, descartar todas as candidatas em `Ready` nesta rodada; so consultar `Ready` quando `Working` estiver vazio. Labels, tipo, prioridade, `createdAt` e numero da issue so podem ser aplicados depois da filtragem por status.
+Para o Developer, a capacidade operacional maxima e de **5 tasks simultaneas
+em `Working`**. Consulte primeiro as tasks em `Working` para retomadas; quando
+`Working` estiver abaixo de 5, `Ready` continua elegivel para uma nova captura.
+Quando `Working` atingir 5, nao capture outra task de `Ready` ate uma task sair
+de `Working`. Para os validadores, mantenha a precedencia de suas candidatas
+ativas conforme o papel. Labels, tipo, prioridade, `createdAt` e numero da
+issue so podem ser aplicados depois da filtragem por status.
 
 ## Fonte de verdade da fila
 

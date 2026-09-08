@@ -287,6 +287,10 @@ async function main() {
   const workStatuses = new Set(parseCsv(env('DEVELOPER_WORK_STATUSES', 'Ready,Working')).map((value) => value.toLowerCase()));
   const readyStatus = env('DEVELOPER_READY_STATUS', 'Ready').toLowerCase();
   const workingStatus = env('DEVELOPER_WORKING_STATUS', 'Working').toLowerCase();
+  const maxWorkingItems = Number(env('DEVELOPER_MAX_WORKING_ITEMS', '5'));
+  if (!Number.isInteger(maxWorkingItems) || maxWorkingItems < 1) {
+    throw new Error('DEVELOPER_MAX_WORKING_ITEMS must be a positive integer.');
+  }
   const preferredAgentLogin = env('DEVELOPER_AGENT_LOGIN', DEFAULT_AGENT_LOGIN).toLowerCase();
   const agentLogins = new Set(
     parseCsv(env('DEVELOPER_AGENT_LOGINS', DEFAULT_AGENT_LOGINS)).map((login) => login.toLowerCase())
@@ -324,6 +328,7 @@ async function main() {
     workStatuses: Array.from(workStatuses),
     readyStatus,
     workingStatus,
+    maxWorkingItems,
     workingCount: workingItems.length,
     activeCount: activeItems.length,
     humanOwnedCount: humanOwnedItems.length,
@@ -333,10 +338,10 @@ async function main() {
     candidateItems: candidateItems.map((item) => serializeItem(item, agentLogins, preferredAgentLogin)),
   };
 
-  if (activeItems.length > 0 || workingItems.length > 0) {
+  if (workingItems.length >= maxWorkingItems) {
     result.ok = true;
     result.skipped = true;
-    result.reason = 'Existe task em Working; Ready fica bloqueado até a conclusão ou retomada da execução em andamento.';
+    result.reason = `Working atingiu o limite de ${maxWorkingItems} tasks; Ready fica bloqueado até uma task avançar para In Review após os quatro gates ou sair de Working.`;
     const outPath = writeOutputFile(result);
     console.log(JSON.stringify({ ok: true, skipped: true, reason: result.reason, outPath }, null, 2));
     return;

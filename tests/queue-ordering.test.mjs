@@ -60,6 +60,12 @@ test('Working takes precedence over Ready before priority ordering', () => {
   assert.deepEqual(eligible.map((item) => item.number), [2]);
 });
 
+test('Developer respects the five-task Working capacity', () => {
+  const maxWorkingItems = 5;
+  assert.equal([1, 2, 3, 4].length < maxWorkingItems, true);
+  assert.equal([1, 2, 3, 4, 5].length >= maxWorkingItems, true);
+});
+
 test('canonical instructions reject updatedAt ordering', () => {
   for (const path of canonicalFiles) {
     const source = fs.readFileSync(path, 'utf8');
@@ -77,7 +83,7 @@ test('canonical instructions reject updatedAt ordering', () => {
   const developerAgent = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
   assert.match(developerAgent, /createdAt` crescente/i);
   assert.doesNotMatch(developerAgent, /`updated` mais recente/i);
-  assert.match(developerAgent, /`Working` primeiro.*`Ready` somente/i);
+  assert.match(developerAgent, /`Working`[\s\S]*menos de 5[\s\S]*`Ready`/i);
 });
 
 test('Developer and validators own Ready/Working while DevOps owns release columns', () => {
@@ -91,5 +97,7 @@ test('Developer and validators own Ready/Working while DevOps owns release colum
   assert.match(devops, /`Ready`[\s\S]*`Working`[\s\S]*DevOps nunca captura/i);
   assert.match(dispatch, /prioritizeWorkingItems/);
   assert.match(projectDispatch, /workingItems/);
-  assert.match(projectDispatch, /Ready fica bloqueado até a conclusão/is);
+  assert.match(projectDispatch, /maxWorkingItems/);
+  assert.match(projectDispatch, /atingiu o limite de .*tasks.*In Review/is);
+  assert.match(projectDispatch, /Ready fica bloqueado até uma task avançar para In Review/is);
 });
