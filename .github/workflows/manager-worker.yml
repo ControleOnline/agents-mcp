@@ -1,8 +1,11 @@
 name: Manager Worker
 
 on:
-  push:
-    branches: [master, dev, staging]
+  workflow_dispatch:
+
+# PAUSA CTO ControleOnline/agents-mcp#201 (2026-08-29)
+# Trigger original desativado: push em master, dev, staging.
+# Religar somente com ordem humana explicita na #201.
 
 permissions:
   contents: read
