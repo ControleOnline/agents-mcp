@@ -29,6 +29,16 @@ Toda rodada deve produzir **mutacao real** na primeira prioridade com acao execu
 
 Comentário, diagnóstico ou handoff sem commit/ref remoto, decisão de label ou mudança confirmada de coluna **não é entrega**. Se SHAs, labels, coluna e evidências forem iguais à última tentativa, registre `NEXT_ACTION` e reencaminhe a task; não repita comentário/handoff nem aplique bloqueio terminal.
 
+## Recuperação quando a integração fica confusa
+
+Se um merge ou rebase ficar confuso em qualquer etapa, o Manager deve preferir
+descartar a branch `task-{id}`, recriar a branch a partir do `master` remoto
+atualizado e reexecutar a task desde os passos iniciais. Nessa recuperação, pode
+retroceder a task no Notion/Project #1, limpar labels, aceites e evidências da
+entrega descartada e reativar os handoffs aplicáveis. Essa é uma exceção
+explícita à regra geral de não movimentar colunas; a task não pode permanecer
+em `Done`, `Deploy` ou `In Review` com uma entrega que foi descartada.
+
 ## Proibicao de fila: colunas Blocked e Backlog
 
 Nenhum agent seleciona **`Blocked`** ou **`Backlog`** como fila. Isso nao autoriza abandonar bloqueio operacional da propria rodada.
