@@ -26,9 +26,15 @@ A documentacao em `agents/` pode usar placeholders genericos. Os valores reais d
 
 ## Limite operacional
 
-`runners.defaults.DEVELOPER_WORKING_LIMIT` define a capacidade máxima
-simultânea da coluna `Working`. O dispatcher lê esse valor a cada execução;
-não existe limite fixo no código do runner.
+`runners.defaults.DEVELOPER_WORKING_LIMIT` está definido como **5** e define a
+capacidade máxima simultânea da coluna `Working`. Enquanto houver cinco tasks
+em `Working`, nenhuma nova task entra na fila ativa; a captura só volta quando
+uma delas sair de `Working`. A única exceção operacional é o P1 `DevOps`, que
+continua publicando tasks já prontas em `Deploy`.
+
+O dispatcher lê o valor canônico a cada execução e falha fechado quando ele
+está ausente ou inválido. Não use override de ambiente ou do projeto para
+alterar esse limite sem mudar a configuração versionada.
 
 ## Fork checklist
 

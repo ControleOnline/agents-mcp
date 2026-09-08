@@ -41,6 +41,10 @@ em `Done`, `Deploy` ou `In Review` com uma entrega que foi descartada.
 
 ## Proibicao de fila: colunas Blocked e Backlog
 
+O limite global de `Working` é de **5 tasks**: com cinco tasks ativas, não
+capture outra task em P5 ou P6 até uma delas sair da coluna. P1 `DevOps` é a
+única exceção e continua publicando tasks prontas em `Deploy`.
+
 Nenhum agent seleciona **`Blocked`** ou **`Backlog`** como fila. Isso nao autoriza abandonar bloqueio operacional da propria rodada.
 
 ## Proibicao de tags de bloqueio

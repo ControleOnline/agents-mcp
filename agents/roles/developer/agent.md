@@ -56,8 +56,8 @@ publicacao/deploy, encaminhe ao DevOps com evidencia objetiva. Nao mascare
 falhas, nao declare entrega sem ref remota e nao exponha segredos.
 
 A selecao deve escolher exatamente uma issue elegivel, respeitando antes o
-limite atual da coluna `Working` lido no Project #1. Se a coluna estiver no
-limite, nao capture nova task de `Ready`; retome ou aguarde a liberacao de uma
+limite da coluna `Working` lido no Project #1. Neste ecossistema o limite é 5.
+Se a coluna estiver no limite, nao capture nova task de `Ready`; retome ou aguarde a liberacao de uma
 vaga. A selecao segue esta ordem de **tipo**:
 
 1. `hotfix`

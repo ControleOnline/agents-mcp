@@ -39,7 +39,9 @@ anterior. Sem delta novo, o resultado é `NEXT_ACTION`.
 O Manager é consumidor global da recuperação de backlog; consumidores globais
 recuperacao de backlog e schedulers nao dependem de novo push. P4 (rejeicoes)
 tem precedencia sobre P5 (validadores) e P6 (novos desenvolvimentos). P7 é
-fallback estrito.
+fallback estrito. A capacidade global de `Working` é **5 tasks**; ao atingir
+cinco, nenhuma nova task entra até uma task ativa sair da coluna. A exceção é
+P1 `DevOps`, que continua publicando tasks em `Deploy`.
 
 ## Gate de staging
 

@@ -135,8 +135,11 @@ retroceder a task no Notion/Project #1 para os passos iniciais, limpar labels,
 aceites e evidências da entrega descartada e reativar os handoffs aplicáveis;
 isso é uma exceção explícita às regras usuais de não movimentação de coluna.
 Agents nunca mesclam diretamente em `master`. Todos
-os agents devem ler no Project #1 o limite atual da coluna `Working` antes de
-capturar uma nova task; nunca fixe esse limite no código. Agents não movem
+os agents devem ler no Project #1 o limite da coluna `Working` antes de
+capturar uma nova task. Neste ecossistema, o limite canônico é **5 tasks**:
+quando cinco tasks estiverem em `Working`, nenhuma outra entra até uma delas
+sair da coluna. A única exceção é o P1 `DevOps`, que continua publicando o que
+estiver em `Deploy`. Agents não movem
 tasks para `In Review`: essa coluna só é usada após os quatro accepts.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
@@ -231,6 +234,8 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
 ### Regras deste mode
 
 - Tente a prioridade mais alta com trabalho elegivel e executavel.
+- Se `Working` já tiver 5 tasks, não capture outra task para P5 ou P6; continue
+  resolvendo as tasks ativas. P1 `DevOps` permanece executável para `Deploy`.
 - Dentro da mesma prioridade funcional, selecione a task elegivel mais antiga por `createdAt` crescente; em empate, use o menor numero da issue.
 - `updatedAt` serve apenas como evidencia de atividade e nunca reposiciona uma task na fila.
 - SysAdmin **nao** participa deste mode (deve continuar rodando em paralelo em automacao separada).

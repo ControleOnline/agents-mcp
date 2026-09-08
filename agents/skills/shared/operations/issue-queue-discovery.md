@@ -67,13 +67,14 @@ dos agents. Todos priorizam `Working` antes de `Ready`, respeitando o limite
 atual lido no Project #1. O `DevOps` tem uma excecao de ordem: consulta
 **`Deploy`** primeiro e, depois, `Working`.
 
-Para todos os agentes, leia no Project #1 o limite atual configurado para a
-coluna `Working` antes de capturar trabalho. Consulte primeiro as tasks em
+Para todos os agentes, leia no Project #1 o limite configurado para a coluna
+`Working` antes de capturar trabalho; neste ecossistema, esse limite é **5**.
+Consulte primeiro as tasks em
 `Working`; enquanto houver capacidade abaixo do limite lido, `Ready` continua
 elegivel. Quando `Working` atingir o limite, nao capture outra task de `Ready`
 ate uma task sair de `Working`. Para o DevOps, `Deploy` vem antes de
-`Working`; depois de `Deploy`, aplique a mesma regra de capacidade. Nunca fixe
-um numero no agent ou no runner.
+`Working` e é a única exceção: publique tasks já prontas mesmo quando as cinco
+vagas estiverem ocupadas. Nunca altere o limite fora da configuração canônica.
 
 ## Fonte de verdade da fila
 

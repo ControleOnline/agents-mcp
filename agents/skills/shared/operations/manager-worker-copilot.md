@@ -57,7 +57,7 @@ O checklist real permanece no `agent.md` do papel.
 |---|---|
 | Manager Worker + composites | reagir ao push e despachar papeis para a issue daquele push |
 | Agendamento Manager (Codex/Grok/equivalente) | descobrir globalmente P1-P6, recuperar backlog e aplicar fail-closed |
-| Developer no Manager | P5 do Full Pipeline: captura/implementacao de produto quando P1-P4 nao tiverem acao executavel |
+| Developer no Manager | P6 do Full Pipeline: captura/implementacao de produto quando P1-P5 nao tiverem acao executavel e houver vaga no limite global de 5 tasks em `Working` |
 | DevOps/Project runners especificos | responsabilidades explicitamente descritas em seus entry points |
 
 Workers de push **nao** viram scheduler de backlog de Developer.

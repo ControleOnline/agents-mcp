@@ -69,6 +69,16 @@ test('Developer respects the Working capacity read from Project #1', () => {
 test('Working capacity is configured centrally in agents-mcp', () => {
   const config = JSON.parse(fs.readFileSync('config/ecosystem.config.json', 'utf8'));
   assert.equal(config.runners.defaults.DEVELOPER_WORKING_LIMIT, '5');
+
+  const manager = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
+  const discovery = fs.readFileSync(
+    'agents/skills/shared/operations/issue-queue-discovery.md',
+    'utf8',
+  );
+  assert.match(manager, /limite global.*Working.*5 tasks/is);
+  assert.match(manager, /P1 `DevOps`.*única exceção.*Deploy/is);
+  assert.match(discovery, /limite.*5.*Working/is);
+  assert.match(discovery, /única exceção.*tasks já prontas.*Deploy/is);
 });
 
 test('canonical instructions reject updatedAt ordering', () => {
@@ -88,7 +98,7 @@ test('canonical instructions reject updatedAt ordering', () => {
   const developerAgent = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
   assert.match(developerAgent, /createdAt` crescente/i);
   assert.doesNotMatch(developerAgent, /`updated` mais recente/i);
-  assert.match(developerAgent, /limite atual da coluna `Working` lido no Project #1/i);
+  assert.match(developerAgent, /limite.*coluna `Working`.*Project #1/is);
 });
 
 test('all agents prioritize Working and DevOps prioritizes Deploy first', () => {
@@ -97,7 +107,7 @@ test('all agents prioritize Working and DevOps prioritizes Deploy first', () => 
   const dispatch = fs.readFileSync('workers/automate/scripts/agent-project-dispatch.mjs', 'utf8');
   const projectDispatch = fs.readFileSync('workers/automate/scripts/developer-project-dispatch.mjs', 'utf8');
 
-  assert.match(discovery, /todos os agentes[\s\S]*limite atual[\s\S]*`Working`/i);
+  assert.match(discovery, /todos os agentes[\s\S]*limite[\s\S]*`Working`/i);
   assert.match(discovery, /DevOps,[\s\S]*`Deploy`[\s\S]*`Working`/i);
   assert.match(devops, /`In Review`/i);
   assert.match(devops, /`Done`/i);
