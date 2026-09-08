@@ -100,6 +100,25 @@ Uma task recriada não pode permanecer em `Done`, `Deploy` ou `In Review`, nem
 ser validada com labels antigas: a validação começa novamente após o novo
 merge em `dev`.
 
+### Regra explícita de status e revalidação após entrega em `dev`
+
+Quando a task reconstruída ou corrigida tiver sido publicada somente em
+`dev`, o Manager deve, na mesma rodada:
+
+1. manter ou retornar o item do Project #1 para **`Working`**;
+2. remover todas as decisões históricas dos validadores daquela entrega
+   (`agent:qa:accepted`, `agent:qa:rejected`, `agent:security:accepted`,
+   `agent:security:rejected`, `agent:design:accepted`,
+   `agent:design:rejected`, `agent:ux:accepted` e `agent:ux:rejected`);
+3. reativar as solicitações aplicáveis (`agent:qa`, `agent:security`,
+   `agent:design` e `agent:ux`) para validar os novos SHAs mergeados em `dev`;
+4. só permitir **`In Review`** depois que a task individual tiver sido
+   mergeada em `staging` e possuir os quatro novos `:accepted`.
+
+Não é suficiente remover apenas `agent:developer:done` ou reabrir a issue:
+aceites e recusas de uma entrega descartada não podem acompanhar a nova
+entrega.
+
 ## Developer
 
 1. Captura issue elegível.

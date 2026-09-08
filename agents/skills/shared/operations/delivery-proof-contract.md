@@ -20,6 +20,18 @@ compatível com a prioridade:
 
 Um comentário só pode acompanhar a mutação. Nunca pode substituí-la.
 
+## Nova entrega somente em `dev`: reset obrigatório de validação
+
+Após reconstrução ou correção, se os novos SHAs chegaram somente em `dev`, o
+estado obrigatório é **`Working`**. O Manager deve remover as labels históricas
+`agent:*:accepted` e `agent:*:rejected` da entrega anterior e reativar as
+solicitações aplicáveis `agent:qa`, `agent:security`, `agent:design` e
+`agent:ux`. Os validadores devem decidir novamente sobre os SHAs novos.
+
+`In Review` só é coerente depois de merge da task individual em `staging` e
+dos quatro novos aceites. Aceites antigos não autorizam `In Review` nem
+substituem a nova validação.
+
 ## Fechamento obrigatório
 
 Antes de emitir `DONE`, registre na issue a ação executada, SHA(s)/ref(s)
