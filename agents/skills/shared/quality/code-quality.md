@@ -34,9 +34,31 @@ Se houver conflito entre um AGENTS local e esta skill para criterios de qualidad
 - a ausencia de teste automatizado adequado bloqueia a aprovacao de mudanca funcional
 - lint, testes e smoke devem ser executados ou explicitamente bloqueados com justificativa objetiva
 - o resultado da validacao deve ser descrito com o escopo real do que foi coberto
-- em smoke test de UI/browser, as capturas, prints, screenshots ou artefatos devem cobrir **todo o fluxo** por etapa; evidencia parcial bloqueia QA
-- o manifesto ou comentario do smoke deve permitir reconstruir a jornada sem interpretacao verbal: `fluxo: <id>`, `flowchartIds` (IDs existentes e enabled no admin), passos executados, prints por passo e resultado final
-- o `Documentor` deve conseguir reutilizar o material gerado pelo smoke sem depender de interpretacao verbal da entrega
+
+## Teste automatizado versionado x artefato de execução
+
+A entrega de um teste é o **código automatizado versionado**, integrado na task e
+publicado no destino previsto (`dev` para Developer). Ela exige:
+
+1. arquivo de teste executável (por exemplo, PHPUnit, Jest, Node test ou Playwright);
+2. comando ou runner que descubra o teste em auditorias futuras;
+3. execução registrada com o resultado real, ou bloqueio técnico objetivo;
+4. commit remoto da task e merge remoto no destino previsto.
+
+PNG, screenshot, vídeo, trace, `report.json`, manifesto ou índice gerado pelo
+runner são **artefatos de execução**. Eles podem complementar uma auditoria
+visual, mas não são a entrega do teste, não substituem o código automatizado e
+não devem ser publicados como se fossem a implementação da task. Não crie uma
+task de produto apenas para armazenar artefatos quando o pedido for integrar
+testes automatizados.
+
+Para uma task cujo objetivo é integrar ou corrigir testes automatizados, QA
+deve validar primeiro o teste versionado, sua descoberta pelo runner e seu
+resultado. Prints e manifestos só são gate adicional quando a própria task
+exigir revisão visual da interface; nesse caso, continuam sendo evidência, não
+substituto do teste executável.
+
+Em aceite visual de UI/browser, evidência parcial bloqueia QA (`evidencia parcial bloqueia QA`); essa regra não converte artefatos gerados em implementação de teste automatizado.
 
 
 ## Fluxos de negócio (smoke)
@@ -61,7 +83,8 @@ Uma entrega so avanca quando:
 - a base ficou modularizada
 - os arquivos e componentes ficaram pequenos o suficiente
 - os testes relevantes existem e passam, ou existe bloqueio externo documentado
-- os smoke tests existem para fluxos visiveis no browser
+- os smoke tests existem para fluxos visiveis no browser e devem permanecer
+  versionados no repositório onde o runner os descobre
 - a evidência cobre o comportamento que mudou e, quando houver UI/browser, contém prints por etapa do fluxo inteiro
 
 ## Sinais de rejeicao
@@ -70,7 +93,11 @@ Devolva a entrega quando:
 
 - faltar teste apropriado
 - faltar smoke test em mudanca de UI
-- smoke de UI/browser sem prints por etapa, sem `fluxo: <id>` ou sem `flowchartIds` válido no admin (produtos POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER)
+- teste automatizado ausente, não descoberto pelo runner ou não integrado na
+  ref remota prevista
+- smoke de UI/browser usado como gate visual sem prints por etapa, sem
+  `fluxo: <id>` ou sem `flowchartIds` válido no admin (produtos
+  POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER)
 - houver componente ou arquivo grande demais sem quebra aceitavel
 - a mudanca duplicar contrato que ja existe em shared/store/component
 - a mudanca tornar o codigo mais centralizado, dificil de reaproveitar ou dificil de testar

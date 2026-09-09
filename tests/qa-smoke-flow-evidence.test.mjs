@@ -39,6 +39,13 @@ test('QA gate requires screenshots for every UI/browser smoke step', () => {
   assert.match(qaAgent, /Evidencia visual completa do fluxo/i);
 });
 
+test('automated test integration is code, not generated artifacts', () => {
+  assert.match(codeQuality, /Teste automatizado versionado x artefato de execução/);
+  assert.match(codeQuality, /não são a entrega do teste, não substituem o código automatizado/);
+  assert.match(smokeFlows, /não redefine a\s+entrega de um teste automatizado/);
+  assert.match(smokeFlows, /não são a implementação do smoke/);
+});
+
 test('QA gate requires admin flowchartIds plus per-step prints', () => {
   const qaReadme = fs.readFileSync('agents/skills/by-role/qa/README.md', 'utf8');
 

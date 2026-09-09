@@ -17,6 +17,12 @@ Fonte única de verdade para associação de smokes a fluxos. Alterações no ca
 
 ## Gate obrigatório de evidência visual
 
+Este gate é para **aceite visual de uma entrega de UI**. Ele não redefine a
+entrega de um teste automatizado: a implementação continua sendo o arquivo de
+teste versionado, descoberto pelo runner e integrado na ref remota. Artefatos
+gerados (`PNG`, screenshot, vídeo, trace, relatório ou manifesto) são apenas
+evidência complementar e nunca substituem o teste automatizado.
+
 QA **não pode aprovar** smoke test de UI/browser se a evidência não cobrir o fluxo inteiro com prints/screenshot.
 
 Para cada smoke de UI/browser, a evidência mínima é:
@@ -29,7 +35,10 @@ Para cada smoke de UI/browser, a evidência mínima é:
    - ação principal;
    - feedback visual de sucesso, erro esperado ou estado final;
    - qualquer transição que prove integração entre módulos.
-4. Artefatos persistidos em diretório de resultados do smoke, com manifesto ou resumo indicando o fluxo.
+4. Quando a decisão for de aceite visual, artefatos persistidos em diretório de
+   resultados do smoke, com manifesto ou resumo indicando o fluxo. Esses
+   artefatos não são a implementação do smoke nem precisam ser publicados para
+   uma task cujo objetivo seja somente integrar o teste automatizado.
 5. Justificativa explícita quando um passo não puder gerar print por limitação técnica.
 
 Falta de prints por etapa, prints que não permitem reconstruir a jornada ou smoke sem fluxo declarado bloqueiam `agent:qa:accepted`.

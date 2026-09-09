@@ -10,6 +10,11 @@ compatível com a prioridade:
 
 - **Código:** commit novo publicado em uma ref remota, merge da task no destino
   previsto e verificação do SHA remoto.
+- **Teste automatizado:** o arquivo de teste e seu runner devem estar
+  versionados no commit e integrados na ref remota prevista. Screenshot, PNG,
+  vídeo, trace, relatório, manifesto ou índice gerado são evidência opcional ou
+  específica de aceite visual; nunca substituem o teste automatizado nem
+  constituem sozinhos a entrega da task.
 - **Validação:** decisão nova (`agent:<papel>:accepted` ou
   `agent:<papel>:rejected`), remoção da solicitação anterior e coluna coerente.
 - **DevOps/board:** merge ou promoção da task individual e mudança confirmada
