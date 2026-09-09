@@ -76,9 +76,9 @@ test('Working capacity is configured centrally in agents-mcp', () => {
     'utf8',
   );
   assert.match(manager, /limite global.*Working.*5 tasks/is);
-  assert.match(manager, /P1 `DevOps`.*única exceção.*Deploy/is);
+  assert.match(manager, /P1[\s\S]*`DevOps`.*única exceção.*Deploy/is);
   assert.match(discovery, /limite.*5.*Working/is);
-  assert.match(discovery, /única exceção.*tasks já prontas.*Deploy/is);
+  assert.match(discovery, /única exceção de fila.*Deploy/is);
 });
 
 test('canonical instructions reject updatedAt ordering', () => {
@@ -120,4 +120,23 @@ test('all agents prioritize Working and DevOps prioritizes Deploy first', () => 
   assert.match(projectDispatch, /Working column limit is unavailable/is);
   assert.match(projectDispatch, /atingiu o limite configurado de .*tasks.*In Review/is);
   assert.match(projectDispatch, /Ready fica bloqueado até uma task avançar para In Review/is);
+});
+
+test('board mutations fail closed before creating a sixth Working task', () => {
+  const managerOperations = fs.readFileSync(
+    'workers/automate/scripts/github-operations.mjs',
+    'utf8',
+  );
+  const manager = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
+  const discovery = fs.readFileSync(
+    'agents/skills/shared/operations/issue-queue-discovery.md',
+    'utf8',
+  );
+
+  assert.match(managerOperations, /assertWorkingCapacity/);
+  assert.match(managerOperations, /Working capacity exceeded/);
+  assert.match(managerOperations, /DEVELOPER_WORKING_LIMIT/);
+  assert.match(manager, /teto absoluto de 5 tasks/is);
+  assert.match(manager, /não cria uma sexta.*Working/is);
+  assert.match(discovery, /mutacao que produziria `6\/5`.*recusada/is);
 });

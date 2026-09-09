@@ -72,9 +72,11 @@ Para todos os agentes, leia no Project #1 o limite configurado para a coluna
 Consulte primeiro as tasks em
 `Working`; enquanto houver capacidade abaixo do limite lido, `Ready` continua
 elegivel. Quando `Working` atingir o limite, nao capture outra task de `Ready`
-ate uma task sair de `Working`. Para o DevOps, `Deploy` vem antes de
-`Working` e é a única exceção: publique tasks já prontas mesmo quando as cinco
-vagas estiverem ocupadas. Nunca altere o limite fora da configuração canônica.
+nem mova qualquer task adicional para `Working` ate uma task sair. O limite é
+fail-closed: uma mutacao que produziria `6/5` deve ser recusada por worker,
+scheduler, supervisor ou runner. Para o DevOps, `Deploy` vem antes de
+`Working` e é a única exceção de fila: publique tasks prontas em `Deploy` sem
+aumentar `Working`. Nunca altere o limite fora da configuração canônica.
 
 ## Fonte de verdade da fila
 

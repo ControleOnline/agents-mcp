@@ -478,6 +478,27 @@ function getProjectItem(project, repoFullName, issueNumber, itemId) {
   );
 }
 
+function assertWorkingCapacity(project, item, targetStatus) {
+  const currentStatus = getStatusValue(item).trim().toLowerCase();
+  const requestedStatus = String(targetStatus || '').trim().toLowerCase();
+  if (requestedStatus !== 'working' || currentStatus === 'working') return;
+
+  const configPath = new URL('../../../config/ecosystem.config.json', import.meta.url);
+  const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  const limit = Number(config?.runners?.defaults?.DEVELOPER_WORKING_LIMIT);
+  if (!Number.isInteger(limit) || limit < 1) {
+    throw new Error('Working capacity is unavailable; refusing to move a task into Working.');
+  }
+  const workingCount = (project.items?.nodes || []).filter(
+    (entry) => getStatusValue(entry).trim().toLowerCase() === 'working'
+  ).length;
+  if (workingCount >= limit) {
+    throw new Error(
+      `Working capacity exceeded: ${workingCount}/${limit}. Refusing to move another task into Working; wait for a task to leave Working.`
+    );
+  }
+}
+
 async function getIssueNodeId(repoFullName, issueNumber) {
   const { owner, repo } = splitRepo(repoFullName);
   const data = await githubGraphQL(
@@ -734,6 +755,7 @@ async function updateProjectStatus(input) {
   const statusOption = getStatusOption(statusField, input.target_status);
   const item = await resolveProjectItem(project, input);
   assertAllowedProjectStatusTransition(item, input);
+  assertWorkingCapacity(project, item, input.target_status);
 
   await githubGraphQL(
     `mutation($projectId:ID!, $itemId:ID!, $fieldId:ID!, $optionId:String!) {
