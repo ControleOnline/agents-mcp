@@ -14,6 +14,7 @@ const DEFAULT_ALLOWED_LOGINS = 'luizkim,github-copilot[bot],copilot-swe-agent,co
 const DEFAULT_AGENT_LABELS = 'agent:developer,agent:security,agent:qa,agent:devops,agent:sysadmin';
 const COMMAND_PREFIXES = ['/github-manager', '/github-ops'];
 const PROTECTED_PROJECT_STATUSES = new Set(['blocked', 'backlog']);
+const MASTER_BRANCHES = new Set(['master', 'main']);
 
 function env(name, fallback = '') {
   return (process.env[name] || fallback).trim();
@@ -232,6 +233,47 @@ function splitRepo(fullName) {
   const [owner, repo] = fullName.split('/');
   if (!owner || !repo) throw new Error(`Invalid repo_full_name: ${fullName}`);
   return { owner, repo };
+}
+
+function isPullRequestMergePath(path) {
+  return /^\/repos\/[^/]+\/[^/]+\/pulls\/\d+\/merge$/.test(path || '');
+}
+
+function pullRequestPathFromMergePath(path) {
+  return (path || '').replace(/\/merge$/, '');
+}
+
+function branchContainsIssueNumber(headRefName, issueNumber) {
+  const escaped = String(issueNumber).replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&');
+  return new RegExp('(^|[/-])' + escaped + '([/-]|$)', 'i').test(headRefName || '');
+}
+
+async function assertTaskByTaskMasterPromotion(operation) {
+  const method = String(operation.method || 'GET').toUpperCase();
+  if (method !== 'PUT' || !isPullRequestMergePath(operation.path)) return;
+
+  const pullRequest = await githubRest(pullRequestPathFromMergePath(operation.path));
+  const baseRef = String(pullRequest?.base?.ref || '').trim().toLowerCase();
+  if (!MASTER_BRANCHES.has(baseRef)) return;
+
+  const headRef = String(pullRequest?.head?.ref || '').trim();
+  if (headRef.toLowerCase() === 'staging') {
+    throw new Error(
+      'Refusing master promotion from the aggregate staging branch. Promote exactly one task branch per operation.'
+    );
+  }
+
+  const issueNumber = operation.issue_number ?? operation.task_id;
+  if (issueNumber === undefined || issueNumber === null || String(issueNumber).trim() === '') {
+    throw new Error(
+      'Refusing master promotion without issue_number/task_id. Every promotion must identify exactly one task.'
+    );
+  }
+  if (!branchContainsIssueNumber(headRef, issueNumber)) {
+    throw new Error(
+      'Refusing master promotion: branch ' + (headRef || 'unknown') + ' is not tied to task ' + issueNumber + '.'
+    );
+  }
 }
 
 async function getProjectMetadata(org, projectNumber) {
@@ -925,6 +967,7 @@ async function executeOperation(operation) {
     case 'manager_audit':
       return runManagerAudit(operation.dry_run === true);
     case 'rest':
+      await assertTaskByTaskMasterPromotion(operation);
       return githubRest(operation.path, {
         method: operation.method || 'GET',
         body: operation.body !== undefined ? JSON.stringify(operation.body) : undefined,

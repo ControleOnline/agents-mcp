@@ -5,7 +5,7 @@
 No fluxo normal de task:
 
 - o `Developer` integra a `task-{id_issue}` em **`dev`** por **merge** (sem PR)
-- o `DevOps` consolida o **RC** em **`staging`** (pai + submodulos) e, apos coluna `Deploy`, promove para **`master`**
+- o `DevOps` promove cada **task individual** em **`staging`** e, apos coluna `Deploy`, promove somente essa task para **`master`**
 
 Fonte canonica: `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.
 
@@ -15,26 +15,23 @@ Fonte canonica: `agents/skills/controleonline/shared-github-github-flow/SKILL.md
 - operacao: **merge** em **`dev`**
 - proibido: PR do Developer; merge em `staging` ou `master`; push direto de commits soltos em `dev`/`staging`/`master`
 
-## Staging = somente RC (DevOps)
+## Staging = tasks individuais (DevOps)
 
 - `staging` **nao** e destino do Developer
-- `DevOps` coloca o pacote RC (semver) em `staging` apos `agent:qa:accepted` + `agent:security:accepted`
+- `DevOps` coloca somente a task autorizada em `staging` apos os gates exigidos
 - update de `staging` dispara deploy de conferencia humana
-- apos coluna `Deploy`: merge `staging` → `master` → coluna `Done`
+- apos coluna `Deploy`: merge da branch da task → `master` → coluna `Done`
 
-## Quando o DevOps monta o RC
+## Promoção para staging por task
 
-Quando houver tasks com simultaneamente:
+Quando houver uma task com simultaneamente:
 
 - `agent:qa:accepted`
 - `agent:security:accepted`
-- e **nao** existir RC aberto
+- e **nao** estiver em `staging` / `In Review`
 
-nessa situacao ele deve:
-
-- coletar **todas** as tasks elegiveis (freeze do pacote)
-- consolidar em `staging` (pai + submodulos)
-- criar task pai de deploy + subtasks → coluna `In Review`
+nessa situacao ele deve promover somente a branch `task-{id_issue}` dessa task
+e nunca consolidar ou congelar outras tasks no mesmo merge.
 
 ## Bloqueios
 
@@ -42,10 +39,10 @@ nessa situacao ele deve:
 - existir `agent:qa:rejected` ou `agent:security:rejected`
 - integracao em `dev` (Developer) ou `staging` (RC) em conflito sem resolucao
 - branch da tarefa nao vinculada ao numero da issue
-- segundo RC enquanto o atual nao esta em `Done`
+- tentativa de promover o branch agregado `staging` para `master`
 
 ## Restricao de ownership
 
 - `Developer`, `Security` e `QA` **nao abrem PR** no fluxo normal
 - `Developer` entrega por **merge** em **`dev`**
-- somente `DevOps` usa `staging` para o RC e promove para `master` apos `Deploy`
+- somente `DevOps` promove a task individual para `staging` e, após `Deploy`, para `master`

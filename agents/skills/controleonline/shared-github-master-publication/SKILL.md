@@ -2,7 +2,7 @@
 
 ## Overview
 
-Use esta skill quando `DevOps` for promover o **pacote RC** de `staging` para `master` (apos a task pai estar na coluna **`Deploy`**).
+Use esta skill quando `DevOps` for promover uma **task individual** para `master` (apos essa task estar na coluna **`Deploy`**).
 
 **Contrato obrigatório:** toda promoção deve ser feita por merge ou por Pull
 Request aprovado e mergeado. Nunca publique alterando apenas um gitlink, SHA,
@@ -22,19 +22,19 @@ ela pode voltar a percorrer `In Review`/`Deploy`.
 
 ## Pre-requisitos
 
-1. Existe um RC aberto com task pai de deploy e subtasks.
-2. O pacote ja esta em **`staging`** (pai + submodulos) com versão **numérica** `X.Y.N` no `package.json` / `app.json` (ex.: `1.5.1`; controle operacional pode ainda referir `RC X.Y.Z-rc.N`).
-3. A task pai foi movida por humano para a coluna **`Deploy`**, com ou sem os quatro accepts; essa mudança é a autorização explícita de publicação.
-4. Nao ha segundo RC concorrente.
+1. Existe uma task individual aberta e pronta para publicação.
+2. O delta dessa task ja esta em **`staging`** (task + submodulos afetados) com versão **numérica** `X.Y.N` quando aplicável.
+3. Essa task foi movida por humano para a coluna **`Deploy`**, com ou sem os quatro accepts; essa mudança é a autorização explícita de publicação.
+4. O branch agregado `staging` nunca é usado como origem de publicação em `master`.
 
 ## Workflow
 
 1. confirme o repositorio principal e os subprojetos em `.gitmodules`
-2. trate **`staging`** como origem da publicacao para **`master`**
+2. trate somente a **branch da task** (`task-{id}`) como origem da publicação para **`master`**; nunca use o branch agregado `staging`
 3. antes de promover qualquer versão, audite os deploys/workflows anteriores mais recentes de `staging` e `master` do projeto pai e dos submodulos obrigatorios; se algum estiver falho, cancelado, pendente, em andamento sem conclusão, ou sem evidência clara de sucesso, descubra a causa, corrija ou registre bloqueio concreto, e **pare sem publicar em `master`**
-   - **Smokes de browser/UI com problema:** quando a auditoria encontrar smoke falho que nao faca parte do delta imediato a publicar, nao transforme isso em comentario solto nem misture com a task de deploy/RC. Abra ou atualize uma issue tecnica separada no repositorio afetado, em `Ready`, com labels `hotfix` + `bug` + `agent:developer` (e label de pagina quando identificavel), referenciando o workflow/job/run, fluxo (`fluxo: <id>` ou `outros`) e resumo sanitizado da falha. A publicacao so permanece bloqueada se a falha provar que o pacote atual nao esta publicavel; caso contrario, a correcao fica para a **P5 Developer** do Manager.
+   - **Smokes de browser/UI com problema:** quando a auditoria encontrar smoke falho que nao faca parte do delta imediato a publicar, nao transforme isso em comentario solto nem misture com outra task. Abra ou atualize uma issue tecnica separada no repositorio afetado, em `Ready`, com labels `hotfix` + `bug` + `agent:developer` (e label de pagina quando identificavel), referenciando o workflow/job/run, fluxo (`fluxo: <id>` ou `outros`) e resumo sanitizado da falha. A publicacao so permanece bloqueada se a falha provar que a task atual nao esta publicavel; caso contrario, a correcao fica para a **P5 Developer** do Manager.
 4. publique **primeiro cada submodulo** obrigatorio com delta, depois o projeto pai (gitlinks coerentes)
-5. para cada repositorio com delta real entre `staging` e `master`, faça o merge/promocao autorizada (`staging` → `master`); use PR apenas se a politica do repo exigir — o rito operacional e a promocao do pacote RC, nao PR de task de produto. Nunca substitua esse merge por apontamento direto para SHA, commit de task ou simples atualização de gitlink.
+5. para cada repositorio com delta real da **task individual**, faça o merge/promoção autorizada (`task-{id}` → `master`); use PR apenas se a política do repo exigir. Recuse qualquer PR com `head=staging` ou qualquer merge que agrupe mais de uma task. Nunca substitua esse merge por apontamento direto para SHA, commit de task ou simples atualização de gitlink.
 6. antes de cada merge, aplique o **Gate de atenção redobrada**: confirme
    `merge-base`, SHAs de origem/destino e atualidade da origem; revise o diff do
    resultado final contra a intenção e os requisitos negativos de cada task;
@@ -42,7 +42,7 @@ ela pode voltar a percorrer `In Review`/`Deploy`.
    submódulos, revise também o diff do filho e o gitlink resultante no pai.
    Merge sem conflito não é evidência suficiente. Se a revisão falhar ou houver
    divergência sem explicação, aborte e pare sem publicar.
-7. faca merge somente sem conflito e com a task pai em `Deploy`
+7. faca merge somente sem conflito e com a task individual em `Deploy`
 8. depois do merge, **confirme a versão numérica** já presente no pacote (`X.Y.N` em `package.json` e, se existir, `app.json` com `version` igual e `versionCode = MAJOR*10000 + MINOR*100 + PATCH`); **não** existe sufixo textual para remover; tags usam a mesma versão numérica
 9. confirme que `master` recebeu o commit esperado e que o push remoto aconteceu
 10. registre quais repositorios foram promovidos e quais ficaram bloqueados
@@ -64,9 +64,9 @@ Quando o pedido for "publicar o front":
 
 **Sem atualizar o gitlink do submódulo e a versão no projeto principal (`app-community`), o delta do subprojeto não entra no deploy** — mesmo que `ui-*` já esteja em `staging`/`master`.
 
-Em **todo** deploy (RC normal ou hotfix):
+Em **todo** deploy (task normal ou hotfix):
 
-1. Publique o delta nos **subprojetos** afetados (`staging` → `master` de cada um).
+1. Publique somente o delta da **task individual** nos **subprojetos** afetados (`task-{id}` → `master` de cada um); nunca promova `staging` como conjunto.
 2. No **pai** (`app-community`):
    - atualize o **gitlink** (submodule pin) somente dentro do commit de merge que promove a branch integrada do subprojeto; não publique um SHA de task isolado como substituto do merge;
    - faça **bump semver** em `package.json` (patch para hotfix);
@@ -80,7 +80,7 @@ Publicar só o submódulo (ex.: `ui-people`) **não** publica o Manager em produ
 
 Ao concluir, informe:
 
-- versão pre-release do RC e versão estável publicada em master
+- versão da task e versão estável publicada em master
 - quais repositorios foram publicados em `master`
 - quais submodulos e o pai foram promovidos
 - quais ficaram bloqueados e por que
@@ -88,14 +88,14 @@ Ao concluir, informe:
 
 ## Quality Bar
 
-- nao promova sem coluna `Deploy` na task pai
+- nao promova sem coluna `Deploy` na task individual
 - nao promova se os deploys anteriores de `staging`/`master` nao tiverem finalizado corretamente e com causa de falha resolvida
 - nao deixe smoke de browser/UI falho sem issue tecnica de follow-up em `Ready` com `hotfix` + `bug` + `agent:developer`
 - nao pule subprojetos obrigatorios
 - nao publique o projeto principal antes dos subprojetos
 - nao force ref em `master` para contornar conflito
-- nao abra novo RC ate este estar em `Done`
-- nao marque só o pai em `Done` sem mover todas as filhas/subtasks do inventário do RC
+- nao agrupe tasks em um RC para publicação
+- nao marque uma task em `Done` sem a evidência da sua própria publicação
 - nao mover filhas de produto para `Done` no publish **sem** garantir labels de solicitação documental (`agent:technical-documenter` / `agent:tutorial-assistant`) quando `:done` ainda estiver ausente — handoff de docs é parte do rito de master
 - nao grave sufixo textual (`-rc.N`) em `package.json` / `app.json`; versão de arquivo é sempre somente números (`X.Y.N`)
 - nao use contador sequencial de RC (RC1/RC2) no lugar do SemVer nos arquivos de versão

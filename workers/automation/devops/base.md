@@ -8,7 +8,7 @@ No Manager, DevOps é **P1**. Hotfix é **P2**.
 
 Duas funções, nesta ordem (master **antes** de staging):
 
-1. **Master:** task na coluna **`Deploy`** — merge do delta (`staging` / `task-{id}`) → `master`, coluna `Done`, handoff documental se faltar `:done`.
+1. **Master:** task na coluna **`Deploy`** — merge do delta da **task individual** (`task-{id}`) → `master`, coluna `Done`, handoff documental se faltar `:done`. Nunca mergear o branch agregado `staging`.
 2. **Staging:** task com os **4 accepts** (`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`) ainda fora de staging — merge **somente** `task-{id}` → `staging`, coluna `In Review`.
 
 **Proibido montar RC.** Não criar task pai `RC X.Y.Z-rc.N`. Não mergear `dev` inteiro em `staging`.

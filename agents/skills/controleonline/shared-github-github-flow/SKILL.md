@@ -200,7 +200,7 @@ coluna. Se parecer indevida: comentar + `agent:devops` + esperar humano.
 1. Humano move a task para **`Deploy`**, com ou sem o quarteto; essa mudança
    de coluna é a autorização explícita para publicar em `master`.
 2. DevOps aplica o **Gate de atenção redobrada antes de qualquer merge** e
-   mescla o delta (`staging` / `task-{id}`) → `master` (pai + submódulos).
+   mescla somente o delta da task individual (`task-{id}`) → `master` (e seus submódulos); nunca o branch agregado `staging`.
 3. Se a task possuir os quatro accepts (`agent:qa:accepted`,
    `agent:security:accepted`, `agent:design:accepted`, `agent:ux:accepted`),
    move para **`Done`**.

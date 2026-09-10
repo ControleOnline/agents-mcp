@@ -148,7 +148,7 @@ tasks para `In Review`: essa coluna só é usada após os quatro accepts.
 - `DevOps` publica tasks na coluna **`Deploy`** → `master` (deltas individuais) e, se nao houver Deploy, promove tasks com as **quatro** `:accepted` para `staging` + `In Review`
 - **Proibido montar RC** e criar task pai de RC
 - humano confere staging e move a task para **`Deploy`**
-- `DevOps` promove o delta individual `staging` → `master`; com o quarteto move para **`Done`**, sem o quarteto move para **`Working`** para segunda rodada de validacao
+- `DevOps` promove o delta da task individual (`task-{id}`) → `master`; nunca promove o branch agregado `staging`; com o quarteto move para **`Done`**, sem o quarteto move para **`Working`** para segunda rodada de validacao
 
 ## Ownership operacional
 
