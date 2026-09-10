@@ -1,0 +1,1 @@
+../../shared/github/master-publication.md

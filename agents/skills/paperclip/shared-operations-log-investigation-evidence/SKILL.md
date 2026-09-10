@@ -1,0 +1,1 @@
+../../shared/operations/log-investigation-evidence.md

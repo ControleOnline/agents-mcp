@@ -1,0 +1,1 @@
+../../shared/github/conflict-resolution.md

@@ -1,0 +1,1 @@
+../../shared/operations/manager-worker-copilot.md

@@ -1,0 +1,1 @@
+../../shared/operations/delivery-proof-contract.md

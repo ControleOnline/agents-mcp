@@ -1,0 +1,1 @@
+../../shared/operations/copilot-cooperation.md
