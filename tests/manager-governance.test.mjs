@@ -19,6 +19,12 @@ const conflictResolution = fs.readFileSync(
   'agents/skills/controleonline/shared-github-conflict-resolution/SKILL.md',
   'utf8',
 );
+const githubOperations = fs.readFileSync('workers/automate/scripts/github-operations.mjs', 'utf8');
+const githubOperationsDoc = fs.readFileSync('workers/automate/github-operations.md', 'utf8');
+const issueHandling = fs.readFileSync(
+  'agents/skills/controleonline/shared-github-github-issue-handling/SKILL.md',
+  'utf8',
+);
 
 const completionLabels = [
   'qa:accepted',
@@ -150,4 +156,14 @@ test('agents cannot create or apply blocking labels or terminal blocks', () => {
   assert.match(deliveryProof, /não crie[\s\S]*tag `agent:\*:blocked`/i);
   assert.doesNotMatch(managerAgent, /`agent:<papel>:blocked`/i);
   assert.doesNotMatch(managerSkill, /`agent:<papel>:blocked`/i);
+});
+
+test('In Review protection is per-task, not an RC inventory', () => {
+  assert.match(githubOperations, /function hasHumanAuthorizedInReviewRemoval/);
+  assert.match(githubOperations, /human_authorized_in_review_removal=true/);
+  assert.match(githubOperationsDoc, /Protecao de `In Review`/i);
+  assert.doesNotMatch(githubOperations, /frozen RC package|changes the RC inventory/i);
+  assert.doesNotMatch(githubOperationsDoc, /pacote de RC|remocao de item do RC|Protecao de freeze/i);
+  assert.match(issueHandling, /nao em uma task pai de pacote/);
+  assert.match(issueHandling, /referencia para a task\/-?`Deploy`/);
 });
