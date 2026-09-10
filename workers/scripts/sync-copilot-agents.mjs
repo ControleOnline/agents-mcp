@@ -156,14 +156,14 @@ function familyLabel(family) {
 function renderWrapper(type, entry) {
   const meta = typeMeta[type];
   const canonicalAgentUrl = `${CENTRAL_BASE_URL}/agents/roles/${type}/agent.md`;
-  const skillsUrl = `${CENTRAL_BASE_URL}/agents/skills/README.md`;
-  const sharedSkillsUrl = `${CENTRAL_BASE_URL}/agents/skills/shared/README.md`;
-  const roleSkillsUrl = `${CENTRAL_BASE_URL}/agents/skills/by-role/${type}/README.md`;
-  const wrapperContractUrl = `${CENTRAL_BASE_URL}/agents/skills/shared/operations/agent-wrapper-contract.md`;
-  const runnersUrl = `${CENTRAL_BASE_URL}/agents/skills/runners/README.md`;
-  const executionBaselineUrl = `${CENTRAL_BASE_URL}/agents/skills/shared/operations/agent-execution-baseline.md`;
-  const githubWorkflowUrl = `${CENTRAL_BASE_URL}/agents/skills/shared/github/operational-github-workflow.md`;
-  const securityGuardrailsUrl = `${CENTRAL_BASE_URL}/agents/skills/shared/security/operational-security-guardrails.md`;
+  const skillsUrl = `${CENTRAL_BASE_URL}/agents/skills/paperclip/README/SKILL.md`;
+  const sharedSkillsUrl = `${CENTRAL_BASE_URL}/agents/skills/paperclip/shared-README/SKILL.md`;
+  const roleSkillsUrl = `${CENTRAL_BASE_URL}/agents/skills/paperclip/by-role-${type}-README/SKILL.md`;
+  const wrapperContractUrl = `${CENTRAL_BASE_URL}/agents/skills/paperclip/shared-operations-agent-wrapper-contract/SKILL.md`;
+  const runnersUrl = `${CENTRAL_BASE_URL}/agents/skills/paperclip/runners-README/SKILL.md`;
+  const executionBaselineUrl = `${CENTRAL_BASE_URL}/agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`;
+  const githubWorkflowUrl = `${CENTRAL_BASE_URL}/agents/skills/paperclip/shared-github-operational-github-workflow/SKILL.md`;
+  const securityGuardrailsUrl = `${CENTRAL_BASE_URL}/agents/skills/paperclip/shared-security-operational-security-guardrails/SKILL.md`;
   const agentsStatus = entry.hasAgentsMd ? "presente" : "ausente";
 
   return `---

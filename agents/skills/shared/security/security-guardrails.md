@@ -1,1 +1,0 @@
-../../paperclip/shared-security-security-guardrails/SKILL.md

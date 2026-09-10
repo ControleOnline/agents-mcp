@@ -1,1 +1,0 @@
-../../paperclip/shared-operations-copilot-cooperation/SKILL.md

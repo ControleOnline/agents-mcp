@@ -1,1 +1,0 @@
-../../paperclip/by-role-security-README/SKILL.md

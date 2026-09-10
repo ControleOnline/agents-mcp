@@ -1,1 +1,0 @@
-../../paperclip/shared-github-conflict-resolution/SKILL.md

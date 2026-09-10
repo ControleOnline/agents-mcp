@@ -1,1 +1,0 @@
-../../paperclip/by-role-sysadmin-checklist-system-dev/SKILL.md

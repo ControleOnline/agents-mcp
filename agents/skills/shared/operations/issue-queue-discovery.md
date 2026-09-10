@@ -1,1 +1,0 @@
-../../paperclip/shared-operations-issue-queue-discovery/SKILL.md

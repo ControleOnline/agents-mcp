@@ -4,7 +4,7 @@ Este arquivo mapeia o modelo atual de execução do ecossistema sem misturar o p
 
 ## Trilha principal de push → Copilot (Manager Worker)
 
-**Fonte canônica completa:** [`agents/skills/shared/operations/manager-worker-copilot.md`](../shared/operations/manager-worker-copilot.md)
+**Fonte canônica completa:** [`agents/skills/paperclip/shared-operations-manager-worker-copilot/SKILL.md`](../shared/operations/manager-worker-copilot.md)
 
 Em **todos** os repositórios da org:
 
@@ -70,5 +70,5 @@ Quando a duvida envolver ownership, fila ou runtime:
 
 1. confira primeiro os entry points reais em `workers/src/*-runner.js`
 2. confira a logica final em `workers/automate/scripts/`
-3. use `agents/skills/shared/README.md` e `workers/automate/agents/runner-map.md` como mapa de governanca
+3. use `agents/skills/paperclip/shared-README/SKILL.md` e `workers/automate/agents/runner-map.md` como mapa de governanca
 4. trate scripts ou workflows historicos fora desse caminho como legado ate reativacao explicita

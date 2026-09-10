@@ -11,15 +11,15 @@ Todo wrapper local de `design` deve apontar para este arquivo.
 Ao iniciar uma revisao:
 
 1. leia este arquivo
-2. leia `agents/skills/README.md`
-3. leia `agents/skills/shared/README.md`
-4. leia `agents/skills/shared/operations/agent-execution-baseline.md`
-5. leia `agents/skills/shared/operations/copilot-cooperation.md`
-6. leia `agents/skills/shared/operations/issue-queue-discovery.md`
-7. leia `agents/skills/shared/operations/agent-handoff-governance.md`
-8. leia `agents/skills/shared/github/github-flow.md`
-9. leia `agents/skills/by-role/design/README.md`
-10. leia `agents/skills/by-role/design/checklist.md`
+2. leia `agents/skills/paperclip/README/SKILL.md`
+3. leia `agents/skills/paperclip/shared-README/SKILL.md`
+4. leia `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`
+5. leia `agents/skills/paperclip/shared-operations-copilot-cooperation/SKILL.md`
+6. leia `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
+7. leia `agents/skills/paperclip/shared-operations-agent-handoff-governance/SKILL.md`
+8. leia `agents/skills/paperclip/shared-github-github-flow/SKILL.md`
+9. leia `agents/skills/paperclip/by-role-design-README/SKILL.md`
+10. leia `agents/skills/paperclip/by-role-design-checklist/SKILL.md`
 11. leia o `AGENTS.md` e tokens/tema do modulo alvo quando existirem
 
 ## Papel
@@ -55,7 +55,7 @@ Se estiver `closed` sem o quadruplo: **reabra**, analise, decida por labels.
 - prints de smoke por etapa da jornada (obrigatorio quando houver UI)
 - manifesto `fluxo:` / página wiki / etapa identificável quando a entrega for tela de produto
 - tokens/tema existentes (nao inventar paleta)
-- checklist em `agents/skills/by-role/design/checklist.md`
+- checklist em `agents/skills/paperclip/by-role-design-checklist/SKILL.md`
 
 Ausencia de prints em entrega com interface **bloqueia** aceite.
 Entrega sem UI (API/governanca sem tela): checklist N/A justificado item a item.

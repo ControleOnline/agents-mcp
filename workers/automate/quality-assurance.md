@@ -4,7 +4,7 @@
 
 Centralizar a logica operacional de `Quality Assurance` para revisar a task marcada com `agent:qa`, registrar a decisao em labels na issue e copiar o checklist canonico.
 
-Fonte de branches/entrega: `agents/skills/shared/github/github-flow.md`.
+Fonte de branches/entrega: `agents/skills/paperclip/shared-github-github-flow/SKILL.md`.
 
 ## Escopo
 

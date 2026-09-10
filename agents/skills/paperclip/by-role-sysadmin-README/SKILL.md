@@ -25,15 +25,15 @@ Se o modo nao estiver claro no prompt ou no nome do job → **nao execute**.
 
 ## Skills e checklists
 
-- `agents/skills/shared/operations/autonomous-operations.md`
-- `agents/skills/shared/security/operational-security-guardrails.md`
-- `agents/skills/shared/operations/operational-source-of-truth.md`
-- `agents/skills/shared/operations/log-investigation-evidence.md`
-- `agents/skills/shared/operations/email-reading-fallback.md`
-- `agents/skills/shared/operations/issue-queue-discovery.md` (modo `resolve` + vinculo ao projeto)
-- `agents/skills/shared/github/github-issue-handling.md`
-- **Checklist servidor:** `agents/skills/by-role/sysadmin/checklist-server.md`
-- **Checklist sistema/app (dev):** `agents/skills/by-role/sysadmin/checklist-system-dev.md`
+- `agents/skills/paperclip/shared-operations-autonomous-operations/SKILL.md`
+- `agents/skills/paperclip/shared-security-operational-security-guardrails/SKILL.md`
+- `agents/skills/paperclip/shared-operations-operational-source-of-truth/SKILL.md`
+- `agents/skills/paperclip/shared-operations-log-investigation-evidence/SKILL.md`
+- `agents/skills/paperclip/shared-operations-email-reading-fallback/SKILL.md`
+- `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md` (modo `resolve` + vinculo ao projeto)
+- `agents/skills/paperclip/shared-github-github-issue-handling/SKILL.md`
+- **Checklist servidor:** `agents/skills/paperclip/by-role-sysadmin-checklist-server/SKILL.md`
+- **Checklist sistema/app (dev):** `agents/skills/paperclip/by-role-sysadmin-checklist-system-dev/SKILL.md`
 
 ## Ownership das issues criadas pelo discover
 
@@ -51,5 +51,5 @@ Se o modo nao estiver claro no prompt ou no nome do job → **nao execute**.
 ## Fontes principais
 
 - `agents/roles/sysadmin/agent.md`
-- `agents/skills/by-role/sysadmin/checklist-server.md`
-- `agents/skills/by-role/sysadmin/checklist-system-dev.md`
+- `agents/skills/paperclip/by-role-sysadmin-checklist-server/SKILL.md`
+- `agents/skills/paperclip/by-role-sysadmin-checklist-system-dev/SKILL.md`

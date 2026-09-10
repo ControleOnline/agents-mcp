@@ -3,11 +3,11 @@ import fs from 'node:fs';
 import test from 'node:test';
 
 const smokeFlows = fs.readFileSync(
-  'agents/skills/shared/quality/smoke-test-flows.md',
+  'agents/skills/paperclip/shared-quality-smoke-test-flows/SKILL.md',
   'utf8',
 );
 const codeQuality = fs.readFileSync(
-  'agents/skills/shared/quality/code-quality.md',
+  'agents/skills/paperclip/shared-quality-code-quality/SKILL.md',
   'utf8',
 );
 const qaAgent = fs.readFileSync('agents/roles/qa/agent.md', 'utf8');
@@ -47,7 +47,7 @@ test('automated test integration is code, not generated artifacts', () => {
 });
 
 test('QA gate requires admin flowchartIds plus per-step prints', () => {
-  const qaReadme = fs.readFileSync('agents/skills/by-role/qa/README.md', 'utf8');
+  const qaReadme = fs.readFileSync('agents/skills/paperclip/by-role-qa-README/SKILL.md', 'utf8');
 
   for (const source of [smokeFlows, codeQuality, qaAgent, qaReadme]) {
     assert.match(source, /flowchartIds/);

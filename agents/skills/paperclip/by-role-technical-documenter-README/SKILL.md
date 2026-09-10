@@ -18,9 +18,9 @@ O foco e registrar informacoes que ajudem o time a entender:
 
 ## Skills compartilhadas essenciais
 
-- `agents/skills/shared/operations/agent-execution-baseline.md`
-- `agents/skills/shared/documentation/documentation-governance.md`
-- `agents/skills/shared/security/security-guardrails.md`
+- `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`
+- `agents/skills/paperclip/shared-documentation-documentation-governance/SKILL.md`
+- `agents/skills/paperclip/shared-security-security-guardrails/SKILL.md`
 
 ## Independencia operacional (sem ProjectV2)
 
@@ -155,5 +155,5 @@ Ao finalizar, registre:
 ## Fontes principais
 
 - `agents/roles/technical-documenter/agent.md`
-- `agents/skills/shared/documentation/documentation-governance.md`
-- `agents/skills/shared/security/security-guardrails.md`
+- `agents/skills/paperclip/shared-documentation-documentation-governance/SKILL.md`
+- `agents/skills/paperclip/shared-security-security-guardrails/SKILL.md`

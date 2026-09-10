@@ -1,1 +1,0 @@
-../../paperclip/shared-operations-email-reading-fallback/SKILL.md

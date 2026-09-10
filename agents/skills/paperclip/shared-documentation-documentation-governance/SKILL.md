@@ -11,7 +11,7 @@ Governanca da documentacao tecnica e de tutorial no ecossistema ControleOnline.
 
 ## Fila compartilhada (sem ProjectV2)
 
-Ambas as trilhas usam `agents/skills/shared/operations/issue-queue-discovery.md`:
+Ambas as trilhas usam `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`:
 
 - sem ProjectV2;
 - uma issue por execucao;
@@ -44,11 +44,11 @@ Labels legadas `tutorial-assistant:accepted` / `tutorial-assistant:rejected` **n
 
 ## Seguranca
 
-Toda publicacao documental deve obedecer `agents/skills/shared/security/security-guardrails.md`.
+Toda publicacao documental deve obedecer `agents/skills/paperclip/shared-security-security-guardrails/SKILL.md`.
 
 ## Fonte completa
 
-Detalhes operacionais por papel ficam em `agents/skills/by-role/*/README.md` e nos `agents/roles/*/agent.md` correspondentes.
+Detalhes operacionais por papel ficam em `agents/skills/paperclip/by-role-<role>-README/SKILL.md` e nos `agents/roles/*/agent.md` correspondentes.
 
 ## Handoff apos dual-gate / publish (anti-furo)
 

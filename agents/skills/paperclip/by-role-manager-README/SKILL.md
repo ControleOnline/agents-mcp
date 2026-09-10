@@ -23,7 +23,7 @@ Ordem resumida:
 
 Toda rodada executa. Documentacao nao e fallback de P1/P2.
 
-Toda rodada segue `agents/skills/shared/operations/delivery-proof-contract.md`:
+Toda rodada segue `agents/skills/paperclip/shared-operations-delivery-proof-contract/SKILL.md`:
 comentário ou handoff sem mutação verificável não encerra trabalho. Sem delta
 novo, labels/coluna novas ou mudança externa comprovada, a mesma issue deve ser
 registrada com `NEXT_ACTION` e responsavel pela proxima acao; nunca repetida e
@@ -64,5 +64,5 @@ para uma segunda rodada de validacao.
 
 - `agents/roles/manager/agent.md`
 - `agents/roles/devops/agent.md`
-- `agents/skills/shared/github/github-flow.md`
-- `agents/skills/shared/operations/delivery-proof-contract.md`
+- `agents/skills/paperclip/shared-github-github-flow/SKILL.md`
+- `agents/skills/paperclip/shared-operations-delivery-proof-contract/SKILL.md`

@@ -16,16 +16,16 @@ Todo wrapper local de `qa` deve apontar para este arquivo.
 Ao iniciar uma revisao:
 
 1. leia este arquivo
-2. leia `agents/skills/README.md`
-3. leia `agents/skills/shared/README.md`
-4. leia `agents/skills/shared/operations/agent-execution-baseline.md`
+2. leia `agents/skills/paperclip/README/SKILL.md`
+3. leia `agents/skills/paperclip/shared-README/SKILL.md`
+4. leia `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`
 
-**Obrigatorio:** leia `agents/skills/shared/operations/copilot-cooperation.md` (cooperacao com Copilot, workers, runners e Actions).
-5. leia `agents/skills/shared/operations/issue-queue-discovery.md`
-6. leia `agents/skills/shared/operations/agent-handoff-governance.md`
-7. leia `agents/skills/shared/quality/code-quality.md`
-8. leia `agents/skills/shared/github/github-flow.md`
-9. leia `agents/skills/by-role/qa/README.md`
+**Obrigatorio:** leia `agents/skills/paperclip/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
+5. leia `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
+6. leia `agents/skills/paperclip/shared-operations-agent-handoff-governance/SKILL.md`
+7. leia `agents/skills/paperclip/shared-quality-code-quality/SKILL.md`
+8. leia `agents/skills/paperclip/shared-github-github-flow/SKILL.md`
+9. leia `agents/skills/paperclip/by-role-qa-README/SKILL.md`
 10. leia `workers/automation/qa/base.md` e o checklist em `workers/automate/review-checklists.md`
 11. leia o `AGENTS.md` local mais especifico do escopo alterado
 
@@ -44,7 +44,7 @@ Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edi
 ## Independencia e fonte de fila
 
 - Prefira **issues + labels** para a fila; ProjectV2 e permitido quando util, nao obrigatorio para elegibilidade.
-- Siga `agents/skills/shared/operations/issue-queue-discovery.md`.
+- Siga `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`.
 - QA **pode** processar **mais de uma** issue elegivel na mesma rodada/execucao (fila por prioridade e updated). Cada issue recebe decisao e comentario proprios; nao misturar evidencias.
 - O agent pode criar labels oficiais ausentes.
 

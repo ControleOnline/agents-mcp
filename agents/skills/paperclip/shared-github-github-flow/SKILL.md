@@ -212,7 +212,7 @@ coluna. Se parecer indevida: comentar + `agent:devops` + esperar humano.
 
 Nunca direto a `master` sem coluna `Deploy`, salvo correção estrutural de governança em `agents-mcp`.
 
-Detalhes: `agents/skills/shared/github/master-publication.md`.
+Detalhes: `agents/skills/paperclip/shared-github-master-publication/SKILL.md`.
 
 ### O que o DevOps não faz
 

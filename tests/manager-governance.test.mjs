@@ -2,21 +2,21 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 
-const managerSkill = fs.readFileSync('agents/skills/by-role/manager/README.md', 'utf8');
+const managerSkill = fs.readFileSync('agents/skills/paperclip/by-role-manager-README/SKILL.md', 'utf8');
 const managerAgent = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
 const queueDiscovery = fs.readFileSync(
-  'agents/skills/shared/operations/issue-queue-discovery.md',
+  'agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md',
   'utf8',
 );
-const workerDoc = fs.readFileSync('agents/skills/shared/operations/manager-worker-copilot.md', 'utf8');
+const workerDoc = fs.readFileSync('agents/skills/paperclip/shared-operations-manager-worker-copilot/SKILL.md', 'utf8');
 const qaWorker = fs.readFileSync('.github/actions/workers/qa/action.yml', 'utf8');
 const securityWorker = fs.readFileSync('.github/actions/workers/security/action.yml', 'utf8');
 const deliveryProof = fs.readFileSync(
-  'agents/skills/shared/operations/delivery-proof-contract.md',
+  'agents/skills/paperclip/shared-operations-delivery-proof-contract/SKILL.md',
   'utf8',
 );
 const conflictResolution = fs.readFileSync(
-  'agents/skills/shared/github/conflict-resolution.md',
+  'agents/skills/paperclip/shared-github-conflict-resolution/SKILL.md',
   'utf8',
 );
 
@@ -83,7 +83,7 @@ test('confusing merges restart the task from remote master and reset Notion flow
 });
 
 test('manager cannot close a round with commentary-only progress', () => {
-  assert.match(managerAgent, /delivery-proof-contract\.md/i);
+  assert.match(managerAgent, /delivery-proof-contract(?:\.md|\/SKILL\.md)/i);
   assert.match(managerAgent, /coment[aá]rio.*substitui|coment[aá]rio.*não é entrega/i);
   assert.match(managerAgent, /DELIVERY_PROOF/i);
   assert.match(managerSkill, /NEXT_ACTION/i);

@@ -1,1 +1,0 @@
-../../paperclip/shared-quality-smoke-test-flows/SKILL.md

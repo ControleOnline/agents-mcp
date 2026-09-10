@@ -1,1 +1,0 @@
-../../paperclip/by-role-developer-README/SKILL.md

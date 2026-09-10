@@ -1,1 +1,0 @@
-../../paperclip/shared-github-operational-github-workflow/SKILL.md

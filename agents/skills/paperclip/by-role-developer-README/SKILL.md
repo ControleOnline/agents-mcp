@@ -6,12 +6,12 @@
 
 ## Skills compartilhadas essenciais
 
-- `agents/skills/shared/operations/agent-execution-baseline.md`
-- `agents/skills/shared/quality/code-quality.md`
-- `agents/skills/shared/operations/agent-handoff-governance.md`
-- `agents/skills/shared/operations/autonomous-operations.md`
-- `agents/skills/shared/quality/task-completion-criteria.md`
-- `agents/skills/shared/github/github-flow.md`
+- `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`
+- `agents/skills/paperclip/shared-quality-code-quality/SKILL.md`
+- `agents/skills/paperclip/shared-operations-agent-handoff-governance/SKILL.md`
+- `agents/skills/paperclip/shared-operations-autonomous-operations/SKILL.md`
+- `agents/skills/paperclip/shared-quality-task-completion-criteria/SKILL.md`
+- `agents/skills/paperclip/shared-github-github-flow/SKILL.md`
 
 ## Ownership
 
@@ -28,7 +28,7 @@
 
 ## Regras de execucao
 
-- siga `agents/skills/shared/github/github-flow.md`
+- siga `agents/skills/paperclip/shared-github-github-flow/SKILL.md`
 - investigacao com acao segura no escopo → implemente na mesma rodada
 - handoff por labels `agent:qa` + `agent:security` e evidencia, **nao por PR**
 - apos merge em `dev`, a revisao QA/Security usa essa evidencia
@@ -39,4 +39,4 @@
 
 - `agents/roles/developer/agent.md`
 - `workers/automation/developer/base.md`
-- `agents/skills/shared/github/github-flow.md`
+- `agents/skills/paperclip/shared-github-github-flow/SKILL.md`

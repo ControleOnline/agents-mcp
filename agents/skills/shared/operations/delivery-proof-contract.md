@@ -1,1 +1,0 @@
-../../paperclip/shared-operations-delivery-proof-contract/SKILL.md

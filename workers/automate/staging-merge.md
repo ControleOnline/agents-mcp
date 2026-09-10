@@ -7,7 +7,7 @@ No fluxo normal de task:
 - o `Developer` integra a `task-{id_issue}` em **`dev`** por **merge** (sem PR)
 - o `DevOps` consolida o **RC** em **`staging`** (pai + submodulos) e, apos coluna `Deploy`, promove para **`master`**
 
-Fonte canonica: `agents/skills/shared/github/github-flow.md`.
+Fonte canonica: `agents/skills/paperclip/shared-github-github-flow/SKILL.md`.
 
 ## Entrega do Developer → `dev`
 

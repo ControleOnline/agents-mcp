@@ -1,1 +1,0 @@
-../paperclip/runners-README/SKILL.md

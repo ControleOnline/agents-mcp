@@ -1,1 +1,0 @@
-../../paperclip/shared-operations-autonomous-operations/SKILL.md

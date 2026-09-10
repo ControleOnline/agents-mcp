@@ -1,1 +1,0 @@
-../../paperclip/shared-operations-manager-worker-copilot/SKILL.md

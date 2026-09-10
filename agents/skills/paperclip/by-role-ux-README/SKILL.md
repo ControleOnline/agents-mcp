@@ -8,9 +8,9 @@ Pode processar mais de uma issue na mesma rodada.
 
 ## Skills essenciais
 
-- `agents/skills/shared/operations/issue-queue-discovery.md`
-- `agents/skills/shared/operations/agent-handoff-governance.md`
-- `agents/skills/by-role/ux/checklist.md`
+- `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
+- `agents/skills/paperclip/shared-operations-agent-handoff-governance/SKILL.md`
+- `agents/skills/paperclip/by-role-ux-checklist/SKILL.md`
 
 ## Labels
 
@@ -28,4 +28,4 @@ Pode processar mais de uma issue na mesma rodada.
 ## Fontes
 
 - `agents/roles/ux/agent.md`
-- `agents/skills/by-role/ux/checklist.md`
+- `agents/skills/paperclip/by-role-ux-checklist/SKILL.md`

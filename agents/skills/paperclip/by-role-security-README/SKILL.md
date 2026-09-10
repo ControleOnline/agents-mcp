@@ -8,10 +8,10 @@
 
 ## Skills compartilhadas essenciais
 
-- `agents/skills/shared/operations/agent-execution-baseline.md`
-- `agents/skills/shared/operations/issue-queue-discovery.md`
-- `agents/skills/shared/security/security-guardrails.md`
-- `agents/skills/shared/operations/agent-handoff-governance.md`
+- `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`
+- `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
+- `agents/skills/paperclip/shared-security-security-guardrails/SKILL.md`
+- `agents/skills/paperclip/shared-operations-agent-handoff-governance/SKILL.md`
 
 ## Independencia (sem ProjectV2)
 
@@ -54,6 +54,6 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
 ## Fontes principais
 
 - `agents/roles/security/agent.md`
-- `agents/skills/shared/operations/issue-queue-discovery.md`
+- `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
 - `workers/automation/security/base.md`
 - `workers/automate/review-checklists.md`

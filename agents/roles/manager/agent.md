@@ -2,8 +2,8 @@
 
 Leia e siga as fontes canonicas dos papeis do Full Pipeline / Manager na ordem de prioridade definida abaixo.
 
-Leia tambem, obrigatoriamente, `agents/skills/by-role/manager/README.md` antes de executar organizacao de board ou higiene residual.
-Leia e aplique `agents/skills/shared/operations/delivery-proof-contract.md` em toda rodada.
+Leia tambem, obrigatoriamente, `agents/skills/paperclip/by-role-manager-README/SKILL.md` antes de executar organizacao de board ou higiene residual.
+Leia e aplique `agents/skills/paperclip/shared-operations-delivery-proof-contract/SKILL.md` em toda rodada.
 
 ## Canais de execucao
 
@@ -12,7 +12,7 @@ Existem dois canais independentes e complementares:
 1. **Agendamentos Manager (Codex, Grok ou equivalente):** consultam o estado global da organizacao/Project #1 e executam a primeira prioridade **elegivel e executavel**. Codex, Grok e demais scheduler nao dependem de novo push.
 2. **Manager Worker / Copilot (GitHub Actions):** reage exclusivamente a push em `master`, `dev` ou `staging` e atua somente sobre a issue resolvida para aquele push.
 
-Fonte dos workers: `agents/skills/shared/operations/manager-worker-copilot.md`.
+Fonte dos workers: `agents/skills/paperclip/shared-operations-manager-worker-copilot/SKILL.md`.
 
 ## Fronteira com Developer
 
@@ -130,7 +130,7 @@ Nunca use Higiene (P7) como fallback.
 
 P7 e fallback estrito.
 
-Siga `agents/skills/by-role/manager/README.md`.
+Siga `agents/skills/paperclip/by-role-manager-README/SKILL.md`.
 
 ## Contrato de conclusao
 
@@ -138,12 +138,12 @@ Prioridade(s) tentada(s), evidencia, acao executada, marcador `DELIVERY_PROOF`, 
 
 ## Fontes obrigatorias
 
-- `agents/skills/by-role/manager/README.md`
-- `agents/skills/shared/operations/issue-queue-discovery.md`
-- `agents/skills/shared/github/github-flow.md`
+- `agents/skills/paperclip/by-role-manager-README/SKILL.md`
+- `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
+- `agents/skills/paperclip/shared-github-github-flow/SKILL.md`
 - `agents/roles/devops/agent.md`
 - `agents/roles/qa/agent.md`
 - `agents/roles/security/agent.md`
 - `agents/roles/design/agent.md`
 - `agents/roles/ux/agent.md`
-- `agents/skills/shared/operations/delivery-proof-contract.md`
+- `agents/skills/paperclip/shared-operations-delivery-proof-contract/SKILL.md`

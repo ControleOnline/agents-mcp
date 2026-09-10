@@ -4,14 +4,14 @@ import test from 'node:test';
 
 const canonicalFiles = [
   'AGENTS.md',
-  'agents/skills/shared/operations/issue-queue-discovery.md',
+  'agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md',
   'agents/roles/developer/agent.md',
-  'agents/skills/by-role/developer/README.md',
+  'agents/skills/paperclip/by-role-developer-README/SKILL.md',
   'agents/roles/technical-documenter/agent.md',
-  'agents/skills/by-role/technical-documenter/README.md',
-  'agents/skills/by-role/tutorial-assistant/README.md',
+  'agents/skills/paperclip/by-role-technical-documenter-README/SKILL.md',
+  'agents/skills/paperclip/by-role-tutorial-assistant-README/SKILL.md',
   'agents/roles/sysadmin/agent.md',
-  'agents/skills/by-role/manager/README.md',
+  'agents/skills/paperclip/by-role-manager-README/SKILL.md',
 ];
 
 function compareQueueItems(left, right) {
@@ -72,7 +72,7 @@ test('Working capacity is configured centrally in agents-mcp', () => {
 
   const manager = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
   const discovery = fs.readFileSync(
-    'agents/skills/shared/operations/issue-queue-discovery.md',
+    'agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md',
     'utf8',
   );
   assert.match(manager, /limite global.*Working.*5 tasks/is);
@@ -90,7 +90,7 @@ test('canonical instructions reject updatedAt ordering', () => {
     assert.doesNotMatch(source, /updated mais recente/i, path);
   }
 
-  const discovery = fs.readFileSync('agents/skills/shared/operations/issue-queue-discovery.md', 'utf8');
+  const discovery = fs.readFileSync('agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md', 'utf8');
   assert.match(discovery, /createdAt` crescente/i);
   assert.match(discovery, /nunca use `updatedAt`/i);
   assert.match(discovery, /menor numero da issue/i);
@@ -102,8 +102,8 @@ test('canonical instructions reject updatedAt ordering', () => {
 });
 
 test('all agents prioritize Working and DevOps prioritizes Deploy first', () => {
-  const discovery = fs.readFileSync('agents/skills/shared/operations/issue-queue-discovery.md', 'utf8');
-  const devops = fs.readFileSync('agents/skills/by-role/devops/README.md', 'utf8');
+  const discovery = fs.readFileSync('agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md', 'utf8');
+  const devops = fs.readFileSync('agents/skills/paperclip/by-role-devops-README/SKILL.md', 'utf8');
   const dispatch = fs.readFileSync('workers/automate/scripts/agent-project-dispatch.mjs', 'utf8');
   const projectDispatch = fs.readFileSync('workers/automate/scripts/developer-project-dispatch.mjs', 'utf8');
 
@@ -129,7 +129,7 @@ test('board mutations fail closed before creating a sixth Working task', () => {
   );
   const manager = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
   const discovery = fs.readFileSync(
-    'agents/skills/shared/operations/issue-queue-discovery.md',
+    'agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md',
     'utf8',
   );
 

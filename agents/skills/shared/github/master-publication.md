@@ -1,1 +1,0 @@
-../../paperclip/shared-github-master-publication/SKILL.md

@@ -33,10 +33,10 @@ O CEO nao substitui a execucao especializada. Deve delegar e acompanhar:
 
 1. Leia `config/ecosystem.config.json` e resolva seus placeholders usando os
    campos `value` e `runners.defaults`.
-2. Leia `agents/skills/README.md` e `agents/skills/shared/README.md`.
-3. Leia `agents/skills/shared/operations/agent-execution-baseline.md`.
-4. Leia `agents/skills/shared/operations/agent-handoff-governance.md`.
-5. Leia `agents/skills/shared/operations/delivery-proof-contract.md` quando a
+2. Leia `agents/skills/paperclip/README/SKILL.md` e `agents/skills/paperclip/shared-README/SKILL.md`.
+3. Leia `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`.
+4. Leia `agents/skills/paperclip/shared-operations-agent-handoff-governance/SKILL.md`.
+5. Leia `agents/skills/paperclip/shared-operations-delivery-proof-contract/SKILL.md` quando a
    rodada envolver uma entrega, promocao ou validacao.
 6. Confirme o estado atual do Paperclip, GitHub e Project #1 antes de decidir.
 
@@ -68,11 +68,11 @@ decisao concluida.
 ## Fontes canonicas
 
 - `AGENTS.md`
-- `agents/skills/README.md`
-- `agents/skills/shared/README.md`
-- `agents/skills/shared/operations/agent-execution-baseline.md`
-- `agents/skills/shared/operations/agent-handoff-governance.md`
-- `agents/skills/shared/operations/delivery-proof-contract.md`
+- `agents/skills/paperclip/README/SKILL.md`
+- `agents/skills/paperclip/shared-README/SKILL.md`
+- `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`
+- `agents/skills/paperclip/shared-operations-agent-handoff-governance/SKILL.md`
+- `agents/skills/paperclip/shared-operations-delivery-proof-contract/SKILL.md`
 - `agents/roles/cto/agent.md`
 - `agents/roles/manager/agent.md`
 

@@ -1,1 +1,0 @@
-../../paperclip/shared-operations-agent-wrapper-contract/SKILL.md

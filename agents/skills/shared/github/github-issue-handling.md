@@ -1,1 +1,0 @@
-../../paperclip/shared-github-github-issue-handling/SKILL.md

@@ -16,19 +16,19 @@ Todo wrapper local de `tutorial-assistant` deve apontar para este arquivo.
 Ao iniciar uma execucao:
 
 1. leia este arquivo
-2. leia `agents/skills/README.md`
-3. leia `agents/skills/shared/README.md`
-4. leia `agents/skills/shared/operations/agent-execution-baseline.md`
+2. leia `agents/skills/paperclip/README/SKILL.md`
+3. leia `agents/skills/paperclip/shared-README/SKILL.md`
+4. leia `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`
 
-**Obrigatorio:** leia `agents/skills/shared/operations/copilot-cooperation.md` (cooperacao com Copilot, workers, runners e Actions).
-5. leia `agents/skills/shared/operations/issue-queue-discovery.md`
-6. leia `agents/skills/shared/documentation/documentation-governance.md`
-7. leia `agents/skills/shared/security/security-guardrails.md`
-8. leia `agents/skills/by-role/tutorial-assistant/README.md`
+**Obrigatorio:** leia `agents/skills/paperclip/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
+5. leia `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
+6. leia `agents/skills/paperclip/shared-documentation-documentation-governance/SKILL.md`
+7. leia `agents/skills/paperclip/shared-security-security-guardrails/SKILL.md`
+8. leia `agents/skills/paperclip/by-role-tutorial-assistant-README/SKILL.md`
 9. leia o `AGENTS.md` local mais especifico do escopo alterado
 10. confirme o estado atual no GitHub e na Central de Ajuda antes de concluir
 
-Wrappers, automacoes agendadas e prompts locais devem conter apenas a instrucao para ler este arquivo e suas referencias. Regras operacionais do `tutorial-assistant` vivem aqui e em `agents/skills/by-role/tutorial-assistant/README.md`.
+Wrappers, automacoes agendadas e prompts locais devem conter apenas a instrucao para ler este arquivo e suas referencias. Regras operacionais do `tutorial-assistant` vivem aqui e em `agents/skills/paperclip/by-role-tutorial-assistant-README/SKILL.md`.
 
 ## Papel
 
@@ -41,7 +41,7 @@ A documentacao publica **nao** e changelog, release note ou relato de implementa
 ## Independencia e fonte de fila (sem ProjectV2)
 
 - **Nao use ProjectV2** como fonte de fila, status, coluna ou handoff.
-- Siga `agents/skills/shared/operations/issue-queue-discovery.md`.
+- Siga `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`.
 - Labels + estado da issue + comentarios sao a fonte de verdade.
 - O agent pode criar labels oficiais ausentes.
 
@@ -113,7 +113,7 @@ Se houver bloqueio: comente, **nao** marque `:done`, mantenha `agent:tutorial-as
 
 ## Regras especificas
 
-- siga integralmente `agents/skills/by-role/tutorial-assistant/README.md`
-- siga integralmente `agents/skills/shared/operations/issue-queue-discovery.md`
-- siga integralmente `agents/skills/shared/documentation/documentation-governance.md`
-- siga integralmente `agents/skills/shared/security/security-guardrails.md`
+- siga integralmente `agents/skills/paperclip/by-role-tutorial-assistant-README/SKILL.md`
+- siga integralmente `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
+- siga integralmente `agents/skills/paperclip/shared-documentation-documentation-governance/SKILL.md`
+- siga integralmente `agents/skills/paperclip/shared-security-security-guardrails/SKILL.md`

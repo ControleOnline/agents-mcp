@@ -1,1 +1,0 @@
-../../paperclip/by-role-tutorial-assistant-README/SKILL.md

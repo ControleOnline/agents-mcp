@@ -1,1 +1,0 @@
-../../paperclip/shared-github-github-flow/SKILL.md

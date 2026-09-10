@@ -1,1 +1,0 @@
-../../paperclip/by-role-ux-checklist/SKILL.md

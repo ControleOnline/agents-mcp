@@ -1,1 +1,0 @@
-../../paperclip/by-role-technical-documenter-README/SKILL.md

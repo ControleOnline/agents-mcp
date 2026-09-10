@@ -1,1 +1,0 @@
-../../paperclip/by-role-manager-README/SKILL.md

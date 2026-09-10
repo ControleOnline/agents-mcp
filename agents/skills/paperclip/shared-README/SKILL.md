@@ -16,9 +16,9 @@ Toda solicitacao precisa estar vinculada a pelo menos uma task ou issue valida n
 
 ## Skill Layering Policy
 
-- comum → `agents/skills/shared/`
-- por agent → `agents/skills/by-role/`
-- runtime → `agents/skills/runners/`
+- comum → `agents/skills/paperclip/shared-*/SKILL.md`
+- por agent → `agents/skills/paperclip/by-role-*/SKILL.md`
+- runtime → `agents/skills/paperclip/runners-README/SKILL.md`
 - `agents/roles/*/agent.md` enxuto; wrappers finos em `.github/agents/`
 
 ## Priority Projects Policy

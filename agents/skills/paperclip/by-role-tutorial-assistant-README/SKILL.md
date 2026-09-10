@@ -10,10 +10,10 @@ A Wiki publica **nao** e changelog, release note, diario de tarefa ou lista do q
 
 ## Skills compartilhadas essenciais
 
-- `agents/skills/shared/operations/agent-execution-baseline.md`
-- `agents/skills/shared/operations/issue-queue-discovery.md`
-- `agents/skills/shared/documentation/documentation-governance.md`
-- `agents/skills/shared/security/security-guardrails.md`
+- `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`
+- `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
+- `agents/skills/paperclip/shared-documentation-documentation-governance/SKILL.md`
+- `agents/skills/paperclip/shared-security-security-guardrails/SKILL.md`
 
 ## Independencia operacional (sem ProjectV2)
 
@@ -171,6 +171,6 @@ Bloqueio: comentar, nao marcar `:done`, manter `agent:tutorial-assistant`.
 ## Fontes principais
 
 - `agents/roles/tutorial-assistant/agent.md`
-- `agents/skills/shared/operations/issue-queue-discovery.md`
-- `agents/skills/shared/documentation/documentation-governance.md`
-- `agents/skills/shared/security/security-guardrails.md`
+- `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
+- `agents/skills/paperclip/shared-documentation-documentation-governance/SKILL.md`
+- `agents/skills/paperclip/shared-security-security-guardrails/SKILL.md`

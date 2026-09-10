@@ -1,1 +1,0 @@
-../../paperclip/shared-operations-operational-source-of-truth/SKILL.md

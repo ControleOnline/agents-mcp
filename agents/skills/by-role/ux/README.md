@@ -1,1 +1,0 @@
-../../paperclip/by-role-ux-README/SKILL.md

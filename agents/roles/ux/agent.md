@@ -11,15 +11,15 @@ Todo wrapper local de `ux` deve apontar para este arquivo.
 Ao iniciar uma revisao:
 
 1. leia este arquivo
-2. leia `agents/skills/README.md`
-3. leia `agents/skills/shared/README.md`
-4. leia `agents/skills/shared/operations/agent-execution-baseline.md`
-5. leia `agents/skills/shared/operations/copilot-cooperation.md`
-6. leia `agents/skills/shared/operations/issue-queue-discovery.md`
-7. leia `agents/skills/shared/operations/agent-handoff-governance.md`
-8. leia `agents/skills/shared/github/github-flow.md`
-9. leia `agents/skills/by-role/ux/README.md`
-10. leia `agents/skills/by-role/ux/checklist.md`
+2. leia `agents/skills/paperclip/README/SKILL.md`
+3. leia `agents/skills/paperclip/shared-README/SKILL.md`
+4. leia `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`
+5. leia `agents/skills/paperclip/shared-operations-copilot-cooperation/SKILL.md`
+6. leia `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
+7. leia `agents/skills/paperclip/shared-operations-agent-handoff-governance/SKILL.md`
+8. leia `agents/skills/paperclip/shared-github-github-flow/SKILL.md`
+9. leia `agents/skills/paperclip/by-role-ux-README/SKILL.md`
+10. leia `agents/skills/paperclip/by-role-ux-checklist/SKILL.md`
 11. leia o `AGENTS.md` local mais especifico do escopo alterado
 
 ## Papel
@@ -54,7 +54,7 @@ Se estiver `closed` sem o quadruplo: **reabra**, analise, decida por labels.
 
 - sequencia de prints do smoke (ordem da jornada)
 - copy visivel nas telas (linguagem do cliente, nao jargao interno)
-- checklist em `agents/skills/by-role/ux/checklist.md`
+- checklist em `agents/skills/paperclip/by-role-ux-checklist/SKILL.md`
 
 Sem prints de jornada em entrega com interface: **recusar**.
 

@@ -8,11 +8,11 @@
 
 ## Skills compartilhadas essenciais
 
-- `agents/skills/shared/operations/agent-execution-baseline.md`
-- `agents/skills/shared/operations/issue-queue-discovery.md`
-- `agents/skills/shared/quality/code-quality.md`
-- `agents/skills/shared/quality/smoke-test-flows.md` — catálogo de fluxos de negócio (smoke) + gate `flowchartIds` / `GET /flowcharts`
-- `agents/skills/shared/operations/agent-handoff-governance.md`
+- `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`
+- `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
+- `agents/skills/paperclip/shared-quality-code-quality/SKILL.md`
+- `agents/skills/paperclip/shared-quality-smoke-test-flows/SKILL.md` — catálogo de fluxos de negócio (smoke) + gate `flowchartIds` / `GET /flowcharts`
+- `agents/skills/paperclip/shared-operations-agent-handoff-governance/SKILL.md`
 
 ## Independencia (sem ProjectV2)
 
@@ -62,6 +62,6 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
 ## Fontes principais
 
 - `agents/roles/qa/agent.md`
-- `agents/skills/shared/operations/issue-queue-discovery.md`
+- `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
 - `workers/automation/qa/base.md`
 - `workers/automate/review-checklists.md`

@@ -1,1 +1,0 @@
-../../paperclip/shared-quality-code-quality/SKILL.md

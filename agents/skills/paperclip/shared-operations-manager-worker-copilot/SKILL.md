@@ -75,5 +75,5 @@ Nenhum canal deve presumir que outro concluiu uma etapa sem evidencia nas labels
 - `agents/roles/qa/agent.md`
 - `agents/roles/security/agent.md`
 - `agents/roles/technical-documenter/agent.md`
-- `agents/skills/shared/operations/copilot-cooperation.md`
-- `agents/skills/shared/github/github-flow.md`
+- `agents/skills/paperclip/shared-operations-copilot-cooperation/SKILL.md`
+- `agents/skills/paperclip/shared-github-github-flow/SKILL.md`

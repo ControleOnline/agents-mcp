@@ -1,1 +1,0 @@
-../../paperclip/shared-quality-task-completion-criteria/SKILL.md

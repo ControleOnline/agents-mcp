@@ -1,1 +1,0 @@
-../../paperclip/shared-operations-log-investigation-evidence/SKILL.md

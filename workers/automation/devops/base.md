@@ -22,8 +22,8 @@ Comentar sem merge não conclui a função.
 ## Fonte canônica
 
 1. `agents/roles/devops/agent.md`
-2. `agents/skills/shared/github/github-flow.md`
-3. `agents/skills/shared/github/master-publication.md`
+2. `agents/skills/paperclip/shared-github-github-flow/SKILL.md`
+3. `agents/skills/paperclip/shared-github-master-publication/SKILL.md`
 4. este arquivo
 
 ## Publicação (coluna Deploy)

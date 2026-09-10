@@ -1,1 +1,0 @@
-../../paperclip/by-role-sysadmin-README/SKILL.md

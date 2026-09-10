@@ -1,1 +1,0 @@
-paperclip/README/SKILL.md

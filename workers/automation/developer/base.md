@@ -12,8 +12,8 @@ Antes de agir em qualquer repositório:
 
 1. leia este arquivo
 2. leia `agents/roles/developer/agent.md`
-3. leia `agents/skills/shared/operations/issue-queue-discovery.md`
-4. leia `agents/skills/shared/github/github-flow.md`
+3. leia `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
+4. leia `agents/skills/paperclip/shared-github-github-flow/SKILL.md`
 5. leia o `AGENTS.md` mais próximo do código afetado
 6. confirme o estado atual no GitHub
 
@@ -45,7 +45,7 @@ Use GitHub como sistema principal para issues, commits, branches, labels `agent:
 
 ## Branching e sincronização
 
-Siga `agents/skills/shared/github/github-flow.md`.
+Siga `agents/skills/paperclip/shared-github-github-flow/SKILL.md`.
 
 - branch de trabalho: `task-{id_issue}`
 - derive de **`master`**

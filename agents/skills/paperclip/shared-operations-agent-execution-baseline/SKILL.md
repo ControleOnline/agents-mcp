@@ -26,9 +26,9 @@ Ao encontrar fila/item fora de ControleOnline → ignorar e reportar `OUT_OF_SCO
 ## Workflow
 
 1. leia o `agents/roles/<agent>/agent.md` canonico do papel atual
-2. leia `agents/skills/README.md` e `agents/skills/shared/README.md`
-2b. leia `agents/skills/shared/operations/copilot-cooperation.md` (obrigatoria para todos os papeis)
-3. leia a referencia mais especifica em `agents/skills/by-role/` ou `agents/skills/runners/`
+2. leia `agents/skills/paperclip/README/SKILL.md` e `agents/skills/paperclip/shared-README/SKILL.md`
+2b. leia `agents/skills/paperclip/shared-operations-copilot-cooperation/SKILL.md` (obrigatoria para todos os papeis)
+3. leia a referencia mais especifica em `agents/skills/paperclip/by-role-*/SKILL.md` ou `agents/skills/paperclip/runners-README/SKILL.md`
 4. leia o `AGENTS.md` local mais proximo quando houver codigo, modulo ou repositorio afetado
 5. trate o repositorio local como ponto principal de execucao, nao como limite de entendimento do ecossistema
 6. quando a etapa depender de mutacao real no GitHub, prefira o `GitHub Manager Runner`
@@ -51,7 +51,7 @@ Ao concluir, deixe claro:
 
 ## Board / Project #1 (hands-on)
 
-Todo agent, em qualquer papel, ao **criar** ou **capturar** issue **ou PR** deve garantir associacao ao Project #1 da org operacional do escopo ControleOnline (ver `config/ecosystem.config.json`; nunca org fora de ControleOnline) **na mesma hora**, com Status coerente. Tudo e Project #1. Item solto e desvio; falha de vinculo deve ser registrada. Ver `agents/skills/shared/operations/issue-queue-discovery.md`.
+Todo agent, em qualquer papel, ao **criar** ou **capturar** issue **ou PR** deve garantir associacao ao Project #1 da org operacional do escopo ControleOnline (ver `config/ecosystem.config.json`; nunca org fora de ControleOnline) **na mesma hora**, com Status coerente. Tudo e Project #1. Item solto e desvio; falha de vinculo deve ser registrada. Ver `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`.
 
 ## Quality Bar
 

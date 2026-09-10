@@ -1,1 +1,0 @@
-../../paperclip/shared-documentation-documentation-governance/SKILL.md

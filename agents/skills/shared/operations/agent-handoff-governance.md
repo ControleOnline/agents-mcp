@@ -1,1 +1,0 @@
-../../paperclip/shared-operations-agent-handoff-governance/SKILL.md

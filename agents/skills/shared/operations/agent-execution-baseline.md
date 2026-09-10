@@ -1,1 +1,0 @@
-../../paperclip/shared-operations-agent-execution-baseline/SKILL.md
