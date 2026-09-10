@@ -1,6 +1,6 @@
 # Security Review
 
-Fonte de branches: `agents/skills/paperclip/shared-github-github-flow/SKILL.md`.
+Fonte de branches: `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.
 
 ## Fontes de evidencia
 

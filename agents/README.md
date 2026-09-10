@@ -36,9 +36,9 @@ Os wrappers locais em `.github/agents/*.agent.md` devem apontar para exatamente 
 
 ## Skills
 
-- Compartilhadas: `agents/skills/paperclip/shared-*/SKILL.md`
-- Por papel: `agents/skills/paperclip/by-role-<role>-README/SKILL.md`
-- Runtime: `agents/skills/paperclip/runners-README/SKILL.md`
+- Compartilhadas: `agents/skills/controleonline/shared-*/SKILL.md`
+- Por papel: `agents/skills/controleonline/by-role-<role>-README/SKILL.md`
+- Runtime: `agents/skills/controleonline/runners-README/SKILL.md`
 
 ## Workers
 
@@ -52,6 +52,6 @@ A execução real vive em `workers/`:
 ## Notas
 
 - Sempre leia o `AGENTS.md` antes de fazer qualquer tarefa.
-- Qualidade de código: `agents/skills/paperclip/shared-quality-code-quality/SKILL.md`
-- Segurança editorial: `agents/skills/paperclip/shared-security-security-guardrails/SKILL.md`
+- Qualidade de código: `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
+- Segurança editorial: `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md`
 - Wrappers: `workers/scripts/sync-copilot-agents.mjs`

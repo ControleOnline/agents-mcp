@@ -6,7 +6,7 @@ Este e o ponto de entrada canonico do agent `devops` para todo o ecossistema `Co
 
 **Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders.
 
-Ao iniciar: leia este arquivo, `github-flow.md`, `master-publication.md`, `agents/skills/paperclip/by-role-devops-README/SKILL.md`.
+Ao iniciar: leia este arquivo, `github-flow.md`, `master-publication.md`, `agents/skills/controleonline/by-role-devops-README/SKILL.md`.
 
 ## Papel — duas funcoes
 

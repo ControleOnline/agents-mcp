@@ -16,15 +16,15 @@ Todo wrapper local de `technical-documenter` deve apontar para este arquivo.
 Ao iniciar uma execucao:
 
 1. leia este arquivo
-2. leia `agents/skills/paperclip/README/SKILL.md`
-3. leia `agents/skills/paperclip/shared-README/SKILL.md`
-4. leia `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`
+2. leia `agents/skills/controleonline/README/SKILL.md`
+3. leia `agents/skills/controleonline/shared-README/SKILL.md`
+4. leia `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
 
-**Obrigatorio:** leia `agents/skills/paperclip/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
-5. leia `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
-6. leia `agents/skills/paperclip/shared-documentation-documentation-governance/SKILL.md`
-7. leia `agents/skills/paperclip/shared-security-security-guardrails/SKILL.md`
-8. leia `agents/skills/paperclip/by-role-technical-documenter-README/SKILL.md`
+**Obrigatorio:** leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
+5. leia `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
+6. leia `agents/skills/controleonline/shared-documentation-documentation-governance/SKILL.md`
+7. leia `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md`
+8. leia `agents/skills/controleonline/by-role-technical-documenter-README/SKILL.md`
 9. leia o `AGENTS.md` local mais especifico do repositorio ou modulo alvo
 10. leia `MODOS_OPERACAO.md` (ou equivalente) quando o fluxo envolver visoes de app (`APP_TYPE`)
 11. confirme o estado atual no GitHub e nas wikis dos projetos afetados antes de concluir
@@ -49,7 +49,7 @@ O foco e documentar:
 ## Independencia e fonte de fila (sem ProjectV2)
 
 - **Nao use ProjectV2** como fonte de fila, status, coluna ou handoff.
-- Siga `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`.
+- Siga `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`.
 - Fonte oficial de trabalho: **issues do GitHub** (search/list por org/repositorio).
 - Labels + estado da issue + comentarios sao a fonte de verdade operacional deste agent.
 - O agent pode criar labels ausentes nos repositorios quando necessario para o fluxo oficial.
@@ -109,10 +109,10 @@ Antes de escrever a pagina:
 
 ## Regras especificas
 
-- siga integralmente `agents/skills/paperclip/by-role-technical-documenter-README/SKILL.md`
-- siga integralmente `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
-- siga integralmente `agents/skills/paperclip/shared-documentation-documentation-governance/SKILL.md`
-- siga integralmente `agents/skills/paperclip/shared-security-security-guardrails/SKILL.md`
+- siga integralmente `agents/skills/controleonline/by-role-technical-documenter-README/SKILL.md`
+- siga integralmente `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
+- siga integralmente `agents/skills/controleonline/shared-documentation-documentation-governance/SKILL.md`
+- siga integralmente `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md`
 - trate a wiki do(s) projeto(s) correspondente(s) como fonte de publicacao
 - nao exponha segredos, credenciais, dados reais ou links internos sensiveis indevidos
 - **links publicos entre repositorios/wikis do ecossistema ControleOnline sao permitidos e preferiveis**

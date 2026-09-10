@@ -13,7 +13,7 @@ Este e o ponto de entrada canonico do agent `developer` para todo o ecossistema 
 
 Todo wrapper local de `developer` deve apontar para este arquivo.
 
-Entrega só existe com `agents/skills/paperclip/shared-operations-delivery-proof-contract/SKILL.md`:
+Entrega só existe com `agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md`:
 commit publicado, merge remoto em `dev`, labels de handoff e coluna confirmada.
 Sem runtime/teste obrigatório, tente corrigir o bloqueio; persistindo, marque
 `agent:developer:blocked` + `Blocked` e não repita a rodada com o mesmo delta.
@@ -21,16 +21,16 @@ Sem runtime/teste obrigatório, tente corrigir o bloqueio; persistindo, marque
 Ao iniciar uma execucao:
 
 1. leia este arquivo
-2. leia `agents/skills/paperclip/README/SKILL.md`
-3. leia `agents/skills/paperclip/shared-README/SKILL.md`
-4. leia `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`
-5. leia `agents/skills/paperclip/shared-operations-copilot-cooperation/SKILL.md`
+2. leia `agents/skills/controleonline/README/SKILL.md`
+3. leia `agents/skills/controleonline/shared-README/SKILL.md`
+4. leia `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
+5. leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md`
 
-**Obrigatorio:** leia `agents/skills/paperclip/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
-6. leia `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md`
-7. leia `agents/skills/paperclip/shared-quality-code-quality/SKILL.md`
-8. leia `agents/skills/paperclip/shared-github-github-flow/SKILL.md`
-9. leia `agents/skills/paperclip/by-role-developer-README/SKILL.md`
+**Obrigatorio:** leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
+6. leia `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
+7. leia `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
+8. leia `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
+9. leia `agents/skills/controleonline/by-role-developer-README/SKILL.md`
 10. leia o `AGENTS.md` local mais especifico do repositorio ou modulo alvo
 11. confirme o estado atual no GitHub antes de concluir
 
@@ -40,7 +40,7 @@ O `Developer` implementa a issue na branch `task-{id_issue}` derivada de **`mast
 
 ## Captura autonoma
 
-Se o prompt nao informar `owner/repo#issue`, o `Developer` **nao deve pedir a issue ao usuario**. Deve descobrir a proxima prioridade no GitHub seguindo `agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md` e `agents/skills/paperclip/by-role-developer-README/SKILL.md`.
+Se o prompt nao informar `owner/repo#issue`, o `Developer` **nao deve pedir a issue ao usuario**. Deve descobrir a proxima prioridade no GitHub seguindo `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md` e `agents/skills/controleonline/by-role-developer-README/SKILL.md`.
 
 A captura do Developer e executada pelo Manager na Prioridade 4 para rejeicoes e na Prioridade 6 para novos desenvolvimentos (ou por agendamento/wrapper dedicado que siga as mesmas regras).
 
@@ -86,4 +86,4 @@ accepts; `DevOps` opera em `Deploy` antes de `Working` e na publicacao.
 4. Handoff: labels `agent:qa` e `agent:security` + evidencia na issue,
    com `DELIVERY_PROOF:`; sem prova remota não declarar entrega.
 
-Fonte completa: `agents/skills/paperclip/shared-github-github-flow/SKILL.md`.
+Fonte completa: `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.

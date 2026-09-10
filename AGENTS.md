@@ -20,11 +20,11 @@ Tudo o que nao for memoria persistente deve estar disponivel aqui.
 
 Entradas principais:
 
-- `agents/skills/paperclip/README/SKILL.md`
-- `agents/skills/paperclip/shared-README/SKILL.md`
-- `agents/skills/paperclip/shared-github-github-flow/SKILL.md`
-- `agents/skills/paperclip/by-role-<agent>-README/SKILL.md`
-- `agents/skills/paperclip/runners-README/SKILL.md`
+- `agents/skills/controleonline/README/SKILL.md`
+- `agents/skills/controleonline/shared-README/SKILL.md`
+- `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
+- `agents/skills/controleonline/by-role-<agent>-README/SKILL.md`
+- `agents/skills/controleonline/runners-README/SKILL.md`
 - `agents/roles/*/agent.md`
 - `.github/agents/*.agent.md`
 - `workers/automation/`
@@ -42,7 +42,7 @@ Antes de qualquer acao operacional, leia **`config/ecosystem.config.json`**.
 
 ## Copilot Cooperation
 
-Todo agent do ecossistema **deve estender** `agents/skills/paperclip/shared-operations-copilot-cooperation/SKILL.md`.
+Todo agent do ecossistema **deve estender** `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md`.
 
 - GitHub Copilot Coding Agent, workers, runners e Actions sao parceiros de execucao
 - Wrappers em `.github/agents/*.agent.md` (`target: github-copilot`)
@@ -71,13 +71,13 @@ Toda regra nova deve entrar primeiro na camada certa, em vez de ser repetida ent
 
 Distribuicao obrigatoria:
 
-- comportamento compartilhado, politicas, guardrails e criterios comuns vivem em `agents/skills/paperclip/shared-*/SKILL.md`
-- qualidade de codigo, modularizacao, smoke tests e limite de tamanho de componentes vivem em `agents/skills/paperclip/shared-quality-code-quality/SKILL.md`
-- documentacao de cliente e wiki tecnica vivem em `agents/skills/paperclip/shared-documentation-documentation-governance/SKILL.md`
-- seguranca editorial e sanitizacao de evidencias vivem em `agents/skills/paperclip/shared-security-security-guardrails/SKILL.md`
-- fluxo de branches e entrega (GitHub Flow adaptado) vive em `agents/skills/paperclip/shared-github-github-flow/SKILL.md`
-- papel, ownership, limites e handoff por agent vivem em `agents/skills/paperclip/by-role-<agent>-README/SKILL.md`
-- mapas de runtime, workflows, entry points e scripts reais vivem em `agents/skills/paperclip/runners-README/SKILL.md`
+- comportamento compartilhado, politicas, guardrails e criterios comuns vivem em `agents/skills/controleonline/shared-*/SKILL.md`
+- qualidade de codigo, modularizacao, smoke tests e limite de tamanho de componentes vivem em `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
+- documentacao de cliente e wiki tecnica vivem em `agents/skills/controleonline/shared-documentation-documentation-governance/SKILL.md`
+- seguranca editorial e sanitizacao de evidencias vivem em `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md`
+- fluxo de branches e entrega (GitHub Flow adaptado) vive em `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
+- papel, ownership, limites e handoff por agent vivem em `agents/skills/controleonline/by-role-<agent>-README/SKILL.md`
+- mapas de runtime, workflows, entry points e scripts reais vivem em `agents/skills/controleonline/runners-README/SKILL.md`
 - `agents/roles/*/agent.md` devem ficar enxutos e conter apenas ponto de entrada, papel, fronteiras e referencias obrigatorias
 - wrappers locais em `.github/agents/*.agent.md` devem ser finos e apontar para a fonte canonica e para o contexto local minimo
 
@@ -86,17 +86,17 @@ Distribuicao obrigatoria:
 | Categoria | Destino |
 | --- | --- |
 | Home deste repositório | este `AGENTS.md` + skills em `agents/skills/` |
-| Qualidade / smoke | [code-quality.md](agents/skills/paperclip/shared-quality-code-quality/SKILL.md) · [smoke-test-flows.md](agents/skills/paperclip/shared-quality-smoke-test-flows/SKILL.md) |
+| Qualidade / smoke | [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) · [smoke-test-flows.md](agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md) |
 | Espelho app (wiki) | https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows |
 | Espelho API (wiki) | https://github.com/ControleOnline/api-community/wiki/Fluxos-de-Smoke |
-| Governança documental | [documentation-governance.md](agents/skills/paperclip/shared-documentation-documentation-governance/SKILL.md) |
+| Governança documental | [documentation-governance.md](agents/skills/controleonline/shared-documentation-documentation-governance/SKILL.md) |
 
 ### Por categoria — qualidade e smoke
 
 | Página | O que documenta |
 | --- | --- |
-| [smoke-test-flows.md](agents/skills/paperclip/shared-quality-smoke-test-flows/SKILL.md) | Catálogo canônico `fluxo: <id>`, gate de evidência visual completa (prints por etapa), regras de uso |
-| [code-quality.md](agents/skills/paperclip/shared-quality-code-quality/SKILL.md) | Limites de arquivo, testes, smoke obrigatório, evidência parcial bloqueia QA |
+| [smoke-test-flows.md](agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md) | Catálogo canônico `fluxo: <id>`, gate de evidência visual completa (prints por etapa), regras de uso |
+| [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) | Limites de arquivo, testes, smoke obrigatório, evidência parcial bloqueia QA |
 | Teste de governança | `tests/qa-smoke-flow-evidence.test.mjs` |
 
 ### Módulos relacionados
@@ -124,9 +124,9 @@ Ao consultar ou operar no GitHub, os agents podem usar qualquer busca, API, list
 
 ## GitHub Flow (resumo)
 
-Fonte completa: `agents/skills/paperclip/shared-github-github-flow/SKILL.md`.
+Fonte completa: `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.
 Para qualquer conflito ou divergência ampla, aplicar também
-`agents/skills/paperclip/shared-github-conflict-resolution/SKILL.md`; a task permanece em
+`agents/skills/controleonline/shared-github-conflict-resolution/SKILL.md`; a task permanece em
 `Working` para ser refeita e nunca é mesclada diretamente em `master`. Se a
 resolução semântica ficar confusa em qualquer etapa, é preferível descartar a
 branch `task-{id_issue}`, recriá-la a partir do `master` remoto atualizado e
@@ -180,7 +180,7 @@ O CTO supervisiona o ecossistema e corrige diretamente o `agents-mcp` quando hou
 
 O CTO nao deve substituir a execucao normal de `Developer`, `Security`, `Quality Assurance`, `DevOps` ou `Sysadmin` quando a trilha ja pertence claramente a um desses agents.
 
-Quando as quatro `:accepted` coexistirem, a trilha de `staging`/`master` pertence ao `DevOps`, conforme `agents/skills/paperclip/shared-github-github-flow/SKILL.md` e `agents/skills/paperclip/shared-github-master-publication/SKILL.md`.
+Quando as quatro `:accepted` coexistirem, a trilha de `staging`/`master` pertence ao `DevOps`, conforme `agents/skills/controleonline/shared-github-github-flow/SKILL.md` e `agents/skills/controleonline/shared-github-master-publication/SKILL.md`.
 
 ## Full Pipeline / Manager
 

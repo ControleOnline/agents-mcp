@@ -12,7 +12,7 @@ Antes de agir:
 
 1. leia este arquivo
 2. leia `agents/roles/qa/agent.md`
-3. leia `agents/skills/paperclip/shared-github-github-flow/SKILL.md`
+3. leia `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
 4. leia o `AGENTS.md` mais específico do escopo alterado
 5. use também:
    - `workers/automate/quality-assurance.md`
@@ -30,7 +30,7 @@ Use GitHub para confirmar:
 - checks e evidências técnicas
 - estado real atual da entrega
 
-Não existe PR do Developer no fluxo normal. Ver `agents/skills/paperclip/shared-github-github-flow/SKILL.md`.
+Não existe PR do Developer no fluxo normal. Ver `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.
 
 ## Regra de entrada
 

@@ -2,21 +2,21 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 
-const managerSkill = fs.readFileSync('agents/skills/paperclip/by-role-manager-README/SKILL.md', 'utf8');
+const managerSkill = fs.readFileSync('agents/skills/controleonline/by-role-manager-README/SKILL.md', 'utf8');
 const managerAgent = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
 const queueDiscovery = fs.readFileSync(
-  'agents/skills/paperclip/shared-operations-issue-queue-discovery/SKILL.md',
+  'agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md',
   'utf8',
 );
-const workerDoc = fs.readFileSync('agents/skills/paperclip/shared-operations-manager-worker-copilot/SKILL.md', 'utf8');
+const workerDoc = fs.readFileSync('agents/skills/controleonline/shared-operations-manager-worker-copilot/SKILL.md', 'utf8');
 const qaWorker = fs.readFileSync('.github/actions/workers/qa/action.yml', 'utf8');
 const securityWorker = fs.readFileSync('.github/actions/workers/security/action.yml', 'utf8');
 const deliveryProof = fs.readFileSync(
-  'agents/skills/paperclip/shared-operations-delivery-proof-contract/SKILL.md',
+  'agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md',
   'utf8',
 );
 const conflictResolution = fs.readFileSync(
-  'agents/skills/paperclip/shared-github-conflict-resolution/SKILL.md',
+  'agents/skills/controleonline/shared-github-conflict-resolution/SKILL.md',
   'utf8',
 );
 

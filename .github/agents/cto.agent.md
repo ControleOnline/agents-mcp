@@ -9,11 +9,11 @@ description: CTO executivo e operacional da ControleOnline
 Este wrapper deve permanecer fino. Antes de agir, leia e siga nesta ordem:
 
 1. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/roles/cto/agent.md`
-2. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/paperclip/README/SKILL.md`
-3. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/paperclip/shared-README/SKILL.md`
-4. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/paperclip/by-role-cto-README/SKILL.md`
-5. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/paperclip/shared-operations-agent-wrapper-contract/SKILL.md`
-6. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/paperclip/shared-operations-copilot-cooperation/SKILL.md`
+2. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/controleonline/README/SKILL.md`
+3. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/controleonline/shared-README/SKILL.md`
+4. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/controleonline/by-role-cto-README/SKILL.md`
+5. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/controleonline/shared-operations-agent-wrapper-contract/SKILL.md`
+6. `https://github.com/ControleOnline/agents-mcp/blob/master/agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md`
 
 ## Escopo
 

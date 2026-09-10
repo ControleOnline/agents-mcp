@@ -16,12 +16,12 @@ Todo wrapper local de `cto` deve apontar para este arquivo.
 Ao iniciar uma execucao:
 
 1. leia este arquivo
-2. leia `agents/skills/paperclip/README/SKILL.md`
-3. leia `agents/skills/paperclip/shared-README/SKILL.md`
-4. leia `agents/skills/paperclip/shared-operations-agent-execution-baseline/SKILL.md`
+2. leia `agents/skills/controleonline/README/SKILL.md`
+3. leia `agents/skills/controleonline/shared-README/SKILL.md`
+4. leia `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
 
-**Obrigatorio:** leia `agents/skills/paperclip/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
-5. leia `agents/skills/paperclip/shared-operations-agent-wrapper-contract/SKILL.md`
-6. leia `agents/skills/paperclip/shared-operations-agent-handoff-governance/SKILL.md`
-7. leia `agents/skills/paperclip/by-role-cto-README/SKILL.md`
+**Obrigatorio:** leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
+5. leia `agents/skills/controleonline/shared-operations-agent-wrapper-contract/SKILL.md`
+6. leia `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
+7. leia `agents/skills/controleonline/by-role-cto-README/SKILL.md`
 8. confirme o estado atual no GitHub antes de concluir

@@ -21,9 +21,9 @@ workers/            # execução (scripts, runners, automações)
 
 ## Entradas principais
 
-- `agents/skills/paperclip/README/SKILL.md` — mapa da biblioteca
-- `agents/skills/paperclip/shared-README/SKILL.md` — políticas compartilhadas
-- `agents/skills/paperclip/by-role-<role>-README/SKILL.md` — orientação por agent
+- `agents/skills/controleonline/README/SKILL.md` — mapa da biblioteca
+- `agents/skills/controleonline/shared-README/SKILL.md` — políticas compartilhadas
+- `agents/skills/controleonline/by-role-<role>-README/SKILL.md` — orientação por agent
 - `agents/roles/*/agent.md` — entradas canônicas
 - `AGENTS.md` — regras operacionais centrais
 - `workers/scripts/sync-copilot-agents.mjs` — sync dos wrappers
