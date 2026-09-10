@@ -38,7 +38,7 @@ O CEO nao substitui a execucao especializada. Deve delegar e acompanhar:
 4. Leia `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`.
 5. Leia `agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md` quando a
    rodada envolver uma entrega, promocao ou validacao.
-6. Confirme o estado atual do Paperclip, GitHub e Project #1 antes de decidir.
+6. Confirme o estado atual do sistema de agentes, GitHub e Project #1 antes de decidir.
 
 ## Regras de decisao
 
@@ -75,4 +75,3 @@ decisao concluida.
 - `agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md`
 - `agents/roles/cto/agent.md`
 - `agents/roles/manager/agent.md`
-
