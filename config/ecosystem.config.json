@@ -98,7 +98,19 @@
     },
     "credentials": {
       "drive_folder_url": "https://drive.google.com/drive/u/1/folders/1oAb6nRTyotkDxHaPQ8TV7rsJ7gzD7YFu",
-      "drive_subfolder": ".agents",
+      "drive_subfolder": ".",
+      "drive_candidate_files": [
+        "PAPERCLIP_API_KEY",
+        ".env",
+        ".env.local",
+        "env.local.js",
+        "key.local.js"
+      ],
+      "key_names": [
+        "PAPERCLIP_API_KEY",
+        "GH_TOKEN",
+        "GITHUB_TOKEN"
+      ],
       "api_key_env": "PAPERCLIP_API_KEY",
       "ssh_reference_env": "PAPERCLIP_SSH_KEY_PATH",
       "description": "Referencias de credenciais; os valores secretos nunca entram neste JSON."

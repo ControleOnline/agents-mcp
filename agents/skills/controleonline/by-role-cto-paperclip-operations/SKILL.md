@@ -43,7 +43,10 @@ relatórios, arquivos ou logs.
 Use apenas as referências indicadas em `paperclip.credentials` e os secrets
 injetados no runtime. O Google Drive é uma fonte autorizada somente quando o
 conector autenticado estiver disponível e a referência estiver dentro da pasta
-configurada; consulte o arquivo necessário sem imprimir seu conteúdo sensível.
+configurada. Procure a chave pelos nomes definidos em
+`paperclip.credentials.key_names` nos arquivos candidatos definidos em
+`paperclip.credentials.drive_candidate_files` (incluindo `.env` e `.env.local`),
+sem imprimir ou copiar o conteúdo sensível.
 Se a referência não estiver acessível, registre apenas o identificador não
 secreto ausente e solicite intervenção humana.
 
