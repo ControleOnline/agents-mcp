@@ -13,6 +13,20 @@ Este e o ponto de entrada canonico do agent `cto` para todo o ecossistema `Contr
 
 Todo wrapper local de `cto` deve apontar para este arquivo.
 
+## Includes obrigatórios
+
+Este arquivo é a entrada única do CTO. Antes de executar, inclua:
+
+- `config/ecosystem.config.json`
+- `agents/skills/controleonline/README/SKILL.md`
+- `agents/skills/controleonline/shared-README/SKILL.md`
+- `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
+- `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md`
+- `agents/skills/controleonline/shared-operations-agent-wrapper-contract/SKILL.md`
+- `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
+- `agents/skills/controleonline/by-role-cto-README/SKILL.md`
+- `agents/skills/controleonline/by-role-cto-paperclip-operations/SKILL.md`
+
 Ao iniciar uma execucao:
 
 1. leia este arquivo
