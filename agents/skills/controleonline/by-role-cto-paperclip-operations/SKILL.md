@@ -45,10 +45,17 @@ injetados no runtime. O Google Drive é uma fonte autorizada somente quando o
 conector autenticado estiver disponível e a referência estiver dentro da pasta
 configurada. Procure a chave pelos nomes definidos em
 `paperclip.credentials.key_names` nos arquivos candidatos definidos em
-`paperclip.credentials.drive_candidate_files` (incluindo `.env` e `.env.local`),
+`paperclip.credentials.drive_candidate_files` (incluindo `.env`, `.env.local`,
+`ssh-hosts-prod.txt`, `ssh-hosts.txt` e `agents-controle-online.private-key.pem`),
 sem imprimir ou copiar o conteúdo sensível.
 Se a referência não estiver acessível, registre apenas o identificador não
 secreto ausente e solicite intervenção humana.
+
+Para SSH, usar somente os hosts autorizados em `ssh-hosts-prod.txt` e a chave
+`agents-controle-online.private-key.pem`. Materializar a chave somente em arquivo
+temporário com permissões restritas e removê-lo ao final da operação. Nunca colocar
+chave privada, senha ou token no workspace, no Paperclip, no GitHub, em issue,
+comentário ou evidência. O uso é temporário e somente para a ação autorizada.
 
 ## Encerramento da rodada
 

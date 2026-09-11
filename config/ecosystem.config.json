@@ -104,7 +104,10 @@
         ".env",
         ".env.local",
         "env.local.js",
-        "key.local.js"
+        "key.local.js",
+        "ssh-hosts-prod.txt",
+        "ssh-hosts.txt",
+        "agents-controle-online.private-key.pem"
       ],
       "key_names": [
         "PAPERCLIP_API_KEY",
@@ -113,6 +116,9 @@
       ],
       "api_key_env": "PAPERCLIP_API_KEY",
       "ssh_reference_env": "PAPERCLIP_SSH_KEY_PATH",
+      "ssh_host_file": "ssh-hosts-prod.txt",
+      "ssh_private_key_file": "agents-controle-online.private-key.pem",
+      "temporary_use_only": true,
       "description": "Referencias de credenciais; os valores secretos nunca entram neste JSON."
     },
     "description": "Endpoints e caminhos canônicos usados pela skill operacional do CTO."
