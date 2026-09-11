@@ -78,6 +78,33 @@
       "description": "E-mail para avisos de documentacao publicada."
     }
   },
+  "paperclip": {
+    "company_id": {
+      "env": "PAPERCLIP_COMPANY_ID",
+      "value": "3fed493c-bd7b-487c-99f8-0bd5e2908faf",
+      "description": "Empresa ControleOnline no Paperclip."
+    },
+    "base_url": {
+      "env": "PAPERCLIP_BASE_URL",
+      "value": "https://ia.controleonline.com",
+      "description": "URL base da API e interface do Paperclip."
+    },
+    "server": {
+      "host": "s.controleonline.com",
+      "data_dir": "/home/paperclip/.paperclip",
+      "service": "paperclip.service",
+      "projects_dir": "/home/paperclip/.paperclip/instances/default/projects/3fed493c-bd7b-487c-99f8-0bd5e2908faf",
+      "description": "Destino operacional do Paperclip no servidor."
+    },
+    "credentials": {
+      "drive_folder_url": "https://drive.google.com/drive/u/1/folders/1oAb6nRTyotkDxHaPQ8TV7rsJ7gzD7YFu",
+      "drive_subfolder": ".agents",
+      "api_key_env": "PAPERCLIP_API_KEY",
+      "ssh_reference_env": "PAPERCLIP_SSH_KEY_PATH",
+      "description": "Referencias de credenciais; os valores secretos nunca entram neste JSON."
+    },
+    "description": "Endpoints e caminhos canônicos usados pela skill operacional do CTO."
+  },
   "runners": {
     "defaults": {
       "QA_TASK_LIMIT": "5",

@@ -13,6 +13,7 @@ O CTO supervisiona o ecossistema, corrige falhas estruturais e reorganiza o mode
 ## Skills exclusivas
 
 - `agents/skills/controleonline/by-role-cto-github-backlog-task-creation/SKILL.md`: intake tecnico de URLs, telas e escopos, com criacao de issues e inclusao confirmada no backlog do ProjectV2
+- `agents/skills/controleonline/by-role-cto-paperclip-operations/SKILL.md`: supervisao, diagnostico e desbloqueio operacional do Paperclip
 
 ## O que e exclusivo do CTO
 

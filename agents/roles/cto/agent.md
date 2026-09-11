@@ -25,3 +25,8 @@ Ao iniciar uma execucao:
 6. leia `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
 7. leia `agents/skills/controleonline/by-role-cto-README/SKILL.md`
 8. confirme o estado atual no GitHub antes de concluir
+
+## Skill operacional do CTO
+
+Para filas, execuções e bloqueios do Paperclip, leia e siga
+`agents/skills/controleonline/by-role-cto-paperclip-operations/SKILL.md`.

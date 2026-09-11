@@ -24,6 +24,13 @@ A documentacao em `agents/` pode usar placeholders genericos. Os valores reais d
 | `<HELP_CENTER_HOST>` | `documentation.help_center_host.value` |
 | `<TEAM_EMAIL>` | `documentation.team_email.value` |
 
+## Paperclip
+
+Os endpoints, o ID da empresa, os caminhos do servidor e as referências de
+credenciais usadas pelo CTO ficam em `paperclip`. Este bloco é versionado sem
+valores secretos; tokens, senhas e chaves permanecem no runtime ou nas
+referências autorizadas de credenciais.
+
 ## Limite operacional
 
 `runners.defaults.DEVELOPER_WORKING_LIMIT` está definido como **5** e é um teto
