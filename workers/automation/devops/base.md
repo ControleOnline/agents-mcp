@@ -30,6 +30,8 @@ Comentar sem merge não conclui a função.
 
 - confirme coluna `Deploy` na task individual
 - audite deploys anteriores de `staging`/`master`
+- não trate a ausência de deploy/teste remoto em `staging` como bloqueio da
+  produção quando os testes locais reproduzíveis da task estiverem verdes;
 - merge do delta → `master` (pai + submódulos)
 - `Done` + handoff de documentação fail-closed
 - artefato de produção não dispara no push de `master`
