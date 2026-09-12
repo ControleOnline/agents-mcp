@@ -20,6 +20,9 @@ Fonte canonica: `agents/skills/controleonline/shared-github-github-flow/SKILL.md
 - `staging` **nao** e destino do Developer
 - `DevOps` coloca somente a task autorizada em `staging` apos os gates exigidos
 - update de `staging` dispara deploy de conferencia humana
+- a conferencia do ambiente publicado, incluindo runtime, fluxo afetado e
+  erros/logs relevantes, e responsabilidade do `DevOps` apos a promocao; ela
+  nao bloqueia o aceite local do `Developer`/`QA`
 - apos coluna `Deploy`: merge da branch da task → `master` → coluna `Done`
 
 ## Promoção para staging por task

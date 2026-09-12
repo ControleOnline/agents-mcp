@@ -17,6 +17,11 @@ No Manager, DevOps e **P1**. Hotfix e **P2**.
    devolver a task para uma segunda rodada de validação.
 2. **Staging depois:** após o Manager acionar o DevOps com 4 accepts, atualize primeiro `dev` e `staging` com `origin/master`, confirme o merge da task já entregue pelo Developer em `dev`, faça o merge do delta da task em `staging` e entregue a task ao Manager para `In Review`.
 
+Após cada promoção para `staging` ou `master`, o DevOps é responsável por
+confirmar o deploy e validar o runtime publicado (saúde do serviço, fluxo
+afetado e logs/erros relevantes). Falha nessa camada não devolve a task ao
+Developer ou ao QA; registre a falha e encaminhe a correção para DevOps/Sysadmin.
+
 **Proibido montar RC.** Nao mergear `dev` inteiro em `staging`.
 
 ## Captura autonoma
