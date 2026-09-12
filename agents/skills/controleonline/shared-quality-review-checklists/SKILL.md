@@ -9,10 +9,10 @@ Estas listas sao o criterio de aprovacao que deve ser copiado para a task quando
 - limite de linhas e tamanho do componente estao coerentes com o escopo
 - componentes, hooks, services e helpers existentes foram reaproveitados quando possivel
 - subchecklist de reaproveitamento de componentes em `agents/skills/controleonline/shared-quality-review-checklists/component-reuse-checklist.md` foi executado quando a entrega afetar frontend
-- smoke tests foram executados ou seus resultados existentes foram lidos e validados quando a interface foi afetada (nao reexecutar se ja houver evidencia valida e atual)
+- smoke tests foram executados localmente ou seus resultados locais existentes foram lidos e validados quando a interface foi afetada (nao reexecutar se ja houver evidencia valida e atual)
 - cada arquivo de código da jornada tem no topo `fluxo: <id> | etapa: <id>` e o link da página wiki; o smoke pode declarar o vínculo no manifesto JSON, com `wikiPage` como primeiro campo
 - testes obrigatorios do escopo foram executados antes da aprovacao; se nao houver evidencia de execucao, o QA deve recusar imediatamente (`agent:qa:rejected`), manter/reabrir a issue `open` e devolver para o `Developer`
-- a tela / fluxo afetado abre corretamente
+- a tela / fluxo afetado abre corretamente no ambiente local de teste
 - a acao principal da tarefa foi realizada com sucesso (comportamento observado, nao apenas codigo)
 - nao ha erros/warnings relevantes no console do browser relacionados a entrega
 - nao ha loops, re-renders desnecessarios ou chamadas duplicadas (API/requests) em cada tela/fluxo revisado
@@ -20,6 +20,7 @@ Estas listas sao o criterio de aprovacao que deve ser copiado para a task quando
 - testes unitarios relevantes em PHP e JS foram adicionados ou atualizados
 - helpers da pasta `ui-commun` foram usados quando aplicavel
 - a issue e o `AGENTS.md` mais especifico do escopo foram consultados
+- não é pré-requisito de QA haver staging, deploy, servidor acessível ou autenticação remota; essa conferência pertence ao DevOps após promoção
 
 ## Gate de primeira passagem do Developer
 

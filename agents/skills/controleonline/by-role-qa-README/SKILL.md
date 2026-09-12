@@ -11,7 +11,7 @@
 - `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
 - `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
 - `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
-- `agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md` — catálogo de fluxos de negócio (smoke) + gate `flowchartIds` / `GET /flowcharts`
+- `agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md` — catálogo de fluxos de negócio (smoke) + conferência de `flowchartIds` pelo DevOps após promoção
 - `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
 
 ## Independencia (sem ProjectV2)
@@ -45,14 +45,16 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
 - checklist canonico: `agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`
 - nao publica `APPROVE` / `REQUEST_CHANGES` no lugar das labels
 - nao finaliza a task sozinho (precisa do par Security para fechamento legitimo)
-- **nao aprova sem verificacao runtime/UI** quando houver interface:
-  - smoke tests executados **ou** resultados existentes lidos e validados (nao reexecutar se evidencia valida e atual)
+- **nao aprova sem verificacao runtime/UI local** quando houver interface:
+  - smoke tests executados **localmente** ou resultados locais existentes lidos e validados (nao reexecutar se evidencia valida e atual)
   - tela/fluxo abre
   - acao principal da tarefa foi realizada
   - console do browser sem erros relevantes da entrega
   - **sem loops, re-renders desnecessarios ou chamadas/API duplicadas** em cada tela revisada
   - Android verificado quando aplicavel e acessivel (ou justificativa objetiva de alcance)
-  - smoke de UI POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER: `GET /flowcharts` lido; `flowchartIds` existentes e enabled; prints por etapa; recusa cita falta de flowchart ou falta de print por etapa
+  - smoke de UI POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER: quando o fluxo exigir flowchart, validar a referência disponível no código/teste e prints por etapa; a disponibilidade no servidor é responsabilidade do DevOps após promoção
+
+QA não exige staging, deploy, servidor acessível ou autenticação de ambiente remoto para aceitar uma entrega que possui teste local reproduzível, merge em `dev` e evidência técnica suficiente. Falha após promoção deve ser encaminhada ao DevOps.
 
 ## Handoff
 

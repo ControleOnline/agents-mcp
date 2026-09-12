@@ -45,7 +45,7 @@ Antes da decisão final:
 - confirme **merge da `task-{id}` em `dev`** (ou bloqueio explícito / pulo justificado com evidência)
 - confirme checks ou evidência técnica equivalente
 - confirme testes coerentes com o risco
-- confirme que os testes obrigatorios do escopo realmente rodaram antes de aprovar; sem evidencia de execucao, recuse e devolva para o `Developer`
+- confirme que os testes obrigatorios do escopo realmente rodaram **localmente** antes de aprovar; sem evidencia de execucao, recuse e devolva para o `Developer`
 - confirme composição cross-repo quando obrigatória
 - confirme o checklist canônico em `agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`
 
@@ -71,4 +71,4 @@ Deixe explícito:
 - o que falta, se faltar
 - decisão e próximo estado
 
-Na dúvida material, sem evidência ou sem prova de testes executados: não aprove; devolva para o `Developer`.
+Na dúvida material, sem evidência ou sem prova de testes locais executados: não aprove; devolva para o `Developer`. Não recuse por falta de staging, deploy, servidor ou autenticação remota; essa verificação é do `DevOps` após a promoção.

@@ -15,7 +15,7 @@ Fonte única de verdade para associação de smokes a fluxos. Alterações no ca
   - `https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows`
   - `https://github.com/ControleOnline/api-community/wiki/Smoke-Test-Flows`
 
-## Gate obrigatório de evidência visual
+## Gate obrigatório de evidência visual local
 
 Este gate é para **aceite visual de uma entrega de UI**. Ele não redefine a
 entrega de um teste automatizado: a implementação continua sendo o arquivo de
@@ -23,7 +23,7 @@ teste versionado, descoberto pelo runner e integrado na ref remota. Artefatos
 gerados (`PNG`, screenshot, vídeo, trace, relatório ou manifesto) são apenas
 evidência complementar e nunca substituem o teste automatizado.
 
-QA **não pode aprovar** smoke test de UI/browser se a evidência não cobrir o fluxo inteiro com prints/screenshot.
+QA **não pode aprovar** smoke test de UI/browser se a evidência local não cobrir o fluxo inteiro com prints/screenshot.
 
 Para cada smoke de UI/browser, a evidência mínima é:
 
@@ -43,11 +43,11 @@ Para cada smoke de UI/browser, a evidência mínima é:
 
 Falta de prints por etapa, prints que não permitem reconstruir a jornada ou smoke sem fluxo declarado bloqueiam `agent:qa:accepted`.
 
-## Flowcharts publicados no admin (vínculo operacional)
+## Flowcharts publicados no admin (vínculo operacional do DevOps)
 
 O catálogo desta skill **não substitui** os flowcharts do tenant admin. Soma-se a eles.
 
-Antes de dar `agent:qa:accepted` em smoke de UI dos produtos POS, SHOP, PPC, DELIVERY, CHECKOUT ou MANAGER, o QA **deve ler** os flowcharts habilitados:
+Após a promoção para staging, o DevOps deve ler os flowcharts habilitados antes da conferência do ambiente publicado:
 
 1. `GET https://api.controleonline.com/flowcharts` (e `/flowcharts/{id}` quando precisar do diagrama).
 2. Headers permitidos (token **nunca** no git): `api-token` e `app-domain: admin.controleonline.com`.
@@ -60,7 +60,7 @@ O smoke só é aceito se:
 - tiver prints/screenshot de cada etapa relevante da jornada daquele flowchart;
 - continuar declarando `fluxo: <id>` deste catálogo.
 
-Smoke órfão (`fluxo: outros` **sem** `flowchartId` válido) em entrega de UI desses produtos **bloqueia** aceite. Comentário de recusa deve citar falta de flowchart ou falta de print por etapa.
+No aceite local, a ausência de acesso ao admin/servidor não bloqueia QA. Um vínculo de flowchart ausente no próprio teste continua sendo uma falha de qualidade; a confirmação de existência e `enabled` no servidor é gate do DevOps.
 
 ## Catálogo oficial
 
