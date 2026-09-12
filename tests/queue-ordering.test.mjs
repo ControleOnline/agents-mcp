@@ -147,7 +147,7 @@ test('first pass includes QA checklist and master synchronization gate', () => {
   assert.ok(developer.includes('primeira alteração'));
   assert.ok(developer.includes('agents/skills/controleonline/shared-quality-review-checklists/SKILL.md'));
   assert.ok(developer.includes('origin/master'));
-  assert.match(baseline, /Regra transversal: tudo começa no `master`/);
+  assert.ok(baseline.includes('config/ecosystem.config.json'));
   assert.match(checklist, /Gate de primeira passagem do Developer/);
 });
 

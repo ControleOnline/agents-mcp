@@ -19,10 +19,10 @@ const conflictResolution = fs.readFileSync(
 );
 
 const completionLabels = [
-  'qa:accepted',
-  'security:accepted',
-  'agent:technical-documenter:done',
-  'agent:tutorial-assistant:done',
+  'agent:qa:accepted',
+  'agent:security:accepted',
+  'agent:design:accepted',
+  'agent:ux:accepted',
 ];
 
 test('manager is fail-closed before hygiene', () => {
@@ -53,9 +53,14 @@ test('Deploy is explicit human publication authorization', () => {
 });
 
 test('Deploy publication branches by validator quartet', () => {
-  assert.match(managerAgent, /coluna \*\*`Deploy`\*\*[\s\S]*master[\s\S]*quatro[\s\S]*Done[\s\S]*sem o quarteto[\s\S]*Working[\s\S]*segunda rodada/i);
+  assert.match(managerAgent, /todas as tasks[\s\S]*`Deploy`[\s\S]*DevOps[\s\S]*master/i);
+  assert.match(managerAgent, /quatro accepts[\s\S]*Done/i);
+  assert.match(managerAgent, /faltar qualquer accept[\s\S]*Working/i);
+  for (const label of ['agent:qa:accepted', 'agent:security:accepted', 'agent:design:accepted', 'agent:ux:accepted']) {
+    assert.match(managerAgent, new RegExp(label.replace(':', '\\:')));
+  }
   const devopsAgent = fs.readFileSync('agents/roles/devops/agent.md', 'utf8');
-  assert.match(devopsAgent, /coluna `Deploy`[\s\S]*master[\s\S]*quatro accepts[\s\S]*Done[\s\S]*sem o quarteto[\s\S]*Working/i);
+  assert.match(devopsAgent, /todas as tasks[\s\S]*`Deploy`[\s\S]*nova versão[\s\S]*master[\s\S]*handoff[\s\S]*não move a task/i);
 });
 
 test('rejection recovery includes GitHub workflow and publication repair', () => {
@@ -122,7 +127,7 @@ test('closed and Done tasks require the complete four-label contract', () => {
   for (const label of completionLabels) {
     assert.ok(managerSkill.includes(`\`${label}\``), `missing completion label: ${label}`);
   }
-  assert.match(managerSkill, /closed.*Done.*quarteto/is);
+  assert.match(managerSkill, /Done.*quarteto.*Working/is);
 });
 
 test('queue ordering is oldest first and never updatedAt', () => {
