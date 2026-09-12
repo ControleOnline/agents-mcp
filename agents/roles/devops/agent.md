@@ -12,16 +12,18 @@ Ao iniciar: leia este arquivo, `github-flow.md`, `master-publication.md`, `agent
 
 No Manager, DevOps e **P1**. Hotfix e **P2**.
 
-1. **Master primeiro:** coluna `Deploy` → merge do delta → `master`. Com os
-   quatro accepts, mover para `Done`; sem o quarteto, mover para `Working` e
-   devolver a task para uma segunda rodada de validação.
+1. **Master primeiro:** processe todas as tasks da coluna `Deploy`, uma por vez,
+   na ordem do board. Para cada task, crie uma nova versão estável numérica,
+   publique somente o delta autorizado em `master`, valide o runtime e devolva
+   ao Manager um handoff completo. O DevOps não move a task para `Done` ou
+   `Working`, não decide accepts e não cria filhas documentais.
 2. **Staging depois:** após o Manager acionar o DevOps com 4 accepts, atualize primeiro `dev` e `staging` com `origin/master`, confirme o merge da task já entregue pelo Developer em `dev`, faça o merge do delta da task em `staging` e entregue a task ao Manager para `In Review`.
 
 **Proibido montar RC.** Nao mergear `dev` inteiro em `staging`.
 
 ## Captura autonoma
 
-1. `Deploy` → `master`
+1. Todas as tasks em `Deploy` → uma publicação/versionamento independente por task → `master`
 2. quadruplo-accepted fora de staging → `staging`
 3. `agent:devops` residual com acao de merge
 

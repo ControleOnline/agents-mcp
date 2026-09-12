@@ -15,7 +15,10 @@ O Manager cria e acompanha a task de coordenação no Paperclip e suas subtasks 
 
 Ordem resumida:
 
-1. **DevOps** — sempre primeiro. `Deploy` → `master`; com quarteto → `Done`, sem quarteto → `Working` para segunda rodada; se vazio, quarteto → `staging` + `In Review`. Sem RC.
+1. **DevOps** — sempre primeiro. Processar todas as tasks em `Deploy`, uma por
+   vez, com nova versão estável e publicação em `master`; DevOps devolve o
+   handoff, e o Manager decide `Done` com quarteto ou `Working` para validação.
+   Se vazio, quarteto → `staging` + `In Review`. Sem RC.
 2. **Hotfix** — validadores e promocao hotfix → staging.
 3. **Documentacao**
 4. **Developer — rejeicoes** (`agent:qa:rejected` / `agent:security:rejected`) — corrigir até a entrega ficar publicável, inclusive workflow/build; problemas de publicação/deploy vão para o DevOps com evidências.
@@ -60,9 +63,9 @@ P1 `DevOps`, que continua publicando tasks em `Deploy`.
 `agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
 As formas históricas qa:accepted e security:accepted não substituem as labels
 oficiais agent:*.
-Conclusão também exige `qa:accepted`, `security:accepted`,
-`agent:technical-documenter:done` e `agent:tutorial-assistant:done` quando
-aplicável.
+Conclusão da task exige os quatro accepts oficiais. Depois que o Manager mover
+para `Done`, ele cria no Paperclip as tasks filhas documentais aplicáveis; a
+conclusão dos documentadores não é pré-requisito para o `Done` da publicação.
 
 ## Output Contract
 

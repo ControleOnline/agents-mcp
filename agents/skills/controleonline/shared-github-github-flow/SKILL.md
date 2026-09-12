@@ -164,7 +164,8 @@ No Manager, DevOps é **P1**. Hotfix é **P2**.
 
 ### Entrada (P1)
 
-1. Task na coluna **`Deploy`** (publicar o delta sozinho em `master`) — primeiro.
+1. Todas as tasks na coluna **`Deploy`** (cada delta publicado separadamente em
+   `master`) — primeiro.
 2. Task **quádruplo-accepted** ainda fora de `staging` / `In Review`.
 3. Issues/PRs com `agent:devops` com ação de merge restante.
 
@@ -201,15 +202,13 @@ coluna. Se parecer indevida: comentar + `agent:devops` + esperar humano.
 1. Humano move a task para **`Deploy`**, com ou sem o quarteto; essa mudança
    de coluna é a autorização explícita para publicar em `master`.
 2. DevOps aplica o **Gate de atenção redobrada antes de qualquer merge** e
-   mescla o delta (`staging` / `task-{id}`) → `master` (pai + submódulos).
-3. Se a task possuir os quatro accepts (`agent:qa:accepted`,
-   `agent:security:accepted`, `agent:design:accepted`, `agent:ux:accepted`),
-   move para **`Done`**.
-4. Se faltar qualquer accept, mantenha a issue aberta, mova para **`Working`**
-   e reative as solicitações dos validadores ainda pendentes para a segunda
-   rodada de validação.
-5. Handoff documental fail-closed (`agent:technical-documenter` /
-   `agent:tutorial-assistant` se faltar `:done`).
+   mescla somente o delta da task (`task-{id}`) → `master` (pai + submódulos).
+3. devolva ao Manager o handoff com SHA, versão publicada, runtime e estado dos
+   quatro accepts.
+4. O Manager decide a coluna final. Com os quatro accepts, move para **`Done`**
+   e cria no Paperclip as filhas documentais aplicáveis. Sem qualquer accept,
+   move para **`Working`** e reativa os validadores pendentes; com rejeição,
+   aciona o Developer para corrigir e depois reencaminha aos validadores.
 
 Nunca direto a `master` sem coluna `Deploy`, salvo correção estrutural de governança em `agents-mcp`.
 

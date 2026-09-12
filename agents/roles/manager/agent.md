@@ -81,14 +81,32 @@ Se a publicacao falhar por um problema operacional, tente a correcao objetiva e,
 persistindo a falha, registre `NEXT_ACTION` com a evidencia e encerre nessa
 prioridade conforme o contrato de entrega. **Proibido montar RC.**
 
+### Rito obrigatório de Deploy
+
+Toda task na coluna **`Deploy`** pertence à P1 e deve ser processada pelo DevOps,
+uma por vez, na ordem do board. Enquanto houver tasks em `Deploy`, o Manager
+não captura nova task de outra fila. Cada task publicada deve gerar uma nova
+versão estável numérica (SemVer), sem agrupar tasks e sem criar RC.
+
+O DevOps publica o delta autorizado, valida o runtime e devolve ao Manager um
+handoff com SHA, versão, repositórios, resultado do deploy e os quatro accepts.
+O DevOps não decide a coluna final nem cria filhas documentais.
+
+O Manager verifica `agent:qa:accepted`, `agent:security:accepted`,
+`agent:design:accepted` e `agent:ux:accepted`. Com os quatro accepts, move a
+task para **`Done`** e cria no Paperclip as filhas para `Technical Documenter`
+e `Tutorial Assistant`, quando aplicáveis. Se faltar qualquer accept, move para
+**`Working`** e reativa/cria no Paperclip a subtask do validador pendente. Se
+houver `:rejected`, aciona o Developer para corrigir e depois reencaminha aos
+validadores. Publicação em `master` nunca é aceite automático.
+
 ## Prioridade 1 - DevOps
 
 DevOps e **sempre o primeiro**. Duas funcoes, master **antes** de staging:
 
-1. Task na coluna **`Deploy`** → merge do delta → `master`; com os quatro
-   accepts (`agent:qa:accepted`, `agent:security:accepted`,
-   `agent:design:accepted`, `agent:ux:accepted`) → `Done`; sem o quarteto →
-   `Working` para uma segunda rodada de validação.
+1. Todas as tasks na coluna **`Deploy`** → encaminhar uma por vez ao DevOps
+   para versionar e publicar em `master`; depois receber o handoff e decidir o
+   estado final conforme o rito obrigatório de Deploy.
 2. Se nao houver Deploy executavel: task com **4 accepts** (`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`) → acionar `DevOps`; o DevOps atualiza primeiro `dev` e `staging` com `origin/master`, confirma o merge da task já feito pelo Developer em `dev`, promove o delta da task para `staging` e então o Manager move para `In Review`.
 
 Hotfix **nao** entra nesta prioridade.

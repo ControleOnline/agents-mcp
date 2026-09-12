@@ -50,12 +50,24 @@ ela pode voltar a percorrer `In Review`/`Deploy`.
    Merge sem conflito não é evidência suficiente. Se a revisão falhar ou houver
    divergência sem explicação, aborte e pare sem publicar.
 7. faca merge somente sem conflito e com a task individual em `Deploy`
-8. depois do merge, **confirme a versão numérica** já presente no pacote (`X.Y.N` em `package.json` e, se existir, `app.json` com `version` igual e `versionCode = MAJOR*10000 + MINOR*100 + PATCH`); **não** existe sufixo textual para remover; tags usam a mesma versão numérica
-9. confirme que `master` recebeu o commit esperado e que o push remoto aconteceu
-10. registre quais repositorios foram promovidos e quais ficaram bloqueados
-11. Após a publicação, mova a task para **`Done`** somente se ela possuir os quatro accepts (`agent:qa:accepted`, `agent:security:accepted`, `agent:design:accepted`, `agent:ux:accepted`). Se faltar qualquer accept, mantenha a issue aberta, mova-a para **`Working`** e reative a segunda rodada de validação; não trate a publicação como aceite dos validadores.
-12. **handoff de documentação (obrigatório no publish):** para **cada filha de produto** do inventário que ainda **não** tenha `agent:technical-documenter:done` e/ou `agent:tutorial-assistant:done`, aplique as labels de **solicitação** ausentes (`agent:technical-documenter` e/ou `agent:tutorial-assistant`). **Nunca** invente `:done`. Issues só de governança/docs (`agents-mcp` puro) e hotfixes sem delta de UI/API de produto podem ficar isentas com comentário de exceção estrutural. Comente no pai do RC a lista do que recebeu label de docs.
-13. se o projeto principal ficar com conflito, nao force update nem reescreva `master`; registre o bloqueio e pare na fronteira segura
+8. antes do merge, gere uma nova versão estável numérica para esta task
+   individual (SemVer, sem `-rc`), atualizando os arquivos de versão exigidos
+   pelo projeto e a tag/registro correspondente. Nunca agrupe duas tasks em uma
+   versão.
+9. depois do merge, confirme a versão numérica (`X.Y.N` em `package.json` e,
+   se existir, `app.json` com `version` igual e `versionCode = MAJOR*10000 +
+   MINOR*100 + PATCH`).
+10. confirme que `master` recebeu o commit esperado e que o push remoto aconteceu
+11. devolva ao Manager um handoff sanitizado com SHA, versão, repositórios,
+    runtime e os quatro accepts observados. O DevOps não move a task para
+    `Done` ou `Working`.
+12. O Manager move para **`Done`** somente com os quatro accepts. Sem qualquer
+    accept, move para **`Working`** e reativa no Paperclip os validadores
+    pendentes; com rejeição, aciona o Developer para correção e depois os
+    validadores para revalidação.
+13. Depois de mover para `Done`, o Manager cria no Paperclip as tasks filhas
+    para `Technical Documenter` e `Tutorial Assistant`, quando aplicáveis.
+14. se o projeto principal ficar com conflito, nao force update nem reescreva `master`; registre o bloqueio e pare na fronteira segura
 
 ## Front Rule
 
@@ -105,7 +117,9 @@ Ao concluir, informe:
 - nao force ref em `master` para contornar conflito
 - nao agrupe tasks em um RC para publicação
 - nao marque uma task em `Done` sem a evidência da sua própria publicação
-- nao mover filhas de produto para `Done` no publish **sem** garantir labels de solicitação documental (`agent:technical-documenter` / `agent:tutorial-assistant`) quando `:done` ainda estiver ausente — handoff de docs é parte do rito de master
+- após o Manager mover a task para `Done`, criar no Paperclip as filhas
+  documentais aplicáveis; `:done` dos documentadores não é pré-requisito para
+  concluir a publicação
 - nao grave sufixo textual (`-rc.N`) em `package.json` / `app.json`; versão de arquivo é sempre somente números (`X.Y.N`)
 - nao use contador sequencial de RC (RC1/RC2) no lugar do SemVer nos arquivos de versão
 - em `app.json`: `version` = `package.json` version; `versionCode` = MAJOR*10000 + MINOR*100 + PATCH
