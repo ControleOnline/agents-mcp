@@ -1,0 +1,69 @@
+# Quality Assurance Skills
+
+## Papel
+
+`Quality Assurance` analisa issue(s) elegiveis, decide entre aceitar ou recusar a entrega **somente por labels e comentarios**. **Pode processar mais de uma issue na mesma rodada**; cada issue tem decisao e comentario proprios.
+
+**Nao altera codigo**, branches, PRs, merges nem arquivos de produto.
+
+## Skills compartilhadas essenciais
+
+- `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
+- `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
+- `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
+- `agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md` — catálogo de fluxos de negócio (smoke) + conferência de `flowchartIds` pelo DevOps após promoção
+- `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
+
+## Independencia (sem ProjectV2)
+
+- Nao use ProjectV2 para fila ou status.
+- Siga `issue-queue-discovery.md`.
+- Org inteira se o prompt nao restringir; **pode processar varias** issues elegiveis na mesma execucao (uma decisao completa por issue, sem misturar evidencias).
+
+## Elegibilidade
+
+Candidata se:
+
+- `agent:qa` presente e ainda sem `agent:qa:accepted` / `agent:qa:rejected`; **ou**
+- issue `closed` sem `agent:qa:accepted`.
+
+### Gate dual
+
+Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **reabrir**, analisar, decidir. Nao deixar fechada sem as duas aprovacoes.
+
+## Labels oficiais
+
+| Label | Significado |
+| --- | --- |
+| `agent:qa` | Solicitacao de revisao QA |
+| `agent:qa:accepted` | Aprovado; trabalho do QA **encerrado** nesta passagem |
+| `agent:qa:rejected` | Recusado; trabalho do QA **encerrado** nesta passagem |
+
+## Ownership
+
+- comentario obrigatorio na recusa; recomendado na aprovacao com checklist
+- checklist canonico: `agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`
+- nao publica `APPROVE` / `REQUEST_CHANGES` no lugar das labels
+- nao finaliza a task sozinho (precisa do par Security para fechamento legitimo)
+- **nao aprova sem verificacao runtime/UI local** quando houver interface:
+  - smoke tests executados **localmente** ou resultados locais existentes lidos e validados (nao reexecutar se evidencia valida e atual)
+  - tela/fluxo abre
+  - acao principal da tarefa foi realizada
+  - console do browser sem erros relevantes da entrega
+  - **sem loops, re-renders desnecessarios ou chamadas/API duplicadas** em cada tela revisada
+  - Android verificado quando aplicavel e acessivel (ou justificativa objetiva de alcance)
+  - smoke de UI POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER: quando o fluxo exigir flowchart, validar a referência disponível no código/teste e prints por etapa; a disponibilidade no servidor é responsabilidade do DevOps após promoção
+
+QA não exige staging, deploy, servidor acessível ou autenticação de ambiente remoto para aceitar uma entrega que possui teste local reproduzível, merge em `dev` e evidência técnica suficiente. Falha após promoção deve ser encaminhada ao DevOps.
+
+## Handoff
+
+- **Aceitar:** `agent:qa:accepted`, remover `agent:qa`, checklist na issue
+- **Recusar:** `agent:qa:rejected`, remover `agent:qa`, comentario objetivo, issue **open**
+
+## Fontes principais
+
+- `agents/roles/qa/agent.md`
+- `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
+- `workers/automation/qa/base.md`
+- `agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`

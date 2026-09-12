@@ -19,6 +19,7 @@ const DEFAULT_STALE_HOURS = '24';
 const DEFAULT_STALE_DRAFT_HOURS = '24';
 const DEFAULT_STALE_OPEN_PR_HOURS = '48';
 const DEFAULT_PRIORITY_WORKFLOW_RUN_LOOKBACK = '10';
+const PROTECTED_PROJECT_STATUSES = new Set(['blocked', 'backlog']);
 const RETRY = githubRetryConfig('CTO');
 
 function env(name, fallback = '') {
@@ -250,6 +251,10 @@ function statusField(project) {
 function getStatusValue(item) {
   const value = item.fieldValues?.nodes?.find((node) => node?.field?.name?.toLowerCase() === 'status');
   return value?.name || null;
+}
+
+function isProtectedProjectStatus(status) {
+  return PROTECTED_PROJECT_STATUSES.has(String(status || '').trim().toLowerCase());
 }
 
 function issueLabels(issue) {
@@ -1233,6 +1238,8 @@ async function main() {
   const priorityOperationalIssues = [];
 
   for (const item of items) {
+    if (isProtectedProjectStatus(getStatusValue(item))) continue;
+
     const prioritySnapshot = classifyPriorityOperationalItem(
       item,
       knownAgentLogins,

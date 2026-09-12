@@ -24,6 +24,24 @@ A documentacao em `agents/` pode usar placeholders genericos. Os valores reais d
 | `<HELP_CENTER_HOST>` | `documentation.help_center_host.value` |
 | `<TEAM_EMAIL>` | `documentation.team_email.value` |
 
+## Paperclip
+
+Os endpoints, o ID da empresa, os caminhos do servidor e as referências de
+credenciais usadas pelo CTO ficam em `paperclip`. Este bloco é versionado sem
+valores secretos; tokens, senhas e chaves permanecem no runtime ou nas
+referências autorizadas de credenciais.
+
+## Limite operacional
+
+`runners.defaults.DEVELOPER_WORKING_LIMIT` está definido como **5** e é um teto
+absoluto para `Working`. Com cinco tasks, a seleção de novas tasks e qualquer
+mutação que tente colocar uma sexta task em `Working` devem ser recusadas. A
+única exceção é o P1 `DevOps` processar `Deploy`, sem aumentar `Working`.
+
+O dispatcher lê o valor canônico a cada execução e falha fechado quando ele
+está ausente ou inválido. Não use override de ambiente ou do projeto para
+alterar esse limite sem mudar a configuração versionada.
+
 ## Fork checklist
 
 1. Preencher `owner.value`, `project.*`, `github.product_repositories`

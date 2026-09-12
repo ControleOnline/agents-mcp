@@ -4,7 +4,7 @@
 
 No fluxo normal **nao ha PR do Developer**. A revisao de `Security` e sobre a task/issue e a evidencia mergeada em **`dev`**.
 
-`staging` e exclusivo do RC do `DevOps`. Fonte: `agents/skills/shared/github/github-flow.md`.
+`staging` e exclusivo do RC do `DevOps`. Fonte: `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.
 
 ## Quando a entrega estiver fora da politica, `Security` deve
 

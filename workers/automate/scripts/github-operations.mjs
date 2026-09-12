@@ -13,6 +13,8 @@ const RETRY = githubRetryConfig('GITHUB_MANAGER');
 const DEFAULT_ALLOWED_LOGINS = 'luizkim,github-copilot[bot],copilot-swe-agent,copilot';
 const DEFAULT_AGENT_LABELS = 'agent:developer,agent:security,agent:qa,agent:devops,agent:sysadmin';
 const COMMAND_PREFIXES = ['/github-manager', '/github-ops'];
+const PROTECTED_PROJECT_STATUSES = new Set(['blocked', 'backlog']);
+const MASTER_BRANCHES = new Set(['master', 'main']);
 
 function env(name, fallback = '') {
   return (process.env[name] || fallback).trim();
@@ -233,6 +235,47 @@ function splitRepo(fullName) {
   return { owner, repo };
 }
 
+function isPullRequestMergePath(path) {
+  return /^\/repos\/[^/]+\/[^/]+\/pulls\/\d+\/merge$/.test(path || '');
+}
+
+function pullRequestPathFromMergePath(path) {
+  return (path || '').replace(/\/merge$/, '');
+}
+
+function branchContainsIssueNumber(headRefName, issueNumber) {
+  const escaped = String(issueNumber).replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&');
+  return new RegExp('(^|[/-])' + escaped + '([/-]|$)', 'i').test(headRefName || '');
+}
+
+async function assertTaskByTaskMasterPromotion(operation) {
+  const method = String(operation.method || 'GET').toUpperCase();
+  if (method !== 'PUT' || !isPullRequestMergePath(operation.path)) return;
+
+  const pullRequest = await githubRest(pullRequestPathFromMergePath(operation.path));
+  const baseRef = String(pullRequest?.base?.ref || '').trim().toLowerCase();
+  if (!MASTER_BRANCHES.has(baseRef)) return;
+
+  const headRef = String(pullRequest?.head?.ref || '').trim();
+  if (headRef.toLowerCase() === 'staging') {
+    throw new Error(
+      'Refusing master promotion from the aggregate staging branch. Promote exactly one task branch per operation.'
+    );
+  }
+
+  const issueNumber = operation.issue_number ?? operation.task_id;
+  if (issueNumber === undefined || issueNumber === null || String(issueNumber).trim() === '') {
+    throw new Error(
+      'Refusing master promotion without issue_number/task_id. Every promotion must identify exactly one task.'
+    );
+  }
+  if (!branchContainsIssueNumber(headRef, issueNumber)) {
+    throw new Error(
+      'Refusing master promotion: branch ' + (headRef || 'unknown') + ' is not tied to task ' + issueNumber + '.'
+    );
+  }
+}
+
 async function getProjectMetadata(org, projectNumber) {
   const query = `query($org:String!, $projectNumber:Int!, $cursor:String) {
     organization(login:$org) {
@@ -262,6 +305,19 @@ async function getProjectMetadata(org, projectNumber) {
           }
           nodes {
             id
+            fieldValues(first:20) {
+              nodes {
+                ... on ProjectV2ItemFieldSingleSelectValue {
+                  name
+                  field {
+                    ... on ProjectV2SingleSelectField {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
+            }
             content {
               ... on Issue {
                 id
@@ -464,6 +520,27 @@ function getProjectItem(project, repoFullName, issueNumber, itemId) {
   );
 }
 
+function assertWorkingCapacity(project, item, targetStatus) {
+  const currentStatus = getStatusValue(item).trim().toLowerCase();
+  const requestedStatus = String(targetStatus || '').trim().toLowerCase();
+  if (requestedStatus !== 'working' || currentStatus === 'working') return;
+
+  const configPath = new URL('../../../config/ecosystem.config.json', import.meta.url);
+  const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  const limit = Number(config?.runners?.defaults?.DEVELOPER_WORKING_LIMIT);
+  if (!Number.isInteger(limit) || limit < 1) {
+    throw new Error('Working capacity is unavailable; refusing to move a task into Working.');
+  }
+  const workingCount = (project.items?.nodes || []).filter(
+    (entry) => getStatusValue(entry).trim().toLowerCase() === 'working'
+  ).length;
+  if (workingCount >= limit) {
+    throw new Error(
+      `Working capacity exceeded: ${workingCount}/${limit}. Refusing to move another task into Working; wait for a task to leave Working.`
+    );
+  }
+}
+
 async function getIssueNodeId(repoFullName, issueNumber) {
   const { owner, repo } = splitRepo(repoFullName);
   const data = await githubGraphQL(
@@ -637,6 +714,54 @@ function statusMatches(status, allowedStatuses) {
   return allowedStatuses.some((entry) => entry.toLowerCase() === normalized);
 }
 
+function normalizeStatusName(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function isProtectedProjectStatus(status) {
+  return PROTECTED_PROJECT_STATUSES.has(normalizeStatusName(status));
+}
+
+function hasHumanAuthorizedRcRemoval(input) {
+  const reason = String(input.rc_removal_reason || input.human_authorization_reason || '').trim();
+  return input.human_authorized_rc_removal === true && input.devops_rc_removal === true && reason.length > 0;
+}
+
+function assertAllowedProjectStatusTransition(item, input) {
+  const fromStatus = getStatusValue(item);
+  const from = normalizeStatusName(fromStatus);
+  const target = normalizeStatusName(input.target_status);
+  const issueRef = input.repo_full_name && input.issue_number
+    ? `${input.repo_full_name}#${input.issue_number}`
+    : input.item_id || 'unknown item';
+
+  // Business rule: Backlog and Blocked are human-only holding columns.
+  // Workers and agents must not select, mutate, move, validate, publish,
+  // document, comment, or clean up items currently there, nor move items there.
+  if (isProtectedProjectStatus(fromStatus) || isProtectedProjectStatus(input.target_status)) {
+    throw new Error(
+      `Refusing ProjectV2 status transition ${fromStatus || 'unknown'} -> ${input.target_status} for ${issueRef}: ` +
+      'Blocked and Backlog are human-only columns and must not be touched by workers or agents.'
+    );
+  }
+
+  if (from !== 'in review' || ['in review', 'deploy', 'done'].includes(target)) {
+    return;
+  }
+
+  // In Review is the frozen RC/human-review package. Removing a task from it
+  // changes the RC inventory, so automation must fail closed unless DevOps is
+  // acting on an explicit human authorization and records the reason.
+  if (hasHumanAuthorizedRcRemoval(input)) {
+    return;
+  }
+
+  throw new Error(
+    `Refusing ProjectV2 status transition ${fromStatus || 'In Review'} -> ${input.target_status} for ${issueRef}: ` +
+    'In Review is a frozen RC package/human-review column. Only DevOps may remove an item from the RC after explicit human authorization; provide human_authorized_rc_removal=true, devops_rc_removal=true and rc_removal_reason.'
+  );
+}
+
 function buildMissingProjectAuditSummary({
   org,
   projectNumber,
@@ -671,6 +796,8 @@ async function updateProjectStatus(input) {
   const statusField = getStatusField(project);
   const statusOption = getStatusOption(statusField, input.target_status);
   const item = await resolveProjectItem(project, input);
+  assertAllowedProjectStatusTransition(item, input);
+  assertWorkingCapacity(project, item, input.target_status);
 
   await githubGraphQL(
     `mutation($projectId:ID!, $itemId:ID!, $fieldId:ID!, $optionId:String!) {
@@ -698,6 +825,7 @@ async function updateProjectStatus(input) {
   return {
     project: { id: project.id, title: project.title, org: input.org, number: Number(input.project_number) },
     item_id: item.id,
+    previous_status: getStatusValue(item),
     target_status: input.target_status,
     repo_full_name: input.repo_full_name || item?.content?.repository?.nameWithOwner || null,
     issue_number: input.issue_number || item?.content?.number || null,
@@ -839,6 +967,7 @@ async function executeOperation(operation) {
     case 'manager_audit':
       return runManagerAudit(operation.dry_run === true);
     case 'rest':
+      await assertTaskByTaskMasterPromotion(operation);
       return githubRest(operation.path, {
         method: operation.method || 'GET',
         body: operation.body !== undefined ? JSON.stringify(operation.body) : undefined,

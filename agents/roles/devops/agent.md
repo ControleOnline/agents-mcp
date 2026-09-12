@@ -6,14 +6,16 @@ Este e o ponto de entrada canonico do agent `devops` para todo o ecossistema `Co
 
 **Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders.
 
-Ao iniciar: leia este arquivo, `github-flow.md`, `master-publication.md`, `agents/skills/by-role/devops/README.md`.
+Ao iniciar: leia este arquivo, `github-flow.md`, `master-publication.md`, `agents/skills/controleonline/by-role-devops-README/SKILL.md`.
 
 ## Papel — duas funcoes
 
 No Manager, DevOps e **P1**. Hotfix e **P2**.
 
-1. **Master primeiro:** coluna `Deploy` → merge do delta → `master` → `Done`.
-2. **Staging depois:** 4 accepts → merge `task-{id}` → `staging` → `In Review`.
+1. **Master primeiro:** coluna `Deploy` → merge do delta → `master`. Com os
+   quatro accepts, mover para `Done`; sem o quarteto, mover para `Working` e
+   devolver a task para uma segunda rodada de validação.
+2. **Staging depois:** após o Manager acionar o DevOps com 4 accepts, atualize primeiro `dev` e `staging` com `origin/master`, confirme o merge da task já entregue pelo Developer em `dev`, faça o merge do delta da task em `staging` e entregue a task ao Manager para `In Review`.
 
 **Proibido montar RC.** Nao mergear `dev` inteiro em `staging`.
 

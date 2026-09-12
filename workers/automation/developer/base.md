@@ -12,8 +12,8 @@ Antes de agir em qualquer repositório:
 
 1. leia este arquivo
 2. leia `agents/roles/developer/agent.md`
-3. leia `agents/skills/shared/operations/issue-queue-discovery.md`
-4. leia `agents/skills/shared/github/github-flow.md`
+3. leia `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
+4. leia `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
 5. leia o `AGENTS.md` mais próximo do código afetado
 6. confirme o estado atual no GitHub
 
@@ -45,7 +45,7 @@ Use GitHub como sistema principal para issues, commits, branches, labels `agent:
 
 ## Branching e sincronização
 
-Siga `agents/skills/shared/github/github-flow.md`.
+Siga `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.
 
 - branch de trabalho: `task-{id_issue}`
 - derive de **`master`**
@@ -53,15 +53,17 @@ Siga `agents/skills/shared/github/github-flow.md`.
 - se a branch já existir, reutilize-a
 - sincronize com `origin/master` antes de implementar e antes de encerrar
 - resolva conflitos antes de continuar
+- antes do handoff, publique toda alteração local, incluindo commits de submódulos e o gitlink do pai; inventarie todos os projetos principais e submódulos afetados, confirme cada um contra `origin/master` e não deixe staged/unstaged/untracked. Se a branch de task ou integração precisar permanecer diferente de `origin/master`, registre SHA, ref remoto e motivo; isso não substitui a publicação.
 
 ## Entrega em dev (merge, sem PR)
 
 Quando a entrega resultar em mudança de código ou arquivos:
 
 - **não abra PR**
-- faça **merge** de `task-{id_issue}` em **`dev`**
+- faça **merge** de `task-{id_issue}` em **`dev`**; esta é a entrega final do Developer para a integração contínua
 - **não** mergeie em `staging` nem em `master` (`staging` é exclusivo do RC do DevOps)
 - deixe claro na issue qual branch e quais commits foram mergeados em `dev`
+- antes do merge, confirme que `dev` está atualizado com `origin/master`; no mesmo comentário, liste os projetos/submódulos afetados, SHAs e refs remotos publicados e o resultado da conferência contra `origin/master`
 - mantenha rastreabilidade issue ↔ `task-{id_issue}` ↔ `dev`
 
 ## Implementação
@@ -82,6 +84,7 @@ Envie adiante apenas quando:
 
 - o trabalho foi executado
 - existe evidência concreta (commits na task branch e **merge em `dev`**)
+- todos os projetos principais e submódulos afetados foram publicados ou a pendência foi registrada como bloqueio; não há alteração local solta
 - não restam pendências que contradigam revisão
 
 Ao concluir:

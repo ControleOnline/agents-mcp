@@ -1,11 +1,11 @@
 {
   "$schema": "./ecosystem.config.schema.json",
-  "description": "Valores canônicos. Escopo operacional de mutação: SOMENTE org Frethical (https://github.com/Frethical/). Tokens/secrets NÃO entram neste arquivo.",
+  "description": "Valores canônicos. Escopo operacional de mutação: SOMENTE org ControleOnline (https://github.com/ControleOnline/). Tokens/secrets NÃO entram neste arquivo.",
   "owner": {
     "placeholder": "<OWNER>",
     "env": "OWNER",
     "value": "ControleOnline",
-    "description": "Organizacao legada de referencia; mutações operacionais de produto SO em Frethical. Ver allowed_scope."
+      "description": "Organizacao canônica de referência e mutação operacional. Ver allowed_scope."
   },
   "github": {
     "token_env": [
@@ -21,14 +21,13 @@
     "product_repositories": {
       "env": "PRODUCT_REPOSITORIES",
       "value": [
-        "Frethical/frethical",
-        "Frethical/frethical-app",
-        "Frethical/bid-backend",
-        "Frethical/bid-front",
-        "Frethical/site-frethical",
-        "Frethical/agents-mcp"
+        "ControleOnline/agents-mcp",
+        "ControleOnline/app-community",
+        "ControleOnline/api-community",
+        "ControleOnline/ui-common",
+        "ControleOnline/ui-tests"
       ],
-      "description": "Repositorios de produto no escopo permitido (org Frethical apenas)."
+      "description": "Repositorios no escopo permitido (org ControleOnline apenas)."
     }
   },
   "project": {
@@ -63,25 +62,71 @@
     "help_center_url": {
       "placeholder": "<HELP_CENTER_URL>",
       "env": "HELP_CENTER_URL",
-      "value": "",
+      "value": "ajuda.controleonline.com",
       "description": "URL base da central de ajuda."
     },
     "help_center_host": {
       "placeholder": "<HELP_CENTER_HOST>",
       "env": "HELP_CENTER_HOST",
-      "value": "",
+      "value": "ajuda.controleonline.com",
       "description": "Host da central de ajuda sem esquema."
     },
     "team_email": {
       "placeholder": "<TEAM_EMAIL>",
       "env": "TEAM_EMAIL",
-      "value": "",
+      "value": "report@controleonline.com",
       "description": "E-mail para avisos de documentacao publicada."
     }
+  },
+  "paperclip": {
+    "company_id": {
+      "env": "PAPERCLIP_COMPANY_ID",
+      "value": "3fed493c-bd7b-487c-99f8-0bd5e2908faf",
+      "description": "Empresa ControleOnline no Paperclip."
+    },
+    "base_url": {
+      "env": "PAPERCLIP_BASE_URL",
+      "value": "https://ia.controleonline.com",
+      "description": "URL base da API e interface do Paperclip."
+    },
+    "server": {
+      "host": "s.controleonline.com",
+      "data_dir": "/home/paperclip/.paperclip",
+      "service": "paperclip.service",
+      "projects_dir": "/home/paperclip/.paperclip/instances/default/projects/3fed493c-bd7b-487c-99f8-0bd5e2908faf",
+      "description": "Destino operacional do Paperclip no servidor."
+    },
+    "credentials": {
+      "drive_folder_url": "https://drive.google.com/drive/u/1/folders/1oAb6nRTyotkDxHaPQ8TV7rsJ7gzD7YFu",
+      "drive_subfolder": ".",
+      "drive_candidate_files": [
+        "PAPERCLIP_API_KEY",
+        ".env",
+        ".env.local",
+        "env.local.js",
+        "key.local.js",
+        "ssh-hosts-prod.txt",
+        "ssh-hosts.txt",
+        "agents-controle-online.private-key.pem"
+      ],
+      "key_names": [
+        "PAPERCLIP_API_KEY",
+        "GH_TOKEN",
+        "GITHUB_TOKEN"
+      ],
+      "api_key_env": "PAPERCLIP_API_KEY",
+      "ssh_reference_env": "PAPERCLIP_SSH_KEY_PATH",
+      "ssh_host_file": "ssh-hosts-prod.txt",
+      "ssh_private_key_file": "agents-controle-online.private-key.pem",
+      "temporary_use_only": true,
+      "description": "Referencias de credenciais; os valores secretos nunca entram neste JSON."
+    },
+    "description": "Endpoints e caminhos canônicos usados pela skill operacional do CTO."
   },
   "runners": {
     "defaults": {
       "QA_TASK_LIMIT": "5",
+      "DEVELOPER_WORKING_LIMIT": "5",
       "QA_AUTO_MERGE": "false",
       "DEVELOPER_COPILOT_BASE_REF": "master",
       "OWNER": "ControleOnline",
@@ -99,9 +144,9 @@
   },
   "allowed_scope": {
     "orgs": [
-      "Frethical"
+      "ControleOnline"
     ],
-    "rule": "Único escopo permitido para comentar, alterar, rotular, abrir issues/PRs ou solicitações. Fora de Frethical/* = OUT_OF_SCOPE.",
+    "rule": "Único escopo permitido para comentar, alterar, rotular, abrir issues/PRs ou solicitações. Fora de ControleOnline/* = OUT_OF_SCOPE.",
     "exception": "Governança estrutural em agents-mcp."
   }
 }

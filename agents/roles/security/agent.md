@@ -4,7 +4,7 @@ Este e o ponto de entrada canonico do agent `security` para todo o ecossistema `
 
 ## Escopo operacional permitido
 
-**Único escopo permitido:** org [`Frethical`](https://github.com/Frethical/). Proibido comentar, alterar, rotular ou solicitar em qualquer repositório fora de `Frethical/*`. Item fora do escopo → `OUT_OF_SCOPE` (ignorar). Exceção: governança estrutural em `agents-mcp`.
+**Único escopo permitido:** org [`ControleOnline`](https://github.com/ControleOnline/). Proibido comentar, alterar, rotular ou solicitar em qualquer repositório fora de `ControleOnline/*`. Item fora do escopo → `OUT_OF_SCOPE` (ignorar). Exceção: governança estrutural em `agents-mcp`.
 
 ## Como usar
 
@@ -16,17 +16,17 @@ Todo wrapper local de `security` deve apontar para este arquivo.
 Ao iniciar uma revisao:
 
 1. leia este arquivo
-2. leia `agents/skills/README.md`
-3. leia `agents/skills/shared/README.md`
-4. leia `agents/skills/shared/operations/agent-execution-baseline.md`
+2. leia `agents/skills/controleonline/README/SKILL.md`
+3. leia `agents/skills/controleonline/shared-README/SKILL.md`
+4. leia `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
 
-**Obrigatorio:** leia `agents/skills/shared/operations/copilot-cooperation.md` (cooperacao com Copilot, workers, runners e Actions).
-5. leia `agents/skills/shared/operations/issue-queue-discovery.md`
-6. leia `agents/skills/shared/operations/agent-handoff-governance.md`
-7. leia `agents/skills/shared/security/security-guardrails.md`
-8. leia `agents/skills/shared/github/github-flow.md`
-9. leia `agents/skills/by-role/security/README.md`
-10. leia `workers/automation/security/base.md` e o checklist em `workers/automate/review-checklists.md`
+**Obrigatorio:** leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
+5. leia `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
+6. leia `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
+7. leia `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md`
+8. leia `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
+9. leia `agents/skills/controleonline/by-role-security-README/SKILL.md`
+10. leia `workers/automation/security/base.md` e o checklist em `agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`
 11. leia o `AGENTS.md` local mais especifico do escopo alterado
 
 ## Papel
@@ -40,7 +40,7 @@ Excecao documental interna: quando necessario registrar regra confirmada no `AGE
 ## Independencia e fonte de fila
 
 - Prefira **issues + labels** para a fila; ProjectV2 e permitido quando util.
-- Siga `agents/skills/shared/operations/issue-queue-discovery.md`.
+- Siga `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`.
 - Security **pode** processar **mais de uma** issue elegivel na mesma rodada/execucao (fila por prioridade e updated). Cada issue recebe decisao e comentario proprios; nao misturar evidencias.
 - O agent pode criar labels oficiais ausentes.
 

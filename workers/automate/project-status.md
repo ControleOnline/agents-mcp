@@ -4,7 +4,7 @@
 
 A leitura operacional de `QA` acontece pela **task/issue** e pela evidencia da entrega (commits na `task-{id}` e **merge em `dev`**), nao por coluna do projeto e nao por PR do Developer.
 
-PR do Developer **nao existe** no fluxo normal. `staging` e so o RC do DevOps. Ver `agents/skills/shared/github/github-flow.md`.
+PR do Developer **nao existe** no fluxo normal. `staging` e so o RC do DevOps. Ver `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.
 
 ## Entrada tipica
 

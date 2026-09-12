@@ -21,16 +21,15 @@ workers/            # execução (scripts, runners, automações)
 
 ## Entradas principais
 
-- `agents/skills/README.md` — mapa da biblioteca
-- `agents/skills/shared/README.md` — políticas compartilhadas
-- `agents/skills/by-role/*/README.md` — orientação por agent
+- `agents/skills/controleonline/README/SKILL.md` — mapa da biblioteca
+- `agents/skills/controleonline/shared-README/SKILL.md` — políticas compartilhadas
+- `agents/skills/controleonline/by-role-<role>-README/SKILL.md` — orientação por agent
 - `agents/roles/*/agent.md` — entradas canônicas
 - `AGENTS.md` — regras operacionais centrais
-- `workers/scripts/sync-copilot-agents.mjs` — sync dos wrappers
 
 ## Nota
 
-Este repositório é a fonte canônica. Wrappers em `.github/agents/` devem permanecer finos e apontar para `agents/roles/*/agent.md`.
+Este repositório é a fonte canônica. A execução ocorre diretamente pelo Paperclip usando `agents/roles/*/agent.md`.
 
 ## Configuracao do fork (obrigatoria)
 

@@ -3,11 +3,11 @@ import fs from 'node:fs';
 import test from 'node:test';
 
 const smokeFlows = fs.readFileSync(
-  'agents/skills/shared/quality/smoke-test-flows.md',
+  'agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md',
   'utf8',
 );
 const codeQuality = fs.readFileSync(
-  'agents/skills/shared/quality/code-quality.md',
+  'agents/skills/controleonline/shared-quality-code-quality/SKILL.md',
   'utf8',
 );
 const qaAgent = fs.readFileSync('agents/roles/qa/agent.md', 'utf8');
@@ -39,8 +39,15 @@ test('QA gate requires screenshots for every UI/browser smoke step', () => {
   assert.match(qaAgent, /Evidencia visual completa do fluxo/i);
 });
 
+test('automated test integration is code, not generated artifacts', () => {
+  assert.match(codeQuality, /Teste automatizado versionado x artefato de execução/);
+  assert.match(codeQuality, /não são a entrega do teste, não substituem o código automatizado/);
+  assert.match(smokeFlows, /não redefine a\s+entrega de um teste automatizado/);
+  assert.match(smokeFlows, /não são a implementação do smoke/);
+});
+
 test('QA gate requires admin flowchartIds plus per-step prints', () => {
-  const qaReadme = fs.readFileSync('agents/skills/by-role/qa/README.md', 'utf8');
+  const qaReadme = fs.readFileSync('agents/skills/controleonline/by-role-qa-README/SKILL.md', 'utf8');
 
   for (const source of [smokeFlows, codeQuality, qaAgent, qaReadme]) {
     assert.match(source, /flowchartIds/);

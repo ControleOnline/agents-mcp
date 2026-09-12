@@ -2,14 +2,14 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 
-const reviewChecklist = fs.readFileSync('workers/automate/review-checklists.md', 'utf8');
+const reviewChecklist = fs.readFileSync('agents/skills/controleonline/shared-quality-review-checklists/SKILL.md', 'utf8');
 const componentReuseChecklist = fs.readFileSync(
-  'workers/automate/qa/component-reuse-checklist.md',
+  'agents/skills/controleonline/shared-quality-review-checklists/component-reuse-checklist.md',
   'utf8',
 );
 
 test('qa review checklist includes the component reuse subchecklist file', () => {
-  assert.match(reviewChecklist, /workers\/automate\/qa\/component-reuse-checklist\.md/);
+  assert.match(reviewChecklist, /agents\/skills\/controleonline\/shared-quality-review-checklists\/component-reuse-checklist\.md/);
   assert.match(reviewChecklist, /subchecklist de reaproveitamento de componentes/i);
 });
 

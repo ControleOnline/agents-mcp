@@ -4,7 +4,7 @@ Este e o ponto de entrada canonico do agent `sysadmin` para todo o ecossistema `
 
 ## Escopo operacional permitido
 
-**Único escopo permitido:** org [`Frethical`](https://github.com/Frethical/). Proibido comentar, alterar, rotular ou solicitar em qualquer repositório fora de `Frethical/*`. Item fora do escopo → `OUT_OF_SCOPE` (ignorar). Exceção: governança estrutural em `agents-mcp`.
+**Único escopo permitido:** org [`ControleOnline`](https://github.com/ControleOnline/). Proibido comentar, alterar, rotular ou solicitar em qualquer repositório fora de `ControleOnline/*`. Item fora do escopo → `OUT_OF_SCOPE` (ignorar). Exceção: governança estrutural em `agents-mcp`.
 
 ## Como usar
 
@@ -17,16 +17,16 @@ Ao iniciar uma execucao:
 
 1. leia este arquivo
 2. **determine o modo** (`discover` ou `resolve`) — ver secao abaixo
-3. leia `agents/skills/README.md`
-4. leia `agents/skills/shared/README.md`
-5. leia `agents/skills/shared/operations/agent-execution-baseline.md`
+3. leia `agents/skills/controleonline/README/SKILL.md`
+4. leia `agents/skills/controleonline/shared-README/SKILL.md`
+5. leia `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
 
-**Obrigatorio:** leia `agents/skills/shared/operations/copilot-cooperation.md` (cooperacao com Copilot, workers, runners e Actions).
-6. leia `agents/skills/shared/security/security-guardrails.md` e `operational-security-guardrails.md`
-7. leia `agents/skills/by-role/sysadmin/README.md`
+**Obrigatorio:** leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
+6. leia `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md` e `operational-security-guardrails.md`
+7. leia `agents/skills/controleonline/by-role-sysadmin-README/SKILL.md`
 8. leia os checklists:
-   - `agents/skills/by-role/sysadmin/checklist-server.md`
-   - `agents/skills/by-role/sysadmin/checklist-system-dev.md`
+   - `agents/skills/controleonline/by-role-sysadmin-checklist-server/SKILL.md`
+   - `agents/skills/controleonline/by-role-sysadmin-checklist-system-dev/SKILL.md`
 9. valide fontes de verdade, escopo real do ambiente e riscos antes de agir
 10. registre achados de forma sanitizada
 
@@ -55,7 +55,7 @@ Em modo `discover`, inspecione logs de aplicacao **e** de webserver nos hosts co
 
 **Sanitizacao:** nunca cole tokens, PII, payloads completos ou connection strings em issue/comentario.
 
-Detalhe operacional: `agents/skills/shared/operations/log-investigation-evidence.md`.
+Detalhe operacional: `agents/skills/controleonline/shared-operations-log-investigation-evidence/SKILL.md`.
 
 ## ProjectV2 e board oficial
 
@@ -191,10 +191,10 @@ Arquivos sensiveis de apoio (quando existirem no runtime), sem exposicao: `.env`
 
 ## Skills uteis
 
-- `agents/skills/shared/operations/autonomous-operations.md`
-- `agents/skills/shared/operations/operational-source-of-truth.md`
-- `agents/skills/shared/operations/log-investigation-evidence.md`
-- `agents/skills/shared/operations/email-reading-fallback.md`
-- `agents/skills/shared/operations/issue-queue-discovery.md` (fila no modo `resolve` + regra de projeto ao criar)
-- `agents/skills/shared/github/github-issue-handling.md`
-- `agents/skills/shared/security/operational-security-guardrails.md`
+- `agents/skills/controleonline/shared-operations-autonomous-operations/SKILL.md`
+- `agents/skills/controleonline/shared-operations-operational-source-of-truth/SKILL.md`
+- `agents/skills/controleonline/shared-operations-log-investigation-evidence/SKILL.md`
+- `agents/skills/controleonline/shared-operations-email-reading-fallback/SKILL.md`
+- `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md` (fila no modo `resolve` + regra de projeto ao criar)
+- `agents/skills/controleonline/shared-github-github-issue-handling/SKILL.md`
+- `agents/skills/controleonline/shared-security-operational-security-guardrails/SKILL.md`

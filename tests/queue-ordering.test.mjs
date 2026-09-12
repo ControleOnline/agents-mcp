@@ -4,14 +4,14 @@ import test from 'node:test';
 
 const canonicalFiles = [
   'AGENTS.md',
-  'agents/skills/shared/operations/issue-queue-discovery.md',
+  'agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md',
   'agents/roles/developer/agent.md',
-  'agents/skills/by-role/developer/README.md',
+  'agents/skills/controleonline/by-role-developer-README/SKILL.md',
   'agents/roles/technical-documenter/agent.md',
-  'agents/skills/by-role/technical-documenter/README.md',
-  'agents/skills/by-role/tutorial-assistant/README.md',
+  'agents/skills/controleonline/by-role-technical-documenter-README/SKILL.md',
+  'agents/skills/controleonline/by-role-tutorial-assistant-README/SKILL.md',
   'agents/roles/sysadmin/agent.md',
-  'agents/skills/by-role/manager/README.md',
+  'agents/skills/controleonline/by-role-manager-README/SKILL.md',
 ];
 
 function compareQueueItems(left, right) {
@@ -60,6 +60,27 @@ test('Working takes precedence over Ready before priority ordering', () => {
   assert.deepEqual(eligible.map((item) => item.number), [2]);
 });
 
+test('Developer respects the Working capacity read from Project #1', () => {
+  const workingColumnLimit = 3;
+  assert.equal([1, 2].length < workingColumnLimit, true);
+  assert.equal([1, 2, 3].length >= workingColumnLimit, true);
+});
+
+test('Working capacity is configured centrally in agents-mcp', () => {
+  const config = JSON.parse(fs.readFileSync('config/ecosystem.config.json', 'utf8'));
+  assert.equal(config.runners.defaults.DEVELOPER_WORKING_LIMIT, '5');
+
+  const manager = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
+  const discovery = fs.readFileSync(
+    'agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md',
+    'utf8',
+  );
+  assert.match(manager, /limite global.*Working.*5 tasks/is);
+  assert.match(manager, /P1[\s\S]*`DevOps`.*única exceção.*Deploy/is);
+  assert.match(discovery, /limite.*5.*Working/is);
+  assert.match(discovery, /única exceção de fila.*Deploy/is);
+});
+
 test('canonical instructions reject updatedAt ordering', () => {
   for (const path of canonicalFiles) {
     const source = fs.readFileSync(path, 'utf8');
@@ -69,7 +90,7 @@ test('canonical instructions reject updatedAt ordering', () => {
     assert.doesNotMatch(source, /updated mais recente/i, path);
   }
 
-  const discovery = fs.readFileSync('agents/skills/shared/operations/issue-queue-discovery.md', 'utf8');
+  const discovery = fs.readFileSync('agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md', 'utf8');
   assert.match(discovery, /createdAt` crescente/i);
   assert.match(discovery, /nunca use `updatedAt`/i);
   assert.match(discovery, /menor numero da issue/i);
@@ -77,19 +98,74 @@ test('canonical instructions reject updatedAt ordering', () => {
   const developerAgent = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
   assert.match(developerAgent, /createdAt` crescente/i);
   assert.doesNotMatch(developerAgent, /`updated` mais recente/i);
-  assert.match(developerAgent, /`Working` primeiro.*`Ready` somente/i);
+  assert.match(developerAgent, /limite.*coluna `Working`.*Project #1/is);
 });
 
-test('Developer and validators own Ready/Working while DevOps owns release columns', () => {
-  const discovery = fs.readFileSync('agents/skills/shared/operations/issue-queue-discovery.md', 'utf8');
-  const devops = fs.readFileSync('agents/skills/by-role/devops/README.md', 'utf8');
+test('all agents prioritize Working and DevOps prioritizes Deploy first', () => {
+  const discovery = fs.readFileSync('agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md', 'utf8');
+  const devops = fs.readFileSync('agents/skills/controleonline/by-role-devops-README/SKILL.md', 'utf8');
   const dispatch = fs.readFileSync('workers/automate/scripts/agent-project-dispatch.mjs', 'utf8');
   const projectDispatch = fs.readFileSync('workers/automate/scripts/developer-project-dispatch.mjs', 'utf8');
 
-  assert.match(discovery, /`Ready`[\s\S]*`Working`[\s\S]*pertencem exclusivamente/i);
-  assert.match(discovery, /DevOps[\s\S]*`Deploy`[\s\S]*`In Review`[\s\S]*`Done`/i);
-  assert.match(devops, /`Ready`[\s\S]*`Working`[\s\S]*DevOps nunca captura/i);
+  assert.match(discovery, /todos os agentes[\s\S]*limite[\s\S]*`Working`/i);
+  assert.match(discovery, /DevOps,[\s\S]*`Deploy`[\s\S]*`Working`/i);
+  assert.match(devops, /`In Review`/i);
+  assert.match(devops, /`Done`/i);
+  assert.match(devops, /`Deploy`[\s\S]*`Working`[\s\S]*`Ready`/i);
   assert.match(dispatch, /prioritizeWorkingItems/);
   assert.match(projectDispatch, /workingItems/);
-  assert.match(projectDispatch, /Ready fica bloqueado até a conclusão/is);
+  assert.match(projectDispatch, /workingColumnLimit/);
+  assert.match(projectDispatch, /DEVELOPER_WORK_STATUSES.*Working/);
+  assert.match(projectDispatch, /workingCandidates/);
+  assert.doesNotMatch(projectDispatch, /candidateItems = workingCandidates.length/);
+  assert.match(projectDispatch, /ecosystem\.config\.json/);
+  assert.match(projectDispatch, /DEVELOPER_WORKING_LIMIT/);
+  assert.match(projectDispatch, /Working column limit is unavailable/is);
+  assert.match(projectDispatch, /Working .*limite configurado|Working está em .*não há vaga.*Ready/is);
+  assert.match(projectDispatch, /Somente Working/);
+});
+
+test('Developer dispatch has no autonomous schedule and only consumes Manager-owned Working tasks', () => {
+  const workflow = fs.readFileSync('workers/automate/workflows/developer-project-dispatch.yml', 'utf8');
+  const projectDispatch = fs.readFileSync('workers/automate/scripts/developer-project-dispatch.mjs', 'utf8');
+  assert.doesNotMatch(workflow, /schedule:\s*[\s\S]*cron:/);
+  assert.match(workflow, /workflow_dispatch/);
+  assert.match(projectDispatch, /const candidateItems = workingCandidates/);
+  assert.doesNotMatch(projectDispatch, /moveProjectItem\(project\.id, target\.id/);
+  assert.doesNotMatch(projectDispatch, /candidateItems = workingCandidates.length/);
+});
+
+test('first pass includes QA checklist and master synchronization gate', () => {
+  const manager = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
+  const developer = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
+  const baseline = fs.readFileSync(
+    'agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md',
+    'utf8',
+  );
+  const checklist = fs.readFileSync('agents/skills/controleonline/shared-quality-review-checklists/SKILL.md', 'utf8');
+  assert.match(manager, /coluna \*\*`Working`\*\*/is);
+  assert.ok(developer.includes('primeira alteração'));
+  assert.ok(developer.includes('agents/skills/controleonline/shared-quality-review-checklists/SKILL.md'));
+  assert.ok(developer.includes('origin/master'));
+  assert.match(baseline, /Regra transversal: tudo começa no `master`/);
+  assert.match(checklist, /Gate de primeira passagem do Developer/);
+});
+
+test('board mutations fail closed before creating a sixth Working task', () => {
+  const managerOperations = fs.readFileSync(
+    'workers/automate/scripts/github-operations.mjs',
+    'utf8',
+  );
+  const manager = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
+  const discovery = fs.readFileSync(
+    'agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md',
+    'utf8',
+  );
+
+  assert.match(managerOperations, /assertWorkingCapacity/);
+  assert.match(managerOperations, /Working capacity exceeded/);
+  assert.match(managerOperations, /DEVELOPER_WORKING_LIMIT/);
+  assert.match(manager, /teto absoluto de 5 tasks/is);
+  assert.match(manager, /não cria uma sexta.*Working/is);
+  assert.match(discovery, /mutacao que produziria `6\/5`.*recusada/is);
 });

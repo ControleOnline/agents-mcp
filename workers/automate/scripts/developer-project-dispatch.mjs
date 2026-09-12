@@ -3,6 +3,7 @@ import fs from 'node:fs';
 const GITHUB_API_URL = 'https://api.github.com/graphql';
 const DEFAULT_AGENT_LOGIN = 'github-copilot[bot]';
 const DEFAULT_AGENT_LOGINS = 'github-copilot[bot],copilot-swe-agent,copilot';
+const PROTECTED_PROJECT_STATUSES = new Set(['blocked', 'backlog', 'in review', 'deploy', 'done']);
 
 function env(name, fallback = '') {
   return (process.env[name] || fallback).trim();
@@ -90,6 +91,7 @@ async function getProjectSnapshot(org, projectNumber) {
                   state
                   createdAt
                   updatedAt
+                  labels(first:50) { nodes { name } }
                   assignees(first:20) {
                     nodes {
                       login
@@ -161,6 +163,26 @@ function hasHumanOnlyAssignee(issue, agentLogins) {
   return hasHumanAssignee(issue, agentLogins) && !hasAgentAssignee(issue, agentLogins);
 }
 
+function hasManagerHandoff(issue) {
+  return (issue.labels?.nodes || []).some((label) => /^agent:manager(?::|$)/i.test(label?.name || ''));
+}
+
+function getStatusField(project) {
+  return (project.fields?.nodes || []).find((field) => field?.name?.toLowerCase() === 'status' && Array.isArray(field.options));
+}
+
+function getStatusOptionId(project, statusName) {
+  return getStatusField(project)?.options?.find((option) => option.name?.toLowerCase() === statusName)?.id || null;
+}
+
+async function moveProjectItem(projectId, itemId, fieldId, optionId) {
+  return githubGraphQL(    `mutation($projectId:ID!, $itemId:ID!, $fieldId:ID!, $optionId:String!) {
+      updateProjectV2ItemFieldValue(input: { projectId:$projectId, itemId:$itemId, fieldId:$fieldId, value:{ singleSelectOptionId:$optionId } }) { projectV2Item { id } }
+    }`,
+    { projectId, itemId, fieldId, optionId }
+  );
+}
+
 function getAssignableActor(issue, preferredAgentLogin) {
   return (issue.repository?.suggestedActors?.nodes || []).find(
     (actor) => actor?.login?.toLowerCase() === preferredAgentLogin
@@ -178,12 +200,12 @@ function sortByCreatedAt(items) {
 function buildDeveloperInstructions(issueRef, issueNumber) {
   return [
     `Atue como o agent Developer da ControleOnline para a issue ${issueRef}.`,
-    'Antes de agir, leia e siga `.github/agents/developer.agent.md` no repositório alvo.',
+    'Antes de agir, leia e siga `agents/roles/developer/agent.md` no repositório alvo.',
     'Leia também o `AGENTS.md` mais específico do código afetado.',
     `Trabalhe a partir do branch \`task-${issueNumber}\` derivado de \`master\`, reutilizando-o quando ele já existir.`,
     'Use GitHub como fonte de verdade para issue, PR, comentários, branch e evidências.',
-    'Ao iniciar a execução, mova a task para `Working`.',
-    'Ao concluir a implementação com evidência suficiente, devolva a task para `Ready` e repasse a responsabilidade para o agent Security.',
+    'A task já deve estar em `Working`; o Manager é o único responsável por mover o board.',
+    'Ao concluir, publique a branch da task e crie uma task de entrega no Paperclip para o Manager; não altere o board.',
   ].join(' ');
 }
 
@@ -192,9 +214,9 @@ function buildAssignmentComment(issueRef) {
     '### Developer iniciado',
     '',
     `Issue: ${issueRef}`,
-    'Origem: coluna `Ready` do ProjectV2',
-    'Critério: task parada, sem ownership exclusivamente humano e sem outra execução ativa do Developer em `Ready`.',
-    'Ação inicial: quando assumir a task, mova a coluna para `Working`.',
+    'Origem: coluna `Working`; o Manager capturou e organizou a task antes da atribuição.',
+    'Critério: prioridade em Working; impedimentos já encaminhados ao Manager não são trabalho executável; Ready só entra abaixo do limite configurado.',
+    'Ação inicial: confirme `origin/master` e leia o checklist QA antes de alterar.',
     'Ação: o runner atribuiu o agent `Developer` para iniciar a execução.',
   ].join('\n');
 }
@@ -280,11 +302,29 @@ function writeOutputFile(payload) {
   return outPath;
 }
 
+function getWorkingColumnLimit(project) {
+  let configLimit;
+  try {
+    const configUrl = new URL('../../../config/ecosystem.config.json', import.meta.url);
+    const config = JSON.parse(fs.readFileSync(configUrl, 'utf8'));
+    configLimit = config?.runners?.defaults?.DEVELOPER_WORKING_LIMIT;
+  } catch (error) {
+    throw new Error(`Unable to read config/ecosystem.config.json for Working limit: ${error.message}`);
+  }
+
+  const configuredLimit = configLimit ?? project?.workingLimit ?? env('DEVELOPER_WORKING_LIMIT');
+  const workingLimit = Number(configuredLimit);
+  if (!Number.isInteger(workingLimit) || workingLimit < 1) {
+    throw new Error('Working column limit is unavailable; read the current Project #1 column limit before dispatching.');
+  }
+  return workingLimit;
+}
+
 async function main() {
   const org = env('DEVELOPER_PROJECT_ORG', 'ControleOnline');
   const projectNumber = Number(env('DEVELOPER_PROJECT_NUMBER', '1'));
   const dryRun = env('DEVELOPER_DRY_RUN', 'true').toLowerCase() !== 'false';
-  const workStatuses = new Set(parseCsv(env('DEVELOPER_WORK_STATUSES', 'Ready,Working')).map((value) => value.toLowerCase()));
+  const workStatuses = new Set(parseCsv(env('DEVELOPER_WORK_STATUSES', 'Working')).map((value) => value.toLowerCase()));
   const readyStatus = env('DEVELOPER_READY_STATUS', 'Ready').toLowerCase();
   const workingStatus = env('DEVELOPER_WORKING_STATUS', 'Working').toLowerCase();
   const preferredAgentLogin = env('DEVELOPER_AGENT_LOGIN', DEFAULT_AGENT_LOGIN).toLowerCase();
@@ -297,6 +337,7 @@ async function main() {
   const data = await getProjectSnapshot(org, projectNumber);
   const project = data?.organization?.projectV2;
   if (!project) throw new Error(`Project not found: ${org}/projects/${projectNumber}`);
+  const workingColumnLimit = getWorkingColumnLimit(project);
 
   const workItems = sortByCreatedAt(listWorkItems(project, workStatuses));
   const workingItems = workItems.filter((item) => (getStatusValue(item) || '').toLowerCase() === workingStatus);
@@ -305,12 +346,16 @@ async function main() {
     return !hasHumanAssignee(item.content, agentLogins);
   });
   const humanOwnedItems = workItems.filter((item) => hasHumanOnlyAssignee(item.content, agentLogins));
-  const candidateItems = workItems.filter((item) => {
-    if ((getStatusValue(item) || '').toLowerCase() !== readyStatus) return false;
+  const isExecutable = (item) => {
     if (hasAgentAssignee(item.content, agentLogins)) return false;
     if (hasHumanOnlyAssignee(item.content, agentLogins)) return false;
+    if (hasManagerHandoff(item.content)) return false;
     return true;
-  });
+  };
+  const workingCandidates = workingItems.filter(isExecutable);
+  const readyItems = workItems.filter((item) => (getStatusValue(item) || '').toLowerCase() === readyStatus);
+  const readyCandidates = readyItems.filter(isExecutable);
+  const candidateItems = workingCandidates;
 
   const result = {
     generatedAt: new Date().toISOString(),
@@ -324,19 +369,23 @@ async function main() {
     workStatuses: Array.from(workStatuses),
     readyStatus,
     workingStatus,
+    workingColumnLimit,
     workingCount: workingItems.length,
     activeCount: activeItems.length,
     humanOwnedCount: humanOwnedItems.length,
     candidateCount: candidateItems.length,
+    workingCandidateCount: workingCandidates.length,
+    readyCandidateCount: readyCandidates.length,
+    selectionPolicy: "Somente Working; o Manager captura Ready, cria subtasks Paperclip e organiza o board.",
     activeItems: activeItems.map((item) => serializeItem(item, agentLogins, preferredAgentLogin)),
     humanOwnedItems: humanOwnedItems.map((item) => serializeItem(item, agentLogins, preferredAgentLogin)),
     candidateItems: candidateItems.map((item) => serializeItem(item, agentLogins, preferredAgentLogin)),
   };
 
-  if (activeItems.length > 0 || workingItems.length > 0) {
+  if (workingItems.length >= workingColumnLimit) {
     result.ok = true;
     result.skipped = true;
-    result.reason = 'Existe task em Working; Ready fica bloqueado até a conclusão ou retomada da execução em andamento.';
+    result.reason = `Working atingiu o limite configurado de ${workingColumnLimit} tasks; Ready não é capturado pelo Developer; o Manager é responsável pela captura e orquestração.`;
     const outPath = writeOutputFile(result);
     console.log(JSON.stringify({ ok: true, skipped: true, reason: result.reason, outPath }, null, 2));
     return;
@@ -345,7 +394,7 @@ async function main() {
   if (candidateItems.length === 0) {
     result.ok = true;
     result.skipped = true;
-    result.reason = 'Nenhuma task elegível foi encontrada em Ready.';
+    result.reason = workingItems.length >= workingColumnLimit ? `Working está em ${workingItems.length}/${workingColumnLimit}; não há vaga para capturar Ready.` : 'Nenhuma task executável em Working e nenhuma task elegível em Ready para preencher a capacidade disponível.';
     const outPath = writeOutputFile(result);
     console.log(JSON.stringify({ ok: true, skipped: true, reason: result.reason, outPath }, null, 2));
     return;
@@ -368,8 +417,18 @@ async function main() {
     }
 
     result.selectedItem = targetRecord;
+    const selectedStatus = (getStatusValue(target) || '').toLowerCase();
+    const shouldMoveToWorking = false;
+    const statusField = getStatusField(project);
+    const workingOptionId = getStatusOptionId(project, workingStatus);
+    if (shouldMoveToWorking && (!statusField?.id || !workingOptionId)) {
+      result.assignmentAttempts.push({ issue: targetRecord.issue, status: 'skipped', reason: 'A opção Working do ProjectV2 não pôde ser resolvida; captura Ready recusada fail-closed.' });
+      result.selectedItem = null;
+      continue;
+    }
 
     if (!dryRun) {
+      // Board mutations belong exclusively to the Manager.
       await assignIssueToAgent(
         issue.id,
         actor.id,
@@ -393,7 +452,7 @@ async function main() {
     result.assignmentAttempts.push({
       issue: targetRecord.issue,
       status: dryRun ? 'preview' : 'assigned',
-      reason: 'Primeira task elegível e atribuível encontrada.',
+      reason: shouldMoveToWorking ? 'Fallback Ready autorizado: Working não tinha task executável e havia capacidade; item movido para Working antes da atribuição.' : 'Primeira task executável em Working e atribuível encontrada.',
     });
 
     const outPath = writeOutputFile(result);

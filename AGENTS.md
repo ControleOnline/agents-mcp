@@ -4,15 +4,15 @@ Este repositorio e a fonte oficial para automacoes, agents, runners, workflows e
 
 ## Escopo operacional permitido (obrigatório — todos os agents)
 
-**Único escopo permitido:** organização GitHub [`Frethical`](https://github.com/Frethical/).
+**Único escopo permitido:** organização GitHub [`ControleOnline`](https://github.com/ControleOnline/).
 
-- É **proibido** comentar, alterar labels/status, abrir/editar issues ou PRs, fazer requests, handoffs ou qualquer mutação em repositórios **fora** de `github.com/Frethical/*`.
-- É **proibido** tratar `ControleOnline/*` (ou qualquer outra org/usuário) como escopo de produto, board, fila ou validação, salvo a exceção abaixo.
-- Consultas de leitura em outros escopos só são aceitáveis quando estritamente necessárias para resolver referência histórica; **nunca** gerar comentário, label ou solicitação fora de Frethical.
+- É **proibido** comentar, alterar labels/status, abrir/editar issues ou PRs, fazer requests, handoffs ou qualquer mutação em repositórios **fora** de `github.com/ControleOnline/*`.
+- É **proibido** tratar qualquer outra organização/usuário como escopo de produto, board, fila ou validação, salvo a exceção abaixo.
+- Consultas de leitura em outros escopos só são aceitáveis quando estritamente necessárias para resolver referência histórica; **nunca** gerar comentário, label ou solicitação fora de ControleOnline.
 
-**Exceção estrutural única:** edição de governança, runners, workflows e documentação **deste** repositório canônico de agents quando a falha for estrutural (`agents-mcp`). Preferir o mirror/fonte sob `Frethical/agents-mcp` quando existir; mutações de produto continuam restritas a `Frethical/*`.
+**Exceção estrutural única:** edição de governança, runners, workflows e documentação **deste** repositório canônico de agents quando a falha for estrutural (`agents-mcp`). Mutações de produto continuam restritas a `ControleOnline/*`.
 
-Qualquer agent (Manager, Developer, QA, Security, DevOps, Sysadmin, Documentadores, CTO) que detectar trabalho elegível fora de Frethical deve **ignorar** e registrar no contrato de conclusão: `OUT_OF_SCOPE` (org/repo).
+Qualquer agent (Manager, Developer, QA, Security, DevOps, Sysadmin, Documentadores, CTO) que detectar trabalho elegível fora de ControleOnline deve **ignorar** e registrar no contrato de conclusão: `OUT_OF_SCOPE` (org/repo).
 
 ## Fonte canonica
 
@@ -20,13 +20,12 @@ Tudo o que nao for memoria persistente deve estar disponivel aqui.
 
 Entradas principais:
 
-- `agents/skills/README.md`
-- `agents/skills/shared/README.md`
-- `agents/skills/shared/github/github-flow.md`
-- `agents/skills/by-role/*/README.md`
-- `agents/skills/runners/README.md`
+- `agents/skills/controleonline/README/SKILL.md`
+- `agents/skills/controleonline/shared-README/SKILL.md`
+- `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
+- `agents/skills/controleonline/by-role-<agent>-README/SKILL.md`
+- `agents/skills/controleonline/runners-README/SKILL.md`
 - `agents/roles/*/agent.md`
-- `.github/agents/*.agent.md`
 - `workers/automation/`
 - `workers/automate/`
 
@@ -42,11 +41,10 @@ Antes de qualquer acao operacional, leia **`config/ecosystem.config.json`**.
 
 ## Copilot Cooperation
 
-Todo agent do ecossistema **deve estender** `agents/skills/shared/operations/copilot-cooperation.md`.
+Todo agent do ecossistema **deve estender** `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md`.
 
-- GitHub Copilot Coding Agent, workers, runners e Actions sao parceiros de execucao
-- Wrappers em `.github/agents/*.agent.md` (`target: github-copilot`)
-- Regenerar wrappers: `node workers/scripts/sync-copilot-agents.mjs`
+- Execução direta pelo Paperclip; wrappers Copilot permanecem removidos
+- Execução direta pelo Paperclip; wrappers Copilot permanecem removidos
 
 ## Estrutura do repositorio
 
@@ -71,32 +69,32 @@ Toda regra nova deve entrar primeiro na camada certa, em vez de ser repetida ent
 
 Distribuicao obrigatoria:
 
-- comportamento compartilhado, politicas, guardrails e criterios comuns vivem em `agents/skills/shared/`
-- qualidade de codigo, modularizacao, smoke tests e limite de tamanho de componentes vivem em `agents/skills/shared/quality/code-quality.md`
-- documentacao de cliente e wiki tecnica vivem em `agents/skills/shared/documentation/documentation-governance.md`
-- seguranca editorial e sanitizacao de evidencias vivem em `agents/skills/shared/security/security-guardrails.md`
-- fluxo de branches e entrega (GitHub Flow adaptado) vive em `agents/skills/shared/github/github-flow.md`
-- papel, ownership, limites e handoff por agent vivem em `agents/skills/by-role/<agent>/README.md`
-- mapas de runtime, workflows, entry points e scripts reais vivem em `agents/skills/runners/README.md`
+- comportamento compartilhado, politicas, guardrails e criterios comuns vivem em `agents/skills/controleonline/shared-*/SKILL.md`
+- qualidade de codigo, modularizacao, smoke tests e limite de tamanho de componentes vivem em `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
+- documentacao de cliente e wiki tecnica vivem em `agents/skills/controleonline/shared-documentation-documentation-governance/SKILL.md`
+- seguranca editorial e sanitizacao de evidencias vivem em `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md`
+- fluxo de branches e entrega (GitHub Flow adaptado) vive em `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
+- papel, ownership, limites e handoff por agent vivem em `agents/skills/controleonline/by-role-<agent>-README/SKILL.md`
+- mapas de runtime, workflows, entry points e scripts reais vivem em `agents/skills/controleonline/runners-README/SKILL.md`
 - `agents/roles/*/agent.md` devem ficar enxutos e conter apenas ponto de entrada, papel, fronteiras e referencias obrigatorias
-- wrappers locais em `.github/agents/*.agent.md` devem ser finos e apontar para a fonte canonica e para o contexto local minimo
+- a execução usa diretamente a fonte canônica e o contexto local mínimo
 
 ## Documentação (navegação humana)
 
 | Categoria | Destino |
 | --- | --- |
 | Home deste repositório | este `AGENTS.md` + skills em `agents/skills/` |
-| Qualidade / smoke | [code-quality.md](agents/skills/shared/quality/code-quality.md) · [smoke-test-flows.md](agents/skills/shared/quality/smoke-test-flows.md) |
+| Qualidade / smoke | [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) · [smoke-test-flows.md](agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md) |
 | Espelho app (wiki) | https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows |
 | Espelho API (wiki) | https://github.com/ControleOnline/api-community/wiki/Fluxos-de-Smoke |
-| Governança documental | [documentation-governance.md](agents/skills/shared/documentation/documentation-governance.md) |
+| Governança documental | [documentation-governance.md](agents/skills/controleonline/shared-documentation-documentation-governance/SKILL.md) |
 
 ### Por categoria — qualidade e smoke
 
 | Página | O que documenta |
 | --- | --- |
-| [smoke-test-flows.md](agents/skills/shared/quality/smoke-test-flows.md) | Catálogo canônico `fluxo: <id>`, gate de evidência visual completa (prints por etapa), regras de uso |
-| [code-quality.md](agents/skills/shared/quality/code-quality.md) | Limites de arquivo, testes, smoke obrigatório, evidência parcial bloqueia QA |
+| [smoke-test-flows.md](agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md) | Catálogo canônico `fluxo: <id>`, gate de evidência visual completa (prints por etapa), regras de uso |
+| [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) | Limites de arquivo, testes, smoke obrigatório, evidência parcial bloqueia QA |
 | Teste de governança | `tests/qa-smoke-flow-evidence.test.mjs` |
 
 ### Módulos relacionados
@@ -124,7 +122,23 @@ Ao consultar ou operar no GitHub, os agents podem usar qualquer busca, API, list
 
 ## GitHub Flow (resumo)
 
-Fonte completa: `agents/skills/shared/github/github-flow.md`.
+Fonte completa: `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.
+Para qualquer conflito ou divergência ampla, aplicar também
+`agents/skills/controleonline/shared-github-conflict-resolution/SKILL.md`; a task permanece em
+`Working` para ser refeita e nunca é mesclada diretamente em `master`. Se a
+resolução semântica ficar confusa em qualquer etapa, é preferível descartar a
+branch `task-{id_issue}`, recriá-la a partir do `master` remoto atualizado e
+reexecutar a task desde o início. Nessa recuperação, é permitido ao agent
+retroceder a task no Notion/Project #1 para os passos iniciais, limpar labels,
+aceites e evidências da entrega descartada e reativar os handoffs aplicáveis;
+isso é uma exceção explícita às regras usuais de não movimentação de coluna.
+Agents nunca mesclam diretamente em `master`. Todos
+os agents devem ler no Project #1 o limite da coluna `Working` antes de
+capturar uma nova task. Neste ecossistema, o limite canônico é **5 tasks**:
+quando cinco tasks estiverem em `Working`, nenhuma outra entra até uma delas
+sair da coluna. A única exceção é o P1 `DevOps`, que continua publicando o que
+estiver em `Deploy`. Agents não movem
+tasks para `In Review`: essa coluna só é usada após os quatro accepts.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
@@ -132,7 +146,7 @@ Fonte completa: `agents/skills/shared/github/github-flow.md`.
 - `DevOps` publica tasks na coluna **`Deploy`** → `master` (deltas individuais) e, se nao houver Deploy, promove tasks com as **quatro** `:accepted` para `staging` + `In Review`
 - **Proibido montar RC** e criar task pai de RC
 - humano confere staging e move a task para **`Deploy`**
-- `DevOps` promove o delta individual `staging` → `master` e move para **`Done`**
+- `DevOps` promove o delta individual `staging` → `master`; com o quarteto move para **`Done`**, sem o quarteto move para **`Working`** para segunda rodada de validacao
 
 ## Ownership operacional
 
@@ -152,7 +166,10 @@ Regras obrigatorias:
 - `Developer` nao mexe diretamente em `master`, `main`, `dev`, `staging`
 - validadores registram apenas labels de aceite/recusa na task
 - quando um validador recusar, comenta de forma objetiva para o `Developer`
-- somente o `DevOps` publica `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`
+- se um merge ou rebase se tornar confuso, não force a resolução: descarte e
+  recrie a branch da task desde `master`, refaça a implementação e retroceda a
+  task no Notion aos passos iniciais para uma nova rodada de evidências
+- somente o `DevOps` publica `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`; para o DevOps, `Deploy` vem antes de `Working`
 - agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
 
 ## Fronteira do CTO
@@ -161,7 +178,7 @@ O CTO supervisiona o ecossistema e corrige diretamente o `agents-mcp` quando hou
 
 O CTO nao deve substituir a execucao normal de `Developer`, `Security`, `Quality Assurance`, `DevOps` ou `Sysadmin` quando a trilha ja pertence claramente a um desses agents.
 
-Quando as quatro `:accepted` coexistirem, a trilha de `staging`/`master` pertence ao `DevOps`, conforme `agents/skills/shared/github/github-flow.md` e `agents/skills/shared/github/master-publication.md`.
+Quando as quatro `:accepted` coexistirem, a trilha de `staging`/`master` pertence ao `DevOps`, conforme `agents/skills/controleonline/shared-github-github-flow/SKILL.md` e `agents/skills/controleonline/shared-github-master-publication/SKILL.md`.
 
 ## Full Pipeline / Manager
 
@@ -172,11 +189,12 @@ Ordem:
 1. P1 DevOps
 2. P2 Hotfix
 3. P3 Documentacao
-4. P4 Validadores (QA → Security → Design → UX)
-5. P5 Developer
-6. P6 Higiene residual + board
+4. P4 Developer — rejeicoes de QA/Security
+5. P5 Validadores (QA → Security → Design → UX)
+6. P6 Developer — novas tarefas
+7. P7 Higiene residual + board
 
-O Manager, ao chegar em P5 sem trabalho P1–P4 executavel, **le e executa** `agents/roles/developer/agent.md` sobre exatamente uma issue elegivel. Nao inventa rito proprio de codigo.
+O Manager, ao chegar em P4 ou P6 com trabalho elegivel, **le e executa** `agents/roles/developer/agent.md` sobre exatamente uma issue elegivel. Em P4, somente corrige rejeicoes de QA/Security; em P6, captura novos desenvolvimentos. Nao inventa rito proprio de codigo.
 
 Developer executado de forma standalone (prompt direto no papel) continua podendo capturar a propria fila; isso nao cria um segundo pipeline nem autoriza higiene a rodar na frente da implementacao.
 
@@ -188,32 +206,39 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
 ### Ordem de prioridade
 
 1. **P1 DevOps**
-   - Publicar todas as tasks em `Deploy` → `master` (deltas individuais, sem RC)
+   - Publicar todas as tasks em `Deploy` → `master` (deltas individuais, sem RC); com quarteto mover para `Done`, sem quarteto voltar para `Working` para segunda validacao
    - Senao, promover todas as tasks quadruplo-accepted → `staging` + `In Review`
-   - Gate humano de Deploy **nao** encerra a rodada (`P1_SKIPPED_HUMAN_DEPLOY`)
+   - A coluna `Deploy` e autorizacao humana explicita de publicacao em `master`; o Manager/DevOps executa o delta sem aguardar aprovacao adicional
    - **Proibido montar RC**
 2. **P2 Hotfix**
    - Validar ou promover task `hotfix` ja implementada (QA / Security / Design / UX / DevOps → staging)
-   - Implementacao de hotfix e P5 Developer, nao P2
+   - Implementacao de hotfix e P6 Developer, nao P2
 3. **P3 Documentacao**
    - Technical Documenter
    - Tutorial Assistant
-4. **P4 Validadores**
+4. **P4 Developer — rejeicoes**
+   - Corrigir issues com `agent:qa:rejected` ou `agent:security:rejected`
+   - A correcao vai ate a entrega publicavel: o Developer deve resolver falhas de workflow, Actions, build, branch, merge ou evidencia que impeçam a entrega
+   - Se o workflow/build estiver falhando, deve investigar, corrigir, repetir a execucao, rerotear ou reconstruir a etapa; se o problema for a publicacao/deploy, deve encaminhar ao DevOps com evidencia objetiva
+   - Uma correcao por rodada, antes de qualquer nova validacao
+5. **P5 Validadores**
    - QA → Security → Design → UX
-5. **P5 Developer**
+6. **P6 Developer — novos desenvolvimentos**
    - Exatamente uma issue elegivel
    - Branch `task-{id}` a partir de `master`, merge em `dev`, handoff dos quatro validadores
-6. **P6 Higiene residual + board**
-   - Somente com P1–P5 sem acao executavel
+7. **P7 Higiene residual + board**
+   - Somente com P1–P6 sem acao executavel
 
 ### Regras deste mode
 
 - Tente a prioridade mais alta com trabalho elegivel e executavel.
+- Se `Working` já tiver 5 tasks, não capture outra task para P5 ou P6; continue
+  resolvendo as tasks ativas. P1 `DevOps` permanece executável para `Deploy`.
 - Dentro da mesma prioridade funcional, selecione a task elegivel mais antiga por `createdAt` crescente; em empate, use o menor numero da issue.
 - `updatedAt` serve apenas como evidencia de atividade e nunca reposiciona uma task na fila.
 - SysAdmin **nao** participa deste mode (deve continuar rodando em paralelo em automacao separada).
-- **Developer participa deste mode como P5.** Nao avance para P6 enquanto existir issue elegivel de Developer.
-- Falha operacional em P5 nao autoriza fallback para higiene.
+- **Developer participa deste mode como P4 para rejeicoes e P6 para novos desenvolvimentos.** Nao avance para P5 enquanto existir rejeicao elegivel; nao avance para P7 enquanto existir trabalho elegivel em P1–P6.
+- Falha operacional em P4 ou P6 nao autoriza fallback para higiene.
 - Sempre confirme o estado real no GitHub / Project #1 antes de agir.
 - Siga integralmente as fontes canonicas de cada papel (`agents/roles/*/agent.md` e skills referenciadas).
 - Colunas `Blocked` e `Backlog` sao exclusivamente humanas.

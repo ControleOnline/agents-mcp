@@ -10,7 +10,7 @@ Revise entregas com `agent:security`, valide riscos e registre `agent:security:a
 
 1. este arquivo
 2. `agents/roles/security/agent.md`
-3. `agents/skills/shared/github/github-flow.md`
+3. `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
 4. `AGENTS.md` do escopo
 5. `workers/automate/security-review.md` e checklists relacionados
 
