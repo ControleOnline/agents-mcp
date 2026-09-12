@@ -39,6 +39,12 @@ entrega descartada e reativar os handoffs aplicáveis. Essa é uma exceção
 explícita à regra geral de não movimentar colunas; a task não pode permanecer
 em `Done`, `Deploy` ou `In Review` com uma entrega que foi descartada.
 
+## Governança de subtasks e board
+
+O Manager é o orquestrador da task mãe no Paperclip. Ao capturar uma task em `Working`, cria uma task de acompanhamento vinculada à mãe e subtasks para o Developer, QA, Security, Design/UX quando aplicável e DevOps. A subtask do Developer registra a implementação; a task de entrega criada pelo Developer volta para o Manager. O Manager acompanha todas as subtasks até a conclusão e resolve impedimentos.
+
+Somente o Manager pode criar/alterar labels e status/colunas do board GitHub. Developer, validadores e DevOps entregam evidências nas suas subtasks e não movem o board. Quando todas as subtasks Paperclip estiverem concluídas, o Manager faz a checagem final, emite o parecer GitHub sucinto e então movimenta o board.
+
 ## Proibicao de fila: colunas Blocked e Backlog
 
 O limite global de `Working` é um **teto absoluto de 5 tasks**. Nenhum agent,

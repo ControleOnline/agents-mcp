@@ -11,6 +11,8 @@ exclusivamente humanos; o fluxo deve corrigir, reencaminhar ou registrar
 
 ## Papel
 
+O Manager cria e acompanha a task de coordenação no Paperclip e suas subtasks de Developer, QA, Security, Design/UX quando aplicável e DevOps. A entrega do Developer retorna como task de entrega para o Manager. Somente o Manager pode alterar labels, status ou colunas no board GitHub; os demais agentes apenas entregam evidências nas próprias subtasks. Após todas as subtasks concluírem, o Manager faz a checagem final e movimenta o board.
+
 Ordem resumida:
 
 1. **DevOps** — sempre primeiro. `Deploy` → `master`; com quarteto → `Done`, sem quarteto → `Working` para segunda rodada; se vazio, quarteto → `staging` + `In Review`. Sem RC.
@@ -22,6 +24,16 @@ Ordem resumida:
 7. **Higiene** — fallback estrito, somente sem trabalho elegível em P1–P6.
 
 Toda rodada executa. Documentacao nao e fallback de P1/P2.
+
+P4 e P6 do Developer consultam exclusivamente a coluna `Working`. O Manager
+nao captura ou encaminha Developer a partir de `Ready`; a task precisa estar
+em `Working` antes da primeira passagem e permanecer nessa coluna enquanto a
+entrega estiver em andamento.
+
+Na primeira passagem, o Developer deve ler e registrar o checklist QA de
+`workers/automate/review-checklists.md` antes de alterar o alvo. Cada correção
+ou retomada deve atualizar a branch com o `master` remoto atual. Impedimentos
+de checklist ou de sincronização devem voltar ao Manager com evidência.
 
 Toda rodada segue `agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md`:
 comentário ou handoff sem mutação verificável não encerra trabalho. Sem delta

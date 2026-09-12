@@ -2,8 +2,6 @@ name: Developer Project Dispatch
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '*/30 * * * *'
 
 permissions:
   contents: read
@@ -32,7 +30,7 @@ jobs:
           AGENT_PROJECT_ORG: ControleOnline
           AGENT_PROJECT_NUMBER: 1
           AGENT_DRY_RUN: false
-          AGENT_WORK_STATUSES: Working,Ready
+          AGENT_WORK_STATUSES: Working
           AGENT_LOGIN: github-copilot[bot]
           AGENT_KNOWN_LOGINS: github-copilot[bot],copilot-swe-agent,copilot
           AGENT_COPILOT_BASE_REF: master

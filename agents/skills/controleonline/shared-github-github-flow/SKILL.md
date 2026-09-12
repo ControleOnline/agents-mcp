@@ -25,7 +25,7 @@ revisado semanticamente, aborte e registre o bloqueio.
 | Branch | Papel |
 | --- | --- |
 | `master` | Linha principal / produção |
-| `dev` | Integração contínua das tasks do Developer (após implementação) |
+| `dev` | Integração contínua, promovida pelo Manager/DevOps após a entrega |
 | `staging` | Deltas já quádruplo-accepted (ou hotfix) para conferência humana; dispara deploy de staging |
 | `task-{id_issue}` | Branch de trabalho do Developer |
 
@@ -34,8 +34,10 @@ revisado semanticamente, aborte e registre o bloqueio.
 ```text
 master
   └─ task-{id}                         (Developer cria a partir de master)
-       └─ merge em dev                 (Developer; SEM PR)
-            └─ QA + Security + Design + UX
+       └─ task de entrega no Paperclip  (Developer → Manager)
+            └─ subtasks QA + Security + Design + UX + DevOps
+                 └─ Manager organiza labels, status e board
+                      └─ QA + Security + Design + UX
                  └─ quatro :accepted
                       └─ DevOps merge somente task-{id} → staging
                            └─ coluna In Review (task individual)
@@ -127,9 +129,9 @@ entrega.
 2. Cria ou reutiliza `task-{id_issue}` **a partir de `master`** atualizado.
 3. Implementa e valida na branch da tarefa.
 4. Sincroniza com `origin/master` antes de continuar/encerrar.
-5. **Faz merge de `task-{id_issue}` em `dev`** (sem abrir PR) — ou **pula** se já estiver mergeada (com comentário).
+5. Publica somente `task-{id_issue}` e cria task de entrega no Paperclip para o Manager.
 6. Executa o gate compartilhado de entrega local: toda alteração em projeto principal, submódulo ou gitlink deve estar publicada; cada checkout afetado deve ser conferido contra `origin/master` e ficar sem staged/unstaged/untracked. Registra exceções de branch com SHA e ref remoto.
-7. Registra evidência e handoff (`agent:qa` e `agent:security`; Design/UX quando o escopo tiver UI), incluindo o inventário dos projetos/submódulos e a conferência de `origin/master`.
+7. O Manager cria as subtasks dos validadores e DevOps, organiza labels/status/board e só então promove a integração.
 
 ### Proibições do Developer
 
@@ -138,10 +140,9 @@ entrega.
 - **Não** commit/push direto em `master`, `main`, `dev`, `staging`.
 - Trabalho só na `task-{id_issue}`; chegada em `dev` é por **merge** da task branch.
 
-### Entrega = merge em `dev`
+### Entrega = branch publicada + task Paperclip
 
-- **Nunca** faça merge de `dev` inteiro em `staging`. Merge sempre **apenas** `task-{id}`.
-- Origem: `task-{id_issue}`. Destino: `dev`. Operação: merge (não PR).
+A entrega técnica é a branch `task-{id_issue}` publicada e a task de entrega no Paperclip. O Manager decide, por suas subtasks concluídas e pela checagem final, quando promover a integração e mover o board.
 
 ## Revisão (QA, Security, Design, UX)
 
@@ -200,7 +201,7 @@ coluna. Se parecer indevida: comentar + `agent:devops` + esperar humano.
 1. Humano move a task para **`Deploy`**, com ou sem o quarteto; essa mudança
    de coluna é a autorização explícita para publicar em `master`.
 2. DevOps aplica o **Gate de atenção redobrada antes de qualquer merge** e
-   mescla somente o delta da task individual (`task-{id}`) → `master` (e seus submódulos); nunca o branch agregado `staging`.
+   mescla o delta (`staging` / `task-{id}`) → `master` (pai + submódulos).
 3. Se a task possuir os quatro accepts (`agent:qa:accepted`,
    `agent:security:accepted`, `agent:design:accepted`, `agent:ux:accepted`),
    move para **`Done`**.
@@ -225,7 +226,7 @@ Detalhes: `agents/skills/controleonline/shared-github-master-publication/SKILL.m
 | Acao | Developer | Validadores | DevOps |
 |------|-----------|-------------|--------|
 | Branch `task-{id}` a partir de `master` | sim | nao | so excecao |
-| Merge `task-{id}` → `dev` | sim | nao | so se conflito/desvio |
+| Merge `task-{id}` → `dev` | não | não | Manager/DevOps conforme subtask |
 | Merge `task-{id}` → `staging` | **nao** | **nao** | **sim** |
 | Abrir PR de produto / task | **nao** | **nao** | **nao** (salvo excecao) |
 | Labels `:accepted` / `:rejected` | nao | sim | nao |

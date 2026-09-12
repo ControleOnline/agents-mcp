@@ -204,8 +204,8 @@ function buildDeveloperInstructions(issueRef, issueNumber) {
     'Leia também o `AGENTS.md` mais específico do código afetado.',
     `Trabalhe a partir do branch \`task-${issueNumber}\` derivado de \`master\`, reutilizando-o quando ele já existir.`,
     'Use GitHub como fonte de verdade para issue, PR, comentários, branch e evidências.',
-    'Ao iniciar a execução, mova a task para `Working`.',
-    'Ao concluir a implementação com evidência suficiente, devolva a task para `Ready` e repasse a responsabilidade para o agent Security.',
+    'A task já deve estar em `Working`; o Manager é o único responsável por mover o board.',
+    'Ao concluir, publique a branch da task e crie uma task de entrega no Paperclip para o Manager; não altere o board.',
   ].join(' ');
 }
 
@@ -214,9 +214,9 @@ function buildAssignmentComment(issueRef) {
     '### Developer iniciado',
     '',
     `Issue: ${issueRef}`,
-    'Origem: coluna `Working`; fallback controlado para `Ready` quando não houver Working executável e houver capacidade.',
+    'Origem: coluna `Working`; o Manager capturou e organizou a task antes da atribuição.',
     'Critério: prioridade em Working; impedimentos já encaminhados ao Manager não são trabalho executável; Ready só entra abaixo do limite configurado.',
-    'Ação inicial: quando assumir uma task em `Ready`, mova a coluna para `Working` antes de iniciar.',
+    'Ação inicial: confirme `origin/master` e leia o checklist QA antes de alterar.',
     'Ação: o runner atribuiu o agent `Developer` para iniciar a execução.',
   ].join('\n');
 }
@@ -324,7 +324,7 @@ async function main() {
   const org = env('DEVELOPER_PROJECT_ORG', 'ControleOnline');
   const projectNumber = Number(env('DEVELOPER_PROJECT_NUMBER', '1'));
   const dryRun = env('DEVELOPER_DRY_RUN', 'true').toLowerCase() !== 'false';
-  const workStatuses = new Set(parseCsv(env('DEVELOPER_WORK_STATUSES', 'Working,Ready')).map((value) => value.toLowerCase()));
+  const workStatuses = new Set(parseCsv(env('DEVELOPER_WORK_STATUSES', 'Working')).map((value) => value.toLowerCase()));
   const readyStatus = env('DEVELOPER_READY_STATUS', 'Ready').toLowerCase();
   const workingStatus = env('DEVELOPER_WORKING_STATUS', 'Working').toLowerCase();
   const preferredAgentLogin = env('DEVELOPER_AGENT_LOGIN', DEFAULT_AGENT_LOGIN).toLowerCase();
@@ -355,9 +355,7 @@ async function main() {
   const workingCandidates = workingItems.filter(isExecutable);
   const readyItems = workItems.filter((item) => (getStatusValue(item) || '').toLowerCase() === readyStatus);
   const readyCandidates = readyItems.filter(isExecutable);
-  const candidateItems = workingCandidates.length > 0
-    ? workingCandidates
-    : (workingItems.length < workingColumnLimit ? readyCandidates : []);
+  const candidateItems = workingCandidates;
 
   const result = {
     generatedAt: new Date().toISOString(),
@@ -378,7 +376,7 @@ async function main() {
     candidateCount: candidateItems.length,
     workingCandidateCount: workingCandidates.length,
     readyCandidateCount: readyCandidates.length,
-    selectionPolicy: 'Working executável primeiro; Ready somente quando Working não tiver candidato executável e Working estiver abaixo do limite.',
+    selectionPolicy: "Somente Working; o Manager captura Ready, cria subtasks Paperclip e organiza o board.",
     activeItems: activeItems.map((item) => serializeItem(item, agentLogins, preferredAgentLogin)),
     humanOwnedItems: humanOwnedItems.map((item) => serializeItem(item, agentLogins, preferredAgentLogin)),
     candidateItems: candidateItems.map((item) => serializeItem(item, agentLogins, preferredAgentLogin)),
@@ -387,7 +385,7 @@ async function main() {
   if (workingItems.length >= workingColumnLimit) {
     result.ok = true;
     result.skipped = true;
-    result.reason = `Working atingiu o limite configurado de ${workingColumnLimit} tasks; Ready fica bloqueado até uma task avançar para In Review após os quatro gates ou sair de Working.`;
+    result.reason = `Working atingiu o limite configurado de ${workingColumnLimit} tasks; Ready não é capturado pelo Developer; o Manager é responsável pela captura e orquestração.`;
     const outPath = writeOutputFile(result);
     console.log(JSON.stringify({ ok: true, skipped: true, reason: result.reason, outPath }, null, 2));
     return;
@@ -420,7 +418,7 @@ async function main() {
 
     result.selectedItem = targetRecord;
     const selectedStatus = (getStatusValue(target) || '').toLowerCase();
-    const shouldMoveToWorking = selectedStatus === readyStatus;
+    const shouldMoveToWorking = false;
     const statusField = getStatusField(project);
     const workingOptionId = getStatusOptionId(project, workingStatus);
     if (shouldMoveToWorking && (!statusField?.id || !workingOptionId)) {
@@ -430,7 +428,7 @@ async function main() {
     }
 
     if (!dryRun) {
-      if (shouldMoveToWorking) await moveProjectItem(project.id, target.id, statusField.id, workingOptionId);
+      // Board mutations belong exclusively to the Manager.
       await assignIssueToAgent(
         issue.id,
         actor.id,

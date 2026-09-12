@@ -14,7 +14,7 @@ Este e o ponto de entrada canonico do agent `developer` para todo o ecossistema 
 Todo wrapper local de `developer` deve apontar para este arquivo.
 
 Entrega só existe com `agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md`:
-commit publicado, merge remoto em `dev`, labels de handoff e coluna confirmada.
+commit publicado na branch da task, base `origin/master` confirmada, task de entrega criada no Paperclip para o Manager e evidência remota. O Developer não faz merge em `dev`, não move o board do GitHub e não cria subtasks de validadores/DevOps.
 Sem runtime/teste obrigatório, tente corrigir o bloqueio; persistindo, marque
 `agent:developer:blocked` + `Blocked` e não repita a rodada com o mesmo delta.
 
@@ -36,13 +36,20 @@ Ao iniciar uma execucao:
 
 ## Papel
 
-O `Developer` implementa a issue na branch `task-{id_issue}` derivada de **`master`** e entrega com **merge em `dev`** (sem PR). Nao mexe em `staging` nem em `master`.
+O `Developer` implementa a issue na branch `task-{id_issue}` derivada de **`master`**. Ao concluir, atualiza a branch com `origin/master`, publica a branch da task e cria no Paperclip uma task de entrega para o Manager. O Developer não faz merge em `dev` e não movimenta labels/status/board no GitHub; essa coordenação pertence exclusivamente ao Manager.
 
 ## Captura autonoma
 
 Se o prompt nao informar `owner/repo#issue`, o `Developer` **nao deve pedir a issue ao usuario**. Deve descobrir a proxima prioridade no GitHub seguindo `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md` e `agents/skills/controleonline/by-role-developer-README/SKILL.md`.
 
-A captura do Developer e executada pelo Manager na Prioridade 4 para rejeicoes e na Prioridade 6 para novos desenvolvimentos (ou por agendamento/wrapper dedicado que siga as mesmas regras).
+A captura do Developer é executada pelo Manager na Prioridade 4 para rejeições e na Prioridade 6 para novos desenvolvimentos. Não existe agendamento autônomo de 30 minutos para o Developer.
+
+Quando executado pelo Manager, o Developer só pode iniciar uma task que já
+esteja na coluna `Working`. Antes da primeira alteração, leia
+`workers/automate/review-checklists.md`, registre os itens QA aplicáveis e
+confirme `origin/master` atualizado. Toda correção ou retomada deve repetir a
+sincronização com `master`; impedimento deve ser devolvido ao Manager com
+evidência objetiva.
 
 ### Obrigacao reforcada para rejeicoes
 
@@ -82,8 +89,8 @@ accepts; `DevOps` opera em `Deploy` antes de `Working` e na publicacao.
 
 1. Branch `task-{id_issue}` a partir de `master`.
 2. Implementar, testar, sincronizar com `origin/master`.
-3. **Merge** de `task-{id_issue}` → **`dev`**.
-4. Handoff: labels `agent:qa` e `agent:security` + evidencia na issue,
-   com `DELIVERY_PROOF:`; sem prova remota não declarar entrega.
+3. Atualizar a branch com `origin/master` e publicar somente a branch da task.
+4. Criar uma task de entrega no Paperclip vinculada à task mãe, destinada ao Manager, contendo branch, SHA, base master e testes.
+5. Handoff: o Manager cria as subtasks Paperclip de QA, Security, Design/UX quando aplicável, e DevOps. O Developer não aplica labels nem altera a coluna do board; com `DELIVERY_PROOF:` registra apenas a entrega técnica.
 
 Fonte completa: `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.

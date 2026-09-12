@@ -2,7 +2,7 @@
 
 ## Papel
 
-`Developer` executa a mudanca em issues elegiveis: branch a partir de `master`, merge final em **`dev`** (sem PR).
+`Developer` executa a mudanca em issues elegiveis: branch a partir de `master`, entrega da branch e task Paperclip para o Manager.
 
 ## Skills compartilhadas essenciais
 
@@ -24,16 +24,16 @@
 - branch permitida: apenas `task-{id_issue}` derivada de **`master`**
 - branches proibidas para trabalho direto: `master`, `main`, `dev`, `staging` e qualquer outra fora da task
 - **PR proibida** no fluxo normal
-- destino da entrega: **merge `task-{id}` → `dev`** (nao `staging`)
+- destino da entrega: branch `task-{id}` publicada + task Paperclip para o Manager
 
 ## Regras de execucao
 
 - siga `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
 - investigacao com acao segura no escopo → implemente na mesma rodada
-- handoff por labels `agent:qa` + `agent:security` e evidencia, **nao por PR**
-- apos merge em `dev`, a revisao QA/Security usa essa evidencia
-- recusa: corrigir na mesma `task-{id}` e re-mergear em `dev`
-- fila inicial `Ready`; apos captura permanece em `Working` ate QA e Security concluirem
+- handoff por task de entrega no Paperclip, sem PR e sem alteração do board
+- após a entrega da branch, o Manager cria as subtasks de revisão e decide a integração
+- recusa: corrigir na mesma `task-{id}` sobre `origin/master` e devolver nova task de entrega ao Manager
+- fila inicial `Working`; o Manager captura `Ready`, cria subtasks e permanece dono do board
 
 ## Fontes principais
 

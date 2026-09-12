@@ -115,24 +115,24 @@ test('all agents prioritize Working and DevOps prioritizes Deploy first', () => 
   assert.match(dispatch, /prioritizeWorkingItems/);
   assert.match(projectDispatch, /workingItems/);
   assert.match(projectDispatch, /workingColumnLimit/);
-  assert.match(projectDispatch, /DEVELOPER_WORK_STATUSES', 'Working,Ready'/);
+  assert.match(projectDispatch, /DEVELOPER_WORK_STATUSES.*Working/);
   assert.match(projectDispatch, /workingCandidates/);
-  assert.match(projectDispatch, /readyCandidates/);
+  assert.doesNotMatch(projectDispatch, /candidateItems = workingCandidates.length/);
   assert.match(projectDispatch, /ecosystem\.config\.json/);
   assert.match(projectDispatch, /DEVELOPER_WORKING_LIMIT/);
   assert.match(projectDispatch, /Working column limit is unavailable/is);
   assert.match(projectDispatch, /Working .*limite configurado|Working está em .*não há vaga.*Ready/is);
-  assert.match(projectDispatch, /Ready fica bloqueado até uma task avançar para In Review/is);
+  assert.match(projectDispatch, /Somente Working/);
 });
 
-test('Developer dispatch runs every 30 minutes and starts at Working with Ready fallback', () => {
+test('Developer dispatch has no autonomous schedule and only consumes Manager-owned Working tasks', () => {
   const workflow = fs.readFileSync('workers/automate/workflows/developer-project-dispatch.yml', 'utf8');
   const projectDispatch = fs.readFileSync('workers/automate/scripts/developer-project-dispatch.mjs', 'utf8');
-  assert.ok(workflow.includes("cron: '*/30 * * * *'"));
-  assert.ok(!workflow.includes("cron: '*/15 * * * *'"));
-  assert.match(workflow, /AGENT_WORK_STATUSES: Working,Ready/);
-  assert.match(projectDispatch, /Working executável primeiro/);
-  assert.match(projectDispatch, /readyCandidates/);
+  assert.doesNotMatch(workflow, /schedule:\s*[\s\S]*cron:/);
+  assert.match(workflow, /workflow_dispatch/);
+  assert.match(projectDispatch, /const candidateItems = workingCandidates/);
+  assert.doesNotMatch(projectDispatch, /moveProjectItem\(project\.id, target\.id/);
+  assert.doesNotMatch(projectDispatch, /candidateItems = workingCandidates.length/);
 });
 
 test('first pass includes QA checklist and master synchronization gate', () => {
