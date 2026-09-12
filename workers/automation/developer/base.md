@@ -60,10 +60,10 @@ Siga `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.
 Quando a entrega resultar em mudança de código ou arquivos:
 
 - **não abra PR**
-- faça **merge** de `task-{id_issue}` em **`dev`**
+- faça **merge** de `task-{id_issue}` em **`dev`**; esta é a entrega final do Developer para a integração contínua
 - **não** mergeie em `staging` nem em `master` (`staging` é exclusivo do RC do DevOps)
 - deixe claro na issue qual branch e quais commits foram mergeados em `dev`
-- no mesmo comentário, liste os projetos/submódulos afetados, SHAs e refs remotos publicados e o resultado da conferência contra `origin/master`
+- antes do merge, confirme que `dev` está atualizado com `origin/master`; no mesmo comentário, liste os projetos/submódulos afetados, SHAs e refs remotos publicados e o resultado da conferência contra `origin/master`
 - mantenha rastreabilidade issue ↔ `task-{id_issue}` ↔ `dev`
 
 ## Implementação

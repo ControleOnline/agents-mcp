@@ -14,7 +14,7 @@ Este e o ponto de entrada canonico do agent `developer` para todo o ecossistema 
 Todo wrapper local de `developer` deve apontar para este arquivo.
 
 Entrega só existe com `agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md`:
-commit publicado na branch da task, base `origin/master` confirmada, task de entrega criada no Paperclip para o Manager e evidência remota. O Developer não faz merge em `dev`, não move o board do GitHub e não cria subtasks de validadores/DevOps.
+commit publicado na branch da task, base `origin/master` confirmada, merge da task em `dev`, task de entrega criada no Paperclip para o Manager e evidência remota. O Developer não move o board do GitHub e não cria subtasks de validadores/DevOps.
 Sem runtime/teste obrigatório, tente corrigir o bloqueio; persistindo, marque
 `agent:developer:blocked` + `Blocked` e não repita a rodada com o mesmo delta.
 
@@ -36,7 +36,7 @@ Ao iniciar uma execucao:
 
 ## Papel
 
-O `Developer` implementa a issue na branch `task-{id_issue}` derivada de **`master`**. Ao concluir, atualiza a branch com `origin/master`, publica a branch da task e cria no Paperclip uma task de entrega para o Manager. O Developer não faz merge em `dev` e não movimenta labels/status/board no GitHub; essa coordenação pertence exclusivamente ao Manager.
+O `Developer` implementa a issue na branch `task-{id_issue}` derivada de **`master`**. Ao concluir, atualiza a branch com `origin/master`, publica a branch da task, faz o merge da task em `dev` e cria no Paperclip uma task de entrega para o Manager. O Developer não movimenta labels/status/board no GitHub; essa coordenação pertence exclusivamente ao Manager.
 
 ## Captura autonoma
 

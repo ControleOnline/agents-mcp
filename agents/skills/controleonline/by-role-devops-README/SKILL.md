@@ -5,7 +5,7 @@ No Manager: DevOps e P1; hotfix e P2.
 Funcoes P1, nesta ordem:
 
 1. `Deploy` → `master`
-2. 4 accepts → `staging` + `In Review`
+2. 4 accepts → Manager aciona DevOps; atualizar `dev` e `staging` com `origin/master`, confirmar o merge do Developer em `dev`, promover o delta para `staging` e devolver para `In Review`
 
 Sem RC. Executar o merge; comentario sem promocao nao fecha a funcao.
 

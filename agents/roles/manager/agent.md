@@ -89,7 +89,7 @@ DevOps e **sempre o primeiro**. Duas funcoes, master **antes** de staging:
    accepts (`agent:qa:accepted`, `agent:security:accepted`,
    `agent:design:accepted`, `agent:ux:accepted`) → `Done`; sem o quarteto →
    `Working` para uma segunda rodada de validação.
-2. Se nao houver Deploy executavel: task com **4 accepts** (`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`) → merge `task-{id}` → `staging` → `In Review`.
+2. Se nao houver Deploy executavel: task com **4 accepts** (`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`) → acionar `DevOps`; o DevOps atualiza primeiro `dev` e `staging` com `origin/master`, confirma o merge da task já feito pelo Developer em `dev`, promove o delta da task para `staging` e então o Manager move para `In Review`.
 
 Hotfix **nao** entra nesta prioridade.
 

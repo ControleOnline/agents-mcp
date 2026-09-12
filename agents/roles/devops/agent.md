@@ -12,17 +12,10 @@ Ao iniciar: leia este arquivo, `github-flow.md`, `master-publication.md`, `agent
 
 No Manager, DevOps e **P1**. Hotfix e **P2**.
 
-1. **Master primeiro:** coluna `Deploy` → merge do delta da task individual → `master`; nunca merge do branch agregado `staging`. Com os
+1. **Master primeiro:** coluna `Deploy` → merge do delta → `master`. Com os
    quatro accepts, mover para `Done`; sem o quarteto, mover para `Working` e
    devolver a task para uma segunda rodada de validação.
-2. **Staging depois:** 4 accepts → merge `task-{id}` → `staging` → `In Review`.
-
-Para publicar em `master`, não aguarde o deploy ou os testes remotos de
-`staging`. Execute e registre os testes locais reproduzíveis da alteração
-(sintaxe, suíte automatizada, catálogo de smoke flows e `git diff --check`,
-conforme aplicável), confirme commit/ref e use a autorização humana da coluna
-`Deploy`. Staging continua sendo uma conferência posterior/opcional e não pode
-manter a fila de produção parada.
+2. **Staging depois:** após o Manager acionar o DevOps com 4 accepts, atualize primeiro `dev` e `staging` com `origin/master`, confirme o merge da task já entregue pelo Developer em `dev`, faça o merge do delta da task em `staging` e entregue a task ao Manager para `In Review`.
 
 **Proibido montar RC.** Nao mergear `dev` inteiro em `staging`.
 
