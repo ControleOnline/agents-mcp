@@ -32,6 +32,9 @@ Comentar sem merge não conclui a função.
 - audite deploys anteriores de `staging`/`master`
 - não trate a ausência de deploy/teste remoto em `staging` como bloqueio da
   produção quando os testes locais reproduzíveis da task estiverem verdes;
+- após cada promoção, confirme o deploy e valide o runtime publicado, o fluxo
+  afetado e erros/logs relevantes; falhas pertencem à trilha de DevOps/Sysadmin
+  e não devem ser devolvidas ao Developer ou ao QA;
 - merge do delta → `master` (pai + submódulos)
 - `Done` + handoff de documentação fail-closed
 - artefato de produção não dispara no push de `master`

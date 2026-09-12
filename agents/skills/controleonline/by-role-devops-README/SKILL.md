@@ -11,6 +11,10 @@ Sem RC. Executar o merge; comentario sem promocao nao fecha a funcao.
 
 Gate de staging: `agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
 
+Depois da promoção, DevOps valida o deploy e o runtime publicado, incluindo o
+fluxo afetado e erros relevantes de serviço. Essa validação é pós-promoção e
+não é pré-requisito para o aceite local de Developer/QA.
+
 Todos os agents devem priorizar tasks em `Working` antes de capturar `Ready`,
 respeitando o limite atual da coluna lido no Project #1. Para o DevOps, a
 ordem e `Deploy` primeiro e depois `Working`; `Ready` so entra quando houver
