@@ -46,20 +46,22 @@ test('automated test integration is code, not generated artifacts', () => {
   assert.match(smokeFlows, /não são a implementação do smoke/);
 });
 
-test('QA gate requires admin flowchartIds plus per-step prints', () => {
+test('QA uses local flow evidence and DevOps owns published flowcharts', () => {
   const qaReadme = fs.readFileSync('agents/skills/controleonline/by-role-qa-README/SKILL.md', 'utf8');
 
   for (const source of [smokeFlows, codeQuality, qaAgent, qaReadme]) {
-    assert.match(source, /flowchartIds/);
-    assert.match(source, /\/flowcharts/);
-    assert.match(source, /prints? por etapa/i);
+    assert.match(source, /prints? por etapa|prints?\/screenshot|screenshot para cada etapa/i);
   }
 
+  assert.match(smokeFlows, /flowchartIds/);
+  assert.match(smokeFlows, /\/flowcharts/);
+  assert.match(smokeFlows, /Após a promoção[\s\S]*DevOps|Apos a promocao[\s\S]*DevOps/i);
+  assert.match(codeQuality, /responsabilidade do DevOps após promoção|responsabilidade do DevOps apos promocao/i);
+  assert.match(qaAgent, /não bloqueie o aceite por indisponibilidade de servidor|nao bloqueie o aceite por indisponibilidade de servidor/i);
+  assert.match(qaReadme, /QA não exige staging|QA nao exige staging/i);
   assert.match(smokeFlows, /api-token/);
   assert.match(smokeFlows, /app-domain: admin\.controleonline\.com/);
   assert.match(smokeFlows, /admin-api\.json/);
   assert.match(smokeFlows, /nunca no git|Não colar o token/i);
   assert.match(smokeFlows, /outros/);
-  assert.match(qaAgent, /falta de flowchart ou falta de print por etapa/);
-  assert.match(qaReadme, /falta de flowchart ou falta de print por etapa/);
 });
