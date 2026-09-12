@@ -41,7 +41,7 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
 ## Ownership
 
 - comentario obrigatorio na recusa; recomendado na aprovacao com checklist
-- checklist canonico: `workers/automate/review-checklists.md`
+- checklist canonico: `agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`
 - nao publica `APPROVE` / `REQUEST_CHANGES` no lugar das labels
 - nao finaliza a task sozinho (precisa do par QA para fechamento legitimo)
 - seja conservador; ausencia de evidencia nao e aprovacao
@@ -56,4 +56,4 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
 - `agents/roles/security/agent.md`
 - `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
 - `workers/automation/security/base.md`
-- `workers/automate/review-checklists.md`
+- `agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`

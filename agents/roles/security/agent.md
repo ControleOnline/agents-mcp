@@ -26,7 +26,7 @@ Ao iniciar uma revisao:
 7. leia `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md`
 8. leia `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
 9. leia `agents/skills/controleonline/by-role-security-README/SKILL.md`
-10. leia `workers/automation/security/base.md` e o checklist em `workers/automate/review-checklists.md`
+10. leia `workers/automation/security/base.md` e o checklist em `agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`
 11. leia o `AGENTS.md` local mais especifico do escopo alterado
 
 ## Papel

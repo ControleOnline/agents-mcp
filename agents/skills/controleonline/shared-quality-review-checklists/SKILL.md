@@ -4,9 +4,11 @@ Estas listas sao o criterio de aprovacao que deve ser copiado para a task quando
 
 ## QA
 
+- base da implementação confirmada em `master` remoto atualizado; em cada
+  correção/retomada, a nova rodada foi sincronizada novamente com `master`
 - limite de linhas e tamanho do componente estao coerentes com o escopo
 - componentes, hooks, services e helpers existentes foram reaproveitados quando possivel
-- subchecklist de reaproveitamento de componentes em `workers/automate/qa/component-reuse-checklist.md` foi executado quando a entrega afetar frontend
+- subchecklist de reaproveitamento de componentes em `agents/skills/controleonline/shared-quality-review-checklists/component-reuse-checklist.md` foi executado quando a entrega afetar frontend
 - smoke tests foram executados ou seus resultados existentes foram lidos e validados quando a interface foi afetada (nao reexecutar se ja houver evidencia valida e atual)
 - cada arquivo de código da jornada tem no topo `fluxo: <id> | etapa: <id>` e o link da página wiki; o smoke pode declarar o vínculo no manifesto JSON, com `wikiPage` como primeiro campo
 - testes obrigatorios do escopo foram executados antes da aprovacao; se nao houver evidencia de execucao, o QA deve recusar imediatamente (`agent:qa:rejected`), manter/reabrir a issue `open` e devolver para o `Developer`
@@ -18,6 +20,13 @@ Estas listas sao o criterio de aprovacao que deve ser copiado para a task quando
 - testes unitarios relevantes em PHP e JS foram adicionados ou atualizados
 - helpers da pasta `ui-commun` foram usados quando aplicavel
 - a issue e o `AGENTS.md` mais especifico do escopo foram consultados
+
+## Gate de primeira passagem do Developer
+
+O Developer deve ler este checklist no início da primeira passagem, registrar
+os itens aplicáveis na issue e manter a lista como critério de entrega. A
+primeira passagem não pode ser encerrada sem evidência dos testes e critérios
+QA aplicáveis, ou sem encaminhar o impedimento objetivo ao Manager.
 
 ## Security
 

@@ -26,7 +26,6 @@ Entradas principais:
 - `agents/skills/controleonline/by-role-<agent>-README/SKILL.md`
 - `agents/skills/controleonline/runners-README/SKILL.md`
 - `agents/roles/*/agent.md`
-- `.github/agents/*.agent.md`
 - `workers/automation/`
 - `workers/automate/`
 
@@ -44,9 +43,8 @@ Antes de qualquer acao operacional, leia **`config/ecosystem.config.json`**.
 
 Todo agent do ecossistema **deve estender** `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md`.
 
-- GitHub Copilot Coding Agent, workers, runners e Actions sao parceiros de execucao
-- Wrappers em `.github/agents/*.agent.md` (`target: github-copilot`)
-- Regenerar wrappers: `node workers/scripts/sync-copilot-agents.mjs`
+- Execução direta pelo Paperclip; wrappers Copilot permanecem removidos
+- Execução direta pelo Paperclip; wrappers Copilot permanecem removidos
 
 ## Estrutura do repositorio
 
@@ -79,7 +77,7 @@ Distribuicao obrigatoria:
 - papel, ownership, limites e handoff por agent vivem em `agents/skills/controleonline/by-role-<agent>-README/SKILL.md`
 - mapas de runtime, workflows, entry points e scripts reais vivem em `agents/skills/controleonline/runners-README/SKILL.md`
 - `agents/roles/*/agent.md` devem ficar enxutos e conter apenas ponto de entrada, papel, fronteiras e referencias obrigatorias
-- wrappers locais em `.github/agents/*.agent.md` devem ser finos e apontar para a fonte canonica e para o contexto local minimo
+- a execução usa diretamente a fonte canônica e o contexto local mínimo
 
 ## Documentação (navegação humana)
 
@@ -148,7 +146,7 @@ tasks para `In Review`: essa coluna só é usada após os quatro accepts.
 - `DevOps` publica tasks na coluna **`Deploy`** → `master` (deltas individuais) e, se nao houver Deploy, promove tasks com as **quatro** `:accepted` para `staging` + `In Review`
 - **Proibido montar RC** e criar task pai de RC
 - humano confere staging e move a task para **`Deploy`**
-- `DevOps` promove o delta da task individual (`task-{id}`) → `master`; nunca promove o branch agregado `staging`; com o quarteto move para **`Done`**, sem o quarteto move para **`Working`** para segunda rodada de validacao
+- `DevOps` promove o delta individual `staging` → `master`; com o quarteto move para **`Done`**, sem o quarteto move para **`Working`** para segunda rodada de validacao
 
 ## Ownership operacional
 

@@ -336,7 +336,7 @@ async function getRepositoryAssignableActor(repositoryFullName) {
 async function assignIssueToDeveloper(issueId, repositoryId, actorId, issueRef, issueNumber) {
   const customInstructions = [
     `Atue como o agent Developer da ControleOnline para a issue ${issueRef}.`,
-    'Antes de agir, leia e siga `.github/agents/developer.agent.md` no repositório alvo.',
+    'Antes de agir, leia e siga `agents/roles/developer/agent.md` no repositório alvo.',
     'Leia também o `AGENTS.md` mais específico do código afetado.',
     `Trabalhe a partir do branch \`task-${issueNumber}\` derivado de \`master\`, reutilizando-o quando ele já existir.`,
     'Use GitHub como fonte de verdade para issue, PR, comentários, branch e evidências.',

@@ -8,9 +8,7 @@ const queueDiscovery = fs.readFileSync(
   'agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md',
   'utf8',
 );
-const workerDoc = fs.readFileSync('agents/skills/controleonline/shared-operations-manager-worker-copilot/SKILL.md', 'utf8');
-const qaWorker = fs.readFileSync('.github/actions/workers/qa/action.yml', 'utf8');
-const securityWorker = fs.readFileSync('.github/actions/workers/security/action.yml', 'utf8');
+const cooperationSkill = fs.readFileSync('agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md', 'utf8');
 const deliveryProof = fs.readFileSync(
   'agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md',
   'utf8',
@@ -104,31 +102,20 @@ test('agents-mcp governance is published directly without validator approval', (
 });
 
 test('scheduled managers recover global backlog independently of push', () => {
-  assert.match(managerAgent, /Codex, Grok.*scheduler/is);
-  assert.match(managerAgent, /nao dependem de novo push/i);
+  assert.match(managerAgent, /Agendamento do Manager.*estado global/is);
+  assert.doesNotMatch(managerAgent, /\bCodex\b|\bGrok\b/i);
+  assert.doesNotMatch(cooperationSkill, /\bCodex\b|\bGrok\b/i);
+  assert.match(managerAgent, /nao depende de novo push/i);
   assert.match(managerSkill, /consumidores globais.*recuperacao de backlog/is);
   assert.match(managerAgent, /QA.*Security.*P6|Developer/is);
 });
 
-test('workers remain push scoped and do not become backlog schedulers', () => {
-  assert.match(workerDoc, /estritamente reativos a push/i);
-  assert.match(workerDoc, /nao recuperam backlog historico/i);
-  assert.match(workerDoc, /nao devem receber `schedule`/i);
-  assert.match(qaWorker, /push-scoped/i);
-  assert.match(securityWorker, /push-scoped/i);
-});
-
-test('manager worker does not mask critical label assignment failures', () => {
-  const managerAction = fs.readFileSync('.github/actions/workers/manager/action.yml', 'utf8');
-  const managerWorkflow = fs.readFileSync('.github/workflows/manager-worker.yml', 'utf8');
-  assert.doesNotMatch(managerAction, /gh issue edit[^\n]*--add-label[^\n]*\|\| true/);
-  assert.doesNotMatch(managerWorkflow, /gh issue edit[^\n]*--add-label[^\n]*\|\| true/);
-});
-
-test('critical worker dispatch failures are not masked', () => {
-  assert.doesNotMatch(qaWorker, /gh issue edit[^\n]*\|\| true/);
-  assert.doesNotMatch(securityWorker, /gh issue edit[^\n]*\|\| true/);
-  assert.match(workerDoc, /nao usar `\|\| true`.*criticas/is);
+test('removed Copilot surfaces are absent', () => {
+  assert.match(cooperationSkill, /Não delegar para Copilot/);
+  assert.match(cooperationSkill, /Paperclip/);
+  assert.equal(fs.existsSync('.github/workflows/manager-worker.yml'), false);
+  assert.equal(fs.existsSync('.github/actions/workers'), false);
+  assert.equal(fs.existsSync('.github/agents'), true);
 });
 
 test('closed and Done tasks require the complete four-label contract', () => {

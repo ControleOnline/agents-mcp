@@ -46,7 +46,7 @@ A captura do Developer é executada pelo Manager na Prioridade 4 para rejeiçõe
 
 Quando executado pelo Manager, o Developer só pode iniciar uma task que já
 esteja na coluna `Working`. Antes da primeira alteração, leia
-`workers/automate/review-checklists.md`, registre os itens QA aplicáveis e
+`agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`, registre os itens QA aplicáveis e
 confirme `origin/master` atualizado. Toda correção ou retomada deve repetir a
 sincronização com `master`; impedimento deve ser devolvido ao Manager com
 evidência objetiva.

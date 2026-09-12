@@ -142,10 +142,10 @@ test('first pass includes QA checklist and master synchronization gate', () => {
     'agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md',
     'utf8',
   );
-  const checklist = fs.readFileSync('workers/automate/review-checklists.md', 'utf8');
+  const checklist = fs.readFileSync('agents/skills/controleonline/shared-quality-review-checklists/SKILL.md', 'utf8');
   assert.match(manager, /coluna \*\*`Working`\*\*/is);
   assert.ok(developer.includes('primeira alteração'));
-  assert.ok(developer.includes('workers/automate/review-checklists.md'));
+  assert.ok(developer.includes('agents/skills/controleonline/shared-quality-review-checklists/SKILL.md'));
   assert.ok(developer.includes('origin/master'));
   assert.match(baseline, /Regra transversal: tudo começa no `master`/);
   assert.match(checklist, /Gate de primeira passagem do Developer/);

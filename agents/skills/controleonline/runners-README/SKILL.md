@@ -2,26 +2,9 @@
 
 Este arquivo mapeia o modelo atual de execução do ecossistema sem misturar o papel dos agents pares no ChatGPT com o papel do runner gerencial no GitHub.
 
-## Trilha principal de push → Copilot (Manager Worker)
+## Execução direta pelo Paperclip
 
-**Fonte canônica completa:** [`agents/skills/controleonline/shared-operations-manager-worker-copilot/SKILL.md`](../shared/operations/manager-worker-copilot.md)
-
-Em **todos** os repositórios da org:
-
-- Trigger: push em `master` | `dev` | `staging`
-- Workflow: `.github/workflows/manager-worker.yml`
-- Composite actions: `.github/actions/workers/{manager,qa,security,technical-documenter}/action.yml`
-
-Fluxo resumido:
-
-1. **Manager Subworker** resolve/cria a issue, normaliza `main`→`master`, aplica labels de estágio e decide quais workers invocar (`run_qa` / `run_security` / `run_docs` / `run_gates`).
-2. Jobs condicionais invocam os composites.
-3. Cada composite (QA / Security / Technical Documenter) aplica a label `agent:<papel>` e faz **agent_assignment** do `copilot-swe-agent[bot]` com `custom_instructions` apontando para `agents/roles/<papel>/agent.md` + `copilot-cooperation.md`.
-4. Em `master`, o job de gates verifica o quarteto e re-invoca workers faltantes.
-
-O antigo `technical-documenter.yml` isolado foi **substituído** por este orquestrador. Labels continuam sendo a fonte de verdade; se o Copilot não atuar, fallback por labels permanece válido.
-
-## Estado atual (canais paralelos)
+O fluxo operacional não usa workflow, composite action, wrapper ou assignment Copilot. Consulte as skills de fila, handoff e execução dos agents em `agents/skills/controleonline/`.
 
 Existem trilhas oficiais e complementares:
 

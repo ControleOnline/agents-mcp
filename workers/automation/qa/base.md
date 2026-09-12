@@ -47,7 +47,7 @@ Antes da decisão final:
 - confirme testes coerentes com o risco
 - confirme que os testes obrigatorios do escopo realmente rodaram antes de aprovar; sem evidencia de execucao, recuse e devolva para o `Developer`
 - confirme composição cross-repo quando obrigatória
-- confirme o checklist canônico em `workers/automate/review-checklists.md`
+- confirme o checklist canônico em `agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`
 
 ## Decisões válidas
 
