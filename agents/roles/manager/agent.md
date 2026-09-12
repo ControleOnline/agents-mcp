@@ -126,6 +126,17 @@ Nesta prioridade entram `hotfix`, `bug`, `enhancement`, `feature` e demais
 tipos que nao sejam rejeicoes de QA/Security.
 Nunca use Higiene (P7) como fallback.
 
+### Gate obrigatório do Developer no Manager
+
+Nas prioridades P4 e P6, o Manager deve começar pela coluna **`Working`** e selecionar a primeira task executável, respeitando a prioridade existente. Tasks impedidas que já tenham encaminhamento/tarefa de Manager no Paperclip não são executáveis para o Developer. Se não houver task executável em `Working` e a quantidade em `Working` estiver abaixo de `DEVELOPER_WORKING_LIMIT` (5 hoje, configurável), o Manager deve selecionar uma task elegível em `Ready`, movê-la para `Working` e só então encaminhá-la ao Developer. Se o limite for atingido, não capturar `Ready`. `Backlog`, `Blocked`, `In Review` e `Deploy` continuam fora da fila do Developer; `Deploy` pertence ao DevOps.
+
+Na primeira passagem, antes de qualquer alteração, o Developer deve ler
+`workers/automate/review-checklists.md`, registrar na issue os itens QA
+aplicáveis e sincronizar a branch com o `master` remoto atual. Toda correção ou
+retomada repete a sincronização com `master`. Se houver impedimento para
+executar o checklist ou atualizar a base, o Manager deve ser acionado com a
+evidência e a próxima ação concreta.
+
 ## Prioridade 7 - Higiene residual + board
 
 P7 e fallback estrito.

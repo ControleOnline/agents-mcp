@@ -115,11 +115,40 @@ test('all agents prioritize Working and DevOps prioritizes Deploy first', () => 
   assert.match(dispatch, /prioritizeWorkingItems/);
   assert.match(projectDispatch, /workingItems/);
   assert.match(projectDispatch, /workingColumnLimit/);
+  assert.match(projectDispatch, /DEVELOPER_WORK_STATUSES', 'Working,Ready'/);
+  assert.match(projectDispatch, /workingCandidates/);
+  assert.match(projectDispatch, /readyCandidates/);
   assert.match(projectDispatch, /ecosystem\.config\.json/);
   assert.match(projectDispatch, /DEVELOPER_WORKING_LIMIT/);
   assert.match(projectDispatch, /Working column limit is unavailable/is);
-  assert.match(projectDispatch, /atingiu o limite configurado de .*tasks.*In Review/is);
+  assert.match(projectDispatch, /Working .*limite configurado|Working está em .*não há vaga.*Ready/is);
   assert.match(projectDispatch, /Ready fica bloqueado até uma task avançar para In Review/is);
+});
+
+test('Developer dispatch runs every 30 minutes and starts at Working with Ready fallback', () => {
+  const workflow = fs.readFileSync('workers/automate/workflows/developer-project-dispatch.yml', 'utf8');
+  const projectDispatch = fs.readFileSync('workers/automate/scripts/developer-project-dispatch.mjs', 'utf8');
+  assert.ok(workflow.includes("cron: '*/30 * * * *'"));
+  assert.ok(!workflow.includes("cron: '*/15 * * * *'"));
+  assert.match(workflow, /AGENT_WORK_STATUSES: Working,Ready/);
+  assert.match(projectDispatch, /Working executável primeiro/);
+  assert.match(projectDispatch, /readyCandidates/);
+});
+
+test('first pass includes QA checklist and master synchronization gate', () => {
+  const manager = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
+  const developer = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
+  const baseline = fs.readFileSync(
+    'agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md',
+    'utf8',
+  );
+  const checklist = fs.readFileSync('workers/automate/review-checklists.md', 'utf8');
+  assert.match(manager, /coluna \*\*`Working`\*\*/is);
+  assert.ok(developer.includes('primeira alteração'));
+  assert.ok(developer.includes('workers/automate/review-checklists.md'));
+  assert.ok(developer.includes('origin/master'));
+  assert.match(baseline, /Regra transversal: tudo começa no `master`/);
+  assert.match(checklist, /Gate de primeira passagem do Developer/);
 });
 
 test('board mutations fail closed before creating a sixth Working task', () => {

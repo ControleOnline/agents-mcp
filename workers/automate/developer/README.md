@@ -8,7 +8,7 @@ O runner de `Developer` nao implementa a issue por conta propria.
 
 Ele:
 
-- consulta `Working` para retomadas e lê o limite operacional atual da coluna no Project #1; consulta `Ready` enquanto houver capacidade disponível em `Working`
+- começa por `Working` para retomadas e lê o limite operacional atual; se não houver `Working` executável e houver capacidade, seleciona `Ready` e move para `Working`
 - trata task sem `agent:*` em `Ready` como entrada padrao do fluxo
 - ignora tasks que estejam exclusivamente com pessoas
 - distingue execucao recente, execucao stale e override manual antes de decidir a proxima captura
