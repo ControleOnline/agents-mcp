@@ -11,7 +11,7 @@
 - `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
 - `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
 - `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
-- `agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md` — catálogo de fluxos de negócio (smoke) + gate `flowchartIds` / `GET /flowcharts`
+- `agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md` — catálogo de fluxos de negócio (smoke) + gate da wiki canônica (CON-154)
 - `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
 
 ## Independencia (sem ProjectV2)
@@ -52,7 +52,7 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
   - console do browser sem erros relevantes da entrega
   - **sem loops, re-renders desnecessarios ou chamadas/API duplicadas** em cada tela revisada
   - Android verificado quando aplicavel e acessivel (ou justificativa objetiva de alcance)
-  - smoke de UI POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER: `GET /flowcharts` lido; `flowchartIds` existentes e enabled; prints por etapa; recusa cita falta de flowchart ou falta de print por etapa
+  - smoke de UI POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER: wiki canônica publicada lida; fluxo/etapa identificável; manifesto coerente e prints por etapa; recusa cita falta de wiki, fluxo/etapa ou evidência
 
 ## Handoff
 

@@ -68,7 +68,10 @@ Smokes devem ser associados a um fluxo do catálogo canônico em `quality/smoke-
 - Agents **não** inventam novos fluxos; só humanos autorizam mudanças no catálogo.
 - Ao criar/alterar smoke, declarar o fluxo (`fluxo: <id>`). Sem coerência → usar `outros`.
 - QA deve recusar smoke de UI/browser que não tenha prints/screenshot cobrindo todas as etapas relevantes do fluxo.
-- QA deve recusar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER sem `flowchartIds` válido no admin (`GET /flowcharts`) ou sem prints por etapa.
+- QA deve recusar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER sem
+  wiki canônica publicada, fluxo/etapa identificável ou prints por etapa. Não
+  exigir identificadores administrativos antigos: esses vínculos foram
+  substituídos pela wiki (CON-154).
 - Ver a skill completa para o catálogo e regras de governança.
 
 ## Uso por papel
@@ -96,8 +99,8 @@ Devolva a entrega quando:
 - teste automatizado ausente, não descoberto pelo runner ou não integrado na
   ref remota prevista
 - smoke de UI/browser usado como gate visual sem prints por etapa, sem
-  `fluxo: <id>` ou sem `flowchartIds` válido no admin (produtos
-  POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER)
+  `fluxo: <id>`, sem wiki canônica publicada ou sem fluxo/etapa identificável
+  (produtos POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER)
 - houver componente ou arquivo grande demais sem quebra aceitavel
 - a mudanca duplicar contrato que ja existe em shared/store/component
 - a mudanca tornar o codigo mais centralizado, dificil de reaproveitar ou dificil de testar

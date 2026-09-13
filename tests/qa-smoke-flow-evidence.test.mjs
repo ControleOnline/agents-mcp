@@ -46,20 +46,17 @@ test('automated test integration is code, not generated artifacts', () => {
   assert.match(smokeFlows, /não são a implementação do smoke/);
 });
 
-test('QA gate requires admin flowchartIds plus per-step prints', () => {
+test('QA gate requires the canonical wiki flow plus per-step prints', () => {
   const qaReadme = fs.readFileSync('agents/skills/controleonline/by-role-qa-README/SKILL.md', 'utf8');
 
   for (const source of [smokeFlows, codeQuality, qaAgent, qaReadme]) {
-    assert.match(source, /flowchartIds/);
-    assert.match(source, /\/flowcharts/);
     assert.match(source, /prints? por etapa/i);
   }
 
-  assert.match(smokeFlows, /api-token/);
-  assert.match(smokeFlows, /app-domain: admin\.controleonline\.com/);
-  assert.match(smokeFlows, /admin-api\.json/);
-  assert.match(smokeFlows, /nunca no git|Não colar o token/i);
-  assert.match(smokeFlows, /outros/);
-  assert.match(qaAgent, /falta de flowchart ou falta de print por etapa/);
-  assert.match(qaReadme, /falta de flowchart ou falta de print por etapa/);
+  assert.match(smokeFlows, /wikiPage/);
+  assert.match(smokeFlows, /fluxo: <id>.*etapa: <id>/s);
+  assert.match(smokeFlows, /não são gate de QA/);
+  assert.match(qaAgent, /página publicada da wiki/);
+  assert.match(qaAgent, /não devem ser exigidos/);
+  assert.match(qaReadme, /wiki canônica publicada/);
 });

@@ -43,24 +43,30 @@ Para cada smoke de UI/browser, a evidência mínima é:
 
 Falta de prints por etapa, prints que não permitem reconstruir a jornada ou smoke sem fluxo declarado bloqueiam `agent:qa:accepted`.
 
-## Flowcharts publicados no admin (vínculo operacional)
+## Fluxos publicados na wiki (fonte operacional)
 
-O catálogo desta skill **não substitui** os flowcharts do tenant admin. Soma-se a eles.
+Os diagramas e jornadas oficiais **não ficam mais nos flowcharts do tenant
+admin**. A fonte que o QA deve ler é a página publicada na wiki do produto,
+conforme a decisão da CON-154.
 
-Antes de dar `agent:qa:accepted` em smoke de UI dos produtos POS, SHOP, PPC, DELIVERY, CHECKOUT ou MANAGER, o QA **deve ler** os flowcharts habilitados:
+Antes de dar `agent:qa:accepted` em smoke de UI dos produtos POS, SHOP, PPC,
+DELIVERY, CHECKOUT ou MANAGER, o QA **deve ler a wiki canônica** vinculada ao
+smoke e confirmar:
 
-1. `GET https://api.controleonline.com/flowcharts` (e `/flowcharts/{id}` quando precisar do diagrama).
-2. Headers permitidos (token **nunca** no git): `api-token` e `app-domain: admin.controleonline.com`.
-3. Credencial: Drive `admin-api.json` (pasta de credenciais do ecossistema). Não colar o token em issue, PR, wiki ou arquivo versionado.
-4. UI de conferência: `https://admin.controleonline.com/admin/flowcharts/{id}`.
+1. `wikiPage` ou o link da página publicada, sem exigir endpoint administrativo;
+2. fluxo e etapa identificáveis na página e no teste/evidência (`fluxo: <id> |
+   etapa: <id>` quando houver etapas);
+3. manifesto/evidência apontando para a mesma wiki e prints/screenshot de cada
+   etapa relevante da jornada.
 
-O smoke só é aceito se:
+Identificadores, links, endpoints e tokens administrativos antigos são
+referências legadas. Eles **não são gate de QA**, não devem ser solicitados e
+sua ausência não bloqueia aceite quando a wiki publicada, o fluxo/etapa e a
+evidência visual estiverem presentes.
 
-- declarar um ou mais `flowchartIds` **existentes e `enabled`** no admin;
-- tiver prints/screenshot de cada etapa relevante da jornada daquele flowchart;
-- continuar declarando `fluxo: <id>` deste catálogo.
-
-Smoke órfão (`fluxo: outros` **sem** `flowchartId` válido) em entrega de UI desses produtos **bloqueia** aceite. Comentário de recusa deve citar falta de flowchart ou falta de print por etapa.
+Smoke sem wiki canônica, sem fluxo/etapa identificável ou sem print por etapa
+relevante **bloqueia** aceite. O comentário de recusa deve citar o item wiki ou
+de evidência que faltou.
 
 ## Catálogo oficial
 
