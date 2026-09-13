@@ -53,6 +53,8 @@ Siga `issue-queue-discovery.md` deste repositorio (issues/labels e Project quand
 
 ## Contrato de delegacao ao Copilot
 
+Não delegar para Copilot durante a pausa; o Paperclip permanece sob execução direta da sessão.
+
 **Suspenso.** Nao montar prompt de delegacao ao Copilot Coding Agent ate revogar a pausa em ControleOnline/agents-mcp#201.
 
 

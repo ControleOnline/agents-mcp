@@ -9,7 +9,7 @@ Leia e aplique `agents/skills/controleonline/shared-operations-delivery-proof-co
 
 Existem dois canais independentes e complementares:
 
-1. **Agendamentos Manager (Codex, Grok ou equivalente):** consultam o estado global da organizacao/Project #1 e executam a primeira prioridade **elegivel e executavel**. Codex, Grok e demais scheduler nao dependem de novo push.
+1. **Agendamento do Manager:** consulta o estado global da organizacao/Project #1 e executa a primeira prioridade **elegivel e executavel**. O agendamento nao depende de novo push.
 2. **Manager Worker / Copilot (GitHub Actions):** reage exclusivamente a push em `master`, `dev` ou `staging` e atua somente sobre a issue resolvida para aquele push.
 
 Fonte dos workers: `agents/skills/controleonline/shared-operations-manager-worker-copilot/SKILL.md`.
