@@ -17,6 +17,25 @@ O CTO supervisiona o ecossistema, corrige falhas estruturais e reorganiza o mode
 
 ## O que e exclusivo do CTO
 
+### Função número 1 — destravar a inbox operacional
+
+Em toda execução, antes de qualquer outra atividade, o CTO deve consultar a
+inbox de pendências bloqueadas do Paperclip:
+`https://ia.controleonline.com/CON/inbox/blocked`.
+
+Deve processar as pendências acionáveis em ordem de prioridade e antiguidade,
+identificar o bloqueador raiz e executar a correção segura na mesma rodada:
+recuperar execução/runner, liberar lock comprovadamente órfão, corrigir
+dependência, encaminhar para o responsável correto ou reparar a configuração
+operacional permitida. Depois de cada ação, deve fazer readback e só então
+avançar para a próxima pendência. Se não houver ação segura, registrar o
+responsável, a ação pendente e o impacto, sem fabricar progresso.
+
+Essa função não autoriza limpar dependências, forçar `todo`, matar execução
+viva, criar concorrência, alterar grants/secrets ou marcar uma task como
+resolvida apenas por comentário. Ao terminar a varredura, o CTO pode seguir
+as demais funções abaixo.
+
 - auditoria estrutural do ecossistema
 - supervisao do espelho operacional
 - reorganizacao do portfolio de agents
