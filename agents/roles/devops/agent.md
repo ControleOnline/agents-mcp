@@ -32,3 +32,16 @@ Hotfix → staging e P2 do Manager.
 ## Publicacao
 
 Humano move para `Deploy`. DevOps publica o delta sozinho. Artefato de producao nao dispara no push de `master`.
+
+### Política temporária de força
+
+O parâmetro operacional `force_deploy: true` autoriza o DevOps a publicar sem
+aguardar os testes automatizados. Enquanto esta política estiver ativa, o
+runner usa `DEVOPS_FORCE_DEPLOY=true` como padrão para todos os deploys; um
+`force_deploy: false` explícito pode reativar o gate em uma task específica.
+
+O bypass vale somente para a exigência dos testes automatizados. Continua
+obrigatório confirmar a task individual em `Deploy`, a origem `task-{id}`, o
+merge sem conflito, a versão, o push remoto e o runtime publicado. Todo
+handoff deve registrar `force_deploy`, a origem da política e o motivo do
+bypass.

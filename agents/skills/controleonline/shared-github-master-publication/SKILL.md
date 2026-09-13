@@ -23,9 +23,11 @@ ela pode voltar a percorrer `In Review`/`Deploy`.
 ## Pre-requisitos
 
 1. Existe uma task individual aberta e pronta para publicação.
-2. O delta dessa task está publicado na branch remota individual e passou pelos
-   testes locais reproduzíveis exigidos pelo workflow de produção; não é
-   necessário aguardar uma publicação prévia em **`staging`**.
+2. O delta dessa task está publicado na branch remota individual. Por padrão,
+   ele deve passar pelos testes locais reproduzíveis exigidos pelo workflow de
+   produção; o DevOps pode receber `force_deploy: true` (ou usar o switch
+   temporário `DEVOPS_FORCE_DEPLOY=true`) para pular somente essa exigência.
+   Não é necessário aguardar uma publicação prévia em **`staging`**.
 3. Essa task foi movida por humano para a coluna **`Deploy`**, com ou sem os quatro accepts; essa mudança é a autorização explícita de publicação.
 4. O branch agregado `staging` nunca é usado como origem de publicação em `master`.
 
@@ -33,10 +35,12 @@ ela pode voltar a percorrer `In Review`/`Deploy`.
 
 1. confirme o repositorio principal e os subprojetos em `.gitmodules`
 2. trate somente a **branch da task** (`task-{id}`) como origem da publicação para **`master`**; nunca use o branch agregado `staging`
-3. antes de promover qualquer versão, confirme o resultado verde dos testes
-   locais do commit/branch da task e audite os deploys/workflows de `master` que
-   possam afetar diretamente a mesma publicação. Não espere testes via API ou
-   deploy remoto de `staging` para validar uma task que já passou no gate local;
+3. antes de promover qualquer versão, leia a política `force_deploy` e registre
+   a decisão no handoff. Sem o force, confirme o resultado verde dos testes
+   locais do commit/branch da task; com o force, registre que o gate foi
+   explicitamente pulado. Em ambos os casos, audite os deploys/workflows de
+   `master` que possam afetar diretamente a mesma publicação. Não espere testes
+   via API ou deploy remoto de `staging` para validar a task;
    falhas remotas não relacionadas ao delta devem ser registradas como
    acompanhamento separado, sem travar a fila de produção.
    - **Smokes de browser/UI com problema:** quando a auditoria encontrar smoke falho que nao faca parte do delta imediato a publicar, nao transforme isso em comentario solto nem misture com outra task. Abra ou atualize uma issue tecnica separada no repositorio afetado, em `Ready`, com labels `hotfix` + `bug` + `agent:developer` (e label de pagina quando identificavel), referenciando o workflow/job/run, fluxo (`fluxo: <id>` ou `outros`) e resumo sanitizado da falha. A publicacao so permanece bloqueada se a falha provar que a task atual nao esta publicavel; caso contrario, a correcao fica para a **P5 Developer** do Manager.
@@ -108,9 +112,10 @@ Ao concluir, informe:
 ## Quality Bar
 
 - nao promova sem coluna `Deploy` na task individual
-- nao promova sem o gate local verde e sem resolver uma falha anterior de
-  `master` que afete diretamente o mesmo artefato; staging remoto não é
-  pré-requisito
+- sem `force_deploy`, nao promova sem o gate local verde e sem resolver uma
+  falha anterior de `master` que afete diretamente o mesmo artefato; com
+  `force_deploy`, registre o bypass e preserve a validação de runtime. Staging
+  remoto não é pré-requisito
 - nao deixe smoke de browser/UI falho sem issue tecnica de follow-up em `Ready` com `hotfix` + `bug` + `agent:developer`
 - nao pule subprojetos obrigatorios
 - nao publique o projeto principal antes dos subprojetos

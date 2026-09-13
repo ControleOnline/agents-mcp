@@ -128,6 +128,7 @@
       "QA_TASK_LIMIT": "5",
       "DEVELOPER_WORKING_LIMIT": "5",
       "QA_AUTO_MERGE": "false",
+      "DEVOPS_FORCE_DEPLOY": "true",
       "DEVELOPER_COPILOT_BASE_REF": "master",
       "OWNER": "ControleOnline",
       "PROJECT_ORG": "ControleOnline",
