@@ -40,7 +40,7 @@ O `tutorial-assistant` **cria e atualiza** documentacao **publica** para cliente
 - Nao versionar paginas `.wiki` nem imagens publicas no Git.
 - E-mail `todos@controleonline.com` so apos publicacao validada, com links publicos.
 
-Labels legadas `tutorial-assistant:accepted` / `tutorial-assistant:rejected` **nao** fazem parte deste fluxo.
+As labels `tutorial-assistant:accepted` / `tutorial-assistant:rejected` **nao** fazem parte deste fluxo.
 
 ## Seguranca
 

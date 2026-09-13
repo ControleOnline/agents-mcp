@@ -20,7 +20,7 @@ Com isso:
 - quando `agent:qa:accepted` e `agent:security:accepted` coexistem sem novas solicitações nos comentários, `DevOps` cria a release; uma pessoa aprova a tarefa movendo-a para `Deploy`, e a partir de `Deploy` `DevOps` publica a build em produção
 - `DevOps` permanece responsável pela fila própria de deploy e pela reconciliação operacional
 
-## GitHub Manager Runner (legado de Project)
+## GitHub Manager Runner
 
 - workflow: `.github/workflows/github-operations.yml`
 - lógica final: `workers/automate/scripts/github-operations.mjs`
@@ -34,18 +34,8 @@ Com isso:
 - `workers/src/security-runner.js` -> `workers/automate/scripts/pr-label-review-runner.mjs` com `PR_REVIEW_ROLE=security`
 - `workers/src/qa-runner.js` -> `workers/automate/scripts/pr-label-review-runner.mjs` com `PR_REVIEW_ROLE=qa`
 - `workers/src/devops-runner.js` -> `workers/src/agent-dispatch-runner.js` com `AGENT_DISPATCH_ROLE=devops`
-- `workers/src/cto-runner.js` -> `workers/automate/scripts/cto-project-supervisor.mjs` (legado; nao faz parte da trilha atual `Developer` -> `QA` -> `Security` -> `Deploy` -> `DevOps`)
-- `workers/automate/scripts/cto-pr-finalizer.mjs` -> legado de consolidacao tecnica anterior; a trilha atual usa `Deploy` -> `DevOps`
-
-## Legado
-
-Arquivos historicos ainda podem existir no repositorio, mas nao representam a trilha recorrente oficial quando houver divergencia com as skills compartilhadas e com os entry points atuais.
-
-Exemplos de legado ou compatibilidade:
-
-- `workers/src/technical-lead-runner.js`
-- `workers/automate/scripts/technical-lead-pr-finalizer.mjs`
-- workflows YAML antigos por papel quando nao houver reativacao explicita e documentada
+- `workers/src/cto-runner.js` -> `workers/automate/scripts/cto-project-supervisor.mjs` (nao faz parte da trilha atual `Developer` -> `QA` -> `Security` -> `Deploy` -> `DevOps`)
+- `workers/automate/scripts/cto-pr-finalizer.mjs` -> nao faz parte da consolidacao atual; a trilha vigente usa `Deploy` -> `DevOps`
 
 ## Regra de leitura
 
@@ -54,4 +44,4 @@ Quando a duvida envolver ownership, fila ou runtime:
 1. confira primeiro os entry points reais em `workers/src/*-runner.js`
 2. confira a logica final em `workers/automate/scripts/`
 3. use `agents/skills/controleonline/shared-README/SKILL.md` e `workers/automate/agents/runner-map.md` como mapa de governanca
-4. trate scripts ou workflows historicos fora desse caminho como legado ate reativacao explicita
+4. trate scripts ou workflows fora desse caminho como inativos até reativação explícita

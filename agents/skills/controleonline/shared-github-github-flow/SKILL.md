@@ -4,7 +4,7 @@
 
 Fonte canônica do fluxo de branches e entrega técnica do ecossistema ControleOnline.
 
-Integração contínua **por task**. Não se monta Release Candidate, task pai de RC, freeze de pacote nem inventário de filhas. RCs históricos (`RC X.Y.Z-rc.N`) são legado e não orientam execuções novas.
+Integração contínua **por task**. Não se monta Release Candidate, task pai de RC, freeze de pacote nem inventário de filhas. A execução vigente não usa versões RC.
 
 ## Regra inviolável de integração
 
@@ -70,7 +70,7 @@ branch de integração, ou entre `staging` e `master`, o agent responsável deve
    outras tasks foram preservadas;
 4. em projetos com submódulos, revisar o diff de cada submódulo e o gitlink do
    pai, confirmando que o SHA apontado é o commit integrado esperado e não uma
-   versão antiga carregada pela branch de origem;
+   versão anterior carregada pela branch de origem;
 5. executar os testes/verificações focados no comportamento alterado e registrar
    a evidência do estado pós-merge antes do push.
 
@@ -101,7 +101,7 @@ Apagar e recriar a branch não autoriza copiar o gitlink, escolher “ours” ou
 resultado recriado deve passar pelo mesmo gate semântico e deixar comentário
 com a branch descartada, a nova base `master`, os SHAs e os testes executados.
 Uma task recriada não pode permanecer em `Done`, `Deploy` ou `In Review`, nem
-ser validada com labels antigas: a validação começa novamente após o novo
+ser validada com labels anteriores: a validação começa novamente após o novo
 merge em `dev`.
 
 ### Regra explícita de status e revalidação após entrega em `dev`
@@ -110,7 +110,7 @@ Quando a task reconstruída ou corrigida tiver sido publicada somente em
 `dev`, o Manager deve, na mesma rodada:
 
 1. manter ou retornar o item do Project #1 para **`Working`**;
-2. remover todas as decisões históricas dos validadores daquela entrega
+2. remover todas as decisões anteriores dos validadores daquela entrega
    (`agent:qa:accepted`, `agent:qa:rejected`, `agent:security:accepted`,
    `agent:security:rejected`, `agent:design:accepted`,
    `agent:design:rejected`, `agent:ux:accepted` e `agent:ux:rejected`);

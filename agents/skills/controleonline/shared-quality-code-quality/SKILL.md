@@ -70,7 +70,7 @@ Smokes devem ser associados a um fluxo do catálogo canônico em `quality/smoke-
 - QA deve recusar smoke de UI/browser que não tenha prints/screenshot cobrindo todas as etapas relevantes do fluxo.
 - QA deve recusar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER sem
   wiki canônica publicada, fluxo/etapa identificável ou prints por etapa. Não
-  exigir identificadores administrativos antigos: esses vínculos foram
+  exigir identificadores administrativos: esses vínculos foram
   substituídos pela wiki (CON-154).
 - Ver a skill completa para o catálogo e regras de governança.
 

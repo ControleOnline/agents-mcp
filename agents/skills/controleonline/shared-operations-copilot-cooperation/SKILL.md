@@ -47,7 +47,7 @@ Siga `issue-queue-discovery.md` deste repositorio (issues/labels e Project quand
 5. **Actions** so quando nao despacharem Copilot.
 6. **Sempre referencie a tarefa** da fila (`owner/repo#n`) em PRs, commits e handoff.
 7. **Nao invente canal paralelo** de fila.
-8. **Ao receber resultado legado do Copilot**, valide CI, diff e criterios do papel antes do handoff.
+8. **Ao receber resultado do Copilot**, valide CI, diff e criterios do papel antes do handoff.
 9. **Wrappers Copilot** permanecem finos; nao regenere para furar a pausa.
 10. **Falha de superficie**: registre o bloqueio e continue sem Copilot.
 
@@ -95,6 +95,6 @@ Não delegar para Copilot durante a pausa; o Paperclip permanece sob execução 
 
 - nao reative Copilot/workers automaticos nesta pausa
 - nao despeje trabalho no Copilot
-- nao trate output legado do Copilot como verdade sem validacao do papel
+- nao trate output do Copilot como verdade sem validacao do papel
 - nao quebre a fonte canonica `agents-mcp` com regras so no wrapper
 - nao desvie da skill de fila deste repositorio

@@ -28,8 +28,6 @@ const REVIEWER_META = {
     acceptedLabel: 'agent:qa:accepted',
     rejectedLabel: 'agent:qa:rejected',
     expectedIssueLabel: 'agent:qa',
-    legacyAcceptedLabel: 'approved:qa',
-    legacyRejectedLabel: 'rejected:qa',
     checklist: [
       'o escopo ficou dentro do limite de linhas e nao gerou arquivos inchados sem necessidade',
       'componentes, hooks, services e helpers foram reaproveitados quando existiam na base',
@@ -44,8 +42,6 @@ const REVIEWER_META = {
     acceptedLabel: 'agent:security:accepted',
     rejectedLabel: 'agent:security:rejected',
     expectedIssueLabel: 'agent:security',
-    legacyAcceptedLabel: 'approved:security',
-    legacyRejectedLabel: 'rejected:security',
     checklist: [
       'autorizacao e controle de acesso foram validados no fluxo alterado',
       'exposicao de dados e leituras indevidas foram revisadas',
@@ -55,13 +51,6 @@ const REVIEWER_META = {
     ],
   },
 };
-
-const LEGACY_REVIEW_LABELS = [
-  REVIEWER_META.qa.legacyAcceptedLabel,
-  REVIEWER_META.qa.legacyRejectedLabel,
-  REVIEWER_META.security.legacyAcceptedLabel,
-  REVIEWER_META.security.legacyRejectedLabel,
-];
 
 function env(name, fallback = '') {
   return (process.env[name] || fallback).trim();
@@ -325,14 +314,7 @@ function issueAlreadyReviewed(issue, meta) {
   return [
     meta.acceptedLabel,
     meta.rejectedLabel,
-    meta.legacyAcceptedLabel,
-    meta.legacyRejectedLabel,
   ].some((label) => label && labels.has(label));
-}
-
-function hasLegacyDecisionLabel(issue, pr) {
-  const labels = new Set([...issueLabels(issue), ...pullRequestLabels(pr)]);
-  return LEGACY_REVIEW_LABELS.some((label) => labels.has(label));
 }
 
 function candidatePullRequest(issue, stagingBranch, blockedHeadBranches) {
@@ -376,7 +358,6 @@ function getCandidate(items, role, allowedAssociations, stagingBranch, blockedHe
 
     const pr = candidatePullRequest(issue, stagingBranch, blockedHeadBranches);
     if (!pr) continue;
-    if (hasLegacyDecisionLabel(issue, pr)) continue;
     return { item, issue, pr };
   }
   return null;
@@ -386,8 +367,6 @@ function roleDecisionLabels(meta) {
   return [
     meta.acceptedLabel,
     meta.rejectedLabel,
-    meta.legacyAcceptedLabel,
-    meta.legacyRejectedLabel,
   ].filter(Boolean);
 }
 
@@ -566,7 +545,6 @@ async function main() {
     issue: issueRef,
     pullRequest: prRef,
     labelsApplied: [meta.acceptedLabel],
-    legacyLabelsStillRecognized: LEGACY_REVIEW_LABELS,
   };
 
   if (!dryRun) {

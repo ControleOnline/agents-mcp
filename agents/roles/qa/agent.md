@@ -77,7 +77,7 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 5. **Loops e chamadas duplicadas**: em cada tela/fluxo revisado, nao deve haver loops, re-renders desnecessarios ou requests/API duplicados.
 6. **Android** (quando aplicavel e houver build/artefato acessivel): verifique bugs obvios de runtime ou justifique explicitamente o que ficou fora de alcance.
 7. **Evidencia visual completa do fluxo**: para smoke de UI/browser, confirme que existe `fluxo: <id>` do catalogo canonico e prints/screenshot para cada etapa relevante da jornada. Evidencia parcial, print solto, ausencia de manifesto ou teste espalhado sem encaixe em fluxo bloqueia aprovacao.
-8. **Wiki canônica do fluxo**: antes de aceitar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER, leia a página publicada da wiki indicada por `wikiPage` ou pelo link do smoke. Confirme fluxo/etapa identificável, manifesto coerente e prints por etapa. Identificadores e endpoints administrativos antigos **não devem ser exigidos** (CON-154). Recuse somente quando faltar wiki, fluxo/etapa ou evidência; o comentário deve citar o item ausente.
+8. **Wiki canônica do fluxo**: antes de aceitar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER, leia a página publicada da wiki indicada por `wikiPage` ou pelo link do smoke. Confirme fluxo/etapa identificável, manifesto coerente e prints por etapa. Identificadores e endpoints administrativos não fazem parte do contrato atual e **não devem ser exigidos** (CON-154). Recuse somente quando faltar wiki, fluxo/etapa ou evidência; o comentário deve citar o item ausente.
 
 Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao. Falta de qualquer item acima em entrega com interface bloqueia `agent:qa:accepted`.
 

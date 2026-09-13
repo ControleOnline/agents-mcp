@@ -58,5 +58,5 @@ Ao revisar funcionamento, incidentes, ownership ou backlog do ecossistema:
 
 1. confirme primeiro qual runner e script realmente implementam o papel ou a mutacao exigida hoje
 2. trate os workflows YAML por papel apenas como trilha historica, salvo reativacao explicita e documentada
-3. trate `agent-project-dispatch.mjs`, `qa-project-review.mjs` e `security-project-review.mjs` como legado quando nao forem o caminho real do entry point atual
+3. trate `agent-project-dispatch.mjs`, `qa-project-review.mjs` e `security-project-review.mjs` como fora da trilha atual quando nao forem o caminho real do entry point
 4. somente o runner de `CTO` pode aprovar PR e mover a task para `In Review`

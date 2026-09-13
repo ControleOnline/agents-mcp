@@ -59,9 +59,9 @@ smoke e confirmar:
 3. manifesto/evidência apontando para a mesma wiki e prints/screenshot de cada
    etapa relevante da jornada.
 
-Identificadores, links, endpoints e tokens administrativos antigos são
-referências legadas. Eles **não são gate de QA**, não devem ser solicitados e
-sua ausência não bloqueia aceite quando a wiki publicada, o fluxo/etapa e a
+Identificadores, links, endpoints e tokens administrativos não fazem parte do
+contrato atual. Eles **não são gate de QA**, não devem ser solicitados e sua
+ausência não bloqueia aceite quando a wiki publicada, o fluxo/etapa e a
 evidência visual estiverem presentes.
 
 Smoke sem wiki canônica, sem fluxo/etapa identificável ou sem print por etapa
