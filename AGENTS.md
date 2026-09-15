@@ -63,13 +63,6 @@ workers/            # tudo que executa
 └── scripts/
 ```
 
-## Autorização para novos smokes
-
-QA exige somente testes automatizados adequados ao escopo, inclusive em UI.
-Nenhum agente pode adicionar testes smoke sem tarefa específica criada por humano
-que solicite explicitamente essa implementação. Verifique autoria, escopo e link;
-tarefa aberta pelo próprio agente não serve como autorização. Regra canônica:
-`agents/skills/controleonline/shared-quality-code-quality/SKILL.md`.
 
 ## Regra central de skills
 
@@ -78,7 +71,7 @@ Toda regra nova deve entrar primeiro na camada certa, em vez de ser repetida ent
 Distribuicao obrigatoria:
 
 - comportamento compartilhado, politicas, guardrails e criterios comuns vivem em `agents/skills/controleonline/shared-*/SKILL.md`
-- qualidade de codigo, modularizacao, smoke tests e limite de tamanho de componentes vivem em `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
+- qualidade de codigo, modularizacao e limite de tamanho de componentes vivem em `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
 - documentacao de cliente e wiki tecnica vivem em `agents/skills/controleonline/shared-documentation-documentation-governance/SKILL.md`
 - seguranca editorial e sanitizacao de evidencias vivem em `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md`
 - fluxo de branches e entrega (GitHub Flow adaptado) vive em `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
@@ -92,25 +85,14 @@ Distribuicao obrigatoria:
 | Categoria | Destino |
 | --- | --- |
 | Home deste repositório | este `AGENTS.md` + skills em `agents/skills/` |
-| Qualidade / smoke | [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) · [smoke-test-flows.md](agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md) |
-| Espelho app (wiki) | https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows |
-| Espelho API (wiki) | https://github.com/ControleOnline/api-community/wiki/Fluxos-de-Smoke |
+| Qualidade | [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) |
 | Governança documental | [documentation-governance.md](agents/skills/controleonline/shared-documentation-documentation-governance/SKILL.md) |
 
-### Por categoria — qualidade e smoke
+### Por categoria — qualidade
 
 | Página | O que documenta |
 | --- | --- |
-| [smoke-test-flows.md](agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md) | Catálogo canônico `fluxo: <id>`, documentação de smokes autorizados por tarefa humana |
-| [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) | Limites de arquivo, testes automatizados e autorização humana para novos smokes |
-| Teste de governança | `tests/qa-smoke-flow-evidence.test.mjs` |
-
-### Módulos relacionados
-
-| Módulo | Entrada |
-| --- | --- |
-| app-community | https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows |
-| api-community | https://github.com/ControleOnline/api-community/wiki/Fluxos-de-Smoke |
+| [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) | Limites de arquivo, testes automatizados e critérios de qualidade |
 
 ## Canal de execucao
 
