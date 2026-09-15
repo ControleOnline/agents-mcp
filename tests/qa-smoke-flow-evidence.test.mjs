@@ -28,15 +28,24 @@ test('canonical smoke flow catalog matches ControleOnline business flows', () =>
   assert.doesNotMatch(smokeFlows, /leilao|embarcador|transportador|viagem/i);
 });
 
-test('QA gate requires screenshots for every UI/browser smoke step', () => {
-  for (const source of [smokeFlows, codeQuality, qaAgent]) {
-    assert.match(source, /fluxo: <id>/);
-    assert.match(source, /prints?\/screenshot|prints? por etapa|screenshot para cada etapa/i);
+test('QA entrypoints require automated tests without a generic smoke gate', () => {
+  for (const path of [
+    'AGENTS.md',
+    'agents/roles/qa/agent.md',
+    'agents/skills/controleonline/by-role-qa-README/SKILL.md',
+    'agents/skills/controleonline/shared-quality-code-quality/SKILL.md',
+    'agents/skills/controleonline/shared-quality-review-checklists/SKILL.md',
+    'workers/automation/qa/base.md',
+    'workers/automate/quality-assurance.md',
+    'workers/automate/scripts/pr-label-review-runner.mjs',
+  ]) {
+    const source = fs.readFileSync(path, 'utf8');
+    assert.match(source, /testes automatizados/i, path);
+    assert.match(source, /criada por humano/i, path);
+    assert.doesNotMatch(source, /qualquer mudanca visivel em browser exige smoke|faltar smoke test em mudanca de UI|smoke obrigatório|smoke tests foram executados ou atualizados sempre que a interface foi tocada|nao aprova sem verificacao runtime\/UI/i, path);
   }
-
-  assert.match(smokeFlows, /QA \*\*não pode aprovar\*\* smoke test de UI\/browser/i);
-  assert.match(codeQuality, /evidencia parcial bloqueia QA/i);
-  assert.match(qaAgent, /Evidencia visual completa do fluxo/i);
+  assert.match(qaAgent, /QA não exige smokes/);
+  assert.match(qaAgent, /Testes ausentes, falhando ou sem evidência de\s+execução justificam recusa/);
 });
 
 test('automated test integration is code, not generated artifacts', () => {
@@ -46,17 +55,15 @@ test('automated test integration is code, not generated artifacts', () => {
   assert.match(smokeFlows, /não são a implementação do smoke/);
 });
 
-test('QA gate requires the canonical wiki flow plus per-step prints', () => {
-  const qaReadme = fs.readFileSync('agents/skills/controleonline/by-role-qa-README/SKILL.md', 'utf8');
-
-  for (const source of [smokeFlows, codeQuality, qaAgent, qaReadme]) {
-    assert.match(source, /prints? por etapa/i);
+test('new smoke work requires verified human task provenance across roles', () => {
+  for (const source of [smokeFlows, codeQuality, qaAgent]) {
+    assert.match(source, /Nenhum agente pode adicionar testes smoke sem (?:uma )?tarefa específica criada por humano/);
+    assert.match(source, /autoria/);
+    assert.match(source, /escopo/);
+    assert.match(source, /link/);
+    assert.match(source, /mesmo usando conta\s+humana/);
   }
-
-  assert.match(smokeFlows, /wikiPage/);
-  assert.match(smokeFlows, /fluxo: <id>.*etapa: <id>/s);
-  assert.match(smokeFlows, /não são gate de QA/);
-  assert.match(qaAgent, /página publicada da wiki/);
-  assert.match(qaAgent, /não devem ser exigidos/);
-  assert.match(qaReadme, /wiki canônica publicada/);
+  assert.match(codeQuality, /Agentes não podem criar uma tarefa de smoke para autorizar o próprio trabalho/);
+  assert.match(codeQuality, /todos os papéis/);
+  assert.match(smokeFlows, /Não exigir sua publicação como condição geral de QA/);
 });

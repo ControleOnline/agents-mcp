@@ -65,27 +65,32 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 
 - branch `task-{id}`, commits e **merge em `dev`** (nao em `staging` — `staging` e so o RC do DevOps)
 - comentarios, checklist e escopo da issue
-- testes/smoke quando houver interface
+- testes automatizados adequados ao escopo e resultados de execução
 - composicoes cross-repo quando a entrega atravessar modulos
 
-### Verificacoes runtime/UI obrigatorias (quando houver interface ou fluxo visual)
+### Testes automatizados exigidos pelo QA
 
-1. **Smoke tests**: execute se ainda nao houver evidencia valida e atual; se ja rodaram, leia prompts + resultados e valide. Nao reexecute sem necessidade.
-2. **Tela abre**: confirme que a tela/fluxo afetado carrega sem erro bloqueante.
-3. **Acao da tarefa realizada**: verifique o comportamento esperado da issue (nao apenas o codigo).
-4. **Console do browser**: nao deve haver erros/warnings relevantes ligados a entrega.
-5. **Loops e chamadas duplicadas**: em cada tela/fluxo revisado, nao deve haver loops, re-renders desnecessarios ou requests/API duplicados.
-6. **Android** (quando aplicavel e houver build/artefato acessivel): verifique bugs obvios de runtime ou justifique explicitamente o que ficou fora de alcance.
-7. **Evidencia visual completa do fluxo**: para smoke de UI/browser, confirme que existe `fluxo: <id>` do catalogo canonico e prints/screenshot para cada etapa relevante da jornada. Evidencia parcial, print solto, ausencia de manifesto ou teste espalhado sem encaixe em fluxo bloqueia aprovacao.
-8. **Wiki canônica do fluxo**: antes de aceitar smoke de UI de POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER, leia a página publicada da wiki indicada por `wikiPage` ou pelo link do smoke. Confirme fluxo/etapa identificável, manifesto coerente e prints por etapa. Identificadores e endpoints administrativos não fazem parte do contrato atual e **não devem ser exigidos** (CON-154). Recuse somente quando faltar wiki, fluxo/etapa ou evidência; o comentário deve citar o item ausente.
+QA exige somente testes automatizados adequados ao risco e ao comportamento
+da issue, com código versionado, descoberta pelo runner e resultado de execução
+válido para os commits revisados. Testes ausentes, falhando ou sem evidência de
+execução justificam recusa. Checks estáticos não substituem testes funcionais.
 
-Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao. Falta de qualquer item acima em entrega com interface bloqueia `agent:qa:accepted`.
+QA não exige smokes, prints por etapa, manifesto, wiki de smoke, sessão de
+browser ou acesso a staging como condição geral de aceite, inclusive em UI.
+Não solicite a criação de smoke para suprir evidência de uma tarefa comum.
+
+Nenhum agente pode adicionar testes smoke sem tarefa específica criada por humano
+com esse objetivo explícito. Verifique autoria, escopo e link conforme
+`agents/skills/controleonline/shared-quality-code-quality/SKILL.md`.
+Uma tarefa criada por agente não satisfaz essa condição, mesmo usando conta humana.
+Se a própria tarefa humana pede um smoke, valide o teste automatizado solicitado
+e seus critérios explícitos; não estenda essa exigência a outras tarefas.
 
 ## Conclusao
 
 ### Aprovar
 
-1. Comente resumo + checklist atendido (incluindo os itens runtime/UI quando aplicavel).
+1. Comente resumo + checklist atendido (incluindo os testes automatizados aplicáveis).
 2. Adicione `agent:qa:accepted`.
 3. Remova `agent:qa` se presente.
 4. Remova `agent:qa:rejected` anterior se estiver reavaliando.

@@ -11,7 +11,7 @@
 - `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
 - `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
 - `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
-- `agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md` — catálogo de fluxos de negócio (smoke) + gate da wiki canônica (CON-154)
+- `agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md` — consultar somente para tarefa de smoke criada por humano
 - `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
 
 ## Independencia (sem ProjectV2)
@@ -45,14 +45,23 @@ Issue **closed** sem `agent:qa:accepted` **e** `agent:security:accepted` → **r
 - checklist canonico: `agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`
 - nao publica `APPROVE` / `REQUEST_CHANGES` no lugar das labels
 - nao finaliza a task sozinho (precisa do par Security para fechamento legitimo)
-- **nao aprova sem verificacao runtime/UI** quando houver interface:
-  - smoke tests executados **ou** resultados existentes lidos e validados (nao reexecutar se evidencia valida e atual)
-  - tela/fluxo abre
-  - acao principal da tarefa foi realizada
-  - console do browser sem erros relevantes da entrega
-  - **sem loops, re-renders desnecessarios ou chamadas/API duplicadas** em cada tela revisada
-  - Android verificado quando aplicavel e acessivel (ou justificativa objetiva de alcance)
-  - smoke de UI POS/SHOP/PPC/DELIVERY/CHECKOUT/MANAGER: wiki canônica publicada lida; fluxo/etapa identificável; manifesto coerente e prints por etapa; recusa cita falta de wiki, fluxo/etapa ou evidência
+### Testes automatizados exigidos pelo QA
+
+QA exige somente testes automatizados adequados ao risco e ao comportamento
+da issue, com código versionado, descoberta pelo runner e resultado de execução
+válido para os commits revisados. Testes ausentes, falhando ou sem evidência de
+execução justificam recusa. Checks estáticos não substituem testes funcionais.
+
+QA não exige smokes, prints por etapa, manifesto, wiki de smoke, sessão de
+browser ou acesso a staging como condição geral de aceite, inclusive em UI.
+Não solicite a criação de smoke para suprir evidência de uma tarefa comum.
+
+Nenhum agente pode adicionar testes smoke sem tarefa específica criada por humano
+com esse objetivo explícito. Verifique autoria, escopo e link conforme
+`agents/skills/controleonline/shared-quality-code-quality/SKILL.md`.
+Uma tarefa criada por agente não satisfaz essa condição, mesmo usando conta humana.
+Se a própria tarefa humana pede um smoke, valide o teste automatizado solicitado
+e seus critérios explícitos; não estenda essa exigência a outras tarefas.
 
 ## Handoff
 

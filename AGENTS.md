@@ -63,6 +63,14 @@ workers/            # tudo que executa
 └── scripts/
 ```
 
+## Autorização para novos smokes
+
+QA exige somente testes automatizados adequados ao escopo, inclusive em UI.
+Nenhum agente pode adicionar testes smoke sem tarefa específica criada por humano
+que solicite explicitamente essa implementação. Verifique autoria, escopo e link;
+tarefa aberta pelo próprio agente não serve como autorização. Regra canônica:
+`agents/skills/controleonline/shared-quality-code-quality/SKILL.md`.
+
 ## Regra central de skills
 
 Toda regra nova deve entrar primeiro na camada certa, em vez de ser repetida entre agents, wrappers e instrucoes locais.
@@ -93,8 +101,8 @@ Distribuicao obrigatoria:
 
 | Página | O que documenta |
 | --- | --- |
-| [smoke-test-flows.md](agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md) | Catálogo canônico `fluxo: <id>`, gate de evidência visual completa (prints por etapa), regras de uso |
-| [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) | Limites de arquivo, testes, smoke obrigatório, evidência parcial bloqueia QA |
+| [smoke-test-flows.md](agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md) | Catálogo canônico `fluxo: <id>`, documentação de smokes autorizados por tarefa humana |
+| [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) | Limites de arquivo, testes automatizados e autorização humana para novos smokes |
 | Teste de governança | `tests/qa-smoke-flow-evidence.test.mjs` |
 
 ### Módulos relacionados

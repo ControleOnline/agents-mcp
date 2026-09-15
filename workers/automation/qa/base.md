@@ -44,7 +44,8 @@ Antes da decisão final:
 - confirme que o `AGENTS.md` aplicável foi consultado
 - confirme **merge da `task-{id}` em `dev`** (ou bloqueio explícito / pulo justificado com evidência)
 - confirme checks ou evidência técnica equivalente
-- confirme testes coerentes com o risco
+- confirme testes automatizados coerentes com o risco; QA não exige smokes
+- confirme que nenhum smoke foi adicionado sem tarefa específica criada por humano, com autoria, link e escopo explícito verificados conforme a skill compartilhada de qualidade
 - confirme que os testes obrigatorios do escopo realmente rodaram antes de aprovar; sem evidencia de execucao, recuse e devolva para o `Developer`
 - confirme composição cross-repo quando obrigatória
 - confirme o checklist canônico em `agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`
