@@ -6,6 +6,13 @@ Fonte única de verdade para associação de smokes a fluxos. Alterações no ca
 
 ## Governança
 
+Nenhum agente pode adicionar testes smoke sem tarefa específica criada por humano
+que peça explicitamente essa implementação. Verifique autoria, escopo e link na
+fonte de verdade antes de adicionar ou ampliar smokes. Tarefa criada por agente,
+mesmo usando conta humana, não autoriza novos smokes. A regra transversal vive
+em `shared-quality-code-quality/SKILL.md`.
+QA exige somente testes automatizados; smoke não é requisito geral de aceite.
+
 - **Somente humanos** autorizam inclusão, remoção ou alteração de fluxos neste catálogo.
 - Agents (Developer, QA, qualquer papel) **não inventam** novos fluxos.
 - Ao criar ou alterar um smoke test, o agent **deve declarar** o fluxo associado (um dos listados abaixo ou `outros`).
@@ -15,17 +22,17 @@ Fonte única de verdade para associação de smokes a fluxos. Alterações no ca
   - `https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows`
   - `https://github.com/ControleOnline/api-community/wiki/Smoke-Test-Flows`
 
-## Gate obrigatório de evidência visual
+## Evidência complementar de smoke autorizado
 
-Este gate é para **aceite visual de uma entrega de UI**. Ele não redefine a
+Esta orientação se aplica somente à tarefa humana de smoke. Ela não redefine a
 entrega de um teste automatizado: a implementação continua sendo o arquivo de
 teste versionado, descoberto pelo runner e integrado na ref remota. Artefatos
 gerados (`PNG`, screenshot, vídeo, trace, relatório ou manifesto) são apenas
 evidência complementar e nunca substituem o teste automatizado.
 
-QA **não pode aprovar** smoke test de UI/browser se a evidência não cobrir o fluxo inteiro com prints/screenshot.
+Prints/screenshot documentam a jornada quando solicitados na tarefa humana; não são gate geral de QA.
 
-Para cada smoke de UI/browser, a evidência mínima é:
+Quando a tarefa humana solicitar documentação visual do smoke, registrar:
 
 1. `fluxo: <id>` declarado no teste, manifesto, comentário ou evidência da issue.
 2. Lista de passos do fluxo executado.
@@ -41,17 +48,16 @@ Para cada smoke de UI/browser, a evidência mínima é:
    uma task cujo objetivo seja somente integrar o teste automatizado.
 5. Justificativa explícita quando um passo não puder gerar print por limitação técnica.
 
-Falta de prints por etapa, prints que não permitem reconstruir a jornada ou smoke sem fluxo declarado bloqueiam `agent:qa:accepted`.
+Ausência de prints por etapa ou manifesto não bloqueia o aceite de QA de tarefas comuns.
 
 ## Fluxos publicados na wiki (fonte operacional)
 
 Os diagramas e jornadas oficiais **não ficam mais nos flowcharts do tenant
-admin**. A fonte que o QA deve ler é a página publicada na wiki do produto,
+admin**. A fonte para documentar o smoke autorizado é a página publicada na wiki do produto,
 conforme a decisão da CON-154.
 
-Antes de dar `agent:qa:accepted` em smoke de UI dos produtos POS, SHOP, PPC,
-DELIVERY, CHECKOUT ou MANAGER, o QA **deve ler a wiki canônica** vinculada ao
-smoke e confirmar:
+Ao documentar um smoke autorizado de POS, SHOP, PPC, DELIVERY, CHECKOUT ou MANAGER,
+consultar a wiki canônica vinculada ao smoke e registrar:
 
 1. `wikiPage` ou o link da página publicada, sem exigir endpoint administrativo;
 2. fluxo e etapa identificáveis na página e no teste/evidência (`fluxo: <id> |
@@ -64,9 +70,8 @@ contrato atual. Eles **não são gate de QA**, não devem ser solicitados e sua
 ausência não bloqueia aceite quando a wiki publicada, o fluxo/etapa e a
 evidência visual estiverem presentes.
 
-Smoke sem wiki canônica, sem fluxo/etapa identificável ou sem print por etapa
-relevante **bloqueia** aceite. O comentário de recusa deve citar o item wiki ou
-de evidência que faltou.
+A wiki e os prints complementam a documentação quando previstos na tarefa humana.
+Não exigir sua publicação como condição geral de QA.
 
 ## Catálogo oficial
 
@@ -98,7 +103,9 @@ Cada entrada possui `id` estável, ator principal e nome legível.
 
 ## Relação com code-quality
 
-Smoke tests continuam obrigatórios conforme `quality/code-quality.md`. Esta skill **não** substitui a exigência de smoke; padroniza a **classificação por fluxo de negócio** e torna obrigatório o gate de evidência visual completa.
+QA exige testes automatizados e não exige smokes. Esta skill classifica os smokes
+cuja implementação foi solicitada em tarefa específica criada por humano;
+o catálogo não autoriza nenhum agente a criar testes por iniciativa própria.
 
 ## Fora de escopo desta skill
 

@@ -22,7 +22,8 @@ Ao revisar:
 - confirme que o `AGENTS.md` aplicavel foi consultado
 - confirme o merge da `task-{id}` em **`dev`** (nao em `staging`)
 - confirme checks ou evidencia equivalente
-- confirme testes e composicao cross-repo quando obrigatoria
+- confirme testes automatizados e composicao cross-repo quando obrigatoria; QA não exige smokes
+- nenhum smoke pode ser adicionado sem tarefa específica criada por humano, com autoria e escopo explícito verificados conforme a skill compartilhada de qualidade
 - confirme o checklist canonico de QA
 
 ## Saidas validas
