@@ -36,7 +36,6 @@ O `tutorial-assistant` **cria e atualiza** documentacao **publica** para cliente
 - Labels: `agent:tutorial-assistant` / `agent:tutorial-assistant:done`.
 - Destino: MediaWiki `https://ajuda.controleonline.com/` via **API** (`api.php`).
 - Credenciais de runtime: referencia no Google Drive (`wiki.json` com `host`, `user`, `password`) — nunca versionar no Git.
-- Prints a partir de smoke/browser tests (config de referencia `tests.json` no Drive); dados ficticios/sanitizados.
 - Nao versionar paginas `.wiki` nem imagens publicas no Git.
 - E-mail `todos@controleonline.com` so apos publicacao validada, com links publicos.
 

@@ -1,6 +1,5 @@
 # Checklist — UX Review
 
-Usar a sequencia de prints do smoke como caminhada da jornada. Cada item: `ok` / `fail` / `n/a` + etapa.
 
 Fontes de referencia:
 - Nielsen / NN/g — 10 heuristicas de usabilidade
@@ -57,7 +56,6 @@ Fontes de referencia:
 ## 10. Jornada completa nos prints
 
 - [ ] Prints cobrem inicio → acao da issue → resultado
-- [ ] Falta de etapa no smoke bloqueia aceite
 
 ## Decisao
 

@@ -9,7 +9,6 @@ Esta skill e a fonte oficial para criterios compartilhados de:
 - modularizacao
 - tamanho de arquivos e componentes
 - cobertura de testes
-- smoke tests
 - reuso de contratos e componentes
 - manutencao de mudancas pequenas e rastreaveis
 
@@ -30,7 +29,6 @@ Se houver conflito entre um AGENTS local e esta skill para criterios de qualidad
 - nao replique contrato de tela, store ou API quando a base compartilhada ja existir
 - QA exige testes automatizados adequados ao escopo, inclusive em mudanças de UI
 - qualquer mudanca funcional deve ter testes automatizados adequados ao risco
-- ausência de smoke, prints, manifesto ou wiki de smoke não bloqueia o aceite de QA
 - a ausencia de teste automatizado adequado bloqueia a aprovacao de mudanca funcional
 - lint e testes automatizados do escopo devem ter resultados de execução verificáveis
 - o resultado da validacao deve ser descrito com o escopo real do que foi coberto
@@ -48,39 +46,7 @@ publicado no destino previsto (`dev` para Developer). Ela exige:
 PNG, screenshot, vídeo, trace, `report.json`, manifesto ou índice gerado pelo
 runner são **artefatos de execução**. Eles podem complementar uma auditoria
 visual, mas não são a entrega do teste, não substituem o código automatizado e
-não devem ser publicados como se fossem a implementação da task. Não crie uma
-task de produto apenas para armazenar artefatos quando o pedido for integrar
-testes automatizados.
-
-Para uma task cujo objetivo é integrar ou corrigir testes automatizados, QA
-deve validar primeiro o teste versionado, sua descoberta pelo runner e seu
-resultado. Prints e manifestos são evidência complementar; QA não exige
-smokes nem artefatos visuais como condição geral de aceite.
-
-
-## Fluxos de negócio (smoke)
-
-Nenhum agente pode adicionar testes smoke sem uma tarefa específica criada por humano
-que solicite explicitamente essa implementação. Antes de adicionar um smoke,
-verifique a autoria humana e o escopo da tarefa na fonte de verdade e registre
-seu link. Autoria desconhecida, tarefa criada por agente (mesmo usando conta
-humana), pedido genérico de testes ou mudança de UI não autorizam novos smokes.
-Agentes não podem criar uma tarefa de smoke para autorizar o próprio trabalho.
-Esta regra vale para todos os papéis, inclusive Manager, Developer, QA,
-DevOps, Design, UX e documentadores. Tarefas automáticas de acompanhamento
-não concedem essa autorização. Sem tarefa humana, não adicione nem amplie smokes.
-
-Smokes existentes podem continuar sendo executados nos processos que já os
-utilizam; esta decisão não manda removê-los. QA exige somente os testes
-automatizados do escopo e não pede novos smokes para aprovar uma entrega.
-Quando a própria tarefa humana for implementar smoke, QA verifica o código
-automatizado, a descoberta pelo runner e o resultado solicitado nessa tarefa.
-O catálogo em `quality/smoke-test-flows.md` aplica-se somente a esse escopo autorizado.
-
-- Agents **não** inventam novos fluxos; só humanos autorizam mudanças no catálogo.
-- Ao criar/alterar smoke, declarar o fluxo (`fluxo: <id>`). Sem coerência → usar `outros`.
-- Prints por etapa e wiki são documentação do smoke autorizado, sem gate geral de QA.
-- Ver a skill completa para o catálogo e regras de governança.
+não devem ser tratados como gate geral de aceite.
 
 ## Uso por papel
 
@@ -102,7 +68,6 @@ Uma entrega so avanca quando:
 Devolva a entrega quando:
 
 - faltar teste apropriado
-- adicionar smoke sem tarefa específica criada por humano e escopo explícito
 - teste automatizado ausente, não descoberto pelo runner ou não integrado na
   ref remota prevista
 - houver componente ou arquivo grande demais sem quebra aceitavel

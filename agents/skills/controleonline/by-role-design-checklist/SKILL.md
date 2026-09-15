@@ -1,6 +1,5 @@
 # Checklist — Design Review
 
-Usar nos prints de smoke. Cada item: `ok` / `fail` / `n/a` + evidencia (arquivo do print ou etapa).
 
 Fontes de referencia (nao copiar produto de terceiros; so criterio):
 - consistencia de UI (paleta, hierarquia, espaco, icones, tipo)
@@ -41,7 +40,6 @@ Fontes de referencia (nao copiar produto de terceiros; so criterio):
 - [ ] Labels de campo sao curtos e no idioma do cliente
 - [ ] Prints nitidos; layout nao cortado / nao esticado
 
-## 6. Consistencia entre telas do smoke
 
 - [ ] Header, footer e navegacao estaveis no fluxo
 - [ ] Mesmo tipo de acao usa o mesmo controle nas telas seguintes

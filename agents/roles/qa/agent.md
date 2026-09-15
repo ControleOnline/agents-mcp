@@ -75,15 +75,11 @@ da issue, com código versionado, descoberta pelo runner e resultado de execuç�
 válido para os commits revisados. Testes ausentes, falhando ou sem evidência de
 execução justificam recusa. Checks estáticos não substituem testes funcionais.
 
-QA não exige smokes, prints por etapa, manifesto, wiki de smoke, sessão de
 browser ou acesso a staging como condição geral de aceite, inclusive em UI.
-Não solicite a criação de smoke para suprir evidência de uma tarefa comum.
 
-Nenhum agente pode adicionar testes smoke sem tarefa específica criada por humano
 com esse objetivo explícito. Verifique autoria, escopo e link conforme
 `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`.
 Uma tarefa criada por agente não satisfaz essa condição, mesmo usando conta humana.
-Se a própria tarefa humana pede um smoke, valide o teste automatizado solicitado
 e seus critérios explícitos; não estenda essa exigência a outras tarefas.
 
 ## Conclusao

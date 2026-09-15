@@ -43,7 +43,6 @@ ela pode voltar a percorrer `In Review`/`Deploy`.
    via API ou deploy remoto de `staging` para validar a task;
    falhas remotas não relacionadas ao delta devem ser registradas como
    acompanhamento separado, sem travar a fila de produção.
-   - **Smokes de browser/UI com problema:** quando a auditoria encontrar smoke falho que nao faca parte do delta imediato a publicar, nao transforme isso em comentario solto nem misture com outra task. Abra ou atualize uma issue tecnica separada no repositorio afetado, em `Ready`, com labels `hotfix` + `bug` + `agent:developer` (e label de pagina quando identificavel), referenciando o workflow/job/run, fluxo (`fluxo: <id>` ou `outros`) e resumo sanitizado da falha. A publicacao so permanece bloqueada se a falha provar que a task atual nao esta publicavel; caso contrario, a correcao fica para a **P5 Developer** do Manager.
 4. publique **primeiro cada submodulo** obrigatorio com delta, depois o projeto pai (gitlinks coerentes)
 5. para cada repositorio com delta real da **task individual**, faça o merge/promoção autorizada (`task-{id}` → `master`); use PR apenas se a política do repo exigir. Recuse qualquer PR com `head=staging` ou qualquer merge que agrupe mais de uma task. Nunca substitua esse merge por apontamento direto para SHA, commit de task ou simples atualização de gitlink.
 6. antes de cada merge, aplique o **Gate de atenção redobrada**: confirme
@@ -116,7 +115,6 @@ Ao concluir, informe:
   falha anterior de `master` que afete diretamente o mesmo artefato; com
   `force_deploy`, registre o bypass e preserve a validação de runtime. Staging
   remoto não é pré-requisito
-- nao deixe smoke de browser/UI falho sem issue tecnica de follow-up em `Ready` com `hotfix` + `bug` + `agent:developer`
 - nao pule subprojetos obrigatorios
 - nao publique o projeto principal antes dos subprojetos
 - nao force ref em `master` para contornar conflito

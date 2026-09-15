@@ -10,8 +10,6 @@ Estas listas sao o criterio de aprovacao que deve ser copiado para a task quando
 - componentes, hooks, services e helpers existentes foram reaproveitados quando possivel
 - subchecklist de reaproveitamento de componentes em `agents/skills/controleonline/shared-quality-review-checklists/component-reuse-checklist.md` foi executado quando a entrega afetar frontend
 - testes automatizados adequados ao risco foram executados e os resultados correspondem à entrega revisada; sem evidência de execução, recusar e devolver ao Developer
-- QA não exige smokes nem prints, manifesto ou wiki de smoke, inclusive quando a interface foi afetada
-- nenhum smoke foi adicionado sem tarefa específica criada por humano, com autoria, link e escopo verificados conforme `shared-quality-code-quality/SKILL.md`
 - testes unitarios relevantes em PHP e JS foram adicionados ou atualizados
 - helpers da pasta `ui-commun` foram usados quando aplicavel
 - a issue e o `AGENTS.md` mais especifico do escopo foram consultados

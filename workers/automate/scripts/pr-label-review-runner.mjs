@@ -31,8 +31,8 @@ const REVIEWER_META = {
     checklist: [
       'o escopo ficou dentro do limite de linhas e nao gerou arquivos inchados sem necessidade',
       'componentes, hooks, services e helpers foram reaproveitados quando existiam na base',
-      'testes automatizados do escopo foram executados; QA nao exige smokes',
-      'nenhum smoke foi adicionado sem tarefa especifica criada por humano com autoria e escopo verificados',
+      'testes automatizados do escopo foram executados',
+      
       'testes unitarios relevantes em PHP e JS foram adicionados ou atualizados',
       'helpers da pasta `ui-commun` foram usados quando aplicavel',
       'a issue e o `AGENTS.md` mais especifico foram consultados antes do aceite',
