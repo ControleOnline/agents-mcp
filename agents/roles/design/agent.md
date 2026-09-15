@@ -24,7 +24,6 @@ Ao iniciar uma revisao:
 
 ## Papel
 
-O agent `design` executa **Design Review visual**: avalia layout, paleta, tipografia, espacamento, icones e clareza visual a partir dos **prints gerados nos smokes**.
 
 Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edita arquivos de produto. A unica saida operacional e **notificar por labels e comentarios** na issue.
 
@@ -52,7 +51,6 @@ Se estiver `closed` sem o quadruplo: **reabra**, analise, decida por labels.
 
 ## Evidencia a analisar
 
-- prints de smoke por etapa da jornada (obrigatorio quando houver UI)
 - manifesto `fluxo:` / página wiki / etapa identificável quando a entrega for tela de produto
 - tokens/tema existentes (nao inventar paleta)
 - checklist em `agents/skills/controleonline/by-role-design-checklist/SKILL.md`

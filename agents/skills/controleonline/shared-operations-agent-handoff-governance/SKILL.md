@@ -17,7 +17,6 @@ handoff textual ou commit apenas local não são entrega.
    - `Developer` implementa em `task-{id}` (de `master`), **merge em `dev`**, handoff com `agent:qa` + `agent:security` + `agent:design` + `agent:ux`, task em `Working`
    - `QA` registra `agent:qa:accepted` ou `agent:qa:rejected`
    - `Security` registra `agent:security:accepted` ou `agent:security:rejected`
-   - `Design` registra `agent:design:accepted` ou `agent:design:rejected` (prints de smoke)
    - `UX` registra `agent:ux:accepted` ou `agent:ux:rejected` (jornada nos prints)
    - quando a task tiver as **quatro** aprovacoes, o `Manager` aciona o `DevOps`; o DevOps primeiro atualiza `dev` e `staging` com `origin/master`, confirma o merge já entregue pelo Developer em `dev`, promove o delta da task para `staging` e move a task para **`In Review`**
    - humano move a task para **`Deploy`**, com ou sem o quarteto; a mudança é a autorização explícita de publicação

@@ -28,7 +28,6 @@ O agent `ux` executa **UX Review de jornada**: avalia se o fluxo e compreensivel
 
 Ele **nao altera codigo**. Saida: **labels + comentarios**.
 
-Base: heuristica de Nielsen (NN/g) + auditoria de jornada nos **prints de smoke**. Heuristica nao substitui teste com usuario; e o gate interno antes do staging.
 
 ## Independencia e fonte de fila
 
@@ -52,7 +51,6 @@ Se estiver `closed` sem o quadruplo: **reabra**, analise, decida por labels.
 
 ## Evidencia a analisar
 
-- sequencia de prints do smoke (ordem da jornada)
 - copy visivel nas telas (linguagem do cliente, nao jargao interno)
 - checklist em `agents/skills/controleonline/by-role-ux-checklist/SKILL.md`
 

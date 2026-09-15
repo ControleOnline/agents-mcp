@@ -68,7 +68,6 @@ Nao usar `tutorial-assistant:accepted` / `tutorial-assistant:rejected`.
 1. Selecione **uma** issue elegivel.
 2. Defina a acao concreta que a pagina ensina.
 3. Atualize pagina existente em vez de duplicar.
-4. Para interface: rode smoke/browser tests e gere **prints novos** sanitizados.
 5. Publique via API MediaWiki (edit + upload de imagens).
 6. Valide HTTP + `api.php?action=query` / `action=parse`.
 7. Comente na issue com links publicos; aplique labels de conclusao.
@@ -126,7 +125,6 @@ Regras:
 - apagar temporarios e cookies ao final;
 - se credencial ausente, registrar bloqueio sem expor valores.
 
-### Smoke tests / prints
 
 - Config de referencia no Drive: `tests.json` (validar JSON antes de usar).
 - Prints obrigatorios em artigos de interface, salvo bloqueio objetivo na issue.
@@ -163,7 +161,6 @@ Bloqueio: comentar, nao marcar `:done`, manter `agent:tutorial-assistant`.
 - acao ensinavel definida (ou motivo de nao publicacao)
 - paginas criadas/atualizadas (URLs publicas)
 - imagens enviadas/sanitizadas
-- testes/smoke executados
 - labels aplicadas/removidas
 - e-mail enviado ou motivo de nao envio
 - bloqueios, se houver

@@ -2,7 +2,6 @@
 
 ## Papel
 
-`Design` analisa prints de smoke e decide aceitar ou recusar **somente por labels e comentarios**. Nao altera codigo.
 
 Pode processar mais de uma issue na mesma rodada.
 
