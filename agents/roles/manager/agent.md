@@ -80,40 +80,24 @@ publicacao; nao existe uma aprovacao humana adicional a aguardar e nao se deve
 registrar um marcador de salto de P1 por suposta aprovacao pendente.
 
 Se a publicacao falhar por um problema operacional, tente a correcao objetiva e,
-persistindo a falha, registre `NEXT_ACTION` com a evidencia e encerre nessa
-prioridade conforme o contrato de entrega. **Proibido montar RC.**
+persistindo a falha, registre `NEXT_ACTION` com a evidência e encerre nessa prioridade. A publicação usa RC técnica congelada conforme `shared-github-release-candidate/SKILL.md`; RC não é task agregadora.
 
-### Rito obrigatório de Deploy
+### Rito obrigatório de RC e Deploy
 
-Toda task na coluna **`Deploy`** pertence à P1 e deve ser processada pelo DevOps,
-uma por vez, na ordem do board. Enquanto houver tasks em `Deploy`, o Manager
-não captura nova task de outra fila. Cada task publicada deve gerar uma nova
-versão estável numérica (SemVer), sem agrupar tasks e sem criar RC.
+Tasks com os quatro accepts são elegíveis para compor uma RC técnica de 1 a 5 tasks. O DevOps cria a RC a partir do master atual, integra cada task individualmente, congela o manifesto e promove esse snapshot para staging. O Manager move cada task da RC para `In Review`.
 
-O DevOps publica o delta autorizado, valida o runtime e devolve ao Manager um
-handoff com SHA, versão, repositórios, resultado do deploy e os quatro accepts.
-O DevOps não decide a coluna final nem cria filhas documentais.
+A homologação humana ocorre sobre essa composição. Quando o humano mover as tasks homologadas para `Deploy`, P1 promove **a mesma RC congelada** para master. Não é permitido remontar pins, incluir outra task, usar staging como origem ou alterar a RC aprovada. Qualquer mudança exige `rc.N+1` e nova homologação.
 
-O Manager verifica `agent:qa:accepted`, `agent:security:accepted`,
-`agent:design:accepted` e `agent:ux:accepted`. Com os quatro accepts, move a
-task para **`Done`** e cria no Paperclip as filhas para `Technical Documenter`
-e `Tutorial Assistant`, quando aplicáveis. Se faltar qualquer accept, move para
-**`Working`** e reativa/cria no Paperclip a subtask do validador pendente. Se
-houver `:rejected`, aciona o Developer para corrigir e depois reencaminha aos
-validadores. Publicação em `master` nunca é aceite automático.
+Depois da publicação, o Manager decide cada task individualmente: com os quatro accepts → `Done`; se houver necessidade de nova validação/correção → `Working`, respeitando sempre o teto global de 5.
 
 ## Prioridade 1 - DevOps
 
-DevOps e **sempre o primeiro**. Duas funcoes, master **antes** de staging:
+DevOps é sempre o primeiro:
 
-1. Todas as tasks na coluna **`Deploy`** → encaminhar uma por vez ao DevOps
-   para versionar e publicar em `master`; depois receber o handoff e decidir o
-   estado final conforme o rito obrigatório de Deploy.
-2. Se nao houver Deploy executavel: task com **4 accepts** (`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`) → acionar `DevOps`; o DevOps atualiza primeiro `dev` e `staging` com `origin/master`, confirma o merge da task já feito pelo Developer em `dev`, promove o delta da task para `staging` e então o Manager move para `In Review`.
+1. RC homologada com todas as tasks correspondentes em `Deploy` → mesma RC congelada → `master`.
+2. Sem RC pronta para produção: agrupar tecnicamente de 1 a 5 tasks com quatro accepts → nova RC congelada → `staging` → Manager move as tasks para `In Review`.
 
-Hotfix **nao** entra nesta prioridade.
-
-Fonte: `agents/roles/devops/agent.md`.
+A RC não cria issue pai e não altera a identidade das tasks. Hotfix continua seguindo o mesmo freeze antes de master.
 
 ## Prioridade 2 - Hotfix
 
