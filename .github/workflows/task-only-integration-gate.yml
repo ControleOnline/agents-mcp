@@ -1,0 +1,37 @@
+name: Task-only integration gate
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - staging
+      - master
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  task-only-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject aggregate integration sources
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -eu
+          case "$HEAD_REF" in
+            task-[1-9][0-9]*) ;;
+            *)
+              echo "::error::Protected branch $BASE_REF only accepts an individual task-<issue> source. Received: $HEAD_REF"
+              exit 1
+              ;;
+          esac
+          case "$HEAD_REF" in
+            task-*-[!0-9]*|task-*[!0-9]*) 
+              echo "::error::Task branch must be exactly task-<numeric issue>."
+              exit 1
+              ;;
+          esac
