@@ -1,29 +1,48 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {
-  parseTaskBranch,
-  validateIntegrationSource,
-} from '../workers/automate/devops/integration-source-policy.mjs';
+import { parseRcBranch, validateIntegrationSource, validateRcManifest } from '../workers/automate/devops/integration-source-policy.mjs';
 
-test('protected integration branches accept only individual numeric task branches', () => {
-  for (const targetBranch of ['dev', 'staging', 'master']) {
-    const result = validateIntegrationSource({ sourceBranch: 'task-827', targetBranch });
+const manifest = {
+  version: '1.10.27',
+  rc: 2,
+  branch: 'rc/1.10.27-rc.2',
+  baseMaster: 'a'.repeat(40),
+  tasks: [821, 826, 827],
+  repositories: {
+    'ControleOnline/app-community': 'b'.repeat(40),
+    'ControleOnline/ui-common': 'c'.repeat(40),
+  },
+  frozen: true,
+};
+
+test('dev accepts only individual task branches', () => {
+  assert.equal(validateIntegrationSource({ sourceBranch: 'task-827', targetBranch: 'dev' }).allowed, true);
+  for (const sourceBranch of ['staging', 'master', 'rc/1.10.27-rc.1', 'task-1-2']) {
+    assert.equal(validateIntegrationSource({ sourceBranch, targetBranch: 'dev' }).allowed, false);
+  }
+});
+
+test('staging and master accept only frozen validated RCs', () => {
+  for (const targetBranch of ['staging', 'master']) {
+    const result = validateIntegrationSource({ sourceBranch: manifest.branch, targetBranch, manifest });
     assert.equal(result.allowed, true);
-    assert.equal(result.issueNumber, 827);
+    assert.equal(result.type, 'rc');
+    assert.deepEqual(result.tasks, [821, 826, 827]);
   }
 });
 
-test('aggregate branches are rejected as sources for dev staging and master', () => {
-  for (const sourceBranch of ['dev', 'staging', 'master', 'release/1.2.3', 'rc/12', 'tasks-821-826']) {
-    for (const targetBranch of ['dev', 'staging', 'master']) {
-      assert.equal(validateIntegrationSource({ sourceBranch, targetBranch }).allowed, false);
+test('RC is limited to five unique tasks and immutable manifest identity', () => {
+  assert.equal(parseRcBranch('rc/1.10.27-rc.2').version, '1.10.27');
+  assert.throws(() => validateRcManifest({ ...manifest, tasks: [1,2,3,4,5,6] }, manifest.branch), /1 and 5/);
+  assert.throws(() => validateRcManifest({ ...manifest, tasks: [1,1] }, manifest.branch), /unique/);
+  assert.throws(() => validateRcManifest({ ...manifest, frozen: false }, manifest.branch), /frozen/);
+  assert.throws(() => validateRcManifest({ ...manifest, branch: 'rc/1.10.28-rc.2' }, manifest.branch), /does not match/);
+});
+
+test('aggregate/manual sources remain forbidden', () => {
+  for (const targetBranch of ['staging', 'master']) {
+    for (const sourceBranch of ['dev', 'staging', 'master', 'release/1.10.27', 'tasks-821-826', 'task-827']) {
+      assert.equal(validateIntegrationSource({ sourceBranch, targetBranch, manifest }).allowed, false);
     }
-  }
-});
-
-test('task branch syntax is exact and cannot hide an aggregator', () => {
-  assert.deepEqual(parseTaskBranch('task-123'), { branch: 'task-123', issueNumber: 123 });
-  for (const branch of ['task-0', 'task-12-extra', 'task-12-13', 'task-abc', 'feature/task-12']) {
-    assert.equal(parseTaskBranch(branch), null);
   }
 });
