@@ -4,23 +4,15 @@
 
 Fonte canônica do fluxo de branches e entrega técnica do ecossistema ControleOnline.
 
-Integração contínua **por task**. Não se monta Release Candidate, task pai de RC, freeze de pacote nem inventário de filhas. A execução vigente não usa versões RC.
+Integração de desenvolvimento continua **por task**. A publicação usa Release Candidate técnica congelada para validar a composição. RC não é task pai, não cria issue agregadora e contém no máximo 5 tasks.
 
 ## Gate de origem das branches protegidas
 
-Para `dev`, `staging` e `master`, a origem de qualquer merge ou Pull Request deve ser **exatamente uma branch individual `task-{id_issue}`**. É proibido usar `dev`, `staging`, `master`, `release/*`, `rc/*`, branch que combine múltiplas tasks ou qualquer branch agregadora como origem de integração.
-
-Cada merge representa uma única issue. O nome da origem deve casar com `^task-[1-9][0-9]*# GitHub Flow
-
-## Overview
-
-Fonte canônica do fluxo de branches e entrega técnica do ecossistema ControleOnline.
-
-Integração contínua **por task**. Não se monta Release Candidate, task pai de RC, freeze de pacote nem inventário de filhas. A execução vigente não usa versões RC.
-
-. Se a entrega depender de mais de uma issue, cada task deve ser integrada separadamente e na sua própria ordem; nunca crie uma task/branch agregadora para contornar este gate.
-
-Este gate deve existir também como status check obrigatório nas proteções/rulesets do GitHub para `dev`, `staging` e `master`. Falha no gate bloqueia o merge; não existe bypass operacional por DevOps, Manager ou automação.
+- `dev`: origem obrigatória `task-{id_issue}`.
+- `staging`: origem obrigatória `rc/X.Y.Z-rc.N` com manifesto congelado válido.
+- `master`: origem obrigatória da **mesma RC homologada**; `staging` nunca é origem.
+- `dev`, `staging`, `master`, `release/*`, branches multi-task manuais e tasks agregadoras nunca são origens válidas.
+- A RC pode agregar tecnicamente de 1 a 5 tasks, mas somente pelo rito de freeze definido em `shared-github-release-candidate/SKILL.md`.
 
 ## Regra inviolável de integração
 
@@ -73,7 +65,7 @@ Se o estado real do GitHub mostrar que o passo **já foi feito**, o agent não r
 
 Merge não é apenas uma operação textual nem fica validado porque o Git não
 reportou conflito. Antes de confirmar **qualquer** merge entre uma task e uma
-branch de integração, ou entre `staging` e `master`, o agent responsável deve:
+branch de integração, ou entre a RC homologada e `master`, o agent responsável deve:
 
 1. confirmar a origem, o destino, os dois SHAs atuais e o `merge-base`; se a
    origem foi criada antes de uma alteração relevante já presente no destino,
