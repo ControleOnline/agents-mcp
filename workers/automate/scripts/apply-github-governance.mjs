@@ -142,21 +142,22 @@ async function getContent(repo, path, ref = 'master') {
 
 async function installWorkflow(repo) {
   const current = await getContent(repo, WORKFLOW_PATH, 'master');
-  const desired = Buffer.from(workflow).toString('base64');
-  if (current?.content?.replace(/\\n/g, '') === desired) return 'unchanged';
-  if (DRY_RUN) return current ? 'would-update' : 'would-create';
+  // Bootstrap is intentionally one-way. Once the gate exists, protected branches
+  // must never be mutated by this organization installer; future workflow changes
+  // travel through the repository's normal PR/RC policy.
+  if (current) return 'existing';
+  if (DRY_RUN) return 'would-create';
 
   const payload = {
     message: 'ci: enforce ControleOnline integration governance',
-    content: desired,
+    content: Buffer.from(workflow).toString('base64'),
     branch: 'master',
-    ...(current?.sha ? { sha: current.sha } : {}),
   };
   await request(`${API}/repos/${ORG}/${repo}/contents/${WORKFLOW_PATH}`, {
     method: 'PUT',
     body: JSON.stringify(payload),
   });
-  return current ? 'updated' : 'created';
+  return 'created';
 }
 
 function rulesetPayload() {
