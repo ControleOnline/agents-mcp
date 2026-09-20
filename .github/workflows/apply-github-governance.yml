@@ -1,0 +1,38 @@
+name: Apply GitHub governance
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Audit only; do not mutate GitHub
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: controleonline-github-governance
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply organization governance
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_ADMIN_TOKEN || secrets.GITHUB_TOKEN }}
+          GOVERNANCE_ORG: ControleOnline
+          GOVERNANCE_PROJECT_NUMBER: "1"
+          GOVERNANCE_DRY_RUN: ${{ inputs.dry_run }}
+        run: node workers/automate/scripts/apply-github-governance.mjs
+
+      - name: Publish summary
+        if: always()
+        run: |
+          if [ -f /tmp/governance/summary.json ]; then
+            cat /tmp/governance/summary.json >> "$GITHUB_STEP_SUMMARY"
+          fi
