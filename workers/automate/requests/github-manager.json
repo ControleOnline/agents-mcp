@@ -1,11 +1,11 @@
 {
-  "requested_at": "2026-08-01T18:14:00Z",
-  "requested_by": "CTO",
-  "purpose": "Adicionar app-community#298 ao Backlog do ProjectV2 ControleOnline#1",
+  "requested_at": "2026-09-20T19:00:00Z",
+  "requested_by": "luizkim",
+  "purpose": "Mover as cinco tasks publicadas da coluna Deploy para Done no ProjectV2 ControleOnline#1",
   "dry_run": false,
   "report_to": {
     "repo_full_name": "ControleOnline/agents-mcp",
-    "issue_number": 92
+    "issue_number": 201
   },
   "operations": [
     {
@@ -13,8 +13,40 @@
       "org": "ControleOnline",
       "project_number": 1,
       "repo_full_name": "ControleOnline/app-community",
-      "issue_number": 298,
-      "target_status": "Backlog"
+      "issue_number": 828,
+      "target_status": "Done"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 826,
+      "target_status": "Done"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 811,
+      "target_status": "Done"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 797,
+      "target_status": "Done"
+    },
+    {
+      "type": "project_status",
+      "org": "ControleOnline",
+      "project_number": 1,
+      "repo_full_name": "ControleOnline/app-community",
+      "issue_number": 821,
+      "target_status": "Done"
     }
   ]
 }
