@@ -6,6 +6,22 @@ Fonte canônica do fluxo de branches e entrega técnica do ecossistema ControleO
 
 Integração contínua **por task**. Não se monta Release Candidate, task pai de RC, freeze de pacote nem inventário de filhas. A execução vigente não usa versões RC.
 
+## Gate de origem das branches protegidas
+
+Para `dev`, `staging` e `master`, a origem de qualquer merge ou Pull Request deve ser **exatamente uma branch individual `task-{id_issue}`**. É proibido usar `dev`, `staging`, `master`, `release/*`, `rc/*`, branch que combine múltiplas tasks ou qualquer branch agregadora como origem de integração.
+
+Cada merge representa uma única issue. O nome da origem deve casar com `^task-[1-9][0-9]*# GitHub Flow
+
+## Overview
+
+Fonte canônica do fluxo de branches e entrega técnica do ecossistema ControleOnline.
+
+Integração contínua **por task**. Não se monta Release Candidate, task pai de RC, freeze de pacote nem inventário de filhas. A execução vigente não usa versões RC.
+
+. Se a entrega depender de mais de uma issue, cada task deve ser integrada separadamente e na sua própria ordem; nunca crie uma task/branch agregadora para contornar este gate.
+
+Este gate deve existir também como status check obrigatório nas proteções/rulesets do GitHub para `dev`, `staging` e `master`. Falha no gate bloqueia o merge; não existe bypass operacional por DevOps, Manager ou automação.
+
 ## Regra inviolável de integração
 
 Todo código que sair de uma branch de trabalho ou de integração para outra
