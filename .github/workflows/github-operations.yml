@@ -17,8 +17,13 @@ on:
           - 'true'
 
 # PAUSA CTO ControleOnline/agents-mcp#201 (2026-08-29)
-# Triggers automaticos desativados: push, issue_comment, schedule */15.
-# Religar somente com ordem humana explicita na #201.
+# Reativacao pontual autorizada pelo mantenedor em ControleOnline/agents-mcp#201.
+# O push abaixo executa somente a requisicao versionada do GitHub Manager e sera removido apos a verificacao.
+  push:
+    branches:
+      - master
+    paths:
+      - workers/automate/requests/github-manager.json
 
 permissions:
   contents: read
