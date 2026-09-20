@@ -54,6 +54,8 @@ task sair; a própria mutação para `Working` também deve ser recusada. P1
 `DevOps` é a única exceção de fila: processa `Deploy`, mas não cria uma sexta
 task em `Working`.
 
+Se o Manager encontrar **mais de 5** itens já existentes em `Working`, a primeira mutação obrigatória da rodada é normalizar a coluna antes de qualquer P1-P7 que possa capturar trabalho: ordenar os itens de `Working` por `createdAt` crescente, desempatar pelo menor número da issue, manter os **5 mais antigos** em `Working` e devolver **todo excedente** para `Ready`. Nenhuma execução pode aceitar `Working > 5` como estado transitório normal nem escolher arbitrariamente quais cinco permanecem.
+
 Nenhum agent seleciona **`Blocked`** ou **`Backlog`** como fila. Isso nao autoriza abandonar bloqueio operacional da propria rodada.
 
 ## Proibicao de tags de bloqueio
