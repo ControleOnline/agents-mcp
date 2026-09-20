@@ -1,7 +1,7 @@
 {
-  "requested_at": "2026-09-20T19:00:00Z",
+  "requested_at": "2026-09-20T19:05:00Z",
   "requested_by": "luizkim",
-  "purpose": "Mover as cinco tasks publicadas da coluna Deploy para Done no ProjectV2 ControleOnline#1",
+  "purpose": "Executar Deploy -> Done para as cinco tasks publicadas; trigger pontual autorizado na #201",
   "dry_run": false,
   "report_to": {
     "repo_full_name": "ControleOnline/agents-mcp",
