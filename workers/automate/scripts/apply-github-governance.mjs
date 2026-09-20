@@ -142,21 +142,22 @@ async function getContent(repo, path, ref = 'master') {
 
 async function installWorkflow(repo) {
   const current = await getContent(repo, WORKFLOW_PATH, 'master');
-  const desired = Buffer.from(workflow).toString('base64');
-  if (current?.content?.replace(/\\n/g, '') === desired) return 'unchanged';
-  if (DRY_RUN) return current ? 'would-update' : 'would-create';
+  // Bootstrap is intentionally one-way. Once the gate exists, protected branches
+  // must never be mutated by this organization installer; future workflow changes
+  // travel through the repository's normal PR/RC policy.
+  if (current) return 'existing';
+  if (DRY_RUN) return 'would-create';
 
   const payload = {
     message: 'ci: enforce ControleOnline integration governance',
-    content: desired,
+    content: Buffer.from(workflow).toString('base64'),
     branch: 'master',
-    ...(current?.sha ? { sha: current.sha } : {}),
   };
   await request(`${API}/repos/${ORG}/${repo}/contents/${WORKFLOW_PATH}`, {
     method: 'PUT',
     body: JSON.stringify(payload),
   });
-  return current ? 'updated' : 'created';
+  return 'created';
 }
 
 function rulesetPayload() {
@@ -215,16 +216,14 @@ function statusName(item) {
 }
 
 async function projectSnapshot() {
-  return graphql(`query($org:String!, $number:Int!, $cursor:String) {
+  const query = `query($org:String!, $number:Int!, $cursor:String) {
     organization(login:$org) {
       projectV2(number:$number) {
         id
         fields(first:50) {
           nodes {
             ... on ProjectV2SingleSelectField {
-              id
-              name
-              options { id name }
+              id name options { id name }
             }
           }
         }
@@ -242,8 +241,7 @@ async function projectSnapshot() {
             }
             content {
               ... on Issue {
-                number
-                createdAt
+                number createdAt
                 repository { nameWithOwner }
               }
             }
@@ -251,22 +249,28 @@ async function projectSnapshot() {
         }
       }
     }
-  }`, { org: ORG, number: PROJECT_NUMBER, cursor: null });
+  }`;
+
+  let cursor = null;
+  let project = null;
+  const items = [];
+  do {
+    const data = await graphql(query, { org: ORG, number: PROJECT_NUMBER, cursor });
+    const pageProject = data?.organization?.projectV2;
+    if (!pageProject) throw new Error(`Project ${ORG}#${PROJECT_NUMBER} not found`);
+    if (!project) project = { ...pageProject, items: { ...pageProject.items, nodes: [] } };
+    items.push(...(pageProject.items?.nodes || []));
+    const pageInfo = pageProject.items?.pageInfo;
+    cursor = pageInfo?.hasNextPage ? pageInfo.endCursor : null;
+  } while (cursor);
+  project.items.nodes = items;
+  return { organization: { projectV2: project } };
 }
 
 async function normalizeWorking() {
   const first = await projectSnapshot();
   const project = first?.organization?.projectV2;
   if (!project) throw new Error(`Project ${ORG}#${PROJECT_NUMBER} not found`);
-
-  // Project #1 currently fits in the first 100 items for Working normalization.
-  // Fail closed if pagination appears so the implementation never silently ignores overflow.
-  const pageInfoQuery = await graphql(`query($org:String!, $number:Int!) {
-    organization(login:$org) { projectV2(number:$number) { items(first:100) { pageInfo { hasNextPage } } } }
-  }`, { org: ORG, number: PROJECT_NUMBER });
-  if (pageInfoQuery.organization.projectV2.items.pageInfo.hasNextPage) {
-    throw new Error('Project has more than 100 items; pagination must be handled before automatic Working normalization.');
-  }
 
   const field = project.fields.nodes.find((node) => node?.name === 'Status' && Array.isArray(node.options));
   const ready = field?.options?.find((option) => option.name === 'Ready');
@@ -319,7 +323,12 @@ async function main() {
       const rulesetResult = await upsertRuleset(repo);
       results.push({ repo: `${ORG}/${repo}`, ok: true, workflow: workflowResult, ruleset: rulesetResult });
     } catch (error) {
-      results.push({ repo: `${ORG}/${repo}`, ok: false, error: error.message });
+      const unsupported = /Upgrade to GitHub Pro or make this repository public to enable this feature/i.test(error.message || '');
+      if (unsupported) {
+        results.push({ repo: `${ORG}/${repo}`, ok: true, ruleset: 'unsupported-by-github-plan', warning: error.message });
+      } else {
+        results.push({ repo: `${ORG}/${repo}`, ok: false, error: error.message });
+      }
     }
   }
 
