@@ -1,13 +1,13 @@
 {
-  "version": "0.0.0",
-  "rc": 1,
-  "branch": "rc/0.0.0-rc.1",
-  "baseMaster": "14b2f909eb37e6c4bc6fce9f6c78b128f27b6d26",
+  "version": "0.0.1",
+  "rc": 2,
+  "branch": "rc/0.0.1-rc.2",
+  "baseMaster": "9faf3199b3282381de62f07de3bba14b4d4a2f22",
   "tasks": [
     1
   ],
   "repositories": {
-    "ControleOnline/agents-mcp": "bb9732ff25e49fc1aa6bb71f2494bdf8614a6534"
+    "ControleOnline/agents-mcp": "a7afedbf1d2a599a55c00fdc351c45665eef7b29"
   },
   "frozen": true
 }

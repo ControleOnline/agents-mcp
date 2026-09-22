@@ -17,13 +17,13 @@ Este arquivo **prevalece** sobre as secoes de Release Candidate em `github-flow.
 master → task-{id} → merge dev
   → Developer aplica agent:qa + agent:security + agent:design + agent:ux
   → 4x :accepted
-  → DevOps merge SOMENTE task-{id} → staging + coluna In Review
-  → humano → coluna Deploy
-  → DevOps merge delta → master
+  → DevOps cria/atualiza RC e promove o pacote → staging + coluna In Review
+  → humano → RC pai na coluna Deploy
+  → DevOps merge pacote do RC → master
   → quatro accepts: Done | sem quarteto: Working + segunda validação
 ```
 
-- Nao criar task pai RC.
+- Toda task em `In Review` deve estar inventariada em um RC; depois do corte, inclusão só por pedido humano explícito.
 - Nao mergear `dev` inteiro em `staging`.
 - Recusa de qualquer validador: issue open, volta ao Developer na mesma `task-{id}`.
 - Hotfix pode entrar em staging antes do quadruplo; Deploy humano continua obrigatorio para master.

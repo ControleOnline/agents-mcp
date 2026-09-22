@@ -15,7 +15,10 @@ O Manager cria e acompanha a task de coordenação no Paperclip e suas subtasks 
 
 Ordem resumida:
 
-1. **DevOps** — sempre primeiro. Tasks com quarteto entram em uma RC tecnica congelada de no maximo 5 tasks e sao homologadas juntas em `staging`. Depois da autorizacao humana em `Deploy`, a mesma RC, com manifesto e SHAs identicos, e promovida para `master`. O Manager decide `Done`/revalidacao por task.
+1. **DevOps** — sempre primeiro. Processar todas as tasks em `Deploy`, uma por
+   vez, com nova versão estável e publicação em `master`; DevOps devolve o
+   handoff, e o Manager decide `Done` com quarteto ou `Working` para validação.
+   Se vazio, quarteto → criar/atualizar RC, inventariar as tasks e promover o pacote para `staging` + `In Review`. Depois do corte, só incluir nova task com pedido humano explícito.
 2. **Hotfix** — validadores e promocao hotfix → staging.
 3. **Documentacao**
 4. **Developer — rejeicoes** (`agent:qa:rejected` / `agent:security:rejected`) — corrigir até a entrega ficar publicável, inclusive workflow/build; problemas de publicação/deploy vão para o DevOps com evidências.

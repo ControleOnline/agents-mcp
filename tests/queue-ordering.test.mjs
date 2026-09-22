@@ -76,9 +76,9 @@ test('Working capacity is configured centrally in agents-mcp', () => {
     'utf8',
   );
   assert.match(manager, /limite global.*Working.*5 tasks/is);
-  assert.match(manager, /P1[\s\S]*`DevOps`.*única exceção.*Deploy/is);
+  assert.match(manager, /P1[\s\S]*`DevOps`[\s\S]*não cria exceção de capacidade/is);
   assert.match(discovery, /limite.*5.*Working/is);
-  assert.match(discovery, /única exceção de fila.*Deploy/is);
+  assert.match(discovery, /não é exceção de capacidade/is);
 });
 
 test('canonical instructions reject updatedAt ordering', () => {
@@ -166,6 +166,9 @@ test('board mutations fail closed before creating a sixth Working task', () => {
   assert.match(managerOperations, /Working capacity exceeded/);
   assert.match(managerOperations, /DEVELOPER_WORKING_LIMIT/);
   assert.match(manager, /teto absoluto de 5 tasks/is);
-  assert.match(manager, /não cria uma sexta.*Working/is);
+  assert.match(manager, /mover uma sexta task[\s\S]*Working/is);
   assert.match(discovery, /mutacao que produziria `6\/5`.*recusada/is);
+  assert.match(manager, /salvo uma task explicitamente marcada `hotfix`/is);
+  assert.match(discovery, /Só `hotfix` pode produzir[\s\S]*6\/5/is);
+  assert.match(managerOperations, /non-hotfix task into Working/is);
 });

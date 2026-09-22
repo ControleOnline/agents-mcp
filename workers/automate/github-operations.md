@@ -80,10 +80,14 @@ Campos aceitos:
 - `human_authorized_rc_removal` obrigatorio como `true` para remover item de `In Review` para qualquer coluna que nao seja `Deploy` ou `Done`
 - `devops_rc_removal` obrigatorio como `true` junto da autorizacao humana para remocao de item do RC
 - `rc_removal_reason` obrigatorio com o motivo humano documentado para remocao de item do RC
+- `rc_id` obrigatorio ao colocar uma task em `In Review`, apontando para o RC pai
+- `rc_inventory_confirmed` obrigatorio como `true` ao colocar uma task em `In Review`
+- `rc_frozen` obrigatorio como `true` quando já houver RC em `In Review`
+- `human_authorized_rc_inclusion` e `human_authorization_reason` obrigatorios quando a task for incluída depois do freeze
 
 Quando `repo_full_name` e `issue_number` forem informados, o runner garante que a issue esteja vinculada ao ProjectV2 antes de alterar o status. Se o item ainda nao existir no projeto, ele e incluido automaticamente e depois movido para o status solicitado.
 
-Protecao de freeze: `In Review` significa pacote de RC/hotfix aguardando conferencia humana. O runner recusa `In Review` → `Working`/`Ready`/outras colunas operacionais quando a operacao nao declara autorizacao humana explicita e remocao conduzida por DevOps. Transicoes normais permitidas: permanecer em `In Review`, seguir para `Deploy` por aprovacao humana ou ir para `Done` apos publicacao DevOps.
+Protecao de freeze: `In Review` significa pacote de RC/hotfix aguardando conferencia humana. O runner recusa entrada em `In Review` sem `rc_id` e inventário confirmado; quando `rc_frozen=true`, também recusa inclusão sem autorização humana explícita. O runner recusa `In Review` → `Working`/`Ready`/outras colunas operacionais quando a operação não declara autorização humana explícita e remoção conduzida por DevOps. Transições normais permitidas: permanecer em `In Review`, seguir para `Deploy` no RC pai por aprovação humana ou ir para `Done` após publicação DevOps.
 
 ### `issue_comment`
 

@@ -4,10 +4,10 @@ No Manager: DevOps e P1; hotfix e P2.
 
 Funcoes P1, nesta ordem:
 
-1. Tasks com quatro accepts → montar uma RC congelada de 1 a 5 tasks a partir do master atual → manifesto → staging → `In Review`.
-2. Quando as tasks da RC homologada estiverem em `Deploy` → promover exatamente a mesma RC para `master`, sem alterar SHAs.
+1. Todos os RCs em `Deploy` → uma nova versão estável por pacote → `master`
+2. 4 accepts → Manager aciona DevOps; criar/atualizar RC, atualizar `dev` e `staging` com `origin/master`, confirmar o merge do Developer em `dev`, inventariar a task, promover o pacote para `staging` e devolver para `In Review`
 
-A RC e artefato tecnico e nunca uma issue/task agregadora. Alterou qualquer SHA ou conteudo depois do freeze: invalide a homologacao e gere `rc.N+1`. Comentario sem promocao nao fecha a funcao.
+O RC é obrigatório; comentário sem criação/atualização do inventário, promoção e evidência não fecha a função.
 
 Gate de staging: `agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
 

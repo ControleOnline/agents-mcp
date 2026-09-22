@@ -63,6 +63,13 @@ workers/            # tudo que executa
 └── scripts/
 ```
 
+## Autorização para novos smokes
+
+QA exige somente testes automatizados adequados ao escopo, inclusive em UI.
+Nenhum agente pode adicionar testes smoke sem tarefa específica criada por humano
+que solicite explicitamente essa implementação. Verifique autoria, escopo e link;
+tarefa aberta pelo próprio agente não serve como autorização. Regra canônica:
+`agents/skills/controleonline/shared-quality-code-quality/SKILL.md`.
 
 ## Regra central de skills
 
@@ -71,7 +78,7 @@ Toda regra nova deve entrar primeiro na camada certa, em vez de ser repetida ent
 Distribuicao obrigatoria:
 
 - comportamento compartilhado, politicas, guardrails e criterios comuns vivem em `agents/skills/controleonline/shared-*/SKILL.md`
-- qualidade de codigo, modularizacao e limite de tamanho de componentes vivem em `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
+- qualidade de codigo, modularizacao, smoke tests e limite de tamanho de componentes vivem em `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
 - documentacao de cliente e wiki tecnica vivem em `agents/skills/controleonline/shared-documentation-documentation-governance/SKILL.md`
 - seguranca editorial e sanitizacao de evidencias vivem em `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md`
 - fluxo de branches e entrega (GitHub Flow adaptado) vive em `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
@@ -85,14 +92,25 @@ Distribuicao obrigatoria:
 | Categoria | Destino |
 | --- | --- |
 | Home deste repositório | este `AGENTS.md` + skills em `agents/skills/` |
-| Qualidade | [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) |
+| Qualidade / smoke | [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) · [smoke-test-flows.md](agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md) |
+| Espelho app (wiki) | https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows |
+| Espelho API (wiki) | https://github.com/ControleOnline/api-community/wiki/Fluxos-de-Smoke |
 | Governança documental | [documentation-governance.md](agents/skills/controleonline/shared-documentation-documentation-governance/SKILL.md) |
 
-### Por categoria — qualidade
+### Por categoria — qualidade e smoke
 
 | Página | O que documenta |
 | --- | --- |
-| [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) | Limites de arquivo, testes automatizados e critérios de qualidade |
+| [smoke-test-flows.md](agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md) | Catálogo canônico `fluxo: <id>`, documentação de smokes autorizados por tarefa humana |
+| [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) | Limites de arquivo, testes automatizados e autorização humana para novos smokes |
+| Teste de governança | `tests/qa-smoke-flow-evidence.test.mjs` |
+
+### Módulos relacionados
+
+| Módulo | Entrada |
+| --- | --- |
+| app-community | https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows |
+| api-community | https://github.com/ControleOnline/api-community/wiki/Fluxos-de-Smoke |
 
 ## Canal de execucao
 
@@ -124,20 +142,22 @@ aceites e evidências da entrega descartada e reativar os handoffs aplicáveis;
 isso é uma exceção explícita às regras usuais de não movimentação de coluna.
 Agents nunca mesclam diretamente em `master`. Todos
 os agents devem ler no Project #1 o limite da coluna `Working` antes de
-capturar uma nova task. Neste ecossistema, o limite canônico é **5 tasks**:
+capturar uma nova task. Neste ecossistema, o limite canônico é **5 tasks** e
+vale para qualquer worker:
 quando cinco tasks estiverem em `Working`, nenhuma outra entra até uma delas
-sair da coluna. A única exceção é o P1 `DevOps`, que continua publicando o que
-estiver em `Deploy`. Agents não movem
+sair da coluna, salvo uma task explicitamente marcada `hotfix`. O P1 `DevOps`
+continua publicando o que estiver em `Deploy`, mas isso não cria uma sexta vaga.
+Agents não movem
 tasks para `In Review`: essa coluna só é usada após os quatro accepts.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
 - `QA`, `Security`, `Design` e `UX` decidem por labels na task; evidencia em `dev`; nao abrem PR
-- `DevOps` reúne tecnicamente de 1 a 5 tasks com as **quatro** `:accepted` em uma RC congelada `rc/X.Y.Z-rc.N`, sem criar task pai
-- a RC nasce do `master`, possui manifesto imutável de SHAs e é homologada como composição em `staging`
-- humano confere staging e move as tasks homologadas para **`Deploy`**
-- `DevOps` promove **a mesma RC congelada** diretamente para `master`; `staging` nunca é origem de master
-- qualquer mudança depois do freeze gera `rc.N+1` e nova homologação
+- `DevOps` monta um RC com toda task elegível que chegar a **`In Review`**; o RC mantém o inventário e congela a entrada
+- depois de um RC novo, nenhuma task entra em **`In Review`** sem pedido humano explícito de inclusão no RC
+- enquanto houver RC em **`In Review`**, a fila normal fica congelada até sua publicação; somente `hotfix` pode furar o teto operacional
+- humano confere o RC e move o pai para **`Deploy`**
+- `DevOps` promove o pacote completo do RC `staging` → `master`; com o quarteto move as filhas para **`Done`**, sem o quarteto move a afetada para `Working`
 
 ## Ownership operacional
 
@@ -197,10 +217,10 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
 ### Ordem de prioridade
 
 1. **P1 DevOps**
-   - Se existir RC homologada cujas tasks estejam em `Deploy`, promover exatamente essa RC congelada para `master`
-   - Senão, montar RC técnica de 1 a 5 tasks quadruplo-accepted, congelar manifesto e promover o snapshot para `staging` + `In Review`
-   - `Deploy` autoriza a publicação da composição já homologada; não autoriza recompor SHAs
-   - RC é artefato técnico, nunca task/issue agregadora
+   - Publicar todos os RCs em `Deploy` → `master`; com quarteto mover as filhas para `Done`, sem o quarteto voltar a afetada para `Working`
+   - Senao, montar/atualizar um RC com tasks quadruplo-accepted e levar o pacote a `staging` + `In Review`
+   - A coluna `Deploy` e autorizacao humana explicita de publicacao em `master`; o Manager/DevOps executa o delta sem aguardar aprovacao adicional
+   - respeitar o freeze: inclusão posterior só com pedido humano explícito registrado no RC/task
 2. **P2 Hotfix**
    - Validar ou promover task `hotfix` ja implementada (QA / Security / Design / UX / DevOps → staging)
    - Implementacao de hotfix e P6 Developer, nao P2
@@ -224,7 +244,8 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
 
 - Tente a prioridade mais alta com trabalho elegivel e executavel.
 - Se `Working` já tiver 5 tasks, não capture outra task para P5 ou P6; continue
-  resolvendo as tasks ativas. P1 `DevOps` permanece executável para `Deploy`.
+  resolvendo as tasks ativas. Só uma task `hotfix` pode exceder o teto. P1
+  `DevOps` permanece executável para `Deploy`, sem exceção de capacidade.
 - Dentro da mesma prioridade funcional, selecione a task elegivel mais antiga por `createdAt` crescente; em empate, use o menor numero da issue.
 - `updatedAt` serve apenas como evidencia de atividade e nunca reposiciona uma task na fila.
 - SysAdmin **nao** participa deste mode (deve continuar rodando em paralelo em automacao separada).

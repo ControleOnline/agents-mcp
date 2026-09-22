@@ -258,20 +258,28 @@ async function assertTaskByTaskMasterPromotion(operation) {
 
   const headRef = String(pullRequest?.head?.ref || '').trim();
   if (headRef.toLowerCase() === 'staging') {
-    throw new Error(
-      'Refusing master promotion from the aggregate staging branch. Promote exactly one task branch per operation.'
-    );
+    if (!String(operation.rc_id || '').trim() || operation.rc_inventory_confirmed !== true) {
+      throw new Error(
+        'Refusing master promotion from staging without rc_id and rc_inventory_confirmed=true.'
+      );
+    }
+    return;
   }
 
   const issueNumber = operation.issue_number ?? operation.task_id;
   if (issueNumber === undefined || issueNumber === null || String(issueNumber).trim() === '') {
     throw new Error(
-      'Refusing master promotion without issue_number/task_id. Every promotion must identify exactly one task.'
+      'Refusing master promotion without issue_number/task_id. A non-staging source must identify an inventoried RC task.'
     );
   }
   if (!branchContainsIssueNumber(headRef, issueNumber)) {
     throw new Error(
       'Refusing master promotion: branch ' + (headRef || 'unknown') + ' is not tied to task ' + issueNumber + '.'
+    );
+  }
+  if (!String(operation.rc_id || '').trim() || operation.rc_inventory_confirmed !== true) {
+    throw new Error(
+      'Refusing master promotion: the task branch is not associated with an inventoried RC.'
     );
   }
 }
@@ -534,9 +542,10 @@ function assertWorkingCapacity(project, item, targetStatus) {
   const workingCount = (project.items?.nodes || []).filter(
     (entry) => getStatusValue(entry).trim().toLowerCase() === 'working'
   ).length;
-  if (workingCount >= limit) {
+  const isHotfix = issueLabels(item.content).some((label) => label.toLowerCase() === 'hotfix');
+  if (workingCount >= limit && !isHotfix) {
     throw new Error(
-      `Working capacity exceeded: ${workingCount}/${limit}. Refusing to move another task into Working; wait for a task to leave Working.`
+      `Working capacity exceeded: ${workingCount}/${limit}. Refusing to move another non-hotfix task into Working; wait for a task to leave Working.`
     );
   }
 }
@@ -727,6 +736,28 @@ function hasHumanAuthorizedRcRemoval(input) {
   return input.human_authorized_rc_removal === true && input.devops_rc_removal === true && reason.length > 0;
 }
 
+function hasHumanAuthorizedRcInclusion(input) {
+  const reason = String(input.human_authorization_reason || '').trim();
+  return input.human_authorized_rc_inclusion === true && reason.length > 0;
+}
+
+function assertRcInclusion(input, fromStatus) {
+  const target = normalizeStatusName(input.target_status);
+  if (target !== 'in review' || normalizeStatusName(fromStatus) === 'in review') return;
+
+  if (!String(input.rc_id || '').trim() || input.rc_inventory_confirmed !== true) {
+    throw new Error(
+      'Refusing entry into In Review: provide rc_id and rc_inventory_confirmed=true; every task in In Review must be inventoried in an RC.'
+    );
+  }
+
+  if (input.rc_frozen === true && !hasHumanAuthorizedRcInclusion(input)) {
+    throw new Error(
+      'Refusing post-freeze RC inclusion: provide human_authorized_rc_inclusion=true and a non-empty human_authorization_reason.'
+    );
+  }
+}
+
 function assertAllowedProjectStatusTransition(item, input) {
   const fromStatus = getStatusValue(item);
   const from = normalizeStatusName(fromStatus);
@@ -744,6 +775,8 @@ function assertAllowedProjectStatusTransition(item, input) {
       'Blocked and Backlog are human-only columns and must not be touched by workers or agents.'
     );
   }
+
+  assertRcInclusion(input, fromStatus);
 
   if (from !== 'in review' || ['in review', 'deploy', 'done'].includes(target)) {
     return;

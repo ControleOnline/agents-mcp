@@ -1,34 +1,55 @@
-# Integracao (dev) e staging (RC congelada)
+# Integracao (dev) e staging (RC)
 
 ## Regra geral
 
-- Developer integra somente `task-{id}` em `dev`.
-- DevOps monta uma branch `rc/X.Y.Z-rc.N` a partir do `master` atual.
-- A RC recebe individualmente de 1 a 5 tasks com os quatro accepts.
-- Depois do manifesto e freeze, o snapshot da RC e promovido para `staging`.
-- Staging e ambiente de homologacao da **composicao congelada**, nao branch de trabalho.
-- Depois da autorizacao humana em `Deploy`, DevOps promove a **mesma RC** para `master`.
-- `staging -> master`, `dev -> staging` e branches agregadoras manuais sao proibidos.
+No fluxo normal de task:
 
-Fonte: `shared-github-github-flow` + `shared-github-release-candidate`.
+- o `Developer` integra a `task-{id_issue}` em **`dev`** por **merge** (sem PR)
+- o `DevOps` monta um RC com as tasks elegíveis em **`staging`** e, após o RC pai chegar a `Deploy`, promove somente esse pacote para **`master`**
 
-## Invalidacao
+Fonte canonica: `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.
 
-Qualquer commit, task, gitlink, SHA ou versao diferente do manifesto apos o freeze invalida a RC. Nao conserte a RC homologada em lugar: crie `rc.N+1`, gere novo manifesto e rode novamente os testes de composicao.
+## Entrega do Developer → `dev`
 
-## Gates
+- origem: `task-{id_issue}`
+- operacao: **merge** em **`dev`**
+- proibido: PR do Developer; merge em `staging` ou `master`; push direto de commits soltos em `dev`/`staging`/`master`
 
-A RC so congela com:
-- 1 a 5 tasks;
-- quatro accepts em cada task;
-- base master registrada;
-- SHAs completos de todos os repositorios/submodulos afetados;
-- build da composicao;
-- browser/smoke aplicavel;
-- API/Postman aplicavel;
-- regressao dos bugs cobertos;
-- ausencia de mudanca fora do manifesto.
+## Staging = pacote RC (DevOps)
 
-## Ownership
+- `staging` **nao** e destino do Developer
+- `DevOps` coloca somente o RC inventariado em `staging` apos os gates exigidos
+- update de `staging` dispara deploy de conferencia humana
+- apos coluna `Deploy` do RC: merge do pacote inventariado → `master` → filhas `Done`
 
-Developer nao publica staging/master. DevOps cria/promove RC. Manager controla board. Humano autoriza Deploy.
+## Promoção para staging por task
+
+Quando houver uma task com simultaneamente:
+
+- `agent:qa:accepted`
+- `agent:security:accepted`
+- e **nao** estiver em `staging` / `In Review`
+
+nessa situacao ele deve criar/atualizar o RC, inventariar a branch `task-{id_issue}`
+e respeitar o freeze; não consolidar outra task sem pedido humano explícito.
+
+## Bloqueios
+
+- faltar uma das duas aprovacoes por label
+- existir `agent:qa:rejected` ou `agent:security:rejected`
+- integracao em `dev` (Developer) ou `staging` (RC) em conflito sem resolucao
+- branch da tarefa nao vinculada ao numero da issue
+- tentativa de promover `staging` para `master` sem `rc_id` e inventário confirmado
+
+## Restricao de ownership
+
+- `Developer`, `Security` e `QA` **nao abrem PR** no fluxo normal
+- `Developer` entrega por **merge** em **`dev`**
+- somente `DevOps` promove o RC para `staging` e, após `Deploy` do pai, para `master`
+
+Staging representa a composição congelada da RC. Qualquer alteração posterior ao
+freeze exige uma nova candidata `rc.N+1`; a RC homologada não pode ser editada nem
+receber task sem autorização humana explícita.
+
+Qualquer alteração posterior ao freeze exige uma nova candidata `rc.N+1`; a RC
+homologada não pode ser editada nem receber task sem autorização humana explícita.

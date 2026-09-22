@@ -4,15 +4,32 @@
 
 Fonte canônica do fluxo de branches e entrega técnica do ecossistema ControleOnline.
 
-Integração de desenvolvimento continua **por task**. A publicação usa Release Candidate técnica congelada para validar a composição. RC não é task pai, não cria issue agregadora e contém no máximo 5 tasks.
+Integração contínua por task até a validação; a publicação é feita por **Release Candidate (RC)**. Cada task que chega a `In Review` pertence a exatamente um RC aberto, que mantém o inventário das tasks e o freeze do pacote.
 
-## Gate de origem das branches protegidas
+### Regra de RC e freeze
 
-- `dev`: origem obrigatória `task-{id_issue}`.
-- `staging`: origem obrigatória `rc/X.Y.Z-rc.N` com manifesto congelado válido.
-- `master`: origem obrigatória da **mesma RC homologada**; `staging` nunca é origem.
-- `dev`, `staging`, `master`, `release/*`, branches multi-task manuais e tasks agregadoras nunca são origens válidas.
-- A RC pode agregar tecnicamente de 1 a 5 tasks, mas somente pelo rito de freeze definido em `shared-github-release-candidate/SKILL.md`.
+- Ao existir a primeira task elegível para `In Review`, o DevOps/Manager cria um
+  RC pai versionado (`RC X.Y.Z-rc.N`) e vincula a task como filha. Toda task
+  subsequente só pode entrar em `In Review` se estiver vinculada a esse RC.
+- A abertura do RC congela o pacote: nenhuma task nova entra em `In Review` e
+  nenhuma task é adicionada ao RC por inferência de um agent.
+- Uma task posterior só pode ser incluída no RC mediante pedido humano explícito,
+  registrado no RC ou na própria task, com a task adicionada ao inventário e o
+  freeze recalculado antes da promoção. Sem essa evidência, a task permanece
+  fora de `In Review` (em `Working` ou `Ready`, conforme o caso).
+- O RC é a unidade de conferência e publicação: staging contém o conjunto do RC,
+  o humano confere o RC e move o pai para `Deploy`, e o DevOps promove o RC
+  completo para `master`. Não se publica uma task do RC isoladamente.
+- O pai do RC deve listar todas as tasks filhas, SHAs/branches promovidos,
+  versão e estado de validação. Uma task não pode ficar em `In Review` sem esse
+  vínculo e sem estar no inventário do RC.
+- Enquanto houver um RC em `In Review`, a fila normal fica congelada: nenhuma
+  task comum nova é capturada, promovida ou colocada em `In Review`. O Manager
+  aguarda a publicação desse RC; a única exceção operacional é `hotfix`, que
+  pode ser capturado e exceder o teto de `Working`.
+
+Para evitar qualquer ambiguidade operacional: `dev`: origem obrigatória `task-`,
+`staging`: origem obrigatória `rc/` e `master`: origem obrigatória da **mesma RC homologada**.
 
 ## Regra inviolável de integração
 
@@ -65,7 +82,7 @@ Se o estado real do GitHub mostrar que o passo **já foi feito**, o agent não r
 
 Merge não é apenas uma operação textual nem fica validado porque o Git não
 reportou conflito. Antes de confirmar **qualquer** merge entre uma task e uma
-branch de integração, ou entre a RC homologada e `master`, o agent responsável deve:
+branch de integração, ou entre `staging` e `master`, o agent responsável deve:
 
 1. confirmar a origem, o destino, os dois SHAs atuais e o `merge-base`; se a
    origem foi criada antes de uma alteração relevante já presente no destino,
@@ -166,57 +183,59 @@ Gate de staging (task comum): as **quatro** labels juntas:
 - `agent:design:accepted`
 - `agent:ux:accepted`
 
-## DevOps — integração contínua por task (sem RC)
+## DevOps — montagem, freeze e publicação de RC
 
 No Manager, DevOps é **P1**. Hotfix é **P2**.
 
 ### Entrada (P1)
 
-1. Todas as tasks na coluna **`Deploy`** (cada delta publicado separadamente em
-   `master`) — primeiro.
-2. Task **quádruplo-accepted** ainda fora de `staging` / `In Review`.
-3. Issues/PRs com `agent:devops` com ação de merge restante.
+1. RC pai na coluna **`Deploy`** — publicar o pacote completo primeiro.
+2. RC aberto com desvio de inventário, freeze ou staging.
+3. Task quádruplo-accepted pronta para staging: criar/atualizar o RC e incluir a
+   task, respeitando o freeze e a autorização humana quando o RC já estiver aberto.
+4. Issues/PRs com `agent:devops` com ação de merge restante.
 
 Promoção de `hotfix` → staging é P2, não P1.
 
-### Proibido
+### Proibições e exceções
 
-- Criar task pai `RC X.Y.Z-rc.N`.
-- Freeze de pacote / inventário de filhas como rito novo.
 - Mergear `dev` inteiro em `staging`.
 - Abrir segundo “RC” paralelo.
 - Promover task comum a staging sem as quatro `:accepted` (exceção: `hotfix` na P2).
+- Adicionar task ao RC ou colocá-la em `In Review` sem pedido humano explícito
+  depois do freeze.
 
 ### Promoção a staging
 
-1. Staging parte de `master` atual + merge **somente** de `task-{id}`.
+1. Staging parte de `master` atual + merge das tasks inventariadas no RC.
 2. Pai + submódulos afetados (submódulos primeiro; pins coerentes).
 3. Aplicar o **Gate de atenção redobrada antes de qualquer merge**. Conflito:
    abortar aquele merge, comentar, seguir a próxima task. Ausência de conflito
    não dispensa a revisão semântica do resultado.
 4. Versão em `package.json` / `app.json` quando o bump for necessário: **somente números** (SemVer). Sem sufixo `-rc`.
 5. Push em `staging` dispara deploy de conferência.
-6. A passagem para **`In Review`** é feita pelo humano após staging e os quatro
-   accepts; o DevOps não move a task para essa coluna.
+6. O Manager só pode colocar uma task em **`In Review`** depois de confirmar o
+   RC pai, o inventário e os quatro accepts. Após o freeze, exige também a
+   evidência de inclusão humana; o DevOps não pode inferir essa inclusão.
 
 ### `In Review`
 
-Sinal de que a **task individual** já está em staging, possui os quatro accepts
-e aguarda revisão humana. Nenhum agent move tasks para dentro ou para fora desta
-coluna. Se parecer indevida: comentar + `agent:devops` + esperar humano.
+Sinal de que a task está em staging como filha do RC, possui os quatro accepts e
+aguarda revisão humana. Depois que um RC novo foi aberto, nenhuma task entra
+nesta coluna fora do inventário congelado, salvo pedido humano explícito. Se
+parecer indevida: não mover; registrar `agent:devops` e aguardar a decisão humana.
 
 ### Publicação (coluna Deploy)
 
-1. Humano move a task para **`Deploy`**, com ou sem o quarteto; essa mudança
-   de coluna é a autorização explícita para publicar em `master`.
+1. Humano move o **RC pai** para **`Deploy`**; essa mudança de coluna é a
+   autorização explícita para publicar o pacote em `master`.
 2. DevOps aplica o **Gate de atenção redobrada antes de qualquer merge** e
-   mescla somente o delta da task (`task-{id}`) → `master` (pai + submódulos).
-3. devolva ao Manager o handoff com SHA, versão publicada, runtime e estado dos
-   quatro accepts.
-4. O Manager decide a coluna final. Com os quatro accepts, move para **`Done`**
-   e cria no Paperclip as filhas documentais aplicáveis. Sem qualquer accept,
-   move para **`Working`** e reativa os validadores pendentes; com rejeição,
-   aciona o Developer para corrigir e depois reencaminha aos validadores.
+   mescla o conjunto inventariado do RC → `master` (pai + submódulos).
+3. devolva ao Manager o handoff com SHA, versão publicada, inventário do RC,
+   runtime e estado dos quatro accepts.
+4. O Manager decide a coluna final das tasks. Com os quatro accepts, move as
+   filhas para `Done`; com pendência ou rejeição, reabre somente a task afetada,
+   cancela o RC/publicação correspondente e reativa os validadores.
 
 Nunca direto a `master` sem coluna `Deploy`, salvo correção estrutural de governança em `agents-mcp`.
 
@@ -225,8 +244,9 @@ Detalhes: `agents/skills/controleonline/shared-github-master-publication/SKILL.m
 ### O que o DevOps não faz
 
 - Não implementa feature de produto no lugar do Developer.
-- Não monta RC.
-- Não inclui task comum sem as quatro `:accepted` (exceção `hotfix` na P2).
+- Não inventa inclusão no RC após o freeze.
+- Não inclui task comum sem as quatro `:accepted` (exceção `hotfix` na P2 e
+  inclusão humana explícita no RC).
 
 ## Quem pode o que
 
@@ -237,8 +257,8 @@ Detalhes: `agents/skills/controleonline/shared-github-master-publication/SKILL.m
 | Merge `task-{id}` → `staging` | **nao** | **nao** | **sim** |
 | Abrir PR de produto / task | **nao** | **nao** | **nao** (salvo excecao) |
 | Labels `:accepted` / `:rejected` | nao | sim | nao |
-| Criar task pai RC | **nao** | **nao** | **nao** |
-| Merge delta → `master` | **nao** | **nao** | **sim** (coluna Deploy) |
+| Criar/atualizar task pai RC | **nao** | **nao** | **sim** |
+| Merge RC package → `master` | **nao** | **nao** | **sim** (RC pai em Deploy) |
 
 ## Hotfix (P2 do Manager)
 
@@ -250,8 +270,8 @@ No Full Pipeline, hotfix vem **depois** do DevOps (P1).
 master
   └─ task-{id}
        └─ merge task-{id} → dev
-            └─ DevOps merge somente task-{id} → staging (sem esperar quádruplo) [P2]
-                 └─ In Review → humano Deploy → delta → master
+  └─ DevOps inclui a task no RC → staging (sem esperar quádruplo) [P2]
+                 └─ RC em In Review → humano Deploy → pacote → master
                       ├─ quatro accepts → Done
                       └─ sem quarteto → Working → segunda validação
 ```
@@ -267,7 +287,7 @@ master
 - não entregue Developer em `staging` (destino é `dev`)
 - não faça handoff com mudança local, commit não publicado ou projeto/submódulo afetado sem conferência contra `origin/master`
 - não promova para `master` sem coluna `Deploy` e passagem por `In Review`
-- não monte RC, pai de RC ou freeze de pacote
+- não coloque task em `In Review` sem RC, inventário e freeze verificáveis
 - não pule etapa sem evidência verificável
 - não mova `Deploy` de volta para `In Review` sem rejeição humana explícita
 
