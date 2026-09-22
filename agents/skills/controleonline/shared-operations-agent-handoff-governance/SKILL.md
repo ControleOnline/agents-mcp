@@ -13,20 +13,21 @@ handoff textual ou commit apenas local não são entrega.
 2. nunca atribua a task a pessoas, bots ou fallbacks tecnicos; assignee nao faz parte do fluxo
 3. agentes nao fecham tasks fora do rito de colunas; humanos controlam `closed` quando aplicavel
 4. se a task estiver em `Ready` ou `Working` sem `agent:*`, a entrada padrao e `Developer`
-5. fluxo tecnico padrao (integracao continua, **sem RC**):
+5. fluxo tecnico padrao com Release Candidate:
    - `Developer` implementa em `task-{id}` (de `master`), **merge em `dev`**, handoff com `agent:qa` + `agent:security` + `agent:design` + `agent:ux`, task em `Working`
    - `QA` registra `agent:qa:accepted` ou `agent:qa:rejected`
    - `Security` registra `agent:security:accepted` ou `agent:security:rejected`
    - `UX` registra `agent:ux:accepted` ou `agent:ux:rejected` (jornada nos prints)
-   - quando a task tiver as **quatro** aprovacoes, o `Manager` aciona o `DevOps`; o DevOps primeiro atualiza `dev` e `staging` com `origin/master`, confirma o merge já entregue pelo Developer em `dev`, promove o delta da task para `staging` e move a task para **`In Review`**
-   - humano move a task para **`Deploy`**, com ou sem o quarteto; a mudança é a autorização explícita de publicação
-   - item em **`Deploy`** entra **sozinho** em `master`: `DevOps` mescla o delta `staging`/`task-{id}` → `master`; com o quarteto move para **`Done`**, sem o quarteto move para **`Working`** para segunda rodada de validação
+   - quando a task tiver as **quatro** aprovações, o `Manager` aciona o `DevOps`; o DevOps cria/atualiza um RC, confirma o merge em `dev`, inventaria a task e promove o pacote para `staging` + **`In Review`**
+   - depois de aberto o RC, task nova só entra em `In Review` com pedido humano explícito registrado no RC/task
+   - humano move o **RC pai** para **`Deploy`**; a mudança é a autorização explícita de publicação
+   - `DevOps` mescla o pacote completo do RC `staging` → `master`; com o quarteto move as filhas para **`Done`**, sem o quarteto move a afetada para `Working`
    - documentacao (`tutorial-assistant` / `technical-documenter`): no publish (fail-closed) aplicar labels de solicitacao ausentes; so os documentadores marcam `:done`
 6. **Pulo de etapa ja concluida:** se o passo ja estiver feito (evidencia no GitHub), pule, avance e comente a justificativa. QA/Security/Design/UX ainda registram aceite/recusa da propria etapa.
 7. qualquer etapa pode abrir task paralela de infraestrutura com `agent:sysadmin`; nunca substitui a tarefa-mae
 8. quando o `Sysadmin` concluir a paralela, comenta na mae e aplica o handoff cabivel
 9. cada agent so troca a tag da propria proxima etapa quando sua etapa estiver concluida (ou pulada com evidencia)
-10. **nao ha RC.** Nao criar task pai `RC X.Y.Z-rc.N`. Nao freeze de pacote. Cada task quádruplo-accepted sobe sozinha para staging/In Review.
+10. Todo `In Review` deve pertencer a um RC, estar no inventário do pai e respeitar o freeze. Inclusão posterior exige pedido humano explícito; não criar RC paralelo.
 11. nao faca handoff sem evidencia concreta
 12. o handoff só é válido com mutação verificável: commit/ref remoto e merge
     para entrega de código, decisão de label para validação, ou merge + coluna
@@ -66,5 +67,5 @@ estado pós-ação.
 - nao use assignee como ownership
 - nao trate conflito de merge como detalhe
 - nao mova tarefa por aproximacao textual
-- nao abra RC
+- nao crie RC paralelo nem inclua task pós-freeze sem pedido humano registrado
 - nao refaca passo ja evidenciado; documente o pulo

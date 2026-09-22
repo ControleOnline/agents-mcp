@@ -17,6 +17,8 @@ const conflictResolution = fs.readFileSync(
   'agents/skills/controleonline/shared-github-conflict-resolution/SKILL.md',
   'utf8',
 );
+const githubFlow = fs.readFileSync('agents/skills/controleonline/shared-github-github-flow/SKILL.md', 'utf8');
+const devopsSkill = fs.readFileSync('agents/skills/controleonline/by-role-devops-README/SKILL.md', 'utf8');
 
 const completionLabels = [
   'agent:qa:accepted',
@@ -48,7 +50,7 @@ test('manager prioritizes rejected work before validators and new development', 
 test('Deploy is explicit human publication authorization', () => {
   assert.match(managerAgent, /coluna \*\*`Deploy`\*\*[\s\S]*autorizacao humana explicita[\s\S]*deve executar/i);
   assert.doesNotMatch(managerAgent, /P1_SKIPPED_HUMAN_DEPLOY/);
-  assert.match(queueDiscovery, /coluna \*\*`Deploy`\*\*[\s\S]*autorizacao humana explicita[\s\S]*publicar em `master`/i);
+  assert.match(queueDiscovery, /coluna \*\*`Deploy`\*\*[\s\S]*autorizacao humana explicita[\s\S]*publicar.*`master`/i);
   assert.doesNotMatch(queueDiscovery, /unico bloqueio for gate humano de Deploy/i);
 });
 
@@ -61,6 +63,17 @@ test('Deploy publication branches by validator quartet', () => {
   }
   const devopsAgent = fs.readFileSync('agents/roles/devops/agent.md', 'utf8');
   assert.match(devopsAgent, /todas as tasks[\s\S]*`Deploy`[\s\S]*nova versão[\s\S]*master[\s\S]*handoff[\s\S]*não move a task/i);
+});
+
+test('In Review is always an explicitly inventoried frozen RC', () => {
+  assert.match(githubFlow, /cada task.*`In Review`.*pertence a exatamente um RC/is);
+  assert.match(githubFlow, /abertura do RC congela o pacote/is);
+  assert.match(githubFlow, /pedido humano explícito/is);
+  assert.match(githubFlow, /RC é a unidade de conferência e publicação/is);
+  assert.match(githubFlow, /inventário do RC/is);
+  assert.match(devopsSkill, /RC é obrigatório/is);
+  assert.match(queueDiscovery, /toda task em `In Review` deve constar no inventário/is);
+  assert.match(queueDiscovery, /inclusão posterior exige pedido humano explícito/is);
 });
 
 test('rejection recovery includes GitHub workflow and publication repair', () => {

@@ -209,9 +209,9 @@ Fonte primaria:
 
 Candidata se **qualquer** for verdadeira:
 
-1. publicacao: task pai de RC (ou hotfix elegivel) na coluna **`Deploy`** — a coluna e a autorizacao humana explicita para publicar em `master`;
-2. RC aberto: desvio corrigivel de board/freeze/staging (pai/filhas fora de alinhamento);
-3. montagem de RC: existe dual-accepted (`agent:qa:accepted` + `agent:security:accepted`) limpo e **nenhum** RC aberto;
+1. publicacao: **RC pai** (ou hotfix elegivel) na coluna **`Deploy`** — a coluna e a autorizacao humana explicita para publicar o pacote em `master`;
+2. RC aberto: desvio corrigivel de board/freeze/staging (pai/filhas fora de alinhamento); toda task em `In Review` deve constar no inventário do RC;
+3. montagem de RC: existe task com os quatro accepts, pronta para inventário, e **nenhum** RC aberto; com RC aberto, inclusão posterior exige pedido humano explícito registrado no RC/task;
 4. handoff DevOps: issue com label **`agent:devops`** **ou** **qualquer** PR `open` marcada/encaminhada para DevOps (label `agent:devops`, vinculo a issue `agent:devops`, ou PR solta sem handoff apos higiene). Se a PR **nao** estiver no Project #1, **associar na mesma hora** antes ou junto da decisao.
 
 Nao candidata se a acao pertencer exclusivamente a Developer/QA/Security sem handoff DevOps, ou se nao houver delta publicavel/acao operacional objetiva para o DevOps.

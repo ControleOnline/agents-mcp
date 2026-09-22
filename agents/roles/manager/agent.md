@@ -54,8 +54,6 @@ task sair; a própria mutação para `Working` também deve ser recusada. P1
 `DevOps` é a única exceção de fila: processa `Deploy`, mas não cria uma sexta
 task em `Working`.
 
-Se o Manager encontrar **mais de 5** itens já existentes em `Working`, a primeira mutação obrigatória da rodada é normalizar a coluna antes de qualquer P1-P7 que possa capturar trabalho: ordenar os itens de `Working` por `createdAt` crescente, desempatar pelo menor número da issue, manter os **5 mais antigos** em `Working` e devolver **todo excedente** para `Ready`. Nenhuma execução pode aceitar `Working > 5` como estado transitório normal nem escolher arbitrariamente quais cinco permanecem.
-
 Nenhum agent seleciona **`Blocked`** ou **`Backlog`** como fila. Isso nao autoriza abandonar bloqueio operacional da propria rodada.
 
 ## Proibicao de tags de bloqueio
@@ -80,24 +78,42 @@ publicacao; nao existe uma aprovacao humana adicional a aguardar e nao se deve
 registrar um marcador de salto de P1 por suposta aprovacao pendente.
 
 Se a publicacao falhar por um problema operacional, tente a correcao objetiva e,
-persistindo a falha, registre `NEXT_ACTION` com a evidência e encerre nessa prioridade. A publicação usa RC técnica congelada conforme `shared-github-release-candidate/SKILL.md`; RC não é task agregadora.
+persistindo a falha, registre `NEXT_ACTION` com a evidencia e encerre nessa
+prioridade conforme o contrato de entrega. O Manager deve criar/atualizar o RC
+e seu inventário; inclusão após o freeze exige pedido humano explícito registrado
+no RC/task.
 
-### Rito obrigatório de RC e Deploy
+### Rito obrigatório de Deploy
 
-Tasks com os quatro accepts são elegíveis para compor uma RC técnica de 1 a 5 tasks. O DevOps cria a RC a partir do master atual, integra cada task individualmente, congela o manifesto e promove esse snapshot para staging. O Manager move cada task da RC para `In Review`.
+Todo RC pai na coluna **`Deploy`** pertence à P1 e deve ser processado pelo DevOps,
+um por vez, na ordem do board. Enquanto houver RCs em `Deploy`, o Manager não
+captura nova task de outra fila. Cada RC publicado deve gerar uma nova versão
+estável numérica (SemVer) para o pacote inventariado.
 
-A homologação humana ocorre sobre essa composição. Quando o humano mover as tasks homologadas para `Deploy`, P1 promove **a mesma RC congelada** para master. Não é permitido remontar pins, incluir outra task, usar staging como origem ou alterar a RC aprovada. Qualquer mudança exige `rc.N+1` e nova homologação.
+O DevOps publica o delta autorizado, valida o runtime e devolve ao Manager um
+handoff com SHA, versão, repositórios, resultado do deploy e os quatro accepts.
+O DevOps não decide a coluna final nem cria filhas documentais.
 
-Depois da publicação, o Manager decide cada task individualmente: com os quatro accepts → `Done`; se houver necessidade de nova validação/correção → `Working`, respeitando sempre o teto global de 5.
+O Manager verifica `agent:qa:accepted`, `agent:security:accepted`,
+`agent:design:accepted` e `agent:ux:accepted`. Com os quatro accepts, move a
+task para **`Done`** e cria no Paperclip as filhas para `Technical Documenter`
+e `Tutorial Assistant`, quando aplicáveis. Se faltar qualquer accept, move para
+**`Working`** e reativa/cria no Paperclip a subtask do validador pendente. Se
+houver `:rejected`, aciona o Developer para corrigir e depois reencaminha aos
+validadores. Publicação em `master` nunca é aceite automático.
 
 ## Prioridade 1 - DevOps
 
-DevOps é sempre o primeiro:
+DevOps e **sempre o primeiro**. Duas funcoes, master **antes** de staging:
 
-1. RC homologada com todas as tasks correspondentes em `Deploy` → mesma RC congelada → `master`.
-2. Sem RC pronta para produção: agrupar tecnicamente de 1 a 5 tasks com quatro accepts → nova RC congelada → `staging` → Manager move as tasks para `In Review`.
+1. Todas as tasks na coluna **`Deploy`** → encaminhar uma por vez ao DevOps
+   para versionar e publicar em `master`; depois receber o handoff e decidir o
+   estado final conforme o rito obrigatório de Deploy.
+2. Se nao houver Deploy executavel: task com **4 accepts** (`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`) → acionar `DevOps`; o DevOps cria/atualiza o RC, atualiza primeiro `dev` e `staging` com `origin/master`, confirma o merge da task já feito pelo Developer em `dev`, inventaria a task no RC e promove o pacote para `staging`; então o Manager move as tasks inventariadas para `In Review`.
 
-A RC não cria issue pai e não altera a identidade das tasks. Hotfix continua seguindo o mesmo freeze antes de master.
+Hotfix **nao** entra nesta prioridade.
+
+Fonte: `agents/roles/devops/agent.md`.
 
 ## Prioridade 2 - Hotfix
 
