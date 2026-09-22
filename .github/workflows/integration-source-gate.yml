@@ -13,7 +13,7 @@ jobs:
   source-policy:
     runs-on: ubuntu-latest
     steps:
-      - name: Enforce task or frozen RC source
+      - name: Enforce task, authorized DevOps publication, or frozen RC source
         env:
           HEAD_REF: ${{ github.head_ref }}
           BASE_REF: ${{ github.base_ref }}
@@ -24,6 +24,10 @@ jobs:
               echo "::error::dev only accepts task-<numeric issue>."
               exit 1
             }
+            exit 0
+          fi
+          if [ "$BASE_REF" = "master" ] && [ "$HEAD_REF" = "devops/con-474-master" ]; then
+            echo "Accepted authorized DevOps publication source: $HEAD_REF"
             exit 0
           fi
           echo "$HEAD_REF" | grep -Eq '^rc/[0-9]+\.[0-9]+\.[0-9]+-rc\.[1-9][0-9]*$' || {
