@@ -28,6 +28,9 @@ Integração contínua por task até a validação; a publicação é feita por 
   aguarda a publicação desse RC; a única exceção operacional é `hotfix`, que
   pode ser capturado e exceder o teto de `Working`.
 
+Para evitar qualquer ambiguidade operacional: `dev`: origem obrigatória `task-`,
+`staging`: origem obrigatória `rc/` e `master`: origem obrigatória da **mesma RC homologada**.
+
 ## Regra inviolável de integração
 
 Todo código que sair de uma branch de trabalho ou de integração para outra

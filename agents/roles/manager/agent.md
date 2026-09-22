@@ -60,6 +60,11 @@ outro RC; aguarda a autorização humana em `Deploy` e a publicação do pacote.
 Somente `hotfix` pode ser capturado nesse intervalo e pode exceder o teto de
 `Working`.
 
+Se houver **mais de 5 tasks em `Working`**, o Manager deve reparar o overflow
+antes de capturar trabalho novo: manter as **5 mais antigos** por `createdAt` em
+`Working` e devolver o excedente para `Ready`, salvo as tasks explicitamente
+marcadas `hotfix`.
+
 Nenhum agent seleciona **`Blocked`** ou **`Backlog`** como fila. Isso nao autoriza abandonar bloqueio operacional da propria rodada.
 
 ## Proibicao de tags de bloqueio

@@ -46,3 +46,10 @@ e respeitar o freeze; não consolidar outra task sem pedido humano explícito.
 - `Developer`, `Security` e `QA` **nao abrem PR** no fluxo normal
 - `Developer` entrega por **merge** em **`dev`**
 - somente `DevOps` promove o RC para `staging` e, após `Deploy` do pai, para `master`
+
+Staging representa a composição congelada da RC. Qualquer alteração posterior ao
+freeze exige uma nova candidata `rc.N+1`; a RC homologada não pode ser editada nem
+receber task sem autorização humana explícita.
+
+Qualquer alteração posterior ao freeze exige uma nova candidata `rc.N+1`; a RC
+homologada não pode ser editada nem receber task sem autorização humana explícita.

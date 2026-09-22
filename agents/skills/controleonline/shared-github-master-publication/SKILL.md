@@ -4,6 +4,10 @@
 
 Use esta skill quando `DevOps` for promover um **RC inventariado** para `master` (apos o RC pai estar na coluna **`Deploy`**).
 
+A publicação promove a **mesma RC** homologada em staging, sem recompor o pacote.
+Nunca use `staging` como origem única para `master`; qualquer alteração depois do
+freeze exige `rc.N+1` e nova homologação.
+
 **Contrato obrigatório:** toda promoção deve ser feita por merge ou por Pull
 Request aprovado e mergeado. Nunca publique alterando apenas um gitlink, SHA,
 branch protegida ou commit isolado. O submódulo deve ser integrado primeiro e
