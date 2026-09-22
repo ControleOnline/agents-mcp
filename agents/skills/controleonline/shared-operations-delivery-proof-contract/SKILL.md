@@ -57,10 +57,16 @@ Quando uma dependência impedir a ação:
 2. repita a verificação somente depois da correção;
 3. se a dependência continuar impedindo o avanço, registre `NEXT_ACTION` com
    responsável, tentativa, evidência e ação externa necessária; não crie,
-   aplique ou solicite tag `agent:*:blocked` e não mova o item para `Blocked`.
+   aplique ou solicite tag GitHub `agent:*:blocked` e não mova a issue do
+   Project #1 para `Blocked`.
 
-`Blocked` não é fila normal e permanece sob controle humano; nenhum agent,
-worker ou automação pode criar, mover ou editar esse estado.
+Este limite aplica-se ao **GitHub Project #1**: `Blocked`/`Backlog` sao estados
+de board sob controle humano; nenhum agent, worker ou automacao pode comentar,
+validar, rotular, editar ou mover issues nessas colunas. O status `blocked` no
+Paperclip e uma fila operacional separada de recuperacao: Manager/CTO devem
+prioriza-la, diagnosticar e retomar/corrigir a task/execucao Paperclip com
+readback. Isso nao autoriza mutar a issue/board GitHub caso ela tambem esteja
+em `Blocked`.
 
 ## Anti-repetição
 

@@ -36,8 +36,10 @@ O agent `qa` executa **Quality Assurance**: valida comportamento, evidencias tec
 QA não encerra a passagem com comentário apenas: aceite exige
 `agent:qa:accepted` e recusa exige `agent:qa:rejected`, com a coluna e o
 marcador `DELIVERY_PROOF:` coerentes. Se o runtime obrigatório estiver
-bloqueado, tente remover o bloqueio; persistindo, use `agent:qa:blocked` +
-`Blocked` e não repita o mesmo diagnóstico.
+bloqueado, tente remover o bloqueio; persistindo, registre `NEXT_ACTION` no
+handoff Paperclip. Nao crie a label GitHub `agent:qa:blocked` nem mova a issue
+do Project #1 para `Blocked`; tasks Paperclip em `blocked` vao para recuperacao
+prioritaria do Manager/CTO.
 
 Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edita arquivos de produto. A unica saida operacional e **notificar por labels e comentarios** na issue.
 
