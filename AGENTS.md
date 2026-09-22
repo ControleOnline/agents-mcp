@@ -142,10 +142,12 @@ aceites e evidências da entrega descartada e reativar os handoffs aplicáveis;
 isso é uma exceção explícita às regras usuais de não movimentação de coluna.
 Agents nunca mesclam diretamente em `master`. Todos
 os agents devem ler no Project #1 o limite da coluna `Working` antes de
-capturar uma nova task. Neste ecossistema, o limite canônico é **5 tasks**:
+capturar uma nova task. Neste ecossistema, o limite canônico é **5 tasks** e
+vale para qualquer worker:
 quando cinco tasks estiverem em `Working`, nenhuma outra entra até uma delas
-sair da coluna. A única exceção é o P1 `DevOps`, que continua publicando o que
-estiver em `Deploy`. Agents não movem
+sair da coluna, salvo uma task explicitamente marcada `hotfix`. O P1 `DevOps`
+continua publicando o que estiver em `Deploy`, mas isso não cria uma sexta vaga.
+Agents não movem
 tasks para `In Review`: essa coluna só é usada após os quatro accepts.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
@@ -153,6 +155,7 @@ tasks para `In Review`: essa coluna só é usada após os quatro accepts.
 - `QA`, `Security`, `Design` e `UX` decidem por labels na task; evidencia em `dev`; nao abrem PR
 - `DevOps` monta um RC com toda task elegível que chegar a **`In Review`**; o RC mantém o inventário e congela a entrada
 - depois de um RC novo, nenhuma task entra em **`In Review`** sem pedido humano explícito de inclusão no RC
+- enquanto houver RC em **`In Review`**, a fila normal fica congelada até sua publicação; somente `hotfix` pode furar o teto operacional
 - humano confere o RC e move o pai para **`Deploy`**
 - `DevOps` promove o pacote completo do RC `staging` → `master`; com o quarteto move as filhas para **`Done`**, sem o quarteto move a afetada para `Working`
 
@@ -241,7 +244,8 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
 
 - Tente a prioridade mais alta com trabalho elegivel e executavel.
 - Se `Working` já tiver 5 tasks, não capture outra task para P5 ou P6; continue
-  resolvendo as tasks ativas. P1 `DevOps` permanece executável para `Deploy`.
+  resolvendo as tasks ativas. Só uma task `hotfix` pode exceder o teto. P1
+  `DevOps` permanece executável para `Deploy`, sem exceção de capacidade.
 - Dentro da mesma prioridade funcional, selecione a task elegivel mais antiga por `createdAt` crescente; em empate, use o menor numero da issue.
 - `updatedAt` serve apenas como evidencia de atividade e nunca reposiciona uma task na fila.
 - SysAdmin **nao** participa deste mode (deve continuar rodando em paralelo em automacao separada).

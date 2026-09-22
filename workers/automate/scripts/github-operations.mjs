@@ -542,9 +542,10 @@ function assertWorkingCapacity(project, item, targetStatus) {
   const workingCount = (project.items?.nodes || []).filter(
     (entry) => getStatusValue(entry).trim().toLowerCase() === 'working'
   ).length;
-  if (workingCount >= limit) {
+  const isHotfix = issueLabels(item.content).some((label) => label.toLowerCase() === 'hotfix');
+  if (workingCount >= limit && !isHotfix) {
     throw new Error(
-      `Working capacity exceeded: ${workingCount}/${limit}. Refusing to move another task into Working; wait for a task to leave Working.`
+      `Working capacity exceeded: ${workingCount}/${limit}. Refusing to move another non-hotfix task into Working; wait for a task to leave Working.`
     );
   }
 }

@@ -49,10 +49,16 @@ Somente o Manager pode criar/alterar labels e status/colunas do board GitHub. De
 
 O limite global de `Working` é um **teto absoluto de 5 tasks**. Nenhum agent,
 worker, scheduler, supervisor ou operação de board pode mover uma sexta task
-para `Working`. Ao ler `5/5`, P4, P5 e P6 devem parar a captura e aguardar uma
-task sair; a própria mutação para `Working` também deve ser recusada. P1
-`DevOps` é a única exceção de fila: processa `Deploy`, mas não cria uma sexta
-task em `Working`.
+para `Working`, sob nenhuma hipótese salvo uma task explicitamente marcada
+`hotfix`. Ao ler `5/5`, P4, P5 e P6 devem parar a captura e aguardar uma task
+sair; a própria mutação para `Working` também deve ser recusada. P1 `DevOps`
+continua processando `Deploy`, mas isso não cria exceção de capacidade.
+
+Enquanto existir um RC em `In Review`, a lista normal fica travada até o RC ser
+publicado. O Manager não captura nem promove tasks comuns em P3–P7 e não cria
+outro RC; aguarda a autorização humana em `Deploy` e a publicação do pacote.
+Somente `hotfix` pode ser capturado nesse intervalo e pode exceder o teto de
+`Working`.
 
 Nenhum agent seleciona **`Blocked`** ou **`Backlog`** como fila. Isso nao autoriza abandonar bloqueio operacional da propria rodada.
 
@@ -154,7 +160,7 @@ Nunca use Higiene (P7) como fallback.
 
 ### Gate obrigatório do Developer no Manager
 
-Nas prioridades P4 e P6, o Manager deve começar pela coluna **`Working`** e selecionar a primeira task executável, respeitando a prioridade existente. Tasks impedidas que já tenham encaminhamento/tarefa de Manager no Paperclip não são executáveis para o Developer. Se não houver task executável em `Working` e a quantidade em `Working` estiver abaixo de `DEVELOPER_WORKING_LIMIT` (5 hoje, configurável), o Manager deve selecionar uma task elegível em `Ready`, movê-la para `Working` e só então encaminhá-la ao Developer. Se o limite for atingido, não capturar `Ready`. `Backlog`, `Blocked`, `In Review` e `Deploy` continuam fora da fila do Developer; `Deploy` pertence ao DevOps.
+Nas prioridades P4 e P6, o Manager deve começar pela coluna **`Working`** e selecionar a primeira task executável, respeitando a prioridade existente. Tasks impedidas que já tenham encaminhamento/tarefa de Manager no Paperclip não são executáveis para o Developer. Se não houver task executável em `Working` e a quantidade em `Working` estiver abaixo de `DEVELOPER_WORKING_LIMIT` (5 hoje, configurável), o Manager deve selecionar uma task elegível em `Ready`, movê-la para `Working` e só então encaminhá-la ao Developer. Se o limite for atingido, não capturar `Ready`, salvo uma task explicitamente marcada `hotfix`. `Backlog`, `Blocked`, `In Review` e `Deploy` continuam fora da fila do Developer; `Deploy` pertence ao DevOps.
 
 Na primeira passagem, antes de qualquer alteração, o Developer deve ler
 `workers/automate/review-checklists.md`, registrar na issue os itens QA

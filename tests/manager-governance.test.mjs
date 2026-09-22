@@ -74,6 +74,9 @@ test('In Review is always an explicitly inventoried frozen RC', () => {
   assert.match(devopsSkill, /RC é obrigatório/is);
   assert.match(queueDiscovery, /toda task em `In Review` deve constar no inventário/is);
   assert.match(queueDiscovery, /inclusão posterior exige pedido humano explícito/is);
+  assert.match(githubFlow, /Enquanto houver um RC em `In Review`, a fila normal fica congelada/is);
+  assert.match(managerAgent, /lista normal fica travada[\s\S]*RC ser[\s\S]*publicado/is);
+  assert.match(queueDiscovery, /Quando houver RC em `In Review`, a fila normal fica congelada/is);
 });
 
 test('rejection recovery includes GitHub workflow and publication repair', () => {

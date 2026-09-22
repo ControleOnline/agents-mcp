@@ -68,15 +68,25 @@ atual lido no Project #1. O `DevOps` tem uma excecao de ordem: consulta
 **`Deploy`** primeiro e, depois, `Working`.
 
 Para todos os agentes, leia no Project #1 o limite configurado para a coluna
-`Working` antes de capturar trabalho; neste ecossistema, esse limite é **5**.
+`Working` antes de capturar trabalho; neste ecossistema, esse limite é **5** e
+vale para qualquer worker. Só uma task explicitamente marcada `hotfix` pode
+excedê-lo.
 Consulte primeiro as tasks em
 `Working`; enquanto houver capacidade abaixo do limite lido, `Ready` continua
 elegivel. Quando `Working` atingir o limite, nao capture outra task de `Ready`
 nem mova qualquer task adicional para `Working` ate uma task sair. O limite é
 fail-closed: uma mutacao que produziria `6/5` deve ser recusada por worker,
 scheduler, supervisor ou runner. Para o DevOps, `Deploy` vem antes de
-`Working` e é a única exceção de fila: publique tasks prontas em `Deploy` sem
-aumentar `Working`. Nunca altere o limite fora da configuração canônica.
+`Working`, mas não é exceção de capacidade: publique RCs prontas em `Deploy`
+sem aumentar `Working`. Só `hotfix` pode produzir `6/5`. Nunca altere o limite
+fora da configuração canônica.
+
+### Freeze operacional com RC em `In Review`
+
+Quando houver RC em `In Review`, a fila normal fica congelada até o RC ser
+publicado. Não capture, promova ou mova task comum para `In Review`, nem crie
+outro RC. A única exceção é `hotfix`; ele pode ser capturado e pode exceder o
+limite de 5 tasks em `Working`.
 
 ## Fonte de verdade da fila
 

@@ -23,6 +23,10 @@ Integração contínua por task até a validação; a publicação é feita por 
 - O pai do RC deve listar todas as tasks filhas, SHAs/branches promovidos,
   versão e estado de validação. Uma task não pode ficar em `In Review` sem esse
   vínculo e sem estar no inventário do RC.
+- Enquanto houver um RC em `In Review`, a fila normal fica congelada: nenhuma
+  task comum nova é capturada, promovida ou colocada em `In Review`. O Manager
+  aguarda a publicação desse RC; a única exceção operacional é `hotfix`, que
+  pode ser capturado e exceder o teto de `Working`.
 
 ## Regra inviolável de integração
 
