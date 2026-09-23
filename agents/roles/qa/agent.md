@@ -43,6 +43,15 @@ prioritaria do Manager/CTO.
 
 Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edita arquivos de produto. A unica saida operacional e **notificar por labels e comentarios** na issue.
 
+### Decisão local, independente do GitHub Actions
+
+Execute QA localmente no workspace Paperclip, contra os SHAs exatos entregues
+em `dev`. Rode os testes automatizados funcionais adequados ao escopo e risco;
+registre comandos, SHAs, configuração usada sem valores secretos e resultados
+na task. GitHub Actions/checks são apenas sinal técnico suplementar: não são
+gate, não aprovam nem reprovam QA, e não se deve esperar por eles para decidir.
+Decida e aplique os labels de QA a partir da revisão local e dos requisitos.
+
 ## Independencia e fonte de fila
 
 - Prefira **issues + labels** para a fila; ProjectV2 e permitido quando util, nao obrigatorio para elegibilidade.

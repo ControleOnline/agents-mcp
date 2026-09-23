@@ -57,7 +57,7 @@ Quando uma dependência impedir a ação:
 2. repita a verificação somente depois da correção;
 3. se a dependência continuar impedindo o avanço, registre `NEXT_ACTION` com
    responsável, tentativa, evidência e ação externa necessária; não crie,
-   aplique ou solicite tag GitHub `agent:*:blocked` e não mova a issue do
+   aplique ou solicite a tag `agent:*:blocked` do GitHub e não mova a issue do
    Project #1 para `Blocked`.
 
 Este limite aplica-se ao **GitHub Project #1**: `Blocked`/`Backlog` sao estados

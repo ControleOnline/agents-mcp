@@ -60,6 +60,12 @@ Paperclip apontar para uma issue que esteja em `Blocked` no GitHub, recupere
 somente a execucao Paperclip que puder ser recuperada sem mutar a issue/board
 GitHub; o trabalho sobre essa issue aguarda acao humana no GitHub.
 
+## Proibicao de tags de bloqueio
+
+Agents nao criam labels `agent:*:blocked` nem aplicam essas labels a issues.
+Isso nao impede o Manager/CTO de recuperar issues Paperclip com status
+`blocked`, que continuam sendo prioridade operacional.
+
 ## Limites da fila GitHub: colunas Blocked e Backlog
 
 O limite global de `Working` é um **teto absoluto de 5 tasks**. Nenhum agent,
@@ -102,11 +108,13 @@ persistindo a falha, registre `NEXT_ACTION` com a evidência e encerre nessa pri
 
 ### Rito obrigatório de RC e Deploy
 
+O quarteto oficial de aceite e composto por `agent:qa:accepted`,
+`agent:security:accepted`, `agent:design:accepted` e `agent:ux:accepted`.
 Tasks com os quatro accepts são elegíveis para compor uma RC técnica de 1 a 5 tasks. O DevOps cria a RC a partir do master atual, integra cada task individualmente, congela o manifesto e promove esse snapshot para staging. O Manager move cada task da RC para `In Review`.
 
 A homologação humana ocorre sobre essa composição. Quando o humano mover as tasks homologadas para `Deploy`, P1 promove **a mesma RC congelada** para master. Não é permitido remontar pins, incluir outra task, usar staging como origem ou alterar a RC aprovada. Qualquer mudança exige `rc.N+1` e nova homologação.
 
-Depois da publicação, o Manager decide cada task individualmente: com os quatro accepts → `Done`; se houver necessidade de nova validação/correção → `Working`, respeitando sempre o teto global de 5.
+Depois da publicação, o Manager decide cada task individualmente: com os quatro accepts → `Done`; se faltar qualquer accept, a task permanece aberta e volta para `Working` para nova validação/correção, respeitando sempre o teto global de 5.
 
 ## Prioridade 0 - Recuperacao Paperclip
 

@@ -1,5 +1,9 @@
 ## Distincao obrigatoria: GitHub Blocked e Paperclip blocked
 
+Proibicao de tags de bloqueio: agents nao criam nem aplicam labels `agent:*:blocked`
+no GitHub. Isso nao impede a recuperacao prioritaria de
+issues Paperclip com status `blocked`.
+
 - `Blocked` no GitHub Project #1 e `Backlog` sao estados de board sob controle
   humano. Agents/workers nao comentam, validam, rotulam, editam nem movem itens
   dessas colunas.
