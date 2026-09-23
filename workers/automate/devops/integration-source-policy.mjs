@@ -1,6 +1,34 @@
 const TASK_BRANCH = /^task-([1-9][0-9]*)$/;
 const RC_BRANCH = /^rc\/(\d+)\.(\d+)\.(\d+)-rc\.([1-9][0-9]*)$/;
 const SHA = /^[0-9a-f]{40}$/i;
+const GOVERNANCE_PR_BRANCH = 'task-paperclip-status-distinction';
+const GOVERNANCE_PR_FILES = new Set([
+  '.github/workflows/github-operations.yml',
+  '.github/workflows/integration-source-gate.yml',
+  'AGENTS.md',
+  'agents/roles/ceo/agent.md',
+  'agents/roles/developer/agent.md',
+  'agents/roles/devops/agent.md',
+  'agents/roles/manager/agent.md',
+  'agents/roles/qa/agent.md',
+  'agents/skills/controleonline/by-role-manager-README/SKILL.md',
+  'agents/skills/controleonline/by-role-qa-README/SKILL.md',
+  'agents/skills/controleonline/runners-README/SKILL.md',
+  'agents/skills/controleonline/shared-github-github-flow/SKILL.md',
+  'agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md',
+  'agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md',
+  'agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md',
+  'tests/qa-local-approval.test.mjs',
+  'tests/integration-source-policy.test.mjs',
+  'workers/automate/agents/runner-map.md',
+  'workers/automate/quality-assurance.md',
+  'workers/automate/scripts/github-operations.mjs',
+  'workers/automate/scripts/qa-project-review.mjs',
+  'workers/automate/devops/integration-source-policy.mjs',
+  'workers/automate/staging-merge.md',
+  'workers/automate/workflows/qa-project-review.yml',
+  'workers/automation/qa/base.md',
+]);
 
 export function parseTaskBranch(branch) {
   const match = TASK_BRANCH.exec(String(branch || '').trim());
@@ -15,6 +43,25 @@ export function parseRcBranch(branch) {
     version: `${match[1]}.${match[2]}.${match[3]}`,
     rc: Number(match[4]),
   };
+}
+
+/**
+ * Narrow exception for the already-open structural governance PR in agents-mcp.
+ * It cannot be used for product repositories, other branches, or files outside
+ * the reviewed governance-only change set.
+ */
+export function validateGovernanceSource({ repository, sourceBranch, targetBranch, changedFiles = [] }) {
+  if (
+    repository !== 'ControleOnline/agents-mcp' ||
+    targetBranch !== 'master' ||
+    sourceBranch !== GOVERNANCE_PR_BRANCH
+  ) {
+    return { allowed: false, reason: 'governance exception is limited to the agents-mcp governance PR.' };
+  }
+  if (!Array.isArray(changedFiles) || changedFiles.length === 0 || changedFiles.some((file) => !GOVERNANCE_PR_FILES.has(file))) {
+    return { allowed: false, reason: 'governance PR contains files outside its reviewed allowlist.' };
+  }
+  return { allowed: true, protectedTarget: true, type: 'governance' };
 }
 
 /**

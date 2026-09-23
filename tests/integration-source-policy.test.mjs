@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { parseRcBranch, validateIntegrationSource, validateRcManifest } from '../workers/automate/devops/integration-source-policy.mjs';
+import { parseRcBranch, validateGovernanceSource, validateIntegrationSource, validateRcManifest } from '../workers/automate/devops/integration-source-policy.mjs';
 
 const manifest = {
   version: '1.10.27',
@@ -44,5 +44,40 @@ test('aggregate/manual sources remain forbidden', () => {
     for (const sourceBranch of ['dev', 'staging', 'master', 'release/1.10.27', 'tasks-821-826', 'task-827']) {
       assert.equal(validateIntegrationSource({ sourceBranch, targetBranch, manifest }).allowed, false);
     }
+  }
+});
+
+test('only the reviewed agents-mcp governance PR can bypass RC source on master', () => {
+  const changedFiles = [
+    'AGENTS.md',
+    '.github/workflows/github-operations.yml',
+    'workers/automate/scripts/github-operations.mjs',
+    'tests/qa-local-approval.test.mjs',
+  ];
+  assert.deepEqual(
+    validateGovernanceSource({
+      repository: 'ControleOnline/agents-mcp',
+      sourceBranch: 'task-paperclip-status-distinction',
+      targetBranch: 'master',
+      changedFiles,
+    }),
+    { allowed: true, protectedTarget: true, type: 'governance' },
+  );
+  for (const override of [
+    { repository: 'ControleOnline/app-community' },
+    { sourceBranch: 'task-837' },
+    { changedFiles: [...changedFiles, 'app/src/product.js'] },
+    { changedFiles: [] },
+  ]) {
+    assert.equal(
+      validateGovernanceSource({
+        repository: 'ControleOnline/agents-mcp',
+        sourceBranch: 'task-paperclip-status-distinction',
+        targetBranch: 'master',
+        changedFiles,
+        ...override,
+      }).allowed,
+      false,
+    );
   }
 });
