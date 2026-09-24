@@ -1,7 +1,6 @@
-import { parseGitmodules } from './reset-integration-branches.mjs';
+import { parseGitmodules, repositoryFromUrl } from './reset-integration-branches.mjs';
 
 const API = 'https://api.github.com';
-const OWNER = 'ControleOnline';
 const token = process.env.GH_TOKEN ?? process.env.GITHUB_TOKEN;
 const repository = process.env.GITHUB_REPOSITORY;
 const commitSha = process.env.GITHUB_SHA;
@@ -17,11 +16,6 @@ async function request(path) {
   });
   if (!response.ok) throw new Error(`GitHub API ${path}: ${response.status} ${await response.text()}`);
   return response.json();
-}
-
-function repoFromUrl(url) {
-  const match = String(url || '').match(/(?:github\.com[:/])ControleOnline\/([A-Za-z0-9_.-]+?)(?:\.git)?$/i);
-  return match ? `${OWNER}/${match[1]}` : null;
 }
 
 async function blobText(repo, sha) {
@@ -46,7 +40,7 @@ async function verifyTree(repo, branch, sha, visited = new Set()) {
   for (const entry of gitlinks) {
     const module = modules.find((item) => item.path === entry.path);
     if (!module) throw new Error(`${repo}:${branch} gitlink ${entry.path} has no .gitmodules entry.`);
-    const child = repoFromUrl(module.url);
+    const child = repositoryFromUrl(module.url);
     if (!child) continue;
     if (module.branch !== branch) {
       throw new Error(`${repo}:${branch} submodule ${entry.path} declares branch=${module.branch || '(unset)'}.`);
