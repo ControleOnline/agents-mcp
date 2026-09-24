@@ -1,6 +1,14 @@
 const TASK_BRANCH = /^task-([1-9][0-9]*)$/;
 const RC_BRANCH = /^rc\/(\d+)\.(\d+)\.(\d+)-rc\.([1-9][0-9]*)$/;
 const SHA = /^[0-9a-f]{40}$/i;
+const GOVERNANCE_SOURCE_BRANCH = 'automation/reset-integration-branches';
+const GOVERNANCE_SOURCE_FILES = new Set([
+  '.github/workflows/reset-aggregate-branches.yml',
+  'tests/integration-source-policy.test.mjs',
+  'tests/reset-integration-branches.test.mjs',
+  'workers/automate/devops/integration-source-policy.mjs',
+  'workers/automate/scripts/reset-integration-branches.mjs',
+]);
 
 export function parseTaskBranch(branch) {
   const match = TASK_BRANCH.exec(String(branch || '').trim());
@@ -70,4 +78,17 @@ export function assertIntegrationSource(input) {
   const result = validateIntegrationSource(input);
   if (!result.allowed) throw new Error(result.reason);
   return result;
+}
+
+export function validateGovernanceSource({ repository, sourceBranch, targetBranch, changedFiles = [] }) {
+  const files = changedFiles.map((file) => String(file).replaceAll('\\', '/'));
+  const allowed = repository === 'ControleOnline/agents-mcp'
+    && sourceBranch === GOVERNANCE_SOURCE_BRANCH
+    && targetBranch === 'master'
+    && files.length > 0
+    && files.every((file) => GOVERNANCE_SOURCE_FILES.has(file));
+  return {
+    allowed,
+    reason: allowed ? undefined : 'Governance-only source must be the exact allowlisted branch and file set.',
+  };
 }

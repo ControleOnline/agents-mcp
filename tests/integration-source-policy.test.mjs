@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { parseRcBranch, validateIntegrationSource, validateRcManifest } from '../workers/automate/devops/integration-source-policy.mjs';
+import { parseRcBranch, validateGovernanceSource, validateIntegrationSource, validateRcManifest } from '../workers/automate/devops/integration-source-policy.mjs';
 
 const manifest = {
   version: '1.10.27',
@@ -45,4 +45,29 @@ test('aggregate/manual sources remain forbidden', () => {
       assert.equal(validateIntegrationSource({ sourceBranch, targetBranch, manifest }).allowed, false);
     }
   }
+});
+
+test('only the exact reset-automation governance branch and file set may target master', () => {
+  const allowed = validateGovernanceSource({
+    repository: 'ControleOnline/agents-mcp',
+    sourceBranch: 'automation/reset-integration-branches',
+    targetBranch: 'master',
+    changedFiles: [
+      '.github/workflows/reset-aggregate-branches.yml',
+      'workers/automate/scripts/reset-integration-branches.mjs',
+    ],
+  });
+  assert.equal(allowed.allowed, true);
+  assert.equal(validateGovernanceSource({
+    repository: 'ControleOnline/agents-mcp',
+    sourceBranch: 'automation/reset-integration-branches',
+    targetBranch: 'master',
+    changedFiles: ['agents/roles/manager/agent.md'],
+  }).allowed, false);
+  assert.equal(validateGovernanceSource({
+    repository: 'ControleOnline/app-community',
+    sourceBranch: 'automation/reset-integration-branches',
+    targetBranch: 'master',
+    changedFiles: ['.github/workflows/reset-aggregate-branches.yml'],
+  }).allowed, false);
 });
