@@ -1,8 +1,16 @@
 const TASK_BRANCH = /^task-([1-9][0-9]*)$/;
 const RC_BRANCH = /^rc\/(\d+)\.(\d+)\.(\d+)-rc\.([1-9][0-9]*)$/;
 const SHA = /^[0-9a-f]{40}$/i;
-const GOVERNANCE_PR_BRANCH = 'task-paperclip-status-distinction';
-const GOVERNANCE_PR_FILES = new Set([
+const GOVERNANCE_PR_ALLOWLISTS = new Map([
+  ['automation/reset-integration-branches', new Set([
+  '.github/workflows/integration-source-gate.yml',
+  '.github/workflows/reset-aggregate-branches.yml',
+  'tests/integration-source-policy.test.mjs',
+  'tests/reset-integration-branches.test.mjs',
+  'workers/automate/devops/integration-source-policy.mjs',
+  'workers/automate/scripts/reset-integration-branches.mjs',
+  ])],
+  ['task-paperclip-status-distinction', new Set([
   '.github/workflows/github-operations.yml',
   '.github/workflows/integration-source-gate.yml',
   'AGENTS.md',
@@ -28,6 +36,7 @@ const GOVERNANCE_PR_FILES = new Set([
   'workers/automate/staging-merge.md',
   'workers/automate/workflows/qa-project-review.yml',
   'workers/automation/qa/base.md',
+  ])],
 ]);
 
 export function parseTaskBranch(branch) {
@@ -46,20 +55,16 @@ export function parseRcBranch(branch) {
 }
 
 /**
- * Narrow exception for the already-open structural governance PR in agents-mcp.
- * It cannot be used for product repositories, other branches, or files outside
- * the reviewed governance-only change set.
+ * Exact per-PR allowlists for structural agents-mcp governance changes.
+ * No exception applies to product repositories or unlisted file paths.
  */
 export function validateGovernanceSource({ repository, sourceBranch, targetBranch, changedFiles = [] }) {
-  if (
-    repository !== 'ControleOnline/agents-mcp' ||
-    targetBranch !== 'master' ||
-    sourceBranch !== GOVERNANCE_PR_BRANCH
-  ) {
-    return { allowed: false, reason: 'governance exception is limited to the agents-mcp governance PR.' };
+  const allowlist = GOVERNANCE_PR_ALLOWLISTS.get(sourceBranch);
+  if (repository !== 'ControleOnline/agents-mcp' || targetBranch !== 'master' || !allowlist) {
+    return { allowed: false, reason: 'governance exception is limited to an exact allowlisted agents-mcp PR.' };
   }
-  if (!Array.isArray(changedFiles) || changedFiles.length === 0 || changedFiles.some((file) => !GOVERNANCE_PR_FILES.has(file))) {
-    return { allowed: false, reason: 'governance PR contains files outside its reviewed allowlist.' };
+  if (!Array.isArray(changedFiles) || changedFiles.length === 0 || changedFiles.some((file) => !allowlist.has(file))) {
+    return { allowed: false, reason: 'governance PR contains files outside its exact allowlist.' };
   }
   return { allowed: true, protectedTarget: true, type: 'governance' };
 }

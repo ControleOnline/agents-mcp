@@ -47,6 +47,32 @@ test('aggregate/manual sources remain forbidden', () => {
   }
 });
 
+test('only the exact reset-automation governance branch and file set may target master', () => {
+  const allowed = validateGovernanceSource({
+    repository: 'ControleOnline/agents-mcp',
+    sourceBranch: 'automation/reset-integration-branches',
+    targetBranch: 'master',
+    changedFiles: [
+      '.github/workflows/integration-source-gate.yml',
+      '.github/workflows/reset-aggregate-branches.yml',
+      'workers/automate/scripts/reset-integration-branches.mjs',
+    ],
+  });
+  assert.equal(allowed.allowed, true);
+  assert.equal(validateGovernanceSource({
+    repository: 'ControleOnline/agents-mcp',
+    sourceBranch: 'automation/reset-integration-branches',
+    targetBranch: 'master',
+    changedFiles: ['agents/roles/manager/agent.md'],
+  }).allowed, false);
+  assert.equal(validateGovernanceSource({
+    repository: 'ControleOnline/app-community',
+    sourceBranch: 'automation/reset-integration-branches',
+    targetBranch: 'master',
+    changedFiles: ['.github/workflows/reset-aggregate-branches.yml'],
+  }).allowed, false);
+});
+
 test('only the reviewed agents-mcp governance PR can bypass RC source on master', () => {
   const changedFiles = [
     'AGENTS.md',
