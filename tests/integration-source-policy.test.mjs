@@ -71,3 +71,38 @@ test('only the exact reset-automation governance branch and file set may target 
     changedFiles: ['.github/workflows/reset-aggregate-branches.yml'],
   }).allowed, false);
 });
+
+test('only the reviewed agents-mcp governance PR can bypass RC source on master', () => {
+  const changedFiles = [
+    'AGENTS.md',
+    '.github/workflows/github-operations.yml',
+    'workers/automate/scripts/github-operations.mjs',
+    'tests/qa-local-approval.test.mjs',
+  ];
+  assert.deepEqual(
+    validateGovernanceSource({
+      repository: 'ControleOnline/agents-mcp',
+      sourceBranch: 'task-paperclip-status-distinction',
+      targetBranch: 'master',
+      changedFiles,
+    }),
+    { allowed: true, protectedTarget: true, type: 'governance' },
+  );
+  for (const override of [
+    { repository: 'ControleOnline/app-community' },
+    { sourceBranch: 'task-837' },
+    { changedFiles: [...changedFiles, 'app/src/product.js'] },
+    { changedFiles: [] },
+  ]) {
+    assert.equal(
+      validateGovernanceSource({
+        repository: 'ControleOnline/agents-mcp',
+        sourceBranch: 'task-paperclip-status-distinction',
+        targetBranch: 'master',
+        changedFiles,
+        ...override,
+      }).allowed,
+      false,
+    );
+  }
+});

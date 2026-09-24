@@ -55,9 +55,7 @@ jobs:
           GITHUB_MANAGER_WORK_STATUSES: Ready,Working
           GITHUB_MANAGER_IN_REVIEW_STATUSES: In Review
           GITHUB_MANAGER_DONE_STATUSES: Done
-          GITHUB_MANAGER_QA_LABEL: agent:qa
-          GITHUB_MANAGER_SECURITY_LABEL: agent:security
-          GITHUB_MANAGER_AGENT_LABELS: agent:developer,agent:security,agent:qa,agent:devops,agent:sysadmin
+          GITHUB_MANAGER_AGENT_LABELS: agent:developer,agent:security,agent:devops,agent:sysadmin
           GITHUB_MANAGER_OUTPUT_DIR: /tmp
         run: node workers/automate/scripts/github-operations.mjs
 

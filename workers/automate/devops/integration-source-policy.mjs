@@ -1,13 +1,41 @@
 const TASK_BRANCH = /^task-([1-9][0-9]*)$/;
 const RC_BRANCH = /^rc\/(\d+)\.(\d+)\.(\d+)-rc\.([1-9][0-9]*)$/;
 const SHA = /^[0-9a-f]{40}$/i;
-const GOVERNANCE_SOURCE_BRANCH = 'automation/reset-integration-branches';
-const GOVERNANCE_SOURCE_FILES = new Set([
+const GOVERNANCE_PR_ALLOWLISTS = new Map([
+  ['automation/reset-integration-branches', new Set([
   '.github/workflows/reset-aggregate-branches.yml',
   'tests/integration-source-policy.test.mjs',
   'tests/reset-integration-branches.test.mjs',
   'workers/automate/devops/integration-source-policy.mjs',
   'workers/automate/scripts/reset-integration-branches.mjs',
+  ])],
+  ['task-paperclip-status-distinction', new Set([
+  '.github/workflows/github-operations.yml',
+  '.github/workflows/integration-source-gate.yml',
+  'AGENTS.md',
+  'agents/roles/ceo/agent.md',
+  'agents/roles/developer/agent.md',
+  'agents/roles/devops/agent.md',
+  'agents/roles/manager/agent.md',
+  'agents/roles/qa/agent.md',
+  'agents/skills/controleonline/by-role-manager-README/SKILL.md',
+  'agents/skills/controleonline/by-role-qa-README/SKILL.md',
+  'agents/skills/controleonline/runners-README/SKILL.md',
+  'agents/skills/controleonline/shared-github-github-flow/SKILL.md',
+  'agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md',
+  'agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md',
+  'agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md',
+  'tests/qa-local-approval.test.mjs',
+  'tests/integration-source-policy.test.mjs',
+  'workers/automate/agents/runner-map.md',
+  'workers/automate/quality-assurance.md',
+  'workers/automate/scripts/github-operations.mjs',
+  'workers/automate/scripts/qa-project-review.mjs',
+  'workers/automate/devops/integration-source-policy.mjs',
+  'workers/automate/staging-merge.md',
+  'workers/automate/workflows/qa-project-review.yml',
+  'workers/automation/qa/base.md',
+  ])],
 ]);
 
 export function parseTaskBranch(branch) {
@@ -23,6 +51,21 @@ export function parseRcBranch(branch) {
     version: `${match[1]}.${match[2]}.${match[3]}`,
     rc: Number(match[4]),
   };
+}
+
+/**
+ * Exact per-PR allowlists for structural agents-mcp governance changes.
+ * No exception applies to product repositories or unlisted file paths.
+ */
+export function validateGovernanceSource({ repository, sourceBranch, targetBranch, changedFiles = [] }) {
+  const allowlist = GOVERNANCE_PR_ALLOWLISTS.get(sourceBranch);
+  if (repository !== 'ControleOnline/agents-mcp' || targetBranch !== 'master' || !allowlist) {
+    return { allowed: false, reason: 'governance exception is limited to an exact allowlisted agents-mcp PR.' };
+  }
+  if (!Array.isArray(changedFiles) || changedFiles.length === 0 || changedFiles.some((file) => !allowlist.has(file))) {
+    return { allowed: false, reason: 'governance PR contains files outside its exact allowlist.' };
+  }
+  return { allowed: true, protectedTarget: true, type: 'governance' };
 }
 
 /**
@@ -78,17 +121,4 @@ export function assertIntegrationSource(input) {
   const result = validateIntegrationSource(input);
   if (!result.allowed) throw new Error(result.reason);
   return result;
-}
-
-export function validateGovernanceSource({ repository, sourceBranch, targetBranch, changedFiles = [] }) {
-  const files = changedFiles.map((file) => String(file).replaceAll('\\', '/'));
-  const allowed = repository === 'ControleOnline/agents-mcp'
-    && sourceBranch === GOVERNANCE_SOURCE_BRANCH
-    && targetBranch === 'master'
-    && files.length > 0
-    && files.every((file) => GOVERNANCE_SOURCE_FILES.has(file));
-  return {
-    allowed,
-    reason: allowed ? undefined : 'Governance-only source must be the exact allowlisted branch and file set.',
-  };
 }

@@ -21,7 +21,8 @@ Ao revisar:
 - confirme que a entrega atende a issue
 - confirme que o `AGENTS.md` aplicavel foi consultado
 - confirme o merge da `task-{id}` em **`dev`** (nao em `staging`)
-- confirme checks ou evidencia equivalente
+- execute localmente os testes automatizados adequados ao escopo nos SHAs exatos em `dev` e registre comandos, configuração sem segredos e resultados
+- GitHub Actions/checks são suplementares e nunca gate ou decisão de QA; não aguarde workflows para aprovar/reprovar
 - confirme o checklist canonico de QA
 
 ## Saidas validas

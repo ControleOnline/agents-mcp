@@ -4,6 +4,12 @@ Este arquivo mapeia o modelo atual de execução do ecossistema sem misturar o p
 
 ## Execução direta pelo Paperclip
 
+QA é executado e decidido localmente pelo agent no workspace Paperclip. Nenhum
+workflow ou check do GitHub participa da aprovação/reprovação; Actions são
+sinal suplementar e jamais substituem testes locais ou impedem a decisão.
+O GitHub Manager Runner não lê comentários/reviews para inferir QA nem promove
+tasks a `In Review`; essa transição pertence ao Manager após os gates locais.
+
 O fluxo operacional não usa workflow, composite action, wrapper ou assignment Copilot. Consulte as skills de fila, handoff e execução dos agents em `agents/skills/controleonline/`.
 
 Existem trilhas oficiais e complementares:
