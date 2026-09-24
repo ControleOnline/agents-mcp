@@ -15,27 +15,23 @@ compatível com a prioridade:
   vídeo, trace, relatório, manifesto ou índice gerado são evidência opcional ou
   específica de aceite visual; nunca substituem o teste automatizado nem
   constituem sozinhos a entrega da task.
-- **Validação:** decisão nova (`agent:<papel>:accepted` ou
-  `agent:<papel>:rejected`), remoção da solicitação anterior e coluna coerente.
+- **Security:** decisão e evidência registradas na subtask Paperclip; o Manager
+  revalida o conjunto, incluindo os testes locais, antes do handoff a DevOps.
 - **DevOps/board:** merge ou promoção da task individual e mudança confirmada
   de coluna/labels.
 - **Governança (`agents-mcp`):** commit publicado no `agents-mcp`, issue
   associada ao Project #1 e estado/coluna atualizados. Esta é uma entrega
-  direta: não aguarda QA, Security, Design, UX ou aprovação humana.
+  direta, sem etapas adicionais de validacao para o proprio agents-mcp.
 
 Um comentário só pode acompanhar a mutação. Nunca pode substituí-la.
 
 ## Nova entrega somente em `dev`: reset obrigatório de validação
 
-Após reconstrução ou correção, se os novos SHAs chegaram somente em `dev`, o
-estado obrigatório é **`Working`**. O Manager deve remover as labels históricas
-`agent:*:accepted` e `agent:*:rejected` da entrega anterior e reativar as
-solicitações aplicáveis `agent:qa`, `agent:security`, `agent:design` e
-`agent:ux`. Os validadores devem decidir novamente sobre os SHAs novos.
-
-`In Review` só é coerente depois de merge da task individual em `staging` e
-dos quatro novos aceites. Aceites antigos não autorizam `In Review` nem
-substituem a nova validação.
+Após reconstrução ou correção, se novos SHAs chegaram somente em `dev`, o
+Manager deve invalidar evidências associadas aos SHAs antigos e repetir a
+revisao ativa de Security, quando aplicavel. `In Review` exige a task incluida
+explicitamente no manifesto congelado da RC em `staging`; aceite de Security,
+por si so, nao autoriza a coluna.
 
 ## Fechamento obrigatório
 

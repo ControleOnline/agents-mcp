@@ -8,9 +8,9 @@ const componentReuseChecklist = fs.readFileSync(
   'utf8',
 );
 
-test('qa review checklist includes the component reuse subchecklist file', () => {
+test('Developer verification checklist includes the component reuse subchecklist file', () => {
   assert.match(reviewChecklist, /agents\/skills\/controleonline\/shared-quality-review-checklists\/component-reuse-checklist\.md/);
-  assert.match(reviewChecklist, /subchecklist de reaproveitamento de componentes/i);
+  assert.match(reviewChecklist, /frontend work follows/i);
 });
 
 test('component reuse checklist requires Default component counterparts', () => {
@@ -21,7 +21,6 @@ test('component reuse checklist requires Default component counterparts', () => 
     );
   }
 
-  assert.match(componentReuseChecklist, /Default<Componente>/);
-  assert.match(componentReuseChecklist, /excecoes.*justificadas.*issue/is);
-  assert.match(componentReuseChecklist, /documentada e comprovada na issue/i);
+  assert.match(componentReuseChecklist, /Default<Component>/);
+  assert.match(componentReuseChecklist, /exception is documented.*task/is);
 });

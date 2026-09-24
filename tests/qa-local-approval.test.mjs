@@ -12,6 +12,9 @@ test('Paperclip product chain exposes Developer, Security, Manager and DevOps on
   const security = read('../agents/roles/security/agent.md');
   const devops = read('../agents/roles/devops/agent.md');
   const workerSkills = [
+    read('../agents/skills/controleonline/shared-README/SKILL.md'),
+    read('../agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md'),
+    read('../agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md'),
     read('../agents/skills/controleonline/by-role-developer-README/SKILL.md'),
     read('../agents/skills/controleonline/by-role-security-README/SKILL.md'),
     read('../agents/skills/controleonline/by-role-devops-README/SKILL.md'),

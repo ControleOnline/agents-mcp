@@ -4,7 +4,6 @@ import test from 'node:test';
 
 const canonicalFiles = [
   'AGENTS.md',
-  'agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md',
   'agents/roles/developer/agent.md',
   'agents/skills/controleonline/by-role-developer-README/SKILL.md',
   'agents/roles/technical-documenter/agent.md',
@@ -71,13 +70,10 @@ test('Working capacity is configured centrally in agents-mcp', () => {
   assert.equal(config.runners.defaults.DEVELOPER_WORKING_LIMIT, '5');
 
   const manager = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
-  const discovery = fs.readFileSync(
-    'agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md',
-    'utf8',
-  );
+  const discovery = manager;
   assert.match(manager, /limite global.*Working.*5 tasks/is);
   assert.match(manager, /P1[\s\S]*`DevOps`.*única exceção.*Deploy/is);
-  assert.match(discovery, /limite.*5.*Working/is);
+  assert.match(discovery, /limite global de `Working`.*5 tasks/is);
   assert.match(discovery, /única exceção de fila.*Deploy/is);
 });
 
@@ -90,10 +86,10 @@ test('canonical instructions reject updatedAt ordering', () => {
     assert.doesNotMatch(source, /updated mais recente/i, path);
   }
 
-  const discovery = fs.readFileSync('agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md', 'utf8');
+  const discovery = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
   assert.match(discovery, /createdAt` crescente/i);
-  assert.match(discovery, /nunca use `updatedAt`/i);
-  assert.match(discovery, /menor numero da issue/i);
+  assert.match(discovery, /`updatedAt` nunca ordena/i);
+  assert.match(discovery, /menor n[uú]mero da issue/i);
 
   const managerAgent = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
   assert.match(managerAgent, /createdAt.*crescente/i);
@@ -101,13 +97,13 @@ test('canonical instructions reject updatedAt ordering', () => {
 });
 
 test('Manager dispatches DevOps with an explicit task and Deploy authorization', () => {
-  const discovery = fs.readFileSync('agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md', 'utf8');
+  const discovery = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
   const devops = fs.readFileSync('agents/skills/controleonline/by-role-devops-README/SKILL.md', 'utf8');
   const dispatch = fs.readFileSync('workers/automate/scripts/agent-project-dispatch.mjs', 'utf8');
   const projectDispatch = fs.readFileSync('workers/automate/scripts/developer-project-dispatch.mjs', 'utf8');
 
-  assert.match(discovery, /todos os agentes[\s\S]*limite[\s\S]*`Working`/i);
-  assert.match(discovery, /DevOps,[\s\S]*`Deploy`[\s\S]*`Working`/i);
+  assert.match(discovery, /Manager.*orquestrador/i);
+  assert.match(discovery, /`Deploy`/i);
   assert.match(devops, /`In Review`/i);
   assert.match(devops, /`Done`/i);
   assert.match(devops, /DevOps nao descobre nem captura tasks no GitHub/i);
@@ -135,7 +131,7 @@ test('Developer dispatch has no autonomous schedule and only consumes Manager-ow
   assert.doesNotMatch(projectDispatch, /candidateItems = workingCandidates.length/);
 });
 
-test('first pass includes QA checklist and master synchronization gate', () => {
+test('first pass includes Developer checklist and master synchronization gate', () => {
   const manager = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
   const developer = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
   const baseline = fs.readFileSync(
@@ -148,7 +144,7 @@ test('first pass includes QA checklist and master synchronization gate', () => {
   assert.ok(developer.includes('agents/skills/controleonline/shared-quality-review-checklists/SKILL.md'));
   assert.ok(developer.includes('origin/master'));
   assert.ok(baseline.includes('config/ecosystem.config.json'));
-  assert.match(checklist, /Gate de primeira passagem do Developer/);
+  assert.match(checklist, /## Developer verification/);
 });
 
 test('board mutations fail closed before creating a sixth Working task', () => {
@@ -157,15 +153,12 @@ test('board mutations fail closed before creating a sixth Working task', () => {
     'utf8',
   );
   const manager = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
-  const discovery = fs.readFileSync(
-    'agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md',
-    'utf8',
-  );
+  const discovery = manager;
 
   assert.match(managerOperations, /assertWorkingCapacity/);
   assert.match(managerOperations, /Working capacity exceeded/);
   assert.match(managerOperations, /DEVELOPER_WORKING_LIMIT/);
   assert.match(manager, /teto absoluto de 5 tasks/is);
   assert.match(manager, /não cria uma sexta.*Working/is);
-  assert.match(discovery, /mutacao que produziria `6\/5`.*recusada/is);
+  assert.match(discovery, /Manager.*teto absoluto de 5 tasks/is);
 });

@@ -4,10 +4,6 @@ import test from 'node:test';
 
 const managerSkill = fs.readFileSync('agents/skills/controleonline/by-role-manager-README/SKILL.md', 'utf8');
 const managerAgent = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
-const queueDiscovery = fs.readFileSync(
-  'agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md',
-  'utf8',
-);
 const directExecutionSkill = fs.readFileSync('agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md', 'utf8');
 const deliveryProof = fs.readFileSync(
   'agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md',
@@ -34,8 +30,8 @@ test('manager prioritizes rejected work before security and new development', ()
 test('Deploy is explicit human publication authorization', () => {
   assert.match(managerAgent, /coluna \*\*`Deploy`\*\*[\s\S]*autorizacao humana explicita[\s\S]*deve executar/i);
   assert.doesNotMatch(managerAgent, /P1_SKIPPED_HUMAN_DEPLOY/);
-  assert.match(queueDiscovery, /coluna \*\*`Deploy`\*\*[\s\S]*autorizacao humana explicita[\s\S]*publicar em `master`/i);
-  assert.doesNotMatch(queueDiscovery, /unico bloqueio for gate humano de Deploy/i);
+  assert.match(managerAgent, /coluna \*\*`Deploy`\*\*[\s\S]*autorizacao humana explicita[\s\S]*publicar(?: o delta)? em\s+`master`/i);
+  assert.doesNotMatch(managerAgent, /unico bloqueio for gate humano de Deploy/i);
 });
 
 test('Deploy publication uses the frozen RC and active Security gate', () => {
@@ -86,7 +82,8 @@ test('manager cannot close a round with commentary-only progress', () => {
 });
 
 test('agents-mcp governance is published directly without validator approval', () => {
-  assert.match(deliveryProof, /Governança \(`agents-mcp`\)[\s\S]*não aguarda QA, Security, Design, UX ou aprovação humana/i);
+  assert.match(deliveryProof, /Governança \(`agents-mcp`\)[\s\S]*entrega\s+direta/i);
+  assert.doesNotMatch(deliveryProof, /(?:QA|Quality Assurance|Design|UX)/i);
   assert.match(deliveryProof, /governança do próprio `agents-mcp`[\s\S]*Não se cria[\s\S]*handoff para validadores/i);
   assert.match(managerAgent, /publicacao de governanca do proprio `agents-mcp`[\s\S]*contrato direto de entrega/is);
   assert.match(managerSkill, /contrato direto de\s+entrega/is);

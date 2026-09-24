@@ -1,22 +1,17 @@
-# QA Component Reuse Checklist
+# Frontend Component Reuse Checklist
 
-Este subchecklist e obrigatorio em toda validacao de frontend antes de aplicar `agent:qa:accepted`.
+Reusable UI patterns should have a canonical `Default<Component>` counterpart.
 
-## Regra de negocio
+## Required checks
 
-Componentes de UI recorrentes devem ser reaproveitados. Todo padrao reutilizavel deve ter um componente base correspondente no formato `Default<Componente>`.
-
-## Itens obrigatorios
-
-- [ ] Inputs comuns reutilizam ou criam `DefaultInput`.
-- [ ] Selects comuns reutilizam ou criam `DefaultSelect`.
-- [ ] Options comuns reutilizam ou criam `DefaultOption`.
-- [ ] Buttons comuns reutilizam ou criam `DefaultButton`.
-- [ ] Componentes, campos, controles e acoes repetidos nao foram implementados diretamente em telas quando ja existe componente padrao equivalente.
-- [ ] Novos `Default<Componente>` seguem estrutura, props, tema, acessibilidade e estados ja usados no projeto.
-- [ ] Variacoes visuais usam props ou composicao, sem duplicar implementacao por tela.
-- [ ] Excecoes estao justificadas na issue com evidencia de que o componente e especifico demais para virar padrao reutilizavel.
-
-## Criterio de aceite
-
-O QA so pode aceitar a task de frontend quando os componentes reutilizaveis estiverem cobertos pelo respectivo `Default<Componente>` ou quando a excecao estiver documentada e comprovada na issue.
+- [ ] Common inputs reuse or create `DefaultInput`.
+- [ ] Common selects reuse or create `DefaultSelect`.
+- [ ] Common options reuse or create `DefaultOption`.
+- [ ] Common buttons reuse or create `DefaultButton`.
+- [ ] Repeated components, fields, controls and actions do not duplicate an
+      existing project component.
+- [ ] New `Default<Component>` components follow established structure, props,
+      theme, accessibility and state behavior.
+- [ ] Visual variants use props or composition rather than per-screen copies.
+- [ ] Any exception is documented in the task with evidence that the component
+      is specific to that use case.
