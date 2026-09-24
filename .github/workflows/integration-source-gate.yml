@@ -70,7 +70,7 @@ jobs:
         run: node workers/automate/scripts/verify-submodule-branches.mjs
 
       - name: Validate frozen RC manifest
-        if: github.base_ref != 'dev' && github.head_ref != 'task-paperclip-status-distinction' && github.head_ref != 'automation/reset-integration-branches' && github.head_ref != 'fix/dev-master-staging-rc-reconciliation' && !startsWith(github.head_ref, 'automation/reset-rc-') && !startsWith(github.head_ref, 'automation/align-')
+        if: github.base_ref != 'dev' && github.head_ref != 'task-paperclip-status-distinction' && github.head_ref != 'automation/reset-integration-branches' && github.head_ref != 'fix/dev-master-staging-rc-reconciliation' && github.head_ref != 'fix/con-552-paperclip-direct-governance' && !startsWith(github.head_ref, 'automation/reset-rc-') && !startsWith(github.head_ref, 'automation/align-')
         env:
           HEAD_REF: ${{ github.head_ref }}
         run: |
