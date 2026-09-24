@@ -29,6 +29,9 @@ Hotfix → staging e P2 do Manager.
 
 Humano move as tasks homologadas para `Deploy`. DevOps publica exatamente a RC congelada homologada, sem recompor o delta. Artefato de producao nao dispara no push de `master`.
 
+Com todas as tasks da RC em `Deploy`, publique a nova versão em `master` e
+registre o handoff ao Manager; DevOps não move a task no board.
+
 ### Política temporária de força
 
 O parâmetro operacional `force_deploy: true` autoriza o DevOps a publicar sem

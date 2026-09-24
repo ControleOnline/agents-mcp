@@ -1,11 +1,21 @@
-## Proibicao de fila Blocked / Backlog
+## Distincao obrigatoria: GitHub Blocked e Paperclip blocked
 
-Nao usar `Blocked`/`Backlog` como fila. Bloqueio operacional da rodada deve ser resolvido.
+Proibicao de tags de bloqueio: agents nao criam nem aplicam labels `agent:*:blocked`
+no GitHub. Isso nao impede a recuperacao prioritaria de
+issues Paperclip com status `blocked`.
 
-Nenhum agent, worker ou automacao pode criar, aplicar, remover ou solicitar
-labels `agent:*:blocked`, nem mover items para **`Blocked`**. Esses estados sao
-exclusivamente humanos; o fluxo deve corrigir, reencaminhar ou registrar
-`NEXT_ACTION` sem bloqueio terminal.
+- `Blocked` no GitHub Project #1 e `Backlog` sao estados de board sob controle
+  humano. Agents/workers nao comentam, validam, rotulam, editam nem movem itens
+  dessas colunas.
+- `blocked` no Paperclip (`issue.status=blocked` / `/CON/inbox/blocked`) e a fila
+  de recuperacao e prioridade maxima do Manager. Investigue a causa, retome ou
+  corrija a execucao/task Paperclip e confirme por readback antes de capturar
+  nova task.
+- Se uma task Paperclip blocked apontar para uma issue GitHub em `Blocked`, a
+  recuperacao limita-se ao estado Paperclip que possa ser corrigido sem mutar a
+  issue/board GitHub; o trabalho GitHub aguarda acao humana.
+- Nao crie/aplique/remova/solicite labels GitHub `agent:*:blocked` nem mova
+  itens GitHub para `Blocked`. Essa vedacao nao se aplica ao status Paperclip.
 
 # Manager Skills
 

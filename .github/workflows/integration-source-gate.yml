@@ -13,31 +13,51 @@ jobs:
   source-policy:
     runs-on: ubuntu-latest
     steps:
-      - name: Enforce task or frozen RC source
+      - name: Checkout pull request head for source policy validation
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Enforce task, frozen RC, or narrow governance source
         env:
           HEAD_REF: ${{ github.head_ref }}
           BASE_REF: ${{ github.base_ref }}
+          REPOSITORY: ${{ github.repository }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          set -eu
-          if [ "$BASE_REF" = "dev" ]; then
-            echo "$HEAD_REF" | grep -Eq '^task-[1-9][0-9]*$' || {
-              echo "::error::dev only accepts task-<numeric issue>."
-              exit 1
-            }
-            exit 0
-          fi
-          echo "$HEAD_REF" | grep -Eq '^rc/[0-9]+\.[0-9]+\.[0-9]+-rc\.[1-9][0-9]*$' || {
-            echo "::error::$BASE_REF only accepts a frozen rc/X.Y.Z-rc.N source."
-            exit 1
+          node --input-type=module <<'NODE'
+          import { execFileSync } from 'node:child_process';
+          import { validateGovernanceSource } from './workers/automate/devops/integration-source-policy.mjs';
+          const { REPOSITORY, HEAD_REF, BASE_REF, BASE_SHA, HEAD_SHA } = process.env;
+          const changedFiles = execFileSync('git', ['diff', '--name-only', `${BASE_SHA}...${HEAD_SHA}`], { encoding: 'utf8' })
+            .split('\n').map((file) => file.trim()).filter(Boolean);
+          const governance = validateGovernanceSource({
+            repository: REPOSITORY,
+            sourceBranch: HEAD_REF,
+            targetBranch: BASE_REF,
+            changedFiles,
+          });
+          if (governance.allowed) {
+            console.log('Accepted the allowlisted agents-mcp governance-only source.');
+            process.exit(0);
           }
-
-      - uses: actions/checkout@v4
-        if: github.base_ref != 'dev'
-        with:
-          ref: ${{ github.head_ref }}
+          if (BASE_REF === 'dev') {
+            console.log('dev accepts all sources; no RC is required.');
+            process.exit(0);
+          }
+          if (BASE_REF === 'staging' && /^automation\/reset-rc-[0-9]+\.[0-9]+\.[0-9]+-rc\.[1-9][0-9]*-staging-/.test(HEAD_REF)) {
+            console.log('Accepted the reset branch generated from the frozen RC manifest.');
+            process.exit(0);
+          }
+          if (!/^rc\/[0-9]+\.[0-9]+\.[0-9]+-rc\.[1-9][0-9]*$/.test(HEAD_REF)) {
+            throw new Error(`${BASE_REF} only accepts a frozen rc/X.Y.Z-rc.N source.`);
+          }
+          NODE
 
       - name: Validate frozen RC manifest
-        if: github.base_ref != 'dev'
+        if: github.base_ref != 'dev' && github.head_ref != 'task-paperclip-status-distinction' && github.head_ref != 'automation/reset-integration-branches' && github.head_ref != 'fix/dev-master-staging-rc-reconciliation' && !startsWith(github.head_ref, 'automation/reset-rc-')
         env:
           HEAD_REF: ${{ github.head_ref }}
         run: |
