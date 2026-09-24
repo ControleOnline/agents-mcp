@@ -5,7 +5,7 @@
     "placeholder": "<OWNER>",
     "env": "OWNER",
     "value": "ControleOnline",
-      "description": "Organizacao canônica de referência e mutação operacional. Ver allowed_scope."
+    "description": "Organizacao canônica de referência e mutação operacional. Ver allowed_scope."
   },
   "github": {
     "token_env": [
@@ -128,7 +128,7 @@
       "QA_TASK_LIMIT": "5",
       "DEVELOPER_WORKING_LIMIT": "5",
       "QA_AUTO_MERGE": "false",
-      "DEVOPS_FORCE_DEPLOY": "true",
+      "DEVOPS_FORCE_DEPLOY": "false",
       "DEVELOPER_COPILOT_BASE_REF": "master",
       "OWNER": "ControleOnline",
       "PROJECT_ORG": "ControleOnline",
@@ -139,7 +139,10 @@
       "DEVOPS_PROJECT_NUMBER": "1",
       "AGENTS_MCP_REPOSITORY": "ControleOnline/agents-mcp",
       "CTO_CORE_REPOSITORY": "ControleOnline/agents-mcp",
-      "TECHNICAL_LEAD_CORE_REPOSITORY": "ControleOnline/agents-mcp"
+      "TECHNICAL_LEAD_CORE_REPOSITORY": "ControleOnline/agents-mcp",
+      "RELEASE_CANDIDATE_MAX_TASKS": "5",
+      "RELEASE_CANDIDATE_REQUIRED": "true",
+      "RELEASE_CANDIDATE_MANIFEST": ".release/rc-manifest.json"
     },
     "description": "Defaults de runtime. Secrets (GITHUB_TOKEN) nao ficam neste arquivo."
   },

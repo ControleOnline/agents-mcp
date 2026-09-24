@@ -143,3 +143,11 @@ test('agents cannot create or apply blocking labels or terminal blocks', () => {
   assert.doesNotMatch(managerAgent, /`agent:<papel>:blocked`/i);
   assert.doesNotMatch(managerSkill, /`agent:<papel>:blocked`/i);
 });
+
+
+test('manager repairs Working overflow before doing more work', () => {
+  assert.match(managerAgent, /mais de 5.*Working/is);
+  assert.match(managerAgent, /5 mais antigos.*Working/is);
+  assert.match(managerAgent, /excedente.*Ready/is);
+  assert.match(managerAgent, /createdAt.*crescente/is);
+});

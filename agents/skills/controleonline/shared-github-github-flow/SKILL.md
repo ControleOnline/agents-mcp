@@ -4,7 +4,15 @@
 
 Fonte canônica do fluxo de branches e entrega técnica do ecossistema ControleOnline.
 
-Integração contínua **por task**. Não se monta Release Candidate, task pai de RC, freeze de pacote nem inventário de filhas. A execução vigente não usa versões RC.
+Integração de desenvolvimento continua **por task**. A publicação usa Release Candidate técnica congelada para validar a composição. RC não é task pai, não cria issue agregadora e contém no máximo 5 tasks.
+
+## Gate de origem das branches protegidas
+
+- `dev`: origem obrigatória `task-{id_issue}`.
+- `staging`: origem obrigatória `rc/X.Y.Z-rc.N` com manifesto congelado válido.
+- `master`: origem obrigatória da **mesma RC homologada**; `staging` nunca é origem.
+- `dev`, `staging`, `master`, `release/*`, branches multi-task manuais e tasks agregadoras nunca são origens válidas.
+- A RC pode agregar tecnicamente de 1 a 5 tasks, mas somente pelo rito de freeze definido em `shared-github-release-candidate/SKILL.md`.
 
 ## Regra inviolável de integração
 
@@ -57,7 +65,7 @@ Se o estado real do GitHub mostrar que o passo **já foi feito**, o agent não r
 
 Merge não é apenas uma operação textual nem fica validado porque o Git não
 reportou conflito. Antes de confirmar **qualquer** merge entre uma task e uma
-branch de integração, ou entre `staging` e `master`, o agent responsável deve:
+branch de integração, ou entre a RC homologada e `master`, o agent responsável deve:
 
 1. confirmar a origem, o destino, os dois SHAs atuais e o `merge-base`; se a
    origem foi criada antes de uma alteração relevante já presente no destino,

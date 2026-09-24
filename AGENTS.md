@@ -133,10 +133,11 @@ tasks para `In Review`: essa coluna só é usada após os quatro accepts.
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
 - `QA`, `Security`, `Design` e `UX` decidem por labels na task; evidencia em `dev`; nao abrem PR
-- `DevOps` publica tasks na coluna **`Deploy`** → `master` (deltas individuais) e, se nao houver Deploy, promove tasks com as **quatro** `:accepted` para `staging` + `In Review`
-- **Proibido montar RC** e criar task pai de RC
-- humano confere staging e move a task para **`Deploy`**
-- `DevOps` promove o delta individual `staging` → `master`; com o quarteto move para **`Done`**, sem o quarteto move para **`Working`** para segunda rodada de validacao
+- `DevOps` reúne tecnicamente de 1 a 5 tasks com as **quatro** `:accepted` em uma RC congelada `rc/X.Y.Z-rc.N`, sem criar task pai
+- a RC nasce do `master`, possui manifesto imutável de SHAs e é homologada como composição em `staging`
+- humano confere staging e move as tasks homologadas para **`Deploy`**
+- `DevOps` promove **a mesma RC congelada** diretamente para `master`; `staging` nunca é origem de master
+- qualquer mudança depois do freeze gera `rc.N+1` e nova homologação
 
 ## Ownership operacional
 
@@ -196,10 +197,10 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
 ### Ordem de prioridade
 
 1. **P1 DevOps**
-   - Publicar todas as tasks em `Deploy` → `master` (deltas individuais, sem RC); com quarteto mover para `Done`, sem quarteto voltar para `Working` para segunda validacao
-   - Senao, promover todas as tasks quadruplo-accepted → `staging` + `In Review`
-   - A coluna `Deploy` e autorizacao humana explicita de publicacao em `master`; o Manager/DevOps executa o delta sem aguardar aprovacao adicional
-   - **Proibido montar RC**
+   - Se existir RC homologada cujas tasks estejam em `Deploy`, promover exatamente essa RC congelada para `master`
+   - Senão, montar RC técnica de 1 a 5 tasks quadruplo-accepted, congelar manifesto e promover o snapshot para `staging` + `In Review`
+   - `Deploy` autoriza a publicação da composição já homologada; não autoriza recompor SHAs
+   - RC é artefato técnico, nunca task/issue agregadora
 2. **P2 Hotfix**
    - Validar ou promover task `hotfix` ja implementada (QA / Security / Design / UX / DevOps → staging)
    - Implementacao de hotfix e P6 Developer, nao P2

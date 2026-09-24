@@ -12,26 +12,22 @@ Ao iniciar: leia este arquivo, `github-flow.md`, `master-publication.md`, `agent
 
 No Manager, DevOps e **P1**. Hotfix e **P2**.
 
-1. **Master primeiro:** processe todas as tasks da coluna `Deploy`, uma por vez,
-   na ordem do board. Para cada task, crie uma nova versão estável numérica,
-   publique somente o delta autorizado em `master`, valide o runtime e devolva
-   ao Manager um handoff completo. O DevOps não move a task para `Done` ou
-   `Working`, não decide accepts e não cria filhas documentais.
-2. **Staging depois:** após o Manager acionar o DevOps com 4 accepts, atualize primeiro `dev` e `staging` com `origin/master`, confirme o merge da task já entregue pelo Developer em `dev`, faça o merge do delta da task em `staging` e entregue a task ao Manager para `In Review`.
+1. **RC/staging primeiro:** com tasks que tenham os quatro accepts, monte uma RC tecnica congelada com 1 a 5 tasks. A RC nasce do master atual, recebe cada task individualmente, gera manifesto de SHAs e e promovida como snapshot para staging. Nao mergeie dev inteiro em staging.
+2. **Master depois da homologacao:** quando as tasks daquela RC forem autorizadas em Deploy, publique **a mesma RC congelada** em master. Nao recalcule pins, nao inclua task nova e nao use staging como origem. Se qualquer SHA mudar, gere nova RC e repita a homologacao.
 
-**Proibido montar RC.** Nao mergear `dev` inteiro em `staging`.
+A RC e artefato tecnico, nao task agregadora. Branch obrigatoria: `rc/X.Y.Z-rc.N`; manifesto obrigatorio: `.release/rc-manifest.json`. Maximo de 5 tasks por RC.
 
 ## Captura autonoma
 
-1. Todas as tasks em `Deploy` → uma publicação/versionamento independente por task → `master`
-2. quadruplo-accepted fora de staging → `staging`
+1. RC homologada cujas tasks estejam em `Deploy` → mesma RC congelada → `master`
+2. tasks com quatro accepts ainda fora de RC → montar RC de 1 a 5 tasks → `staging`
 3. `agent:devops` residual com acao de merge
 
 Hotfix → staging e P2 do Manager.
 
 ## Publicacao
 
-Humano move para `Deploy`. DevOps publica o delta sozinho. Artefato de producao nao dispara no push de `master`.
+Humano move as tasks homologadas para `Deploy`. DevOps publica exatamente a RC congelada homologada, sem recompor o delta. Artefato de producao nao dispara no push de `master`.
 
 ### Política temporária de força
 
@@ -40,8 +36,6 @@ aguardar os testes automatizados. Enquanto esta política estiver ativa, o
 runner usa `DEVOPS_FORCE_DEPLOY=true` como padrão para todos os deploys; um
 `force_deploy: false` explícito pode reativar o gate em uma task específica.
 
-O bypass vale somente para a exigência dos testes automatizados. Continua
-obrigatório confirmar a task individual em `Deploy`, a origem `task-{id}`, o
-merge sem conflito, a versão, o push remoto e o runtime publicado. Todo
+O bypass vale somente para a exigência dos testes automatizados. Continua obrigatório confirmar que todas as tasks da RC estão em `Deploy`, a origem `rc/X.Y.Z-rc.N`, o manifesto congelado, os mesmos SHAs homologados, a versão, o push remoto e o runtime publicado. Todo
 handoff deve registrar `force_deploy`, a origem da política e o motivo do
 bypass.
