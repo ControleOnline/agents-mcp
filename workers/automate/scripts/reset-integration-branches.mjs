@@ -1,3 +1,5 @@
+import { pathToFileURL } from 'node:url';
+
 const API_ROOT = 'https://api.github.com';
 const ORG = 'ControleOnline';
 const RELEASE_REPOSITORY = `${ORG}/api-community`;
@@ -259,7 +261,7 @@ async function mapLimit(items, limit, callback) {
   await Promise.all(workers);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   resetIntegrationBranches({ apply: process.argv.includes('--apply') }).catch((error) => {
     console.error(error);
     process.exitCode = 1;
