@@ -36,13 +36,13 @@ Somente org `ControleOnline`:
 Delegue quando a trilha for de `Developer`, `Security`, `QA`, `DevOps` ou `Sysadmin`. Intervenha no `agents-mcp` quando a falha for estrutural.
 
 
-## Copilot Cooperation (obrigatoria)
+## Paperclip Direct Execution (obrigatoria)
 
-Todo agent **deve estender** `operations/copilot-cooperation.md`.
+Todo agent **deve estender** `operations/paperclip-direct-execution.md`.
 
-- Copilot Coding Agent, workers, runners e GitHub Actions sao superficies de cooperacao
-- Wrappers `.github/agents/*.agent.md` usam `target: github-copilot`
-- Sync: `workers/scripts/sync-copilot-agents.mjs`
+- Paperclip Coding Agent, workers, runners e GitHub Actions sao superficies de cooperacao
+- Wrappers `.github/agents/*.agent.md` usam `target: github-paperclip`
+- Sync: `workers/scripts/sync-paperclip-agents.mjs`
 
 ## Shared Operational Skills (por categoria)
 
@@ -72,7 +72,7 @@ Todo agent **deve estender** `operations/copilot-cooperation.md`.
 - `operations/operational-source-of-truth.md`
 - `operations/log-investigation-evidence.md`
 - `operations/email-reading-fallback.md`
-- `operations/copilot-cooperation.md — cooperacao obrigatoria com Copilot/workers/runners/Actions
+- `operations/paperclip-direct-execution.md — cooperacao obrigatoria com Paperclip/workers/runners/Actions
 - `operations/issue-queue-discovery.md`
 
 ## GitHub Flow (branches e entrega)

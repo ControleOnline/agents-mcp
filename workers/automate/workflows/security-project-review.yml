@@ -32,9 +32,9 @@ jobs:
           SECURITY_DRY_RUN: false
           SECURITY_OUTPUT_DIR: ./.security-output
           SECURITY_ANALYST_LOGINS: ''
-          SECURITY_USE_COPILOT: true
-          SECURITY_COPILOT_BASE_REF: master
-          SECURITY_COPILOT_MODEL: ''
+          SECURITY_USE_EXTERNAL_AGENT: true
+          SECURITY_EXTERNAL_AGENT_BASE_REF: master
+          SECURITY_EXTERNAL_AGENT_MODEL: ''
         run: node workers/src/security-runner.js
 
       - name: Upload security snapshot artifact

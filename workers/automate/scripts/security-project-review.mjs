@@ -4,7 +4,7 @@ const GITHUB_API_URL = 'https://api.github.com/graphql';
 const SOURCE_STATUS = 'Security';
 const DECISION_DEVELOPER = 'Developer';
 const DECISION_QA = 'Quality Assurance';
-const COPILOT_LOGIN = 'copilot-swe-agent';
+const EXTERNAL_AGENT_LOGIN = 'external-coding-agent';
 
 function env(name, fallback = '') {
   return (process.env[name] || fallback).trim();
@@ -73,7 +73,7 @@ function extractStructuredDecision(text = '') {
 
 function isTrustedDecisionAuthor(login, analysts) {
   if (!login) return false;
-  if (login === COPILOT_LOGIN) return true;
+  if (login === EXTERNAL_AGENT_LOGIN) return true;
   if (analysts.size === 0) return true;
   return analysts.has(login);
 }
@@ -329,19 +329,19 @@ function splitRepo(fullName) {
   return { owner, repo };
 }
 
-function isCopilotAlreadyAssigned(issue) {
+function isExternalAgentAlreadyAssigned(issue) {
   return (issue.assignees?.nodes || []).some(
-    (assignee) => assignee?.login?.toLowerCase() === COPILOT_LOGIN
+    (assignee) => assignee?.login?.toLowerCase() === EXTERNAL_AGENT_LOGIN
   );
 }
 
-function getCopilotActor(repository) {
+function getExternalAgentActor(repository) {
   return (repository.suggestedActors?.nodes || []).find(
-    (actor) => actor?.login?.toLowerCase() === COPILOT_LOGIN
+    (actor) => actor?.login?.toLowerCase() === EXTERNAL_AGENT_LOGIN
   );
 }
 
-function buildCopilotInstructions(issueRef) {
+function buildExternalAgentInstructions(issueRef) {
   return [
     `Analise a issue ${issueRef} com foco em seguranca.`,
     'Revise autorizacao, controle de acesso, exposicao de dados, securityFilter e regras sensiveis de negocio.',
@@ -353,7 +353,7 @@ function buildCopilotInstructions(issueRef) {
   ].join(' ');
 }
 
-async function assignIssueToCopilot(issueId, actorId, repositoryId, baseRef, customInstructions, model) {
+async function assignIssueToExternalAgent(issueId, actorId, repositoryId, baseRef, customInstructions, model) {
   const variables = {
     issueId,
     actorId,
@@ -391,7 +391,7 @@ async function assignIssueToCopilot(issueId, actorId, repositoryId, baseRef, cus
     }`,
     variables,
     {
-      'GraphQL-Features': 'issues_copilot_assignment_api_support,coding_agent_model_selection'
+      'GraphQL-Features': 'external_assignment_disabled,external_agent_model_selection'
     }
   );
 }
@@ -477,7 +477,7 @@ function buildDecision(issue, prs, analysts) {
   const latestDecision = findLatestDecision(issue, prs, analysts);
   if (!latestDecision) {
     reasons.push('Nenhuma decisão de segurança reconhecível foi encontrada.');
-    reasons.push('Aceita comentários estruturados ou texto explícito de aprovação/reprovação de segurança; na ausência deles, o Copilot deve ser acionado.');
+    reasons.push('Aceita comentarios estruturados ou texto explicito de aprovacao/reprovacao de seguranca; na ausencia deles, permanece aguardando decisao estruturada de Security.');
     return {
       projectTarget: SOURCE_STATUS,
       prReviewAction: null,
@@ -608,10 +608,10 @@ async function main() {
   const projectNumber = Number(env('SECURITY_PROJECT_NUMBER', '1'));
   const dryRun = env('SECURITY_DRY_RUN', 'true').toLowerCase() !== 'false';
   const analysts = new Set(parseCsv(env('SECURITY_ANALYST_LOGINS')).map((login) => login.toLowerCase()));
-  analysts.add(COPILOT_LOGIN);
-  const useCopilot = env('SECURITY_USE_COPILOT', 'false').toLowerCase() === 'true';
-  const copilotBaseRef = env('SECURITY_COPILOT_BASE_REF', 'master');
-  const copilotModel = env('SECURITY_COPILOT_MODEL');
+  analysts.add(EXTERNAL_AGENT_LOGIN);
+  const useExternalAgent = env('SECURITY_USE_EXTERNAL_AGENT', 'false').toLowerCase() === 'true';
+  const externalAgentBaseRef = env('SECURITY_EXTERNAL_AGENT_BASE_REF', 'master');
+  const externalAgentModel = env('SECURITY_EXTERNAL_AGENT_MODEL');
 
   const data = await getProjectSnapshot(org, projectNumber);
   const viewerLogin = (data.viewer?.login || '').trim().toLowerCase();
@@ -631,32 +631,32 @@ async function main() {
     const prs = normalizePrs(issue);
     const decision = buildDecision(issue, prs, analysts);
     const issueRef = `${repoFullName}#${issue.number}`;
-    let copilotTriggered = false;
-    let copilotTriggerError = null;
+    let externalAgentTriggered = false;
+    let externalAgentTriggerError = null;
     let activityLogged = false;
 
-    if (useCopilot && decision.projectTarget === SOURCE_STATUS && !dryRun) {
-      const copilotActor = getCopilotActor(context.repository);
-      if (copilotActor && !isCopilotAlreadyAssigned(issue)) {
+    if (useExternalAgent && decision.projectTarget === SOURCE_STATUS && !dryRun) {
+      const externalAgentActor = getExternalAgentActor(context.repository);
+      if (externalAgentActor && !isExternalAgentAlreadyAssigned(issue)) {
         try {
-          await assignIssueToCopilot(
+          await assignIssueToExternalAgent(
             issue.id,
-            copilotActor.id,
+            externalAgentActor.id,
             context.repository.id,
-            copilotBaseRef,
-            buildCopilotInstructions(issueRef),
-            copilotModel
+            externalAgentBaseRef,
+            buildExternalAgentInstructions(issueRef),
+            externalAgentModel
           );
-          copilotTriggered = true;
-          decision.reasons.push('Copilot cloud agent foi acionado para aprofundar a investigação antes da decisão final.');
+          externalAgentTriggered = true;
+          decision.reasons.push('Executor externo desativado para esta governanca.');
         } catch (error) {
-          copilotTriggerError = error.message || String(error);
-          decision.reasons.push('Não foi possível acionar o Copilot cloud agent nesta rodada.');
+          externalAgentTriggerError = error.message || String(error);
+          decision.reasons.push('Executor externo desativado nesta rodada.');
         }
-      } else if (isCopilotAlreadyAssigned(issue)) {
-        decision.reasons.push('Copilot cloud agent já estava atribuído a esta issue.');
+      } else if (isExternalAgentAlreadyAssigned(issue)) {
+        decision.reasons.push('Executor externo ja estava atribuido a esta issue, mas nao e canal operacional principal.');
       } else {
-        decision.reasons.push('Copilot cloud agent não apareceu em suggestedActors para este repositório.');
+        decision.reasons.push('Executor externo nao apareceu em suggestedActors para este repositorio.');
       }
     }
     const issueComment = buildIssueComment(issueRef, decision);
@@ -685,8 +685,8 @@ async function main() {
       currentProjectStatus: getStatusValue(item),
       targetProjectStatus: decision.projectTarget,
       prReviewAction: decision.prReviewAction,
-      copilotTriggered,
-      copilotTriggerError,
+      externalAgentTriggered,
+      externalAgentTriggerError,
       reasons: decision.reasons,
       prs: renderedPrs,
       dryRun
@@ -717,7 +717,7 @@ async function main() {
       decisionRecord.previewComment = issueComment;
     }
 
-    if (!dryRun && !activityLogged && copilotTriggered) {
+    if (!dryRun && !activityLogged && externalAgentTriggered) {
       await addComment(issue.id, issueComment);
       decisionRecord.activityLogged = true;
     }

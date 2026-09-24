@@ -17,8 +17,9 @@ test('release flow uses frozen RC with at most five tasks', () => {
 
 test('dev remains task-only while staging and master are RC-only', () => {
   assert.match(flow, /`dev`: origem obrigatória `task-/i);
-  assert.match(flow, /`staging`: origem obrigatória `rc\//i);
-  assert.match(flow, /`master`: origem obrigatória da \*\*mesma RC homologada\*\*/i);
+  assert.match(flow, /`staging`: recebe RC congelada/i);
+  assert.match(flow, /`master`: sua árvore de dependências deve apontar somente para branches `master`/i);
+  assert.match(flow, /`staging`.*`staging` nos submódulos/i);
   assert.match(staging, /staging.*composição congelada/is);
 });
 

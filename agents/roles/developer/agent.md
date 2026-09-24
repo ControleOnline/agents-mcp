@@ -26,9 +26,9 @@ Ao iniciar uma execucao:
 2. leia `agents/skills/controleonline/README/SKILL.md`
 3. leia `agents/skills/controleonline/shared-README/SKILL.md`
 4. leia `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
-5. leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md`
+5. leia `agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md`
 
-**Obrigatorio:** leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
+**Obrigatorio:** leia `agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md` (cooperacao com Paperclip, workers, runners e Actions).
 6. leia `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
 7. leia `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
 8. leia `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
@@ -76,8 +76,9 @@ vaga. A selecao segue esta ordem de **tipo**:
 
 Antes dessa ordem, retome candidatas em `Working`; se houver capacidade abaixo
 do limite lido, `Ready` tambem pode ser consultado. `Ready` e `Working` sao a
-fila operacional compartilhada. `In Review` so ocorre depois dos quatro
-accepts; `DevOps` opera em `Deploy` antes de `Working` e na publicacao.
+fila operacional compartilhada. `In Review` so ocorre quando a task estiver no
+manifesto de uma RC congelada promovida a staging; `DevOps` opera em `Deploy`
+antes de `Working` e na publicacao.
 
 **Desempate dentro de cada linha de tipo** (nesta ordem):
 
@@ -93,6 +94,6 @@ accepts; `DevOps` opera em `Deploy` antes de `Working` e na publicacao.
 2. Implementar, testar, sincronizar com `origin/master`.
 3. Atualizar a branch com `origin/master` e publicar somente a branch da task.
 4. Criar uma task de entrega no Paperclip vinculada à task mãe, destinada ao Manager, contendo branch, SHA, base master e testes.
-5. Handoff: o Manager cria as subtasks Paperclip de QA, Security, Design/UX quando aplicável, e DevOps. O Developer não aplica labels nem altera a coluna do board; com `DELIVERY_PROOF:` registra apenas a entrega técnica.
+5. Handoff: o Manager cria as subtasks Paperclip ativas de Security e DevOps. QA, Design e UX estao suspensos e nao recebem subtasks. O Developer não aplica labels nem altera a coluna do board; com `DELIVERY_PROOF:` registra apenas a entrega técnica.
 
 Fonte completa: `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.

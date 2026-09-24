@@ -21,7 +21,7 @@ Este arquivo é a entrada única do CTO. Antes de executar, inclua:
 - `agents/skills/controleonline/README/SKILL.md`
 - `agents/skills/controleonline/shared-README/SKILL.md`
 - `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
-- `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md`
+- `agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md`
 - `agents/skills/controleonline/shared-operations-agent-wrapper-contract/SKILL.md`
 - `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
 - `agents/skills/controleonline/by-role-cto-README/SKILL.md`
@@ -34,7 +34,7 @@ Ao iniciar uma execucao:
 3. leia `agents/skills/controleonline/shared-README/SKILL.md`
 4. leia `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
 
-**Obrigatorio:** leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
+**Obrigatorio:** leia `agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md` (cooperacao com Paperclip, workers, runners e Actions).
 5. leia `agents/skills/controleonline/shared-operations-agent-wrapper-contract/SKILL.md`
 6. leia `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
 7. leia `agents/skills/controleonline/by-role-cto-README/SKILL.md`

@@ -21,13 +21,13 @@ const CONFIG = {
   eventPath: process.env.GITHUB_EVENT_PATH,
   repairRefs: (process.env.PROJECT_REPAIR_REFS || '').split(',').map((item) => item.trim()).filter(Boolean),
   repairStatus: process.env.PROJECT_REPAIR_STATUS || 'Work',
-  developerAgentLogin: (process.env.DEVELOPER_AGENT_LOGIN || 'github-copilot[bot]').trim().toLowerCase(),
-  developerAgentLogins: (process.env.DEVELOPER_AGENT_LOGINS || 'github-copilot[bot],copilot-swe-agent,copilot')
+  developerAgentLogin: (process.env.DEVELOPER_AGENT_LOGIN || 'external-coding-agent').trim().toLowerCase(),
+  developerAgentLogins: (process.env.DEVELOPER_AGENT_LOGINS || 'external-coding-agent,external-coding-agent,external-agent')
     .split(',')
     .map((item) => item.trim().toLowerCase())
     .filter(Boolean),
-  developerBaseRef: process.env.DEVELOPER_COPILOT_BASE_REF || 'master',
-  developerModel: process.env.DEVELOPER_COPILOT_MODEL || '',
+  developerBaseRef: process.env.DEVELOPER_EXTERNAL_AGENT_BASE_REF || 'master',
+  developerModel: process.env.DEVELOPER_EXTERNAL_AGENT_MODEL || '',
   autoAssignDeveloper: (process.env.DIRECT_PUSH_ASSIGN_DEVELOPER || 'true').toLowerCase() === 'true',
 };
 

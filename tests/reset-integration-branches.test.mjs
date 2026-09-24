@@ -1,145 +1,94 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { resetIntegrationBranches } from '../workers/automate/scripts/reset-integration-branches.mjs';
+import { parseGitmodules, resetIntegrationBranches, setGitmoduleBranches } from '../workers/automate/scripts/reset-integration-branches.mjs';
 
 process.env.GH_TOKEN ??= 'test-token';
 
-function githubFixture({ mergeBlocked = true } = {}) {
+test('parses nested submodule paths and rewrites each declared branch', () => {
+  const source = [
+    '[submodule "shared"]',
+    '\tpath = packages/shared',
+    '\turl = https://github.com/ControleOnline/shared.git',
+    '\tbranch = master',
+    '',
+    '[submodule "ui"]',
+    '\tpath = packages/ui',
+    '\turl = git@github.com:ControleOnline/ui.git',
+  ].join('\n');
+
+  assert.deepEqual(parseGitmodules(source), [
+    { name: 'shared', path: 'packages/shared', url: 'https://github.com/ControleOnline/shared.git', branch: 'master' },
+    { name: 'ui', path: 'packages/ui', url: 'git@github.com:ControleOnline/ui.git' },
+  ]);
+  assert.equal(setGitmoduleBranches(source, 'staging'), [
+    '[submodule "shared"]',
+    '\tpath = packages/shared',
+    '\turl = https://github.com/ControleOnline/shared.git',
+    '\tbranch = staging',
+    '',
+    '[submodule "ui"]',
+    '\tpath = packages/ui',
+    '\turl = git@github.com:ControleOnline/ui.git',
+    '\tbranch = staging',
+  ].join('\n'));
+});
+
+test('dry-run detects a stale gitlink and reports missing integration refs without writing', async () => {
   const calls = [];
-  const manifest = {
-    branch: 'rc/1.10.31-rc.11',
-    version: '1.10.31',
-    rc: 11,
-    frozen: true,
-    repositories: { 'ControleOnline/sample': 'source-sha' },
-  };
-  const encodedManifest = Buffer.from(JSON.stringify(manifest)).toString('base64');
+  const gitmodules = Buffer.from([
+    '[submodule "shared"]',
+    '\tpath = packages/shared',
+    '\turl = https://github.com/ControleOnline/shared.git',
+    '\tbranch = master',
+  ].join('\n')).toString('base64');
   const response = (status, body) => ({
     ok: status >= 200 && status < 300,
     status,
     json: async () => body,
     text: async () => JSON.stringify(body),
   });
-
   const fetchImpl = async (input, options = {}) => {
     const url = new URL(String(input));
     const method = options.method ?? 'GET';
-    const body = options.body ? JSON.parse(options.body) : {};
-    calls.push({ path: `${url.pathname}${url.search}`, method, body });
-
-    if (url.pathname === '/repos/ControleOnline/api-community/git/ref/heads/master') {
-      return response(200, { object: { sha: 'release-master-sha' } });
-    }
-    if (url.pathname === '/repos/ControleOnline/api-community/contents/.release/rc-manifest.json') {
-      return response(200, { content: encodedManifest });
-    }
-    if (url.pathname === '/repos/ControleOnline/api-community/git/ref/heads/rc/1.10.31-rc.11') {
-      return response(200, { object: { sha: 'rc-commit' } });
-    }
-    if (url.pathname === '/repos/ControleOnline/api-community/git/commits/rc-commit') {
-      return response(200, { tree: { sha: 'rc-tree' } });
-    }
-    if (url.pathname === '/repos/ControleOnline/api-community/compare/rc-commit...release-master-sha') {
-      return response(200, { status: 'ahead', behind_by: 0 });
-    }
-    if (url.pathname === '/orgs/ControleOnline/repos') {
-      return response(200, [{ full_name: 'ControleOnline/sample', archived: false }]);
-    }
-    if (url.pathname === '/repos/ControleOnline/sample/git/ref/heads/master') {
-      return response(200, { object: { sha: 'sample-master' } });
-    }
-    if (url.pathname === '/repos/ControleOnline/sample/git/commits/source-sha') {
-      return response(200, { tree: { sha: 'rc-tree' } });
-    }
-    if (url.pathname === '/repos/ControleOnline/sample/git/commits/sample-master') {
-      return response(200, { tree: { sha: 'master-tree' } });
-    }
-    if (url.pathname === '/repos/ControleOnline/sample/git/ref/heads/dev') {
-      return response(200, { object: { sha: 'dev-sha' } });
-    }
-    if (url.pathname === '/repos/ControleOnline/sample/git/commits/dev-sha') {
-      return response(200, { tree: { sha: 'old-tree' } });
-    }
+    calls.push({ method, path: `${url.pathname}${url.search}` });
+    const routes = new Map([
+      ['/orgs/ControleOnline/repos?type=all&per_page=100&page=1', [
+        { full_name: 'ControleOnline/sample', archived: false },
+        { full_name: 'ControleOnline/shared', archived: false },
+      ]],
+      ['/repos/ControleOnline/sample/git/ref/heads/master', { object: { sha: 'sample-master' } }],
+      ['/repos/ControleOnline/sample/git/ref/heads/dev', { object: { sha: 'sample-dev' } }],
+      ['/repos/ControleOnline/sample/git/commits/sample-dev', { tree: { sha: 'sample-tree' } }],
+      ['/repos/ControleOnline/sample/git/trees/sample-tree?recursive=1', { tree: [
+        { path: '.gitmodules', type: 'blob', mode: '100644', sha: 'gitmodules-blob' },
+        { path: 'packages/shared', type: 'commit', mode: '160000', sha: 'stale-child-sha' },
+      ] }],
+      ['/repos/ControleOnline/sample/git/blobs/gitmodules-blob', { content: gitmodules }],
+      ['/repos/ControleOnline/shared/git/ref/heads/dev', { object: { sha: 'shared-dev' } }],
+      ['/repos/ControleOnline/shared/git/ref/heads/master', { object: { sha: 'shared-master' } }],
+      ['/repos/ControleOnline/shared/git/commits/shared-master', { tree: { sha: 'shared-tree' } }],
+      ['/repos/ControleOnline/shared/git/ref/heads/staging', { object: { sha: 'shared-staging' } }],
+      ['/repos/ControleOnline/shared/git/commits/shared-staging', { tree: { sha: 'shared-staging-tree' } }],
+      ['/repos/ControleOnline/shared/git/commits/shared-dev', { tree: { sha: 'shared-dev-tree' } }],
+      ['/repos/ControleOnline/shared/git/trees/shared-dev-tree?recursive=1', { tree: [] }],
+      ['/repos/ControleOnline/shared/git/trees/shared-staging-tree?recursive=1', { tree: [] }],
+    ]);
+    const route = routes.get(`${url.pathname}${url.search}`);
+    if (route) return response(200, route);
     if (url.pathname === '/repos/ControleOnline/sample/git/ref/heads/staging') {
       return response(404, { message: 'Not Found' });
     }
-    if (url.pathname.startsWith('/repos/ControleOnline/sample/git/ref/heads/automation/')) {
-      return response(404, { message: 'Not Found' });
-    }
-    if (method === 'POST' && url.pathname === '/repos/ControleOnline/sample/git/commits') {
-      assert.deepEqual(body.parents, ['dev-sha']);
-      assert.equal(body.tree, 'master-tree');
-      return response(201, { sha: 'reset-commit' });
-    }
-    if (method === 'POST' && url.pathname === '/repos/ControleOnline/sample/git/refs') {
-      return response(201, { object: { sha: body.sha } });
-    }
-    if (url.pathname === '/repos/ControleOnline/sample/pulls') {
-      if (method === 'POST') return response(201, { number: 42, state: 'open' });
-      return response(200, []);
-    }
-    if (method === 'GET' && url.pathname === '/repos/ControleOnline/sample/pulls/42') {
-      return response(200, {
-        number: 42,
-        state: 'open',
-        mergeable: !mergeBlocked,
-        mergeable_state: mergeBlocked ? 'blocked' : 'clean',
-      });
-    }
-    if (method === 'PUT' && url.pathname === '/repos/ControleOnline/sample/pulls/42/merge') {
-      return mergeBlocked
-        ? response(405, { message: 'Required checks are pending' })
-        : response(200, { merged: true });
-    }
     throw new Error(`Unexpected fake GitHub request: ${method} ${url.pathname}${url.search}`);
   };
-
-  return { calls, fetchImpl };
-}
-
-test('dry-run proposes normal PRs and creates missing refs without any writes', async () => {
-  const { calls, fetchImpl } = githubFixture();
   const log = [];
-  const result = await resetIntegrationBranches({
-    fetchImpl,
-    rcBranch: 'rc/1.10.31-rc.11',
-    log: (line) => log.push(line),
-  });
+  let result;
+  try {
+    result = await resetIntegrationBranches({ fetchImpl, log: (line) => log.push(line) });
+  } catch (error) {
+    throw new Error(error.errors?.map((item) => item.message).join('\n') || error.message);
+  }
 
-  assert.deepEqual(result, { repositories: 1, merged: 0, pending: 1, created: 1, unchanged: 0, errors: [] });
-  assert.ok(log.some((line) => line.includes('DRY-RUN PR ControleOnline/sample:dev -> master')));
-  assert.ok(log.some((line) => line.includes('DRY-RUN CREATE ControleOnline/sample:staging')));
-  assert.ok(calls.every(({ method }) => method === 'GET'));
-});
-
-test('apply uses a protected pull request reset; it never force-updates an existing ref', async () => {
-  const { calls, fetchImpl } = githubFixture();
-  const result = await resetIntegrationBranches({
-    apply: true,
-    fetchImpl,
-    rcBranch: 'rc/1.10.31-rc.11',
-    log() {},
-  });
-
-  assert.deepEqual(result, { repositories: 1, merged: 0, pending: 1, created: 1, unchanged: 0, errors: [] });
-  assert.ok(calls.some(({ method, path }) => method === 'POST' && path === '/repos/ControleOnline/sample/pulls'));
-  assert.ok(calls.some(({ method, path }) => method === 'GET' && path.endsWith('/pulls/42')));
-  assert.ok(calls.every(({ method, path }) => !(method === 'PUT' && path.endsWith('/pulls/42/merge'))));
-  assert.ok(calls.every(({ method, path }) => !(method === 'PATCH' && path.includes('/git/refs/'))));
-  const resetCommit = calls.find(({ method, path }) => method === 'POST' && path.endsWith('/git/commits'));
-  assert.deepEqual(resetCommit.body.parents, ['dev-sha']);
-  assert.equal(resetCommit.body.tree, 'master-tree');
-});
-
-test('apply merges the reset through GitHub when repository rules and checks permit it', async () => {
-  const { fetchImpl } = githubFixture({ mergeBlocked: false });
-  const result = await resetIntegrationBranches({
-    apply: true,
-    fetchImpl,
-    rcBranch: 'rc/1.10.31-rc.11',
-    log() {},
-  });
-
-  assert.equal(result.merged, 1);
-  assert.equal(result.pending, 0);
+  assert.deepEqual(result, { repositories: 2, merged: 0, pending: 1, created: 1, unchanged: 2, errors: [] });
+  assert.ok(log.some((line) => line.includes('sample:dev/packages/shared -> ControleOnline/shared:dev@shared-dev')));
+  assert.equal(calls.every(({ method }) => method === 'GET'), true);
 });

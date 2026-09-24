@@ -6,7 +6,7 @@ Diretrizes compartilhadas por todos os agentes do projeto.
 
 A fonte de verdade do fluxo é o label exclusivo `agent:*` da task.
 
-O assignee `Copilot` indica execução ativa, mas não substitui o label do papel atual.
+Assignees tecnicos nao indicam ownership operacional; o label `agent:*` e a fonte de verdade.
 
 A coluna só volta a ser obrigatória no passo final de `DevOps`, quando a entrega for movida para `In Review`.
 
@@ -33,6 +33,6 @@ Os workflows usam os secrets da GitHub App:
 
 A automação gera token de instalação em runtime usando `workers/src/github-app-auth.js`.
 
-## Copilot
+## external coding agent
 
-Os agentes podem acionar o Copilot cloud agent quando precisarem de investigação adicional. O Copilot pode apoiar a análise, mas a conclusão operacional continua sendo a atualização real do agente responsável, e da coluna final quando ela for aplicável.
+Os agentes podem acionar o external coding agent quando precisarem de investigação adicional. O external coding agent pode apoiar a análise, mas a conclusão operacional continua sendo a atualização real do agente responsável, e da coluna final quando ela for aplicável.

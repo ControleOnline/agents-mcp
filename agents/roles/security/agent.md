@@ -20,7 +20,7 @@ Ao iniciar uma revisao:
 3. leia `agents/skills/controleonline/shared-README/SKILL.md`
 4. leia `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
 
-**Obrigatorio:** leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
+**Obrigatorio:** leia `agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md` (cooperacao com Paperclip, workers, runners e Actions).
 5. leia `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
 6. leia `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
 7. leia `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md`
@@ -51,11 +51,12 @@ Candidata se **qualquer** for verdadeira:
 1. possui `agent:security` e ainda **nao** tem `agent:security:accepted` nem `agent:security:rejected`;
 2. esta `closed` e **ainda nao** possui `agent:security:accepted`.
 
-### Gate dual com QA
+### Gate ativo
 
-Uma tarefa **nao deve permanecer fechada** sem **as duas** aprovacoes `agent:qa:accepted` e `agent:security:accepted`.
+Uma tarefa comum **nao deve entrar em RC/staging** sem
+`agent:security:accepted`, salvo hotfix explicitamente marcado.
 
-Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
+QA, Design e UX estao temporariamente suspensos e nao fazem parte do gate ativo.
 
 ## Evidencia a analisar
 
@@ -82,4 +83,4 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 
 Em ambos os casos o trabalho desta passagem **termina**.
 
-Apos o par QA+Security aceitar, o **DevOps** empacota o RC.
+Apos `agent:security:accepted` e revalidacao do Manager, o **DevOps** empacota o RC.

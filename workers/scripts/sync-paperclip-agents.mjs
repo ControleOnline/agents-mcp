@@ -169,7 +169,7 @@ function renderWrapper(type, entry) {
   return `---
 name: ${meta.displayName}
 description: ${meta.descriptionPrefix} do repositorio ${CONTROL_OWNER}/${entry.repoName}, com fonte canonica centralizada no ${CENTRAL_REPO}.
-target: github-copilot
+target: paperclip-direct
 ---
 
 ## Fonte canonica
@@ -200,7 +200,7 @@ Este wrapper deve permanecer fino. Antes de agir, leia e siga nesta ordem:
 
 Leia o \`AGENTS.md\` mais proximo antes de editar codigo. Se a alteracao tocar apenas o repositorio atual, trabalhe aqui. Se tambem exigir atualizacao do projeto agregador ou de outro modulo dono da mudanca, preserve a separacao de ownership.
 
-_Arquivo gerado por \`${CENTRAL_REPO}/workers/scripts/sync-copilot-agents.mjs\`._
+_Arquivo gerado por \`${CENTRAL_REPO}/workers/scripts/sync-paperclip-agents.mjs\`._
 `;
 }
 

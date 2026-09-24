@@ -39,12 +39,12 @@ Antes de qualquer acao operacional, leia **`config/ecosystem.config.json`**.
 - Tokens (`GITHUB_TOKEN`) nao ficam no arquivo; use secrets do ambiente.
 - Modelo: `config/ecosystem.config.example.json` — detalhes em `config/README.md`.
 
-## Copilot Cooperation
+## Paperclip Direct Execution
 
-Todo agent do ecossistema **deve estender** `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md`.
+Todo agent do ecossistema **deve estender** `agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md`.
 
-- Execução direta pelo Paperclip; wrappers Copilot permanecem removidos
-- Execução direta pelo Paperclip; wrappers Copilot permanecem removidos
+- Execução direta pelo Paperclip usando `agents/roles/*/agent.md`.
+- Workflows, wrappers e assignees tecnicos nao sao canal operacional principal.
 
 ## Estrutura do repositorio
 
@@ -127,56 +127,79 @@ os agents devem ler no Project #1 o limite da coluna `Working` antes de
 capturar uma nova task. Neste ecossistema, o limite canônico é **5 tasks**:
 quando cinco tasks estiverem em `Working`, nenhuma outra entra até uma delas
 sair da coluna. A única exceção é o P1 `DevOps`, que continua publicando o que
-estiver em `Deploy`. Agents não movem
-tasks para `In Review`: essa coluna só é usada após os quatro accepts.
+estiver em `Deploy`. Agents não movem tasks isoladas para `In Review`: essa
+coluna só é usada quando o `DevOps` cria/congela uma RC e o `Manager` confirma
+que a task esta no inventario.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
-- `QA`, `Security`, `Design` e `UX` decidem por labels na task; evidencia em `dev`; nao abrem PR
-- `DevOps` reúne tecnicamente de 1 a 5 tasks com as **quatro** `:accepted` em uma RC congelada `rc/X.Y.Z-rc.N`, sem criar task pai
+- `Design`, `UX` e `QA` estao temporariamente suspensos: nao criam subtasks, nao
+  aplicam labels e nao bloqueiam staging/RC
+- `Security` e o unico validador ativo antes da revalidacao do `Manager`
+- `DevOps` reúne tecnicamente de 1 a 5 tasks com `agent:security:accepted` em uma RC congelada `rc/X.Y.Z-rc.N`, sem criar task pai
 - a RC nasce do `master`, possui manifesto imutável de SHAs e é homologada como composição em `staging`
 - humano confere staging e move as tasks homologadas para **`Deploy`**
 - `DevOps` promove **a mesma RC congelada** diretamente para `master`; `staging` nunca é origem de master
 - qualquer mudança depois do freeze gera `rc.N+1` e nova homologação
 
+Alinhamento obrigatório dos submódulos: em `master`, cada gitlink aponta para
+a ponta de `master` do submódulo; em `dev`, para a ponta de `dev`; em
+`staging`, para a ponta de `staging`. `.gitmodules` declara a mesma branch.
+Refs `dev`/`staging` ausentes são criadas a partir de `master`; em seguida,
+atualiza-se o gitlink do pai por PR protegido. O deploy não está alinhado
+enquanto qualquer nível recursivo apontar para SHA diferente da ponta de sua
+branch correspondente.
+
+O ruleset de cada repositório deve proteger `master`, `dev` e `staging`, exigir
+Pull Request e tornar obrigatório o check `Submodule branch alignment` do
+workflow `Integration source gate`. A configuração nativa do GitHub protege o
+branch e exige o check; o workflow faz a comparação recursiva dos gitlinks.
+
 ## Ownership operacional
 
 Labels oficiais de review na task:
 
-- `agent:qa:accepted` / `agent:qa:rejected`
 - `agent:security:accepted` / `agent:security:rejected`
-- `agent:design:accepted` / `agent:design:rejected`
-- `agent:ux:accepted` / `agent:ux:rejected`
+
+Labels de `QA`, `Design` e `UX` existem apenas como historico/instrucoes
+documentadas; enquanto a suspensao estiver ativa, nao entram na fila, nao
+geram subtasks e nao sao gate de `staging`, `In Review`, `Deploy` ou `Done`.
 
 Regras obrigatorias:
 
 - nenhuma task deve ser atribuida a pessoas, bots ou fallbacks tecnicos como mecanismo de captura de trabalho
 - assignees do GitHub nao participam do roteamento operacional e devem ser removidos quando aparecerem em tasks da fila
-- `Developer` seleciona trabalho apenas quando a issue ainda esta aberta, foi criada por membro da equipe e nao existe pendencia ativa de decisao por `QA`, `Security`, `Design` ou `UX`
+- `Developer` seleciona trabalho apenas quando a issue ainda esta aberta, foi criada por membro da equipe e nao existe pendencia ativa de decisao por `Security`
 - `Developer` so trabalha na `task-{id_issue}` e entrega em **`dev`** por merge, sem abrir PR
 - `Developer` nao mexe diretamente em `master`, `main`, `dev`, `staging`
-- validadores registram apenas labels de aceite/recusa na task
-- quando um validador recusar, comenta de forma objetiva para o `Developer`
+- `Security` registra apenas labels de aceite/recusa na task
+- quando `Security` recusar, comenta de forma objetiva para o `Developer`
 - se um merge ou rebase se tornar confuso, não force a resolução: descarte e
   recrie a branch da task desde `master`, refaça a implementação e retroceda a
   task no Notion aos passos iniciais para uma nova rodada de evidências
-- somente o `DevOps` publica `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`; para o DevOps, `Deploy` vem antes de `Working`
+- somente o `DevOps` publica `Deploy` → `master` e promove RC congelada → `staging` / `In Review`; para o DevOps, `Deploy` vem antes de `Working`
 - agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
 
-### QA é local; GitHub Actions não decide QA
+### QA suspenso; GitHub Actions nao decide QA
 
-- A aprovação/reprovação de QA é responsabilidade do agent `Quality Assurance` executado localmente no workspace Paperclip.
-- QA executa localmente os testes automatizados adequados ao escopo, nos SHAs exatos entregues em `dev`, e registra comandos, SHAs, configuração usada (sem expor segredos) e resultados na task.
-- GitHub Actions, checks de PR e workflows não aprovam, reprovam, bloqueiam nem substituem a decisão de QA. Não aguarde uma execução de Actions/deploy para emitir aceite quando a evidência local necessária estiver completa.
-- Somente o agent QA, com base na revisão funcional local e nos requisitos da task, registra `agent:qa:accepted` ou `agent:qa:rejected`. Falha de Actions é sinal técnico suplementar; só afeta QA se for reproduzida localmente e demonstrar falha relevante do produto/teste.
+- Enquanto suspenso, `Quality Assurance` nao captura tasks, nao cria subtasks e
+  nao aplica `agent:qa:*`.
+- GitHub Actions, checks de PR e workflows não aprovam, reprovam, bloqueiam nem
+  substituem decisao de QA.
+- Quando QA for reativado por decisao humana, a decisao volta a ser local no
+  workspace Paperclip, com testes adequados ao escopo e evidencia registrada.
 
 ## Fronteira do CTO
 
 O CTO supervisiona o ecossistema e corrige diretamente o `agents-mcp` quando houver falha estrutural de instrucao, runner, workflow, ownership ou automacao.
 
-O CTO nao deve substituir a execucao normal de `Developer`, `Security`, `Quality Assurance`, `DevOps` ou `Sysadmin` quando a trilha ja pertence claramente a um desses agents.
+O CTO nao deve substituir a execucao normal de `Developer`, `Security`, `DevOps`
+ou `Sysadmin` quando a trilha ja pertence claramente a um desses agents.
 
-Quando as quatro `:accepted` coexistirem, a trilha de `staging`/`master` pertence ao `DevOps`, conforme `agents/skills/controleonline/shared-github-github-flow/SKILL.md` e `agents/skills/controleonline/shared-github-master-publication/SKILL.md`.
+Quando `Security` aceitar e o Manager revalidar a entrega com testes locais,
+a trilha de `staging`/`master` pertence ao `DevOps`, conforme
+`agents/skills/controleonline/shared-github-github-flow/SKILL.md` e
+`agents/skills/controleonline/shared-github-master-publication/SKILL.md`.
 
 ## Full Pipeline / Manager
 
@@ -188,7 +211,7 @@ Ordem:
 2. P2 Hotfix
 3. P3 Documentacao
 4. P4 Developer — rejeicoes de QA/Security
-5. P5 Validadores (QA → Security → Design → UX)
+5. P5 Security
 6. P6 Developer — novas tarefas
 7. P7 Higiene residual + board
 
@@ -205,11 +228,11 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
 
 1. **P1 DevOps**
    - Se existir RC homologada cujas tasks estejam em `Deploy`, promover exatamente essa RC congelada para `master`
-   - Senão, montar RC técnica de 1 a 5 tasks quadruplo-accepted, congelar manifesto e promover o snapshot para `staging` + `In Review`
+   - Senao, montar RC técnica de 1 a 5 tasks com `agent:security:accepted`, congelar manifesto e promover o snapshot para `staging` + `In Review`
    - `Deploy` autoriza a publicação da composição já homologada; não autoriza recompor SHAs
    - RC é artefato técnico, nunca task/issue agregadora
 2. **P2 Hotfix**
-   - Validar ou promover task `hotfix` ja implementada (QA / Security / Design / UX / DevOps → staging)
+   - Validar ou promover task `hotfix` ja implementada (Security / DevOps → staging)
    - Implementacao de hotfix e P6 Developer, nao P2
 3. **P3 Documentacao**
    - Technical Documenter
@@ -219,11 +242,11 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
    - A correcao vai ate a entrega publicavel: o Developer deve resolver falhas de workflow, Actions, build, branch, merge ou evidencia que impeçam a entrega
    - Se o workflow/build estiver falhando, deve investigar, corrigir, repetir a execucao, rerotear ou reconstruir a etapa; se o problema for a publicacao/deploy, deve encaminhar ao DevOps com evidencia objetiva
    - Uma correcao por rodada, antes de qualquer nova validacao
-5. **P5 Validadores**
-   - QA → Security → Design → UX
+5. **P5 Security**
+   - Security valida a entrega ativa; QA, Design e UX permanecem suspensos
 6. **P6 Developer — novos desenvolvimentos**
    - Exatamente uma issue elegivel
-   - Branch `task-{id}` a partir de `master`, merge em `dev`, handoff dos quatro validadores
+   - Branch `task-{id}` a partir de `master`, merge em `dev`, handoff para Security
 7. **P7 Higiene residual + board**
    - Somente com P1–P6 sem acao executavel
 

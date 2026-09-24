@@ -1,29 +1,14 @@
-# GitHub Flow — CI (substitui RC)
+# GitHub Flow — CI
 
-Este arquivo **prevalece** sobre as secoes de Release Candidate em `github-flow.md` a partir de 2026-08-28 (issues #181–#184).
+Este arquivo e apenas um complemento historico de CI. Ele **nao substitui** o
+rito de Release Candidate definido em `shared-github-github-flow/SKILL.md` e
+`shared-github-release-candidate/SKILL.md`.
 
-## Branches
+## Regra atual
 
-| Branch | Papel |
-| --- | --- |
-| `master` | Producao (git). Artefato de producao **nao** publica no push; Lave-Go domingo 06:00 / Controle Online segunda 08:00 |
-| `dev` | CI das tasks do Developer |
-| `staging` | Deltas quádruplo-accepted (ou hotfix) para conferencia humana |
-| `task-{id}` | Trabalho do Developer |
-
-## Fluxo
-
-```text
-master → task-{id} → merge dev
-  → Developer aplica agent:qa + agent:security + agent:design + agent:ux
-  → 4x :accepted
-  → DevOps merge SOMENTE task-{id} → staging + coluna In Review
-  → humano → coluna Deploy
-  → DevOps merge delta → master
-  → quatro accepts: Done | sem quarteto: Working + segunda validação
-```
-
-- Nao criar task pai RC.
-- Nao mergear `dev` inteiro em `staging`.
-- Recusa de qualquer validador: issue open, volta ao Developer na mesma `task-{id}`.
-- Hotfix pode entrar em staging antes do quadruplo; Deploy humano continua obrigatorio para master.
+- `dev` recebe merges por task a partir de `task-{id}`.
+- `staging` recebe somente RC congelada `rc/X.Y.Z-rc.N`.
+- `master` recebe somente a mesma RC homologada em `Deploy`.
+- `Security` e o gate ativo antes da revalidacao do Manager.
+- `QA`, `Design` e `UX` estao suspensos e nao bloqueiam RC.
+- Hotfix tambem precisa de RC congelada antes de master.
