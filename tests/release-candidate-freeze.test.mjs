@@ -13,6 +13,9 @@ test('release flow uses frozen RC with at most five tasks', () => {
   assert.match(rc, /rc\/X\.Y\.Z-rc\.N/);
   assert.match(publication, /mesma RC/i);
   assert.match(publication, /Nunca use `staging` como origem/i);
+  assert.match(rc, /package\.json\.version.*app\.json\.expo\.version/i);
+  assert.match(rc, /Antes de criar\/congelar a RC/i);
+  assert.match(rc, /Nunca corrija arquivos de versão depois do freeze/i);
 });
 
 test('dev remains task-only while staging and master are RC-only', () => {
