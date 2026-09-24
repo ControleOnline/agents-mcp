@@ -14,6 +14,7 @@ Esta pasta concentra as instruções reutilizáveis do `agents-mcp`.
 | Categoria | Conteúdo |
 |-----------|----------|
 | `github/` | fluxo de branches, issues, workflow, publicação master |
+| `published-module-dependencies/` | resolução dev/prod, lockfiles, versões RC e tags de pacotes |
 | `documentation/` | governança de wiki técnica e tutorial |
 | `security/` | guardrails de segurança editorial e operacional |
 | `quality/` | qualidade de código e critérios de conclusão |

@@ -17,6 +17,11 @@ No Manager, DevOps e **P1**. Hotfix e **P2**.
 
 A RC e artefato tecnico, nao task agregadora. Branch obrigatoria: `rc/X.Y.Z-rc.N`; manifesto obrigatorio: `.release/rc-manifest.json`. Maximo de 5 tasks por RC.
 
+Ao criar uma RC ou publicar pacote, siga tambem
+`agents/skills/controleonline/shared-github-published-module-dependencies/SKILL.md`:
+versoes dos apps sao atualizadas antes do freeze; tags/pacotes estaveis so sao
+publicados no Deploy autorizado, a partir dos SHAs congelados.
+
 ## Execucao via Manager
 
 DevOps nao descobre nem captura issues/tasks diretamente do GitHub. Execute

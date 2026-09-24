@@ -5,6 +5,8 @@
 Produção publica uma **Release Candidate congelada e previamente homologada em staging**. A RC é artefato técnico, nunca issue/task agregadora, e contém de 1 a 5 tasks.
 
 Leia antes: `shared-github-github-flow/SKILL.md`, `shared-github-release-candidate/SKILL.md` e `shared-github-conflict-resolution/SKILL.md`.
+Para dependencias first-party e tags de pacotes, aplique tambem
+`shared-github-published-module-dependencies/SKILL.md`.
 
 ## Pré-requisitos
 
@@ -25,12 +27,25 @@ Leia antes: `shared-github-github-flow/SKILL.md`, `shared-github-release-candida
 6. Promova `rc/X.Y.Z-rc.N` diretamente para `master` por merge/PR conforme a proteção. **Nunca use `staging` como origem.**
 7. O resultado em master deve representar o mesmo snapshot homologado; composição diferente falha fechado.
 8. Gere a tag estável `vX.Y.Z` somente depois da promoção verde.
-9. Rode smokes pós-deploy e registre o SHA anterior para rollback determinístico.
-10. Manager decide o estado final de cada task individual.
+9. Publique/tagueie cada pacote first-party a partir do package version e SHA
+   exatos registrados no manifesto congelado; Packagist deve receber a tag VCS
+   do pacote PHP e npm o package version aprovado. Nunca retagueie versão
+   existente.
+10. Confirme que instalação via lockfiles não reescreveu manifests, versões ou
+    SHAs aprovados; verifique `vendor/` no PHP e `node_modules/` no frontend.
+11. Rode smokes pós-deploy e registre o SHA anterior para rollback determinístico.
+12. Manager decide o estado final de cada task individual.
 
 ## Versão
 
 - `package.json` / `app.json`: `X.Y.Z`.
+- Atualize todos os arquivos de versao da aplicacao para `X.Y.Z` antes do freeze
+  da RC; `rc.N` e apenas o numero do candidato e nao altera a versao estavel do
+  app.
+- O manifesto congelado lista, por dependencia first-party, nome, ecossistema,
+  versao exata, repositorio, SHA e tag pretendida. No Deploy, NPM usa o valor
+  `package.json.version`; Composer/Packagist recebe tag VCS derivada da versao
+  exata aprovada para aquele package.
 - Branch técnica: `rc/X.Y.Z-rc.N`.
 - Uma RC pode conter até 5 tasks; a versão estável representa o lote homologado.
 - Alteração depois do freeze gera `rc.N+1`.

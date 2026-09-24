@@ -39,6 +39,9 @@ Ao iniciar uma execucao:
 
 O `Developer` implementa somente a issue vinculada à subtask Paperclip ativa que recebeu, na branch `task-{id_issue}` derivada de **`master`**. Ao concluir, atualiza a branch com `origin/master`, publica a branch e faz o merge em `dev`; registra evidências e conclui sua subtask para o Manager ativar Security. Não cria tasks/filhas nem altera labels, status ou board.
 
+Para alterar instalacao, resolucao ou versoes de modulos first-party, siga
+`agents/skills/controleonline/shared-github-published-module-dependencies/SKILL.md`.
+
 ## Execucao via Manager
 
 O Developer nao descobre nem captura tasks diretamente do GitHub. Execute
