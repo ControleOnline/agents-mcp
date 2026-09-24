@@ -83,8 +83,8 @@ async function findOpenPullRequest(repository, branch, base, fetchImpl) {
   return pulls[0] ?? null;
 }
 
-async function queueProtectedReset({ repository, target, targetSha, sourceSha, sourceTree, release, fetchImpl, log }) {
-  const branchName = `automation/reset-${release.branch.replaceAll('/', '-')}-${target}-${targetSha.slice(0, 8)}-${sourceSha.slice(0, 8)}`;
+async function queueProtectedReset({ repository, target, targetSha, sourceSha, sourceTree, release, sourceBranch, fetchImpl, log }) {
+  const branchName = `automation/reset-${sourceBranch.replaceAll('/', '-')}-${target}-${targetSha.slice(0, 8)}-${sourceSha.slice(0, 8)}`;
   let pull = await findOpenPullRequest(repository, branchName, target, fetchImpl);
   if (pull?.state === 'closed' && !pull.merged_at) {
     pull = await githubRequest(`/repos/${repository}/pulls/${pull.number}`, {
@@ -102,7 +102,7 @@ async function queueProtectedReset({ repository, target, targetSha, sourceSha, s
       const resetCommit = await githubRequest(`/repos/${repository}/git/commits`, {
         method: 'POST',
         body: JSON.stringify({
-          message: `chore(release): align ${target} with ${release.branch}`,
+          message: `chore(release): align ${target} with ${sourceBranch}`,
           tree: sourceTree,
           parents: [targetSha],
         }),
@@ -125,18 +125,18 @@ async function queueProtectedReset({ repository, target, targetSha, sourceSha, s
       pull = await githubRequest(`/repos/${repository}/pulls`, {
         method: 'POST',
         body: JSON.stringify({
-          title: `Reset ${target} to RC ${release.version} (${release.branch})`,
+          title: `Reset ${target} to ${sourceBranch === release.branch ? `RC ${release.version} (${release.branch})` : 'master'}`,
           head: branchName,
           base: target,
           body: [
-            `Align the complete ${target} tree with the frozen release candidate **${release.branch}**.`,
+            `Align the complete ${target} tree with **${sourceBranch}**${sourceBranch === release.branch ? ` (frozen RC ${release.version})` : ''}.`,
             '',
             `Source commit: \`${sourceSha}\`; reset tree: \`${resetRef.object.sha}\`.`,
             'This is a normal pull request: repository rules and required checks remain enforced.',
           ].join('\n'),
         }),
       }, fetchImpl);
-      log(`PR ${repository}#${pull.number}: ${target} -> ${release.branch}`);
+        log(`PR ${repository}#${pull.number}: ${sourceBranch} -> ${target}`);
     }
   }
 
@@ -150,7 +150,7 @@ async function queueProtectedReset({ repository, target, targetSha, sourceSha, s
       method: 'PUT',
       body: JSON.stringify({ merge_method: 'merge' }),
     }, fetchImpl);
-    log(`MERGED ${repository}#${pull.number}: ${target} now matches RC ${release.version}`);
+    log(`MERGED ${repository}#${pull.number}: ${target} now matches ${sourceBranch}`);
     return 'merged';
   } catch (error) {
     if ([405, 409, 422].includes(error.status)) {
@@ -191,11 +191,11 @@ export async function resetIntegrationBranches({
         log(`SKIP ${repo.full_name}: no master branch`);
         return;
       }
-      const sourceSha = release.repositories[repo.full_name] || masterRef.object.sha;
-      const sourceCommit = await githubRequest(`/repos/${repo.full_name}/git/commits/${sourceSha}`, {}, fetchImpl);
-      const sourceTree = sourceCommit.tree.sha;
-
       for (const target of BRANCHES) {
+        const sourceBranch = target === 'dev' ? 'master' : release.branch;
+        const sourceSha = target === 'dev' ? masterRef.object.sha : (release.repositories[repo.full_name] || masterRef.object.sha);
+        const sourceCommit = await githubRequest(`/repos/${repo.full_name}/git/commits/${sourceSha}`, {}, fetchImpl);
+        const sourceTree = sourceCommit.tree.sha;
         let targetRef;
         try {
           targetRef = await githubRequest(`/repos/${repo.full_name}/git/ref/heads/${target}`, {}, fetchImpl);
@@ -224,7 +224,7 @@ export async function resetIntegrationBranches({
         }
         if (!apply) {
           pending += 1;
-          log(`DRY-RUN PR ${repo.full_name}:${target} -> ${release.branch}`);
+          log(`DRY-RUN PR ${repo.full_name}:${target} -> ${sourceBranch}`);
           continue;
         }
         const result = await queueProtectedReset({
@@ -234,6 +234,7 @@ export async function resetIntegrationBranches({
           sourceSha,
           sourceTree,
           release,
+          sourceBranch,
           fetchImpl,
           log,
         });
