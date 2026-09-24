@@ -15,10 +15,9 @@ const manifest = {
   frozen: true,
 };
 
-test('dev accepts only individual task branches', () => {
-  assert.equal(validateIntegrationSource({ sourceBranch: 'task-827', targetBranch: 'dev' }).allowed, true);
-  for (const sourceBranch of ['staging', 'master', 'rc/1.10.27-rc.1', 'task-1-2']) {
-    assert.equal(validateIntegrationSource({ sourceBranch, targetBranch: 'dev' }).allowed, false);
+test('dev accepts every source without requiring an RC', () => {
+  for (const sourceBranch of ['task-827', 'staging', 'master', 'rc/1.10.27-rc.1', 'automation/reset-master-dev']) {
+    assert.equal(validateIntegrationSource({ sourceBranch, targetBranch: 'dev' }).allowed, true);
   }
 });
 
@@ -53,9 +52,9 @@ test('only the exact reset-automation governance branch and file set may target 
     sourceBranch: 'automation/reset-integration-branches',
     targetBranch: 'master',
     changedFiles: [
-      '.github/workflows/integration-source-gate.yml',
-      '.github/workflows/reset-aggregate-branches.yml',
-      'workers/automate/scripts/reset-integration-branches.mjs',
+    '.github/workflows/integration-source-gate.yml',
+    '.github/workflows/reset-aggregate-branches.yml',
+    'workers/automate/scripts/reset-integration-branches.mjs',
     ],
   });
   assert.equal(allowed.allowed, true);

@@ -44,8 +44,12 @@ jobs:
             process.exit(0);
           }
           if (BASE_REF === 'dev') {
-            if (/^task-[1-9][0-9]*$/.test(HEAD_REF)) process.exit(0);
-            throw new Error('dev only accepts task-<numeric issue>.');
+            console.log('dev accepts all sources; no RC is required.');
+            process.exit(0);
+          }
+          if (BASE_REF === 'staging' && /^automation\/reset-rc-[0-9]+\.[0-9]+\.[0-9]+-rc\.[1-9][0-9]*-staging-/.test(HEAD_REF)) {
+            console.log('Accepted the reset branch generated from the frozen RC manifest.');
+            process.exit(0);
           }
           if (!/^rc\/[0-9]+\.[0-9]+\.[0-9]+-rc\.[1-9][0-9]*$/.test(HEAD_REF)) {
             throw new Error(`${BASE_REF} only accepts a frozen rc/X.Y.Z-rc.N source.`);
@@ -53,7 +57,7 @@ jobs:
           NODE
 
       - name: Validate frozen RC manifest
-        if: github.base_ref != 'dev' && github.head_ref != 'task-paperclip-status-distinction' && github.head_ref != 'automation/reset-integration-branches'
+        if: github.base_ref != 'dev' && github.head_ref != 'task-paperclip-status-distinction' && github.head_ref != 'automation/reset-integration-branches' && !startsWith(github.head_ref, 'automation/reset-rc-')
         env:
           HEAD_REF: ${{ github.head_ref }}
         run: |
