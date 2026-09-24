@@ -51,6 +51,9 @@ function githubFixture({ mergeBlocked = true } = {}) {
     if (url.pathname === '/repos/ControleOnline/sample/git/commits/source-sha') {
       return response(200, { tree: { sha: 'rc-tree' } });
     }
+    if (url.pathname === '/repos/ControleOnline/sample/git/commits/sample-master') {
+      return response(200, { tree: { sha: 'master-tree' } });
+    }
     if (url.pathname === '/repos/ControleOnline/sample/git/ref/heads/dev') {
       return response(200, { object: { sha: 'dev-sha' } });
     }
@@ -65,7 +68,7 @@ function githubFixture({ mergeBlocked = true } = {}) {
     }
     if (method === 'POST' && url.pathname === '/repos/ControleOnline/sample/git/commits') {
       assert.deepEqual(body.parents, ['dev-sha']);
-      assert.equal(body.tree, 'rc-tree');
+      assert.equal(body.tree, 'master-tree');
       return response(201, { sha: 'reset-commit' });
     }
     if (method === 'POST' && url.pathname === '/repos/ControleOnline/sample/git/refs') {
@@ -104,7 +107,7 @@ test('dry-run proposes normal PRs and creates missing refs without any writes', 
   });
 
   assert.deepEqual(result, { repositories: 1, merged: 0, pending: 1, created: 1, unchanged: 0, errors: [] });
-  assert.ok(log.some((line) => line.includes('DRY-RUN PR ControleOnline/sample:dev')));
+  assert.ok(log.some((line) => line.includes('DRY-RUN PR ControleOnline/sample:dev -> master')));
   assert.ok(log.some((line) => line.includes('DRY-RUN CREATE ControleOnline/sample:staging')));
   assert.ok(calls.every(({ method }) => method === 'GET'));
 });
@@ -125,6 +128,7 @@ test('apply uses a protected pull request reset; it never force-updates an exist
   assert.ok(calls.every(({ method, path }) => !(method === 'PATCH' && path.includes('/git/refs/'))));
   const resetCommit = calls.find(({ method, path }) => method === 'POST' && path.endsWith('/git/commits'));
   assert.deepEqual(resetCommit.body.parents, ['dev-sha']);
+  assert.equal(resetCommit.body.tree, 'master-tree');
 });
 
 test('apply merges the reset through GitHub when repository rules and checks permit it', async () => {

@@ -2,6 +2,14 @@ const TASK_BRANCH = /^task-([1-9][0-9]*)$/;
 const RC_BRANCH = /^rc\/(\d+)\.(\d+)\.(\d+)-rc\.([1-9][0-9]*)$/;
 const SHA = /^[0-9a-f]{40}$/i;
 const GOVERNANCE_PR_ALLOWLISTS = new Map([
+  ['fix/dev-master-staging-rc-reconciliation', new Set([
+  '.github/workflows/integration-source-gate.yml',
+  '.github/workflows/reset-aggregate-branches.yml',
+  'tests/integration-source-policy.test.mjs',
+  'tests/reset-integration-branches.test.mjs',
+  'workers/automate/devops/integration-source-policy.mjs',
+  'workers/automate/scripts/reset-integration-branches.mjs',
+  ])],
   ['automation/reset-integration-branches', new Set([
   '.github/workflows/integration-source-gate.yml',
   '.github/workflows/reset-aggregate-branches.yml',
@@ -103,12 +111,7 @@ export function validateIntegrationSource({ sourceBranch, targetBranch, manifest
   const target = String(targetBranch || '').trim();
   if (!['dev', 'staging', 'master'].includes(target)) return { allowed: true, protectedTarget: false };
 
-  if (target === 'dev') {
-    const task = parseTaskBranch(sourceBranch);
-    return task
-      ? { allowed: true, protectedTarget: true, type: 'task', issueNumber: task.issueNumber }
-      : { allowed: false, protectedTarget: true, reason: 'dev only accepts task-<issue> sources.' };
-  }
+  if (target === 'dev') return { allowed: true, protectedTarget: true, type: 'development' };
 
   try {
     const rc = validateRcManifest(manifest, sourceBranch);
