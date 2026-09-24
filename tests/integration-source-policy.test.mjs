@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import fs from 'node:fs';
 import { parseRcBranch, validateGovernanceSource, validateIntegrationSource, validateRcManifest } from '../workers/automate/devops/integration-source-policy.mjs';
 
 const manifest = {
@@ -36,6 +37,13 @@ test('RC is limited to five unique tasks and immutable manifest identity', () =>
   assert.throws(() => validateRcManifest({ ...manifest, tasks: [1,1] }, manifest.branch), /unique/);
   assert.throws(() => validateRcManifest({ ...manifest, frozen: false }, manifest.branch), /frozen/);
   assert.throws(() => validateRcManifest({ ...manifest, branch: 'rc/1.10.28-rc.2' }, manifest.branch), /does not match/);
+});
+
+test('the GitHub RC gate requires product metadata to match the frozen version', () => {
+  const workflow = fs.readFileSync('.github/workflows/integration-source-gate.yml', 'utf8');
+  assert.match(workflow, /package\.json/);
+  assert.match(workflow, /app\.json/);
+  assert.match(workflow, /pkg\.version !== m\.version \|\| app\.expo\?\.version !== m\.version/);
 });
 
 test('aggregate/manual sources remain forbidden', () => {
