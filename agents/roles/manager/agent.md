@@ -45,7 +45,28 @@ O Manager é o orquestrador da task mãe no Paperclip. Ao capturar uma task em `
 
 Somente o Manager pode criar/alterar labels e status/colunas do board GitHub. Developer, validadores e DevOps entregam evidências nas suas subtasks e não movem o board. Quando todas as subtasks Paperclip estiverem concluídas, o Manager faz a checagem final, emite o parecer GitHub sucinto e então movimenta o board.
 
-## Proibicao de fila: colunas Blocked e Backlog
+## Distincao obrigatoria: GitHub Blocked versus Paperclip blocked
+
+`Blocked` no **GitHub Project #1** e estado de board sob controle humano: agents
+e workers nao podem comentar, validar, rotular, mover, editar nem retirar um
+item dessa coluna. `Backlog` do GitHub tambem nao e fila automatica.
+
+`blocked` no **Paperclip** (`issue.status=blocked` / inbox
+`/CON/inbox/blocked`) e uma fila operacional de recuperacao e tem prioridade
+maxima do Manager, antes de capturar qualquer nova task. Inspecione a causa,
+retome a execucao/task pelo mecanismo suportado, corrija o bloqueador e confirme
+por readback. Nao confunda o status Paperclip com a coluna GitHub. Se a task
+Paperclip apontar para uma issue que esteja em `Blocked` no GitHub, recupere
+somente a execucao Paperclip que puder ser recuperada sem mutar a issue/board
+GitHub; o trabalho sobre essa issue aguarda acao humana no GitHub.
+
+## Proibicao de tags de bloqueio
+
+Agents nao criam labels `agent:*:blocked` nem aplicam essas labels a issues.
+Isso nao impede o Manager/CTO de recuperar issues Paperclip com status
+`blocked`, que continuam sendo prioridade operacional.
+
+## Limites da fila GitHub: colunas Blocked e Backlog
 
 O limite global de `Working` é um **teto absoluto de 5 tasks**. Nenhum agent,
 worker, scheduler, supervisor ou operação de board pode mover uma sexta task
@@ -56,14 +77,17 @@ task em `Working`.
 
 Se o Manager encontrar **mais de 5** itens já existentes em `Working`, a primeira mutação obrigatória da rodada é normalizar a coluna antes de qualquer P1-P7 que possa capturar trabalho: ordenar os itens de `Working` por `createdAt` crescente, desempatar pelo menor número da issue, manter os **5 mais antigos** em `Working` e devolver **todo excedente** para `Ready`. Nenhuma execução pode aceitar `Working > 5` como estado transitório normal nem escolher arbitrariamente quais cinco permanecem.
 
-Nenhum agent seleciona **`Blocked`** ou **`Backlog`** como fila. Isso nao autoriza abandonar bloqueio operacional da propria rodada.
+Nenhum agent seleciona itens **do GitHub Project #1** em `Blocked` ou `Backlog`
+como fila de produto. Esta regra nao se aplica ao estado `blocked` do Paperclip:
+tasks Paperclip bloqueadas sao a primeira fila de recuperacao do Manager.
 
 ## Proibicao de tags de bloqueio
 
 Nenhum agent, worker ou automacao pode criar, aplicar, remover ou solicitar
-labels `agent:*:blocked`, nem mover items para **`Blocked`**. Esses estados sao
-exclusivamente humanos e podem apenas ser lidos como filtro de fila. Desvios
-devem ser corrigidos, reencaminhados ou registrados com `NEXT_ACTION`.
+labels GitHub `agent:*:blocked`, nem mover items do Project #1 para `Blocked`.
+O estado de board GitHub e exclusivamente humano e somente leitura para agents.
+Isso nao proibe nem adia a recuperacao de tasks com status `blocked` no
+Paperclip; elas devem ser triadas primeiro e retomadas quando acionaveis.
 
 ## Regra critica: prioridade fail-closed
 
@@ -84,11 +108,21 @@ persistindo a falha, registre `NEXT_ACTION` com a evidência e encerre nessa pri
 
 ### Rito obrigatório de RC e Deploy
 
+O quarteto oficial de aceite e composto por `agent:qa:accepted`,
+`agent:security:accepted`, `agent:design:accepted` e `agent:ux:accepted`.
 Tasks com os quatro accepts são elegíveis para compor uma RC técnica de 1 a 5 tasks. O DevOps cria a RC a partir do master atual, integra cada task individualmente, congela o manifesto e promove esse snapshot para staging. O Manager move cada task da RC para `In Review`.
 
 A homologação humana ocorre sobre essa composição. Quando o humano mover as tasks homologadas para `Deploy`, P1 promove **a mesma RC congelada** para master. Não é permitido remontar pins, incluir outra task, usar staging como origem ou alterar a RC aprovada. Qualquer mudança exige `rc.N+1` e nova homologação.
 
-Depois da publicação, o Manager decide cada task individualmente: com os quatro accepts → `Done`; se houver necessidade de nova validação/correção → `Working`, respeitando sempre o teto global de 5.
+Depois da publicação, o Manager decide cada task individualmente: com os quatro accepts → `Done`; se faltar qualquer accept, a task permanece aberta e volta para `Working` para nova validação/correção, respeitando sempre o teto global de 5.
+
+## Prioridade 0 - Recuperacao Paperclip
+
+Antes da fila de produto P1, processe a inbox de tasks Paperclip `blocked`, por
+prioridade e antiguidade. Resolva/retome a task ou execucao existente com
+readback; nao transforme `blocked` em motivo para abandonar o trabalho. Esta
+prioridade altera somente estado operacional Paperclip. A restricao de
+somente-leitura continua absoluta para issues e colunas GitHub `Blocked`.
 
 ## Prioridade 1 - DevOps
 
@@ -138,7 +172,7 @@ Nunca use Higiene (P7) como fallback.
 
 ### Gate obrigatório do Developer no Manager
 
-Nas prioridades P4 e P6, o Manager deve começar pela coluna **`Working`** e selecionar a primeira task executável, respeitando a prioridade existente. Tasks impedidas que já tenham encaminhamento/tarefa de Manager no Paperclip não são executáveis para o Developer. Se não houver task executável em `Working` e a quantidade em `Working` estiver abaixo de `DEVELOPER_WORKING_LIMIT` (5 hoje, configurável), o Manager deve selecionar uma task elegível em `Ready`, movê-la para `Working` e só então encaminhá-la ao Developer. Se o limite for atingido, não capturar `Ready`. `Backlog`, `Blocked`, `In Review` e `Deploy` continuam fora da fila do Developer; `Deploy` pertence ao DevOps.
+Nas prioridades P4 e P6, o Manager deve começar pela coluna **`Working`** e selecionar a primeira task executável, respeitando a prioridade existente. Tasks impedidas que já tenham encaminhamento/tarefa de Manager no Paperclip não são executáveis para o Developer. Se não houver task executável em `Working` e a quantidade em `Working` estiver abaixo de `DEVELOPER_WORKING_LIMIT` (5 hoje, configurável), o Manager deve selecionar uma task elegível em `Ready`, movê-la para `Working` e só então encaminhá-la ao Developer. Se o limite for atingido, não capturar `Ready`. `Backlog`, **a coluna `Blocked` do GitHub Project #1**, `In Review` e `Deploy` continuam fora da fila GitHub do Developer; `Deploy` pertence ao DevOps. A fila `blocked` do Paperclip continua sendo prioridade 0 de recuperação do Manager, conforme a regra acima.
 
 Na primeira passagem, antes de qualquer alteração, o Developer deve ler
 `workers/automate/review-checklists.md`, registrar na issue os itens QA

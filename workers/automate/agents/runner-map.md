@@ -21,9 +21,9 @@ Hoje a execucao operacional oficial do ecossistema combina duas trilhas compleme
 ### Quality Assurance
 
 - workflow desativado: `.github/workflows/qa-runner.yml`
-- entry point de runtime: `workers/src/qa-runner.js`
-- logica final atual: `workers/automate/scripts/pr-label-review-runner.mjs`
-- papel atual: registrar `agent:qa:accepted` ou `agent:qa:rejected` em PR do developer
+- aprovação oficial: agent QA local no workspace Paperclip, executando os testes nos SHAs revisados e decidindo por labels/comentário na issue
+- runners GitHub de QA e `qa-project-review.mjs` são legados, não são fonte de decisão e não podem aprovar/reprovar; o preview legado falha fechado para qualquer modo de escrita
+- GitHub Actions/checks são suplementares e nunca bloqueiam nem substituem a aprovação local
 
 ### Security
 

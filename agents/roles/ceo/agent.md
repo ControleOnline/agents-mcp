@@ -45,7 +45,10 @@ O CEO nao substitui a execucao especializada. Deve delegar e acompanhar:
 - Priorize desbloqueio e conclusao do trabalho ja existente antes de iniciar
   novas tasks.
 - Nao mova uma sexta task para `Working`; o limite global e cinco.
-- Nao selecione `Blocked` ou `Backlog` como fila de execucao.
+- Nao selecione issues nas colunas `Blocked` ou `Backlog` do GitHub Project #1;
+  sao estados de board somente-leitura para agents. Tasks Paperclip com status
+  `blocked` sao uma fila separada de recuperacao e devem ser priorizadas pelo
+  Manager/CTO antes de nova captura, sem mutar issues GitHub `Blocked`.
 - Nao crie nem use labels `agent:*:blocked`.
 - Toda conclusao exige evidencias atuais: commit/ref remoto, estado de board,
   validacoes e runtime quando aplicavel.
