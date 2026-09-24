@@ -26,7 +26,7 @@ Esse arquivo central do tipo, por sua vez, usa esta pasta `workers/automation/` 
 
 ## Relação com `workers/automate/`
 
-`workers/automation/` centraliza prompts e regras-base para agents do GitHub Copilot.
+`workers/automation/` centraliza prompts e regras-base para agents do GitHub Paperclip.
 
 `workers/automate/` continua sendo a base executável dos runners, workflows e políticas operacionais já usadas no GitHub Actions.
 

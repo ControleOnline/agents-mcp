@@ -15,8 +15,6 @@ Ele:
 - prioriza a retomada automatica de uma trilha stale do proprio `Developer` antes de capturar task nova
 - prioriza antes de tudo bugs, depois as tasks devolvidas por `QA` ou `Security` com `agent:qa:rejected` ou `agent:security:rejected`, depois `enhancement` e por fim `feature`
 - nao congela a fila apenas porque existe outra issue com `agent:developer`; o bloqueio so vale para execucao tecnica realmente ativa e recente
-- atribui preferencialmente `github-copilot[bot]` com instrucoes de `Developer` para a proxima task elegivel
-- pode operar com fallback de `AGENT_ASSIGNEE_OVERRIDE` quando o Copilot cloud agent nao estiver disponivel no repositorio alvo
 - registra comentario objetivo quando a atribuicao ou retomada for executada
 - nos runners do GitHub Actions, deve preferir `GH_TOKEN`; o GitHub App fica apenas como fallback quando esse token nao estiver disponivel
 
@@ -34,6 +32,6 @@ Ele:
 - task nova em `Ready` sem `agent:*` pertence inicialmente a `Developer`; nenhuma nova captura ocorre quando `Working` atingir o limite lido no Project #1
 - `Ready` e `Working` são a fila operacional compartilhada; todos os agents priorizam `Working` antes de `Ready`. `In Review` só ocorre após os quatro gates aprovados, e DevOps usa `Deploy` antes de `Working`
 - execucao stale do proprio `Developer` deve ser retomada antes de abrir nova captura
-- override manual ativo deve ser tratado como estado distinto, nao como captura first-party do Copilot
+- override manual ativo deve ser tratado como estado distinto, nao como captura automatica
 - usar `master` como branch base operacional
 - delegar a execucao para o agent `Developer` do repositorio alvo

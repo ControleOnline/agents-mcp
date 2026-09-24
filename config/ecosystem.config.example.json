@@ -83,7 +83,7 @@
       "CTO_CORE_REPOSITORY": "",
       "TECHNICAL_LEAD_CORE_REPOSITORY": "",
       "DEVELOPER_AGENT_LOGIN": "",
-      "DEVELOPER_COPILOT_BASE_REF": "master"
+      "DEVELOPER_EXTERNAL_AGENT_BASE_REF": "master"
     },
     "description": "Overrides opcionais para workers em workers/src e workers/automate. Valores vazios = usar default do script ou do ambiente CI."
   }

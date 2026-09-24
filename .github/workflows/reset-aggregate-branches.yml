@@ -1,17 +1,12 @@
-name: Reconcile dev to master and staging to the published RC
+name: Align aggregate submodules to their matching branch
 
 on:
-  # Cross-repository workflow_run events are not delivered to this repository.
-  # Poll the canonical release manifest so a master publication is reconciled
-  # even if its dispatch event is lost or unavailable.
+  # Recheck branch refs and aggregate gitlinks regularly. The parent gitlink
+  # must match the child repository head on the same branch name.
   schedule:
     - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
-      rc_branch:
-        description: Frozen RC branch (leave empty to use the RC published in api-community/master)
-        required: false
-        type: string
 
 permissions:
   contents: read
@@ -29,8 +24,7 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 20
-      - name: Reconcile protected refs using the published frozen RC
+      - name: Align dev and staging submodule refs
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          RC_BRANCH: ${{ inputs.rc_branch }}
         run: node workers/automate/scripts/reset-integration-branches.mjs --apply

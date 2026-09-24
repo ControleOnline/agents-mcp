@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 
 const GITHUB_API_URL = 'https://api.github.com/graphql';
-const DEFAULT_AGENT_LOGIN = 'github-copilot[bot]';
-const DEFAULT_AGENT_LOGINS = 'github-copilot[bot],copilot-swe-agent,copilot';
+const DEFAULT_AGENT_LOGIN = 'external-coding-agent';
+const DEFAULT_AGENT_LOGINS = 'external-coding-agent,external-coding-agent,external-agent';
 const PROTECTED_PROJECT_STATUSES = new Set(['blocked', 'backlog', 'in review', 'deploy', 'done']);
 
 function env(name, fallback = '') {
@@ -250,7 +250,7 @@ async function assignIssueToAgent(issueId, actorId, repositoryId, baseRef, custo
     }`,
     { issueId, actorId, repositoryId, baseRef, customInstructions, model: model || null },
     {
-      'GraphQL-Features': 'issues_copilot_assignment_api_support,coding_agent_model_selection',
+      'GraphQL-Features': 'external_assignment_disabled,external_agent_model_selection',
     }
   );
 }
@@ -331,8 +331,8 @@ async function main() {
   const agentLogins = new Set(
     parseCsv(env('DEVELOPER_AGENT_LOGINS', DEFAULT_AGENT_LOGINS)).map((login) => login.toLowerCase())
   );
-  const baseRef = env('DEVELOPER_COPILOT_BASE_REF', 'master');
-  const model = env('DEVELOPER_COPILOT_MODEL');
+  const baseRef = env('DEVELOPER_EXTERNAL_AGENT_BASE_REF', 'master');
+  const model = env('DEVELOPER_EXTERNAL_AGENT_MODEL');
 
   const data = await getProjectSnapshot(org, projectNumber);
   const project = data?.organization?.projectV2;

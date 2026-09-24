@@ -47,6 +47,11 @@ jobs:
             console.log('dev accepts all sources; no RC is required.');
             process.exit(0);
           }
+          const alignmentBranch = /^automation\/align-(dev|staging)-(dev|staging)-[0-9a-f]{8}-[0-9a-f]{8}$/.exec(HEAD_REF);
+          if (alignmentBranch && alignmentBranch[1] === alignmentBranch[2] && BASE_REF === alignmentBranch[1]) {
+            console.log(`Accepted automated submodule alignment for ${BASE_REF}.`);
+            process.exit(0);
+          }
           if (BASE_REF === 'staging' && /^automation\/reset-rc-[0-9]+\.[0-9]+\.[0-9]+-rc\.[1-9][0-9]*-staging-/.test(HEAD_REF)) {
             console.log('Accepted the reset branch generated from the frozen RC manifest.');
             process.exit(0);
@@ -56,8 +61,16 @@ jobs:
           }
           NODE
 
+      - name: Submodule branch alignment
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: node workers/automate/scripts/verify-submodule-branches.mjs
+
       - name: Validate frozen RC manifest
-        if: github.base_ref != 'dev' && github.head_ref != 'task-paperclip-status-distinction' && github.head_ref != 'automation/reset-integration-branches' && github.head_ref != 'fix/dev-master-staging-rc-reconciliation' && !startsWith(github.head_ref, 'automation/reset-rc-')
+        if: github.base_ref != 'dev' && github.head_ref != 'task-paperclip-status-distinction' && github.head_ref != 'automation/reset-integration-branches' && github.head_ref != 'fix/dev-master-staging-rc-reconciliation' && github.head_ref != 'fix/con-552-paperclip-direct-governance' && !startsWith(github.head_ref, 'automation/reset-rc-') && !startsWith(github.head_ref, 'automation/align-')
         env:
           HEAD_REF: ${{ github.head_ref }}
         run: |

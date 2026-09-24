@@ -10,20 +10,20 @@ sinal suplementar e jamais substituem testes locais ou impedem a decisão.
 O GitHub Manager Runner não lê comentários/reviews para inferir QA nem promove
 tasks a `In Review`; essa transição pertence ao Manager após os gates locais.
 
-O fluxo operacional não usa workflow, composite action, wrapper ou assignment Copilot. Consulte as skills de fila, handoff e execução dos agents em `agents/skills/controleonline/`.
+O fluxo operacional não usa workflow, composite action, wrapper ou assignment Paperclip. Consulte as skills de fila, handoff e execução dos agents em `agents/skills/controleonline/`.
 
-Existem trilhas oficiais e complementares:
+Existe uma trilha operacional oficial:
 
-- **Manager Worker + composite actions** (acima) — canal oficial de push → orquestração de issue + assignment do Copilot para QA / Security / Technical Documenter
-- os agents pares no ChatGPT são o canal oficial para execução normal por papel, investigação, correção de código, revisão técnica e handoff operacional
-- o workflow `.github/workflows/github-operations.yml` e os runners em `workers/src/` / `workers/automate/` continuam para mutações de Project, dispatch de PR e manutenção recorrente
+- os agents do Paperclip executam diretamente os papeis usando `agents/roles/*/agent.md`
+- os agents pares no ChatGPT podem executar correcao estrutural ou apoio operacional quando acionados pelo humano
+- o workflow `.github/workflows/github-operations.yml` e os runners em `workers/src/` / `workers/automate/` permanecem como referencia tecnica/diagnostico, nao como canal principal
 
 Com isso:
 
-- `Developer`, `Security`, `Quality Assurance` e `DevOps` continuam tendo comportamento real definido pelos entry points em `workers/src/` e pelos scripts em `workers/automate/scripts/` (canal de fila/PR)
-- Labels canônicos de validação: `agent:qa:accepted`, `agent:qa:rejected`, `agent:security:accepted`, `agent:security:rejected`
-- Labels de estágio de agent: `agent:qa`, `agent:security`, `agent:technical-documenter`, `agent:technical-documenter:done`, etc.
-- quando `agent:qa:accepted` e `agent:security:accepted` coexistem sem novas solicitações nos comentários, `DevOps` cria a release; uma pessoa aprova a tarefa movendo-a para `Deploy`, e a partir de `Deploy` `DevOps` publica a build em produção
+- `Developer`, `Security` e `DevOps` continuam tendo comportamento real definido pelas roles canonicas
+- Labels canonicos de validacao ativos: `agent:security:accepted`, `agent:security:rejected`
+- Labels de QA/Design/UX ficam suspensos ate nova decisao humana
+- quando `agent:security:accepted` existe e o Manager revalidou a entrega, `DevOps` cria/congela a RC; uma pessoa aprova a tarefa movendo-a para `Deploy`, e a partir de `Deploy` `DevOps` publica a RC em produção
 - `DevOps` permanece responsável pela fila própria de deploy e pela reconciliação operacional
 
 ## GitHub Manager Runner
@@ -32,7 +32,7 @@ Com isso:
 - lógica final: `workers/automate/scripts/github-operations.mjs`
 - guia operacional: `workers/automate/github-operations.md`
 
-**Não confundir** com o `manager-worker.yml` (orquestrador de push + Copilot).
+Este workflow nao substitui a execucao direta do Paperclip.
 
 ## Runners por papel
 
@@ -40,7 +40,7 @@ Com isso:
 - `workers/src/security-runner.js` -> `workers/automate/scripts/pr-label-review-runner.mjs` com `PR_REVIEW_ROLE=security`
 - `workers/src/qa-runner.js` -> `workers/automate/scripts/pr-label-review-runner.mjs` com `PR_REVIEW_ROLE=qa`
 - `workers/src/devops-runner.js` -> `workers/src/agent-dispatch-runner.js` com `AGENT_DISPATCH_ROLE=devops`
-- `workers/src/cto-runner.js` -> `workers/automate/scripts/cto-project-supervisor.mjs` (nao faz parte da trilha atual `Developer` -> `QA` -> `Security` -> `Deploy` -> `DevOps`)
+- `workers/src/cto-runner.js` -> `workers/automate/scripts/cto-project-supervisor.mjs` (nao faz parte da trilha atual `Developer` -> `Security` -> `Manager` -> `DevOps`)
 - `workers/automate/scripts/cto-pr-finalizer.mjs` -> nao faz parte da consolidacao atual; a trilha vigente usa `Deploy` -> `DevOps`
 
 ## Regra de leitura

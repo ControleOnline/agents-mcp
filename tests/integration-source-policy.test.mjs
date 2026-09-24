@@ -106,3 +106,23 @@ test('only the reviewed agents-mcp governance PR can bypass RC source on master'
     );
   }
 });
+
+test('CON-552 Paperclip and submodule governance PR is limited to its reviewed file set', () => {
+  assert.deepEqual(validateGovernanceSource({
+    repository: 'ControleOnline/agents-mcp',
+    sourceBranch: 'fix/con-552-paperclip-direct-governance',
+    targetBranch: 'master',
+    changedFiles: [
+      'AGENTS.md',
+      '.github/workflows/integration-source-gate.yml',
+      'agents/skills/controleonline/shared-github-github-flow/SKILL.md',
+      'workers/automate/scripts/verify-submodule-branches.mjs',
+    ],
+  }).allowed, true);
+  assert.equal(validateGovernanceSource({
+    repository: 'ControleOnline/agents-mcp',
+    sourceBranch: 'fix/con-552-paperclip-direct-governance',
+    targetBranch: 'master',
+    changedFiles: ['workers/src/product-feature.js'],
+  }).allowed, false);
+});

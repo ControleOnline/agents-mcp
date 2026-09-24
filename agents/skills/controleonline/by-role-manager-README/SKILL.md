@@ -21,15 +21,21 @@ issues Paperclip com status `blocked`.
 
 ## Papel
 
-O Manager cria e acompanha a task de coordenação no Paperclip e suas subtasks de Developer, QA, Security, Design/UX quando aplicável e DevOps. A entrega do Developer retorna como task de entrega para o Manager. Somente o Manager pode alterar labels, status ou colunas no board GitHub; os demais agentes apenas entregam evidências nas próprias subtasks. Após todas as subtasks concluírem, o Manager faz a checagem final e movimenta o board.
+O Manager cria e acompanha a task de coordenação no Paperclip e suas subtasks
+ativas de Developer, Security e DevOps. QA, Design e UX estao suspensos e nao
+recebem subtasks enquanto essa regra estiver ativa. A entrega do Developer
+retorna como task de entrega para o Manager. Somente o Manager pode alterar
+labels, status ou colunas no board GitHub; os demais agentes apenas entregam
+evidências nas próprias subtasks. Após todas as subtasks concluírem, o Manager
+faz a checagem final e movimenta o board.
 
 Ordem resumida:
 
-1. **DevOps** — sempre primeiro. Tasks com quarteto entram em uma RC tecnica congelada de no maximo 5 tasks e sao homologadas juntas em `staging`. Depois da autorizacao humana em `Deploy`, a mesma RC, com manifesto e SHAs identicos, e promovida para `master`. O Manager decide `Done`/revalidacao por task.
-2. **Hotfix** — validadores e promocao hotfix → staging.
+1. **DevOps** — sempre primeiro. Tasks com `agent:security:accepted` e revalidacao do Manager entram em uma RC tecnica congelada de no maximo 5 tasks e sao homologadas juntas em `staging`. Depois da autorizacao humana em `Deploy`, a mesma RC, com manifesto e SHAs identicos, e promovida para `master`. O Manager decide `Done`/revalidacao por task.
+2. **Hotfix** — Security e promocao hotfix → staging.
 3. **Documentacao**
-4. **Developer — rejeicoes** (`agent:qa:rejected` / `agent:security:rejected`) — corrigir até a entrega ficar publicável, inclusive workflow/build; problemas de publicação/deploy vão para o DevOps com evidências.
-5. **Validadores** comuns (QA → Security → Design → UX)
+4. **Developer — rejeicoes** (`agent:security:rejected`) — corrigir até a entrega ficar publicável, inclusive workflow/build; problemas de publicação/deploy vão para o DevOps com evidências.
+5. **Security**
 6. **Developer — novos desenvolvimentos** — exatamente uma issue elegível.
 7. **Higiene** — fallback estrito, somente sem trabalho elegível em P1–P6.
 
@@ -60,27 +66,27 @@ anterior. Sem delta novo, o resultado é `NEXT_ACTION`.
 
 O Manager é consumidor global da recuperação de backlog; consumidores globais
 recuperacao de backlog e schedulers nao dependem de novo push. P4 (rejeicoes)
-tem precedencia sobre P5 (validadores) e P6 (novos desenvolvimentos). P7 é
+tem precedencia sobre P5 (Security) e P6 (novos desenvolvimentos). P7 é
 fallback estrito. A capacidade global de `Working` é **5 tasks**; ao atingir
 cinco, nenhuma nova task entra até uma task ativa sair da coluna. A exceção é
 P1 `DevOps`, que continua publicando tasks em `Deploy`.
 
 ## Gate de staging
 
-`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
-As formas históricas qa:accepted e security:accepted não substituem as labels
-oficiais agent:*.
-Conclusão da task exige os quatro accepts oficiais. Depois que o Manager mover
-para `Done`, ele cria no Paperclip as tasks filhas documentais aplicáveis; a
-conclusão dos documentadores não é pré-requisito para o `Done` da publicação.
+`agent:security:accepted` + revalidacao do Manager com testes locais e evidencia
+da entrega em `dev`.
+Conclusão da task exige RC publicada e `agent:security:accepted`. Depois que o
+Manager mover para `Done`, ele cria no Paperclip as tasks filhas documentais
+aplicáveis; a conclusão dos documentadores não é pré-requisito para o `Done` da
+publicação.
 
 ## Output Contract
 
 Prioridade tentada, acao executada, `DELIVERY_PROOF`, `DONE` ou `NEXT_ACTION`.
 Comentário não substitui commit/ref remoto, decisão de label ou mudança de coluna.
-Issues closed e itens Done exigem o quarteto completo de aceite. Uma task
-publicada em `master` sem o quarteto permanece aberta e volta para `Working`
-para uma segunda rodada de validacao.
+Issues closed e itens Done exigem RC publicada e Security aceito. Uma task
+publicada em `master` sem Security/evidencia local permanece aberta e volta
+para `Working` para uma segunda rodada de validacao.
 
 ## Fontes principais
 

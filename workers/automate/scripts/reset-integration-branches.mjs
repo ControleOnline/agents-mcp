@@ -2,7 +2,6 @@ import { pathToFileURL } from 'node:url';
 
 const API_ROOT = 'https://api.github.com';
 const ORG = 'ControleOnline';
-const RELEASE_REPOSITORY = `${ORG}/api-community`;
 const BRANCHES = ['dev', 'staging'];
 
 async function githubRequest(path, options = {}, fetchImpl = fetch) {
@@ -34,47 +33,118 @@ async function getAll(path, fetchImpl) {
   }
 }
 
-function decodeContent(file) {
-  return Buffer.from(file.content.replace(/\n/g, ''), 'base64').toString('utf8');
+function repositoryFromUrl(url) {
+  const match = String(url || '').match(/(?:github\.com[:/])ControleOnline\/([A-Za-z0-9_.-]+?)(?:\.git)?$/i);
+  return match ? `${ORG}/${match[1]}` : null;
 }
 
-async function readRelease({ rcBranch, fetchImpl }) {
-  const master = await githubRequest(`/repos/${RELEASE_REPOSITORY}/git/ref/heads/master`, {}, fetchImpl);
-  const latestFile = await githubRequest(
-    `/repos/${RELEASE_REPOSITORY}/contents/.release/rc-manifest.json?ref=${encodeURIComponent(master.object.sha)}`,
-    {}, fetchImpl,
-  );
-  const latestManifest = JSON.parse(decodeContent(latestFile));
-  const branch = rcBranch || latestManifest.branch;
-  if (!branch || (rcBranch && latestManifest.branch !== rcBranch)) {
-    throw new Error(`Master manifest does not identify requested frozen RC (${rcBranch ?? 'latest'}).`);
+export function parseGitmodules(content) {
+  const modules = [];
+  let current = null;
+  for (const line of String(content).split(/\r?\n/)) {
+    const section = line.match(/^\s*\[submodule\s+"([^"]+)"\]\s*$/i);
+    if (section) {
+      if (current?.path && current?.url) modules.push(current);
+      current = { name: section[1] };
+      continue;
+    }
+    if (!current) continue;
+    const field = line.match(/^\s*(path|url|branch)\s*=\s*(.*?)\s*$/i);
+    if (field) current[field[1].toLowerCase()] = field[2];
   }
+  if (current?.path && current?.url) modules.push(current);
+  return modules;
+}
 
-  const ref = await githubRequest(`/repos/${RELEASE_REPOSITORY}/git/ref/heads/${branch}`, {}, fetchImpl);
-  const rcCommit = await githubRequest(`/repos/${RELEASE_REPOSITORY}/git/commits/${ref.object.sha}`, {}, fetchImpl);
-  const rcFile = await githubRequest(
-    `/repos/${RELEASE_REPOSITORY}/contents/.release/rc-manifest.json?ref=${encodeURIComponent(ref.object.sha)}`,
-    {}, fetchImpl,
-  );
-  const manifest = JSON.parse(decodeContent(rcFile));
-  if (manifest.branch !== branch || manifest.frozen !== true || !manifest.repositories) {
-    throw new Error(`RC ${branch} is not a frozen RC manifest.`);
-  }
-
-  const comparison = await githubRequest(
-    `/repos/${RELEASE_REPOSITORY}/compare/${ref.object.sha}...${master.object.sha}`,
-    {}, fetchImpl,
-  );
-  if (comparison.behind_by !== 0 || !['ahead', 'identical'].includes(comparison.status)) {
-    throw new Error(`RC ${branch} has not been published to master.`);
-  }
-
-  return {
-    branch,
-    version: manifest.version,
-    releaseCommit: ref.object.sha,
-    repositories: { ...manifest.repositories, [RELEASE_REPOSITORY]: ref.object.sha },
+export function setGitmoduleBranches(content, branch) {
+  const lines = String(content).split(/\r?\n/);
+  let inSubmodule = false;
+  let sawBranch = false;
+  const output = [];
+  const flush = () => {
+    if (inSubmodule && !sawBranch) output.push(`\tbranch = ${branch}`);
   };
+  for (const line of lines) {
+    if (/^\s*\[submodule\s+"[^"]+"\]\s*$/i.test(line)) {
+      flush();
+      inSubmodule = true;
+      sawBranch = false;
+      output.push(line);
+    } else if (inSubmodule && /^\s*branch\s*=/.test(line)) {
+      output.push(line.replace(/^(\s*branch\s*=\s*).*/, `$1${branch}`));
+      sawBranch = true;
+    } else {
+      output.push(line);
+    }
+  }
+  flush();
+  return output.join('\n');
+}
+
+async function getBranchRef(repository, branch, fetchImpl) {
+  return githubRequest(`/repos/${repository}/git/ref/heads/${branch}`, {}, fetchImpl);
+}
+
+async function alignedTree({ repository, branch, sourceSha, apply, fetchImpl, log }) {
+  const commit = await githubRequest(`/repos/${repository}/git/commits/${sourceSha}`, {}, fetchImpl);
+  const tree = await githubRequest(`/repos/${repository}/git/trees/${commit.tree.sha}?recursive=1`, {}, fetchImpl);
+  const entries = [];
+  let gitmodulesBlob = tree.tree.find((entry) => entry.path === '.gitmodules' && entry.type === 'blob');
+
+  for (const entry of tree.tree.filter((item) => item.mode === '160000' && item.type === 'commit')) {
+    const modulesText = gitmodulesBlob
+      ? Buffer.from((await githubRequest(`/repos/${repository}/git/blobs/${gitmodulesBlob.sha}`, {}, fetchImpl)).content, 'base64').toString('utf8')
+      : '';
+    const module = parseGitmodules(modulesText).find((item) => item.path === entry.path);
+    if (!module) throw new Error(`${repository}: gitlink ${entry.path} has no matching .gitmodules entry.`);
+    const child = repositoryFromUrl(module.url);
+    if (!child) throw new Error(`${repository}: cannot resolve ControleOnline repository for submodule ${entry.path}.`);
+    let childRef;
+    try {
+      childRef = await getBranchRef(child, branch, fetchImpl);
+    } catch (error) {
+      if (error.status !== 404) throw error;
+      const childMaster = await getBranchRef(child, 'master', fetchImpl);
+      if (!apply) {
+        log(`DRY-RUN CREATE ${child}:${branch} from master`);
+        childRef = childMaster;
+      } else {
+        await githubRequest(`/repos/${child}/git/refs`, {
+          method: 'POST',
+          body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: childMaster.object.sha }),
+        }, fetchImpl);
+        childRef = childMaster;
+        log(`CREATE ${child}:${branch} from master`);
+      }
+    }
+    if (entry.sha !== childRef.object.sha) {
+      entries.push({ path: entry.path, mode: '160000', type: 'commit', sha: childRef.object.sha });
+      log(`${apply ? 'ALIGN' : 'DRY-RUN ALIGN'} ${repository}:${branch}/${entry.path} -> ${child}:${branch}@${childRef.object.sha}`);
+    }
+  }
+
+  if (gitmodulesBlob) {
+    const blob = await githubRequest(`/repos/${repository}/git/blobs/${gitmodulesBlob.sha}`, {}, fetchImpl);
+    const text = Buffer.from(blob.content, 'base64').toString('utf8');
+    const updated = setGitmoduleBranches(text, branch);
+    if (updated !== text) {
+      if (apply) {
+        const newBlob = await githubRequest(`/repos/${repository}/git/blobs`, {
+          method: 'POST', body: JSON.stringify({ content: updated, encoding: 'utf-8' }),
+        }, fetchImpl);
+        entries.push({ path: '.gitmodules', mode: '100644', type: 'blob', sha: newBlob.sha });
+      } else {
+        entries.push({ path: '.gitmodules', mode: '100644', type: 'blob', sha: 'dry-run' });
+      }
+    }
+  }
+
+  if (!entries.length) return commit.tree.sha;
+  if (!apply) return `alignment-needed:${commit.tree.sha}`;
+  const updatedTree = await githubRequest(`/repos/${repository}/git/trees`, {
+    method: 'POST', body: JSON.stringify({ base_tree: commit.tree.sha, tree: entries }),
+  }, fetchImpl);
+  return updatedTree.sha;
 }
 
 async function findOpenPullRequest(repository, branch, base, fetchImpl) {
@@ -83,8 +153,8 @@ async function findOpenPullRequest(repository, branch, base, fetchImpl) {
   return pulls[0] ?? null;
 }
 
-async function queueProtectedReset({ repository, target, targetSha, sourceSha, sourceTree, release, sourceBranch, fetchImpl, log }) {
-  const branchName = `automation/reset-${sourceBranch.replaceAll('/', '-')}-${target}-${targetSha.slice(0, 8)}-${sourceSha.slice(0, 8)}`;
+async function queueProtectedReset({ repository, target, targetSha, sourceTree, sourceBranch, fetchImpl, log }) {
+  const branchName = `automation/align-${sourceBranch}-${target}-${targetSha.slice(0, 8)}-${sourceTree.slice(0, 8)}`;
   let pull = await findOpenPullRequest(repository, branchName, target, fetchImpl);
   if (pull?.state === 'closed' && !pull.merged_at) {
     pull = await githubRequest(`/repos/${repository}/pulls/${pull.number}`, {
@@ -125,11 +195,11 @@ async function queueProtectedReset({ repository, target, targetSha, sourceSha, s
       pull = await githubRequest(`/repos/${repository}/pulls`, {
         method: 'POST',
         body: JSON.stringify({
-          title: `Reset ${target} to ${sourceBranch === release.branch ? `RC ${release.version} (${release.branch})` : 'master'}`,
+          title: `Align ${target} submodules with ${sourceBranch}`,
           head: branchName,
           base: target,
           body: [
-            `Align the complete ${target} tree with **${sourceBranch}**${sourceBranch === release.branch ? ` (frozen RC ${release.version})` : ''}.`,
+            `Align every submodule gitlink in the **${target}** tree with the tip of its **${sourceBranch}** branch.`,
             '',
             `Source commit: \`${sourceSha}\`; reset tree: \`${resetRef.object.sha}\`.`,
             'This is a normal pull request: repository rules and required checks remain enforced.',
@@ -163,15 +233,11 @@ async function queueProtectedReset({ repository, target, targetSha, sourceSha, s
 
 export async function resetIntegrationBranches({
   apply = false,
-  rcBranch = process.env.RC_BRANCH || '',
   fetchImpl = fetch,
   log = console.log,
 } = {}) {
   const token = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN;
   if (!token) throw new Error('Set GH_TOKEN (or GITHUB_TOKEN) with write access to the ControleOnline organization.');
-
-  const release = await readRelease({ rcBranch, fetchImpl });
-  log(`Release ${release.branch} (${release.version}) is frozen and present in master.`);
 
   const repos = await getAll(`/orgs/${ORG}/repos?type=all`, fetchImpl);
   const active = repos.filter((repo) => !repo.archived);
@@ -192,10 +258,6 @@ export async function resetIntegrationBranches({
         return;
       }
       for (const target of BRANCHES) {
-        const sourceBranch = target === 'dev' ? 'master' : release.branch;
-        const sourceSha = target === 'dev' ? masterRef.object.sha : (release.repositories[repo.full_name] || masterRef.object.sha);
-        const sourceCommit = await githubRequest(`/repos/${repo.full_name}/git/commits/${sourceSha}`, {}, fetchImpl);
-        const sourceTree = sourceCommit.tree.sha;
         let targetRef;
         try {
           targetRef = await githubRequest(`/repos/${repo.full_name}/git/ref/heads/${target}`, {}, fetchImpl);
@@ -203,28 +265,37 @@ export async function resetIntegrationBranches({
           if (error.status !== 404) throw error;
           if (!apply) {
             created += 1;
-            log(`DRY-RUN CREATE ${repo.full_name}:${target} -> ${release.branch}`);
+            log(`DRY-RUN CREATE ${repo.full_name}:${target} -> master`);
             continue;
           }
           await githubRequest(`/repos/${repo.full_name}/git/refs`, {
             method: 'POST',
-            body: JSON.stringify({ ref: `refs/heads/${target}`, sha: sourceSha }),
+            body: JSON.stringify({ ref: `refs/heads/${target}`, sha: masterRef.object.sha }),
           }, fetchImpl);
           created += 1;
-          log(`CREATE ${repo.full_name}:${target} -> ${release.branch}`);
-          continue;
+          log(`CREATE ${repo.full_name}:${target} -> master`);
+          targetRef = { object: { sha: masterRef.object.sha } };
         }
 
-        const targetCommit = await githubRequest(
-          `/repos/${repo.full_name}/git/commits/${targetRef.object.sha}`, {}, fetchImpl,
-        );
+        const sourceSha = targetRef.object.sha;
+        const sourceBranch = target;
+        const sourceTree = await alignedTree({
+          repository: repo.full_name,
+          branch: target,
+          sourceSha,
+          apply,
+          fetchImpl,
+          log,
+        });
+        const sourceCommit = await githubRequest(`/repos/${repo.full_name}/git/commits/${sourceSha}`, {}, fetchImpl);
+        const targetCommit = await githubRequest(`/repos/${repo.full_name}/git/commits/${targetRef.object.sha}`, {}, fetchImpl);
         if (targetCommit.tree.sha === sourceTree) {
           unchanged += 1;
           continue;
         }
         if (!apply) {
           pending += 1;
-          log(`DRY-RUN PR ${repo.full_name}:${target} -> ${sourceBranch}`);
+          log(`DRY-RUN PR ${repo.full_name}:${target}: recursive submodule alignment`);
           continue;
         }
         const result = await queueProtectedReset({
@@ -233,7 +304,6 @@ export async function resetIntegrationBranches({
           targetSha: targetRef.object.sha,
           sourceSha,
           sourceTree,
-          release,
           sourceBranch,
           fetchImpl,
           log,

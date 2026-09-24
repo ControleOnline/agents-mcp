@@ -8,7 +8,7 @@ const queueDiscovery = fs.readFileSync(
   'agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md',
   'utf8',
 );
-const cooperationSkill = fs.readFileSync('agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md', 'utf8');
+const directExecutionSkill = fs.readFileSync('agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md', 'utf8');
 const deliveryProof = fs.readFileSync(
   'agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md',
   'utf8',
@@ -18,30 +18,23 @@ const conflictResolution = fs.readFileSync(
   'utf8',
 );
 
-const completionLabels = [
-  'agent:qa:accepted',
-  'agent:security:accepted',
-  'agent:design:accepted',
-  'agent:ux:accepted',
-];
-
 test('manager is fail-closed before hygiene', () => {
   assert.match(managerAgent, /prioridade e fail-closed/i);
   assert.match(managerAgent, /P7 e fallback estrito/i);
   assert.match(managerAgent, /P6 \(Developer\) so pode iniciar/i);
   assert.match(managerAgent, /nunca use Higiene \(P7\) como fallback/i);
   assert.match(managerAgent, /Prioridade 4 - Developer: rejeicoes/i);
-  assert.match(managerAgent, /Prioridade 5 - Validadores/i);
+  assert.match(managerAgent, /Prioridade 5 - Security/i);
   assert.match(managerAgent, /Prioridade 6 - Developer: novos desenvolvimentos/i);
   assert.match(managerAgent, /Prioridade 7 - Higiene residual/i);
 });
 
-test('manager prioritizes rejected work before validators and new development', () => {
+test('manager prioritizes rejected work before security and new development', () => {
   const order = managerAgent.match(
-    /Prioridade 4 - Developer: rejeicoes[\s\S]*Prioridade 5 - Validadores[\s\S]*Prioridade 6 - Developer: novos desenvolvimentos[\s\S]*Prioridade 7 - Higiene residual/,
+    /Prioridade 4 - Developer: rejeicoes[\s\S]*Prioridade 5 - Security[\s\S]*Prioridade 6 - Developer: novos desenvolvimentos[\s\S]*Prioridade 7 - Higiene residual/,
   );
-  assert.ok(order, 'expected rejection -> validators -> new development -> hygiene order');
-  assert.match(managerAgent, /agent:qa:rejected/);
+  assert.ok(order, 'expected rejection -> security -> new development -> hygiene order');
+  assert.doesNotMatch(managerAgent, /Corrija primeiro issues abertas com `agent:qa:rejected`/);
   assert.match(managerAgent, /agent:security:rejected/);
 });
 
@@ -52,15 +45,15 @@ test('Deploy is explicit human publication authorization', () => {
   assert.doesNotMatch(queueDiscovery, /unico bloqueio for gate humano de Deploy/i);
 });
 
-test('Deploy publication branches by validator quartet', () => {
+test('Deploy publication uses the frozen RC and active Security gate', () => {
   assert.match(managerAgent, /todas as tasks[\s\S]*`Deploy`[\s\S]*DevOps[\s\S]*master/i);
-  assert.match(managerAgent, /quatro accepts[\s\S]*Done/i);
-  assert.match(managerAgent, /faltar qualquer accept[\s\S]*Working/i);
-  for (const label of ['agent:qa:accepted', 'agent:security:accepted', 'agent:design:accepted', 'agent:ux:accepted']) {
-    assert.match(managerAgent, new RegExp(label.replace(':', '\\:')));
-  }
+  assert.match(managerAgent, /Security aceito[\s\S]*`Done`/i);
+  assert.match(managerAgent, /faltar Security[\s\S]*`Working`/i);
+  assert.match(managerAgent, /agent:security:accepted/);
+  assert.match(managerAgent, /QA`, `Design` e `UX` estao temporariamente suspensos/);
   const devopsAgent = fs.readFileSync('agents/roles/devops/agent.md', 'utf8');
-  assert.match(devopsAgent, /todas as tasks[\s\S]*`Deploy`[\s\S]*nova versão[\s\S]*master[\s\S]*handoff[\s\S]*não move a task/i);
+  assert.match(devopsAgent, /mesma RC congelada/i);
+  assert.match(devopsAgent, /agent:security:accepted/i);
 });
 
 test('rejection recovery includes GitHub workflow and publication repair', () => {
@@ -102,32 +95,32 @@ test('manager cannot close a round with commentary-only progress', () => {
 test('agents-mcp governance is published directly without validator approval', () => {
   assert.match(deliveryProof, /Governança \(`agents-mcp`\)[\s\S]*não aguarda QA, Security, Design, UX ou aprovação humana/i);
   assert.match(deliveryProof, /governança do próprio `agents-mcp`[\s\S]*Não se cria[\s\S]*handoff para validadores/i);
-  assert.match(managerAgent, /publicacao de governanca do proprio `agents-mcp`[\s\S]*nao aguarda QA/is);
+  assert.match(managerAgent, /publicacao de governanca do proprio `agents-mcp`[\s\S]*nao aguarda Security/is);
   assert.match(managerSkill, /Governança publicada no próprio `agents-mcp`[\s\S]*sem aprovação ou[\s\S]*handoff para QA/is);
 });
 
 test('scheduled managers recover global backlog independently of push', () => {
   assert.match(managerAgent, /Agendamento do Manager.*estado global/is);
   assert.doesNotMatch(managerAgent, /\bCodex\b|\bGrok\b/i);
-  assert.doesNotMatch(cooperationSkill, /\bCodex\b|\bGrok\b/i);
+  assert.doesNotMatch(directExecutionSkill, /\bCodex\b|\bGrok\b/i);
   assert.match(managerAgent, /nao depende de novo push/i);
   assert.match(managerSkill, /consumidores globais.*recuperacao de backlog/is);
-  assert.match(managerAgent, /QA.*Security.*P6|Developer/is);
+  assert.match(managerAgent, /Security[\s\S]*P6|Developer/is);
 });
 
-test('removed Copilot surfaces are absent', () => {
-  assert.match(cooperationSkill, /Não delegar para Copilot/);
-  assert.match(cooperationSkill, /Paperclip/);
+test('direct Paperclip execution is the active surface', () => {
+  assert.match(directExecutionSkill, /Paperclip executa os agents diretamente/);
+  assert.match(directExecutionSkill, /Nao existe delegacao para wrappers externos/);
   assert.equal(fs.existsSync('.github/workflows/manager-worker.yml'), false);
   assert.equal(fs.existsSync('.github/actions/workers'), false);
   assert.equal(fs.existsSync('.github/agents'), true);
 });
 
-test('closed and Done tasks require the complete four-label contract', () => {
-  for (const label of completionLabels) {
-    assert.ok(managerSkill.includes(`\`${label}\``), `missing completion label: ${label}`);
-  }
-  assert.match(managerSkill, /Done.*quarteto.*Working/is);
+test('active completion contract is Security plus Manager revalidation', () => {
+  assert.match(managerAgent, /agent:security:accepted/);
+  assert.match(managerAgent, /revalidacao do\s+Manager/i);
+  assert.match(managerAgent, /QA, Design e UX estao\s+suspensos/i);
+  assert.doesNotMatch(managerAgent, /gate de quatro aprovacoes/i);
 });
 
 test('queue ordering is oldest first and never updatedAt', () => {

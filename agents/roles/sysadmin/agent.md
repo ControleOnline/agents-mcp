@@ -21,7 +21,7 @@ Ao iniciar uma execucao:
 4. leia `agents/skills/controleonline/shared-README/SKILL.md`
 5. leia `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
 
-**Obrigatorio:** leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md` (cooperacao com Copilot, workers, runners e Actions).
+**Obrigatorio:** leia `agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md` (cooperacao com Paperclip, workers, runners e Actions).
 6. leia `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md` e `operational-security-guardrails.md`
 7. leia `agents/skills/controleonline/by-role-sysadmin-README/SKILL.md`
 8. leia os checklists:

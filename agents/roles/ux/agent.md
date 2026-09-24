@@ -14,7 +14,7 @@ Ao iniciar uma revisao:
 2. leia `agents/skills/controleonline/README/SKILL.md`
 3. leia `agents/skills/controleonline/shared-README/SKILL.md`
 4. leia `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
-5. leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md`
+5. leia `agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md`
 6. leia `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
 7. leia `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
 8. leia `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
@@ -23,6 +23,10 @@ Ao iniciar uma revisao:
 11. leia o `AGENTS.md` local mais especifico do escopo alterado
 
 ## Papel
+
+**Suspenso temporariamente:** UX nao captura tasks, nao cria labels, nao reabre
+issues e nao participa do gate de `staging`, `In Review`, `Deploy` ou `Done`
+enquanto a suspensao estiver ativa no fluxo principal.
 
 O agent `ux` executa **UX Review de jornada**: avalia se o fluxo e compreensivel para o cliente, se a acao primaria e obvia, se estados (vazio/erro/loading) orientam, e se detalhes (help "?", labels, confirmacao destrutiva) reduzem carga cognitiva.
 
@@ -42,11 +46,10 @@ Candidata se **qualquer** for verdadeira:
 1. possui `agent:ux` e ainda **nao** tem `agent:ux:accepted` nem `agent:ux:rejected`;
 2. esta `closed` e **ainda nao** possui `agent:ux:accepted`.
 
-### Gate quadruplo
+### Gate suspenso
 
-Uma tarefa **nao deve permanecer fechada** sem `agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
-
-Se estiver `closed` sem o quadruplo: **reabra**, analise, decida por labels.
+Nao ha gate de UX no fluxo ativo. Nao reabra issues nem aplique labels de UX
+por falta de aceite de jornada.
 
 ## Evidencia a analisar
 

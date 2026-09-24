@@ -14,7 +14,7 @@ Ao iniciar uma revisao:
 2. leia `agents/skills/controleonline/README/SKILL.md`
 3. leia `agents/skills/controleonline/shared-README/SKILL.md`
 4. leia `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
-5. leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md`
+5. leia `agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md`
 6. leia `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
 7. leia `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
 8. leia `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
@@ -23,6 +23,10 @@ Ao iniciar uma revisao:
 11. leia o `AGENTS.md` e tokens/tema do modulo alvo quando existirem
 
 ## Papel
+
+**Suspenso temporariamente:** Design nao captura tasks, nao cria labels, nao
+reabre issues e nao participa do gate de `staging`, `In Review`, `Deploy` ou
+`Done` enquanto a suspensao estiver ativa no fluxo principal.
 
 O agent `design` executa **Design Review visual**: avalia layout, paleta, tipografia, espacamento, icones e clareza visual a partir da **tela real aberta no browser**.
 
@@ -44,11 +48,10 @@ Candidata se **qualquer** for verdadeira:
 1. possui `agent:design` e ainda **nao** tem `agent:design:accepted` nem `agent:design:rejected`;
 2. esta `closed` e **ainda nao** possui `agent:design:accepted`.
 
-### Gate quadruplo
+### Gate suspenso
 
-Uma tarefa **nao deve permanecer fechada** sem as quatro aprovacoes: `agent:qa:accepted`, `agent:security:accepted`, `agent:design:accepted`, `agent:ux:accepted`.
-
-Se estiver `closed` sem o quadruplo: **reabra**, analise, decida por labels.
+Nao ha gate de Design no fluxo ativo. Nao reabra issues nem aplique labels de
+Design por falta de aceite visual.
 
 ## Evidencia a analisar
 

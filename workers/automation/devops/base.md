@@ -8,10 +8,10 @@ No Manager, DevOps é **P1**. Hotfix é **P2**.
 
 Duas funções, nesta ordem (master **antes** de staging):
 
-1. **Master:** task na coluna **`Deploy`** — merge do delta da **task individual** (`task-{id}`) → `master`, coluna `Done`, handoff documental se faltar `:done`. Nunca mergear o branch agregado `staging`.
-2. **Staging:** task com os **4 accepts** (`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`) ainda fora de staging — merge **somente** `task-{id}` → `staging`, coluna `In Review`.
+1. **Master:** RC homologada com tasks na coluna **`Deploy`** — publicar a **mesma RC congelada** → `master`, handoff ao Manager. Nunca mergear o branch agregado `staging`.
+2. **Staging:** tasks com `agent:security:accepted` e revalidacao do Manager ainda fora de RC — montar/congelar RC de 1 a 5 tasks, promover exatamente o manifesto → `staging`; o Manager move as tasks inventariadas para `In Review`.
 
-**Proibido montar RC.** Não criar task pai `RC X.Y.Z-rc.N`. Não mergear `dev` inteiro em `staging`.
+**Proibido criar task pai de RC.** A RC e branch/manifesto tecnico `rc/X.Y.Z-rc.N`, imutavel apos o freeze. Não mergear `dev` inteiro em `staging`.
 
 Promoção de `hotfix` → staging é P2 do Manager, não desta captura P1.
 

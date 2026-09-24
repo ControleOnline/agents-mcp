@@ -10,7 +10,7 @@ import {
 const GRAPHQL_URL = 'https://api.github.com/graphql';
 const REST_URL = 'https://api.github.com';
 const RETRY = githubRetryConfig('GITHUB_MANAGER');
-const DEFAULT_ALLOWED_LOGINS = 'luizkim,github-copilot[bot],copilot-swe-agent,copilot';
+const DEFAULT_ALLOWED_LOGINS = 'luizkim,external-coding-agent,external-coding-agent,external-agent';
 const DEFAULT_AGENT_LABELS = 'agent:developer,agent:security,agent:qa,agent:devops,agent:sysadmin';
 const COMMAND_PREFIXES = ['/github-manager', '/github-ops'];
 const PROTECTED_PROJECT_STATUSES = new Set(['blocked', 'backlog']);

@@ -9,11 +9,11 @@ semanticamente com segurança.
 ## Regra principal
 
 Conflito não é autorização para escolher `ours`, `theirs`, fazer force-push ou
-mesclar diretamente em `master`. Quando a task precisa ser refeita sem os
-quatro accepts, o estado operacional é **Working**, respeitando o limite atual
-configurado para essa coluna no Project #1; **In Review** continua reservado à
-revisão humana depois que os quatro accepts existirem e a task tiver chegado a
-staging.
+mesclar diretamente em `master`. Quando a task precisa ser refeita sem
+`agent:security:accepted` e revalidacao do Manager, o estado operacional é
+**Working**, respeitando o limite atual configurado para essa coluna no Project
+#1; **In Review** continua reservado às tasks inventariadas em RC congelada que
+chegou a staging.
 
 Se em qualquer etapa o merge, rebase ou reaplicação ficar confuso a ponto de o
 delta não poder ser revisado semanticamente com segurança, a preferência
@@ -71,6 +71,6 @@ ou status terminal da execução apagada.
 - `TESTADO:ALE` e quaisquer labels de validação não substituem revisão do
   resultado recriado e não podem ser herdadas automaticamente.
 - Fora do reinício deliberado descrito acima, agents não movem tasks entre
-  colunas. A passagem para `In Review` só ocorre no rito humano após staging e
-  os quatro accepts; durante a recuperação, o retorno aos passos iniciais é a
-  exceção autorizada e obrigatória.
+  colunas. A passagem para `In Review` só ocorre para tasks presentes no
+  manifesto da RC congelada publicada em staging; durante a recuperação, o
+  retorno aos passos iniciais é a exceção autorizada e obrigatória.

@@ -54,4 +54,4 @@ A execução real vive em `workers/`:
 - Sempre leia o `AGENTS.md` antes de fazer qualquer tarefa.
 - Qualidade de código: `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
 - Segurança editorial: `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md`
-- Wrappers: `workers/scripts/sync-copilot-agents.mjs`
+- Wrappers: `workers/scripts/sync-paperclip-agents.mjs`

@@ -27,7 +27,7 @@ Ao encontrar fila/item fora de ControleOnline → ignorar e reportar `OUT_OF_SCO
 
 1. leia o `agents/roles/<agent>/agent.md` canonico do papel atual
 2. leia `agents/skills/controleonline/README/SKILL.md` e `agents/skills/controleonline/shared-README/SKILL.md`
-2b. leia `agents/skills/controleonline/shared-operations-copilot-cooperation/SKILL.md` (obrigatoria para todos os papeis)
+2b. leia `agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md` (obrigatoria para todos os papeis)
 3. leia a referencia mais especifica em `agents/skills/controleonline/by-role-*/SKILL.md` ou `agents/skills/controleonline/runners-README/SKILL.md`
 4. leia o `AGENTS.md` local mais proximo quando houver codigo, modulo ou repositorio afetado
 5. trate o repositorio local como ponto principal de execucao, nao como limite de entendimento do ecossistema

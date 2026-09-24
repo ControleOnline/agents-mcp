@@ -7,12 +7,12 @@ Leia e aplique `agents/skills/controleonline/shared-operations-delivery-proof-co
 
 ## Canais de execucao
 
-Existem dois canais independentes e complementares:
+Existe um canal operacional principal:
 
 1. **Agendamento do Manager:** consulta o estado global da organizacao/Project #1 e executa a primeira prioridade **elegivel e executavel**. O agendamento nao depende de novo push.
-2. **Manager Worker / Copilot (GitHub Actions):** reage exclusivamente a push em `master`, `dev` ou `staging` e atua somente sobre a issue resolvida para aquele push.
 
-Fonte dos workers: `agents/skills/controleonline/shared-operations-manager-worker-copilot/SKILL.md`.
+Workflows por push nao sao canal operacional principal e nao substituem a
+execucao direta pelo Paperclip.
 
 ## Fronteira com Developer
 
@@ -20,8 +20,8 @@ O fluxo do `Developer` roda em paralelo e nao faz parte do Full Pipeline / Manag
 
 Excecao `agents-mcp`: Manager e CTO podem editar documentacao, governanca, runners e workflows deste repositorio quando a falha for estrutural. A
 publicacao de governanca do proprio `agents-mcp` e direta: commit remoto e
-estado da issue/board comprovados encerram a entrega; nao aguarda QA,
-Security, Design, UX ou aprovacao humana.
+estado da issue/board comprovados encerram a entrega; nao aguarda Security,
+QA, Design, UX ou aprovacao humana.
 
 ## Executar, nao apenas documentar
 
@@ -41,7 +41,13 @@ em `Done`, `Deploy` ou `In Review` com uma entrega que foi descartada.
 
 ## Governança de subtasks e board
 
-O Manager é o orquestrador da task mãe no Paperclip. Ao capturar uma task em `Working`, cria uma task de acompanhamento vinculada à mãe e subtasks para o Developer, QA, Security, Design/UX quando aplicável e DevOps. A subtask do Developer registra a implementação; a task de entrega criada pelo Developer volta para o Manager. O Manager acompanha todas as subtasks até a conclusão e resolve impedimentos.
+O Manager é o orquestrador da task mãe no Paperclip. Ao capturar uma task em
+`Working`, cria ou reutiliza exatamente uma task pai aberta para a issue GitHub
+e monta a esteira ativa: `Developer` → `Security` → `Manager` → `DevOps`.
+`QA`, `Design` e `UX` estao temporariamente suspensos: nao crie subtasks para
+esses papeis, nao solicite labels deles e nao use sua ausencia como bloqueio.
+A task pai fica `blocked by` pelas filhas ativas; quando uma filha conclui, a
+proxima e ativada.
 
 Somente o Manager pode criar/alterar labels e status/colunas do board GitHub. Developer, validadores e DevOps entregam evidências nas suas subtasks e não movem o board. Quando todas as subtasks Paperclip estiverem concluídas, o Manager faz a checagem final, emite o parecer GitHub sucinto e então movimenta o board.
 
@@ -108,13 +114,20 @@ persistindo a falha, registre `NEXT_ACTION` com a evidência e encerre nessa pri
 
 ### Rito obrigatório de RC e Deploy
 
-O quarteto oficial de aceite e composto por `agent:qa:accepted`,
-`agent:security:accepted`, `agent:design:accepted` e `agent:ux:accepted`.
-Tasks com os quatro accepts são elegíveis para compor uma RC técnica de 1 a 5 tasks. O DevOps cria a RC a partir do master atual, integra cada task individualmente, congela o manifesto e promove esse snapshot para staging. O Manager move cada task da RC para `In Review`.
+O gate ativo para compor RC e `agent:security:accepted` mais revalidacao do
+Manager: branch `task-{id}` publicada, merge em `dev`, testes locais adequados
+registrados e ausencia de impedimento operacional. Tasks nesse estado sao
+elegiveis para compor uma RC tecnica de 1 a 5 tasks. O DevOps cria a RC a
+partir do master atual, integra cada task individualmente, congela o manifesto
+e promove esse snapshot para staging. O Manager so move para `In Review` as
+tasks inventariadas nessa RC congelada.
 
 A homologação humana ocorre sobre essa composição. Quando o humano mover as tasks homologadas para `Deploy`, P1 promove **a mesma RC congelada** para master. Não é permitido remontar pins, incluir outra task, usar staging como origem ou alterar a RC aprovada. Qualquer mudança exige `rc.N+1` e nova homologação.
 
-Depois da publicação, o Manager decide cada task individualmente: com os quatro accepts → `Done`; se faltar qualquer accept, a task permanece aberta e volta para `Working` para nova validação/correção, respeitando sempre o teto global de 5.
+Depois da publicação, o Manager decide cada task individualmente: RC publicada e
+Security aceito → `Done`; se faltar Security ou evidencia local da entrega, a
+task permanece aberta e volta para `Working`, respeitando sempre o teto global
+de 5.
 
 ## Prioridade 0 - Recuperacao Paperclip
 
@@ -129,7 +142,7 @@ somente-leitura continua absoluta para issues e colunas GitHub `Blocked`.
 DevOps é sempre o primeiro:
 
 1. RC homologada com todas as tasks correspondentes em `Deploy` → mesma RC congelada → `master`.
-2. Sem RC pronta para produção: agrupar tecnicamente de 1 a 5 tasks com quatro accepts → nova RC congelada → `staging` → Manager move as tasks para `In Review`.
+2. Sem RC pronta para produção: agrupar tecnicamente de 1 a 5 tasks com `agent:security:accepted` e revalidacao do Manager → nova RC congelada → `staging` → Manager move as tasks inventariadas para `In Review`.
 
 A RC não cria issue pai e não altera a identidade das tasks. Hotfix continua seguindo o mesmo freeze antes de master.
 
@@ -137,7 +150,7 @@ A RC não cria issue pai e não altera a identidade das tasks. Hotfix continua s
 
 So comeca se P1 nao tiver acao executavel.
 
-Task `hotfix` com acao elegivel de QA, Security, Design, UX ou promocao hotfix → `staging` / `In Review`.
+Task `hotfix` com acao elegivel de Security ou promocao hotfix → `staging` / `In Review`.
 
 Hotfix nao autoriza pular coluna `Deploy` para `master`.
 
@@ -148,19 +161,20 @@ Hotfix nao autoriza pular coluna `Deploy` para `master`.
 
 ## Prioridade 4 - Developer: rejeicoes
 
-Corrija primeiro issues abertas com `agent:qa:rejected` ou
-`agent:security:rejected`. Esta prioridade trata somente devolucoes dos
-validadores e tem precedencia sobre novas capturas de QA, Security ou
-Developer. A responsabilidade do Developer vai ate a entrega publicavel:
+Corrija primeiro issues abertas com `agent:security:rejected`. Esta prioridade
+trata somente devolucoes do Security ativo e tem precedencia sobre novas
+capturas de Security ou Developer. A responsabilidade do Developer vai ate a entrega publicavel:
 inclui codigo, testes, branches, merges, GitHub Actions, workflow e build. Se
 workflow ou build falhar no GitHub, o Developer deve investigar e corrigir,
 repetir a execucao, rerotear ou reconstruir a etapa. Se o problema for a
 publicacao/deploy, deve encaminhar ao DevOps com evidencia objetiva; nao pode
 simplesmente devolver a task por falha operacional.
 
-## Prioridade 5 - Validadores
+## Prioridade 5 - Security
 
-QA → Security → Design → UX, enquanto houver fila sem `:accepted`/`:rejected`.
+Security valida entregas ativas enquanto houver fila sem
+`agent:security:accepted`/`agent:security:rejected`. QA, Design e UX estao
+suspensos e nao entram na fila.
 
 ## Prioridade 6 - Developer: novos desenvolvimentos
 

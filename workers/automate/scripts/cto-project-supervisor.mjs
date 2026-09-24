@@ -10,8 +10,8 @@ import {
 const GITHUB_API_URL = 'https://api.github.com/graphql';
 const REST_API_URL = 'https://api.github.com';
 const ALL_AGENT_LABELS = ['agent:developer', 'agent:security', 'agent:qa', 'agent:devops'];
-const DEFAULT_KNOWN_AGENT_LOGINS = 'github-copilot[bot],copilot-swe-agent,copilot';
-const DEFAULT_UNSUPPORTED_LABEL = 'ops:copilot-unavailable';
+const DEFAULT_KNOWN_AGENT_LOGINS = 'external-coding-agent,external-coding-agent,externalAgent';
+const DEFAULT_UNSUPPORTED_LABEL = 'ops:external-agent-unavailable';
 const DEFAULT_CORE_REPOSITORY = 'ControleOnline/agents-mcp';
 const DEFAULT_PRIORITY_REPOSITORIES =
   'ControleOnline/app-community,ControleOnline/api-community,ControleOnline/api-whatsapp';
@@ -589,7 +589,7 @@ function classifyDoneMismatch(item, knownAgentLogins, unsupportedLabel, workStat
   };
 }
 
-function classifyUnsupportedCopilot(item, knownAgentLogins, unsupportedLabel) {
+function classifyUnsupportedExternalAgent(item, knownAgentLogins, unsupportedLabel) {
   const issue = item.content;
   if (!issue?.repository?.nameWithOwner) return null;
   if (issue.state !== 'OPEN') return null;
@@ -598,7 +598,7 @@ function classifyUnsupportedCopilot(item, knownAgentLogins, unsupportedLabel) {
   return serializeItem(item, knownAgentLogins, unsupportedLabel);
 }
 
-function summarizeUnsupportedCopilot(blockedIssues) {
+function summarizeUnsupportedExternalAgent(blockedIssues) {
   const byRepository = new Map();
   for (const blocked of blockedIssues) {
     const repository = blocked.issue.repository;
@@ -1234,7 +1234,7 @@ async function main() {
 
   const items = project.items?.nodes || [];
   const actions = [];
-  const unsupportedCopilotIssues = [];
+  const unsupportedExternalAgentIssues = [];
   const priorityOperationalIssues = [];
 
   for (const item of items) {
@@ -1250,9 +1250,9 @@ async function main() {
       priorityOperationalIssues.push(prioritySnapshot);
     }
 
-    const blocked = classifyUnsupportedCopilot(item, knownAgentLogins, unsupportedLabel);
+    const blocked = classifyUnsupportedExternalAgent(item, knownAgentLogins, unsupportedLabel);
     if (blocked) {
-      unsupportedCopilotIssues.push(blocked);
+      unsupportedExternalAgentIssues.push(blocked);
       if (blocked.hasKnownAgentAssignee) {
         const action = {
           type: 'cleanup-blocked-agent-assignee',
@@ -1305,7 +1305,7 @@ async function main() {
     repositoryAuditTargets,
     workflowRunLookback
   );
-  const unsupportedCopilotByRepository = summarizeUnsupportedCopilot(unsupportedCopilotIssues);
+  const unsupportedExternalAgentByRepository = summarizeUnsupportedExternalAgent(unsupportedExternalAgentIssues);
   const priorityRepositoryHealth = summarizePriorityRepositories(
     priorityRepositories,
     priorityOperationalIssues,
@@ -1340,9 +1340,9 @@ async function main() {
     staleDraftHours,
     staleOpenPrHours,
     workflowRunLookback,
-    unsupportedCopilotIssueCount: unsupportedCopilotIssues.length,
-    unsupportedCopilotByRepository,
-    unsupportedCopilotIssues,
+    unsupportedExternalAgentIssueCount: unsupportedExternalAgentIssues.length,
+    unsupportedExternalAgentByRepository,
+    unsupportedExternalAgentIssues,
     priorityRepositories,
     priorityOperationalIssueCount: priorityOperationalIssues.length,
     priorityOperationalIssues,
@@ -1421,7 +1421,7 @@ async function main() {
       {
         ok: true,
         dryRun,
-        unsupportedCopilotIssueCount: unsupportedCopilotIssues.length,
+        unsupportedExternalAgentIssueCount: unsupportedExternalAgentIssues.length,
         priorityOperationalIssueCount: priorityOperationalIssues.length,
         coreRepositoryState: coreRepositoryHealth.state,
         coreRepositoryActionsWorkflowState: coreRepositoryHealth.actionsWorkflowState,
