@@ -63,6 +63,7 @@ workers/            # tudo que executa
 └── scripts/
 ```
 
+
 ## Regra central de skills
 
 Toda regra nova deve entrar primeiro na camada certa, em vez de ser repetida entre agents, wrappers e instrucoes locais.
@@ -70,7 +71,7 @@ Toda regra nova deve entrar primeiro na camada certa, em vez de ser repetida ent
 Distribuicao obrigatoria:
 
 - comportamento compartilhado, politicas, guardrails e criterios comuns vivem em `agents/skills/controleonline/shared-*/SKILL.md`
-- qualidade de codigo, modularizacao, smoke tests e limite de tamanho de componentes vivem em `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
+- qualidade de codigo, modularizacao e limite de tamanho de componentes vivem em `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
 - documentacao de cliente e wiki tecnica vivem em `agents/skills/controleonline/shared-documentation-documentation-governance/SKILL.md`
 - seguranca editorial e sanitizacao de evidencias vivem em `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md`
 - fluxo de branches e entrega (GitHub Flow adaptado) vive em `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
@@ -84,25 +85,14 @@ Distribuicao obrigatoria:
 | Categoria | Destino |
 | --- | --- |
 | Home deste repositório | este `AGENTS.md` + skills em `agents/skills/` |
-| Qualidade / smoke | [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) · [smoke-test-flows.md](agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md) |
-| Espelho app (wiki) | https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows |
-| Espelho API (wiki) | https://github.com/ControleOnline/api-community/wiki/Fluxos-de-Smoke |
+| Qualidade | [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) |
 | Governança documental | [documentation-governance.md](agents/skills/controleonline/shared-documentation-documentation-governance/SKILL.md) |
 
-### Por categoria — qualidade e smoke
+### Por categoria — qualidade
 
 | Página | O que documenta |
 | --- | --- |
-| [smoke-test-flows.md](agents/skills/controleonline/shared-quality-smoke-test-flows/SKILL.md) | Catálogo canônico `fluxo: <id>`, gate de evidência visual completa (prints por etapa), regras de uso |
-| [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) | Limites de arquivo, testes, smoke obrigatório, evidência parcial bloqueia QA |
-| Teste de governança | `tests/qa-smoke-flow-evidence.test.mjs` |
-
-### Módulos relacionados
-
-| Módulo | Entrada |
-| --- | --- |
-| app-community | https://github.com/ControleOnline/app-community/wiki/Smoke-Test-Flows |
-| api-community | https://github.com/ControleOnline/api-community/wiki/Fluxos-de-Smoke |
+| [code-quality.md](agents/skills/controleonline/shared-quality-code-quality/SKILL.md) | Limites de arquivo, testes automatizados e critérios de qualidade |
 
 ## Canal de execucao
 
@@ -143,10 +133,11 @@ tasks para `In Review`: essa coluna só é usada após os quatro accepts.
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
 - `QA`, `Security`, `Design` e `UX` decidem por labels na task; evidencia em `dev`; nao abrem PR
-- `DevOps` publica tasks na coluna **`Deploy`** → `master` (deltas individuais) e, se nao houver Deploy, promove tasks com as **quatro** `:accepted` para `staging` + `In Review`
-- **Proibido montar RC** e criar task pai de RC
-- humano confere staging e move a task para **`Deploy`**
-- `DevOps` promove o delta individual `staging` → `master`; com o quarteto move para **`Done`**, sem o quarteto move para **`Working`** para segunda rodada de validacao
+- `DevOps` reúne tecnicamente de 1 a 5 tasks com as **quatro** `:accepted` em uma RC congelada `rc/X.Y.Z-rc.N`, sem criar task pai
+- a RC nasce do `master`, possui manifesto imutável de SHAs e é homologada como composição em `staging`
+- humano confere staging e move as tasks homologadas para **`Deploy`**
+- `DevOps` promove **a mesma RC congelada** diretamente para `master`; `staging` nunca é origem de master
+- qualquer mudança depois do freeze gera `rc.N+1` e nova homologação
 
 ## Ownership operacional
 
@@ -171,6 +162,13 @@ Regras obrigatorias:
   task no Notion aos passos iniciais para uma nova rodada de evidências
 - somente o `DevOps` publica `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`; para o DevOps, `Deploy` vem antes de `Working`
 - agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
+
+### QA é local; GitHub Actions não decide QA
+
+- A aprovação/reprovação de QA é responsabilidade do agent `Quality Assurance` executado localmente no workspace Paperclip.
+- QA executa localmente os testes automatizados adequados ao escopo, nos SHAs exatos entregues em `dev`, e registra comandos, SHAs, configuração usada (sem expor segredos) e resultados na task.
+- GitHub Actions, checks de PR e workflows não aprovam, reprovam, bloqueiam nem substituem a decisão de QA. Não aguarde uma execução de Actions/deploy para emitir aceite quando a evidência local necessária estiver completa.
+- Somente o agent QA, com base na revisão funcional local e nos requisitos da task, registra `agent:qa:accepted` ou `agent:qa:rejected`. Falha de Actions é sinal técnico suplementar; só afeta QA se for reproduzida localmente e demonstrar falha relevante do produto/teste.
 
 ## Fronteira do CTO
 
@@ -206,10 +204,10 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
 ### Ordem de prioridade
 
 1. **P1 DevOps**
-   - Publicar todas as tasks em `Deploy` → `master` (deltas individuais, sem RC); com quarteto mover para `Done`, sem quarteto voltar para `Working` para segunda validacao
-   - Senao, promover todas as tasks quadruplo-accepted → `staging` + `In Review`
-   - A coluna `Deploy` e autorizacao humana explicita de publicacao em `master`; o Manager/DevOps executa o delta sem aguardar aprovacao adicional
-   - **Proibido montar RC**
+   - Se existir RC homologada cujas tasks estejam em `Deploy`, promover exatamente essa RC congelada para `master`
+   - Senão, montar RC técnica de 1 a 5 tasks quadruplo-accepted, congelar manifesto e promover o snapshot para `staging` + `In Review`
+   - `Deploy` autoriza a publicação da composição já homologada; não autoriza recompor SHAs
+   - RC é artefato técnico, nunca task/issue agregadora
 2. **P2 Hotfix**
    - Validar ou promover task `hotfix` ja implementada (QA / Security / Design / UX / DevOps → staging)
    - Implementacao de hotfix e P6 Developer, nao P2

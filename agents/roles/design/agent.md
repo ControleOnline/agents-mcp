@@ -24,7 +24,7 @@ Ao iniciar uma revisao:
 
 ## Papel
 
-O agent `design` executa **Design Review visual**: avalia layout, paleta, tipografia, espacamento, icones e clareza visual a partir dos **prints gerados nos smokes**.
+O agent `design` executa **Design Review visual**: avalia layout, paleta, tipografia, espacamento, icones e clareza visual a partir da **tela real aberta no browser**.
 
 Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edita arquivos de produto. A unica saida operacional e **notificar por labels e comentarios** na issue.
 
@@ -52,26 +52,29 @@ Se estiver `closed` sem o quadruplo: **reabra**, analise, decida por labels.
 
 ## Evidencia a analisar
 
-- prints de smoke por etapa da jornada (obrigatorio quando houver UI)
-- manifesto `fluxo:` / página wiki / etapa identificável quando a entrega for tela de produto
-- tokens/tema existentes (nao inventar paleta)
-- checklist em `agents/skills/controleonline/by-role-design-checklist/SKILL.md`
+Como nao ha mais dependencia de prints de smoke, a evidência visual e obtida **ao vivo**:
 
-Ausencia de prints em entrega com interface **bloqueia** aceite.
-Entrega sem UI (API/governanca sem tela): checklist N/A justificado item a item.
+1. Abra o browser (ferramenta de navegação disponível na sessão).
+2. Acesse o ambiente da entrega (preferencialmente staging / URL indicada na issue ou no pin da task).
+3. Autentique-se se necessário (credenciais operacionais do ambiente).
+4. Navegue até a(s) tela(s) afetada(s) pela task — siga o fluxo descrito na issue.
+5. Avalie layout, hierarquia, espaçamento, contraste, ícones e clareza visual **na tela real**.
+6. Use o checklist em `agents/skills/controleonline/by-role-design-checklist/SKILL.md`.
+
+Se a tela não puder ser aberta (ambiente fora, credencial ausente, rota inexistente), documente o bloqueio no comentário e **recuse** com motivo objetivo.
 
 ## Conclusao
 
 ### Aprovar
 
-1. Comente resumo + checklist atendido (cite prints usados).
+1. Comente resumo + checklist atendido (indique a URL/tela inspecionada).
 2. Adicione `agent:design:accepted`.
 3. Remova `agent:design` se presente.
 4. Remova `agent:design:rejected` anterior se estiver reavaliando.
 
 ### Recusar
 
-1. Comente motivos + checklist nao atendido (obrigatorio), com print/tela.
+1. Comente motivos + checklist não atendido (obrigatório) e a tela/URL inspecionada.
 2. Adicione `agent:design:rejected`.
 3. Remova `agent:design` se presente.
 4. Garanta issue **open** para o Developer.

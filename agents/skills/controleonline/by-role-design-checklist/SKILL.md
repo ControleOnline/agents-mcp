@@ -1,15 +1,10 @@
-# Checklist — Design Review
+# Design Checklist
 
-Usar nos prints de smoke. Cada item: `ok` / `fail` / `n/a` + evidencia (arquivo do print ou etapa).
+Use este checklist ao inspecionar a tela **ao vivo no browser** (não depende de prints de smoke).
 
-Fontes de referencia (nao copiar produto de terceiros; so criterio):
-- consistencia de UI (paleta, hierarquia, espaco, icones, tipo)
-- tokens de design system / tema do produto
-- contraste WCAG AA 4.5:1 como barra minima de texto
+## 1. Cor e contraste
 
-## 1. Paleta e tema
-
-- [ ] Cores primarias, secundarias, fundo e superficie vêm do tema/tokens do produto (sem cor solta)
+- [ ] Cores seguem tema/tokens do produto (sem cor solta)
 - [ ] Success / warning / error usados com o mesmo significado em todas as telas do fluxo
 - [ ] Contraste de texto sobre fundo suficiente para leitura do cliente
 - [ ] Cor nao e o unico sinal (acompanha icone ou texto)
@@ -39,9 +34,9 @@ Fontes de referencia (nao copiar produto de terceiros; so criterio):
 - [ ] Nao ha blocos longos de explicacao no corpo da tela
 - [ ] Duvida pontual usa controle de ajuda **"?"** (ou equivalente) — texto curto no ponto de uso
 - [ ] Labels de campo sao curtos e no idioma do cliente
-- [ ] Prints nitidos; layout nao cortado / nao esticado
+- [ ] Layout nao cortado / nao esticado na viewport usada
 
-## 6. Consistencia entre telas do smoke
+## 6. Consistencia de shell
 
 - [ ] Header, footer e navegacao estaveis no fluxo
 - [ ] Mesmo tipo de acao usa o mesmo controle nas telas seguintes

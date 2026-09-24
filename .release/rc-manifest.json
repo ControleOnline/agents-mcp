@@ -1,0 +1,13 @@
+{
+  "version": "0.0.0",
+  "rc": 1,
+  "branch": "rc/0.0.0-rc.1",
+  "baseMaster": "14b2f909eb37e6c4bc6fce9f6c78b128f27b6d26",
+  "tasks": [
+    1
+  ],
+  "repositories": {
+    "ControleOnline/agents-mcp": "bb9732ff25e49fc1aa6bb71f2494bdf8614a6534"
+  },
+  "frozen": true
+}

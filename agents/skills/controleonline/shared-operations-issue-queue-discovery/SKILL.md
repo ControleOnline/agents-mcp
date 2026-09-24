@@ -44,21 +44,31 @@ Regras adicionais (todos os agents):
 - O agent pode **criar labels** oficiais ausentes no repositorio (incluindo labels de página no formato kebab-case do path).
 
 
-## Filtro obrigatorio de coluna (fail-closed)
+## Filtro obrigatorio de coluna GitHub (fail-closed)
 
 Antes de qualquer candidata:
 
-1. Leia o Status no Project #1.
-2. Se for **`Blocked`** ou **`Backlog`**: descarte. Nao comente, nao mova, nao valide, nao documente.
+1. Leia o Status no GitHub Project #1.
+2. Se for **`Blocked`** ou **`Backlog`**: descarte a issue GitHub. Nao comente, nao mova, nao valide, nao documente.
 3. RC/Deploy so considera **In Review** / **Deploy** / **Done** conforme o rito. Nunca varre Blocked/Backlog.
 
 ## Proibicao: Blocked e Backlog
 
-Issues com Status Project #1 **`Blocked`** ou **`Backlog`** **nao sao candidatas** em nenhum template de elegibilidade (Developer, QA, Security, DevOps, documentacao, Manager).
+Issues GitHub com Status no Project #1 **`Blocked`** ou **`Backlog`** **nao sao candidatas** em nenhum template de elegibilidade (Developer, QA, Security, DevOps, documentacao, Manager). Esta regra nao descreve a inbox nem o status de tasks no Paperclip.
 
 - Filtro obrigatorio antes de selecionar: se a coluna for `Blocked` ou `Backlog`, **descarte**.
 - Nao mover item para fora de `Blocked`/`Backlog` sem ordem humana explicita na issue.
 - Nao usar `Backlog` como fila de recuperacao automatica.
+
+## Fila de recuperacao Paperclip
+
+O status `blocked` de uma task Paperclip e independente da coluna GitHub
+`Blocked`. Para o Manager/CTO, a inbox Paperclip `/CON/inbox/blocked` e fila de
+recuperacao prioritária: diagnostique e retome/corrija tasks e execucoes
+Paperclip antes de capturar novo trabalho, com readback após cada mutacao.
+Recuperar a task Paperclip nao autoriza qualquer mutacao na issue GitHub que
+esteja na coluna `Blocked`; nesse caso, limite a acao a recuperacao operacional
+Paperclip e aguarde a decisao humana sobre o board GitHub.
 
 ## Ownership de colunas por trilha
 

@@ -17,7 +17,6 @@ handoff textual ou commit apenas local não são entrega.
    - `Developer` implementa em `task-{id}` (de `master`), **merge em `dev`**, handoff com `agent:qa` + `agent:security` + `agent:design` + `agent:ux`, task em `Working`
    - `QA` registra `agent:qa:accepted` ou `agent:qa:rejected`
    - `Security` registra `agent:security:accepted` ou `agent:security:rejected`
-   - `Design` registra `agent:design:accepted` ou `agent:design:rejected` (prints de smoke)
    - `UX` registra `agent:ux:accepted` ou `agent:ux:rejected` (jornada nos prints)
    - quando a task tiver as **quatro** aprovacoes, o `Manager` aciona o `DevOps`; o DevOps primeiro atualiza `dev` e `staging` com `origin/master`, confirma o merge já entregue pelo Developer em `dev`, promove o delta da task para `staging` e move a task para **`In Review`**
    - humano move a task para **`Deploy`**, com ou sem o quarteto; a mudança é a autorização explícita de publicação
@@ -32,9 +31,13 @@ handoff textual ou commit apenas local não são entrega.
 12. o handoff só é válido com mutação verificável: commit/ref remoto e merge
     para entrega de código, decisão de label para validação, ou merge + coluna
     para DevOps/board;
-13. se a tentativa falhar após correção objetiva, aplique
-    `agent:<papel>:blocked` + coluna `Blocked` no item atual e encerre como
-    `BLOCKED`; não deixe `Working` sustentado por comentário;
+13. se a tentativa falhar após correção objetiva, nao aplique labels GitHub
+    `agent:<papel>:blocked` nem mova a issue no GitHub Project #1 para `Blocked`;
+    ambos sao estados humanos e a issue/board ficam somente-leitura para agents.
+    Registre `NEXT_ACTION` com responsavel, tentativa e evidencia. Se a task de
+    execucao Paperclip receber `status=blocked` pelo fluxo operacional, ela
+    passa para a inbox Paperclip de recuperacao e deve ser priorizada pelo
+    Manager/CTO; esse status nao bloqueia nem altera o item no GitHub.
 14. não repita a mesma issue sem SHA/label/coluna/evidência novos.
 
 ## Gate obrigatorio de entrega local

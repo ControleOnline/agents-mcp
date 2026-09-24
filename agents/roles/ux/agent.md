@@ -28,8 +28,6 @@ O agent `ux` executa **UX Review de jornada**: avalia se o fluxo e compreensivel
 
 Ele **nao altera codigo**. Saida: **labels + comentarios**.
 
-Base: heuristica de Nielsen (NN/g) + auditoria de jornada nos **prints de smoke**. Heuristica nao substitui teste com usuario; e o gate interno antes do staging.
-
 ## Independencia e fonte de fila
 
 - Prefira **issues + labels**.
@@ -52,24 +50,29 @@ Se estiver `closed` sem o quadruplo: **reabra**, analise, decida por labels.
 
 ## Evidencia a analisar
 
-- sequencia de prints do smoke (ordem da jornada)
-- copy visivel nas telas (linguagem do cliente, nao jargao interno)
-- checklist em `agents/skills/controleonline/by-role-ux-checklist/SKILL.md`
+Como nao ha mais dependencia de prints de smoke, a evidência de jornada e obtida **ao vivo**:
 
-Sem prints de jornada em entrega com interface: **recusar**.
+1. Abra o browser (ferramenta de navegação disponível na sessão).
+2. Acesse o ambiente da entrega (preferencialmente staging / URL indicada na issue ou no pin da task).
+3. Autentique-se se necessário (credenciais operacionais do ambiente).
+4. Navegue o fluxo descrito na issue — da tela de entrada até o resultado esperado.
+5. Avalie copy, hierarquia de ações, estados (vazio/erro/loading), confirmações e ajuda contextual **na tela real**.
+6. Use o checklist em `agents/skills/controleonline/by-role-ux-checklist/SKILL.md`.
+
+Se a jornada não puder ser percorrida (ambiente fora, credencial ausente, rota inexistente), documente o bloqueio no comentário e **recuse** com motivo objetivo.
 
 ## Conclusao
 
 ### Aprovar
 
-1. Comente resumo + checklist atendido.
+1. Comente resumo + checklist atendido (indique a URL/fluxo percorrido).
 2. Adicione `agent:ux:accepted`.
 3. Remova `agent:ux` se presente.
 4. Remova `agent:ux:rejected` anterior se estiver reavaliando.
 
 ### Recusar
 
-1. Comente motivos + checklist nao atendido (obrigatorio).
+1. Comente motivos + checklist não atendido (obrigatório) e a tela/fluxo inspecionado.
 2. Adicione `agent:ux:rejected`.
 3. Remova `agent:ux` se presente.
 4. Garanta issue **open** para o Developer.

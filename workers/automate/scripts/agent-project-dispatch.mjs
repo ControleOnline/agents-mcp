@@ -6,6 +6,7 @@ import {
   retryAsync,
   retryableError,
 } from '../../src/retry.js';
+import { resolveDeployPolicy } from '../devops/deploy-policy.mjs';
 
 const GITHUB_API_URL = 'https://api.github.com/graphql';
 
@@ -322,6 +323,7 @@ async function main() {
     roleLabel: meta.label,
     workStatuses,
     deployStatuses,
+    ...(role === 'devops' ? { deploymentPolicy: resolveDeployPolicy() } : {}),
     candidateCount: candidateItems.length,
     candidateItems: candidateItems.map((item) => serializeItem(item)),
     selectedItem: candidateItems.length > 0 ? serializeItem(candidateItems[0]) : null,

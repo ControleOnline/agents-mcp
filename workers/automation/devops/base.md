@@ -29,12 +29,12 @@ Comentar sem merge não conclui a função.
 ## Publicação (coluna Deploy)
 
 - confirme coluna `Deploy` na task individual
+- resolva a política `force_deploy`; o padrão temporário é
+  `DEVOPS_FORCE_DEPLOY=true`, que pula somente a exigência de testes
+  automatizados e deve ser registrado no handoff
 - audite deploys anteriores de `staging`/`master`
-- não trate a ausência de deploy/teste remoto em `staging` como bloqueio da
-  produção quando os testes locais reproduzíveis da task estiverem verdes;
-- após cada promoção, confirme o deploy e valide o runtime publicado, o fluxo
-  afetado e erros/logs relevantes; falhas pertencem à trilha de DevOps/Sysadmin
-  e não devem ser devolvidas ao Developer ou ao QA;
+- sem force, exija os testes locais reproduzíveis; com force, registre o bypass
+  e não pule a validação de runtime
 - merge do delta → `master` (pai + submódulos)
 - `Done` + handoff de documentação fail-closed
 - artefato de produção não dispara no push de `master`

@@ -1,0 +1,84 @@
+name: Integration source gate
+
+on:
+  pull_request:
+    branches: [dev, staging, master]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  source-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pull request head for source policy validation
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Enforce task, frozen RC, or narrow governance source
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+          REPOSITORY: ${{ github.repository }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { execFileSync } from 'node:child_process';
+          import { validateGovernanceSource } from './workers/automate/devops/integration-source-policy.mjs';
+          const { REPOSITORY, HEAD_REF, BASE_REF, BASE_SHA, HEAD_SHA } = process.env;
+          const changedFiles = execFileSync('git', ['diff', '--name-only', `${BASE_SHA}...${HEAD_SHA}`], { encoding: 'utf8' })
+            .split('\n').map((file) => file.trim()).filter(Boolean);
+          const governance = validateGovernanceSource({
+            repository: REPOSITORY,
+            sourceBranch: HEAD_REF,
+            targetBranch: BASE_REF,
+            changedFiles,
+          });
+          if (governance.allowed) {
+            console.log('Accepted the allowlisted agents-mcp governance-only source.');
+            process.exit(0);
+          }
+          if (BASE_REF === 'dev') {
+            if (/^task-[1-9][0-9]*$/.test(HEAD_REF)) process.exit(0);
+            throw new Error('dev only accepts task-<numeric issue>.');
+          }
+          if (!/^rc\/[0-9]+\.[0-9]+\.[0-9]+-rc\.[1-9][0-9]*$/.test(HEAD_REF)) {
+            throw new Error(`${BASE_REF} only accepts a frozen rc/X.Y.Z-rc.N source.`);
+          }
+          NODE
+
+      - name: Validate frozen RC manifest
+        if: github.base_ref != 'dev' && github.head_ref != 'task-paperclip-status-distinction' && github.head_ref != 'automation/reset-integration-branches'
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          set -eu
+          test -f .release/rc-manifest.json || {
+            echo "::error::Missing .release/rc-manifest.json"
+            exit 1
+          }
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const m = JSON.parse(fs.readFileSync('.release/rc-manifest.json', 'utf8'));
+          const branch = process.env.HEAD_REF;
+          const match = /^rc\/(\d+\.\d+\.\d+)-rc\.([1-9][0-9]*)$/.exec(branch);
+          if (!match) throw new Error('invalid RC branch');
+          if (m.branch !== branch || m.version !== match[1] || Number(m.rc) !== Number(match[2])) throw new Error('manifest identity mismatch');
+          if (m.frozen !== true) throw new Error('manifest is not frozen');
+          if (!Array.isArray(m.tasks) || m.tasks.length < 1 || m.tasks.length > 5) throw new Error('RC must contain 1..5 tasks');
+          const tasks = m.tasks.map(Number);
+          if (tasks.some((id) => !Number.isInteger(id) || id < 1)) throw new Error('invalid task id');
+          if (new Set(tasks).size !== tasks.length) throw new Error('duplicate RC tasks');
+          if (!/^[0-9a-f]{40}$/i.test(String(m.baseMaster || ''))) throw new Error('invalid baseMaster');
+          const repos = m.repositories || {};
+          if (!Object.keys(repos).length) throw new Error('empty repositories manifest');
+          for (const [repo, sha] of Object.entries(repos)) {
+            if (!/^ControleOnline\/[A-Za-z0-9_.-]+$/.test(repo) || !/^[0-9a-f]{40}$/i.test(String(sha))) throw new Error('invalid repository manifest entry');
+          }
+          console.log('Frozen RC manifest valid:', branch, tasks);
+          NODE

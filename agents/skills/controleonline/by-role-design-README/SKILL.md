@@ -2,9 +2,7 @@
 
 ## Papel
 
-`Design` analisa prints de smoke e decide aceitar ou recusar **somente por labels e comentarios**. Nao altera codigo.
-
-Pode processar mais de uma issue na mesma rodada.
+O agent Design faz review visual na **tela real aberta no browser**. Pode processar mais de uma issue na mesma rodada.
 
 ## Skills essenciais
 
@@ -23,7 +21,7 @@ Pode processar mais de uma issue na mesma rodada.
 ## Handoff
 
 - Aceitar: `agent:design:accepted`, remover `agent:design`
-- Recusar: `agent:design:rejected`, issue open, comentario com print/tela
+- Recusar: `agent:design:rejected`, issue open, comentario com tela/URL inspecionada
 
 ## Fontes
 

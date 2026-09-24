@@ -13,10 +13,10 @@ const RETRY = githubRetryConfig('TECHNICAL_LEAD_PR_FINALIZER');
 const DEFAULT_ALLOWED_AUTHOR_ASSOCIATIONS = 'OWNER,MEMBER,COLLABORATOR';
 const DEFAULT_STAGING_BRANCH = 'staging';
 const DEFAULT_IN_REVIEW_STATUS = 'In Review';
-const QA_ACCEPTED_LABEL = 'approved:qa';
-const QA_REJECTED_LABEL = 'rejected:qa';
-const SECURITY_ACCEPTED_LABEL = 'approved:security';
-const SECURITY_REJECTED_LABEL = 'rejected:security';
+const QA_ACCEPTED_LABEL = 'agent:qa:accepted';
+const QA_REJECTED_LABEL = 'agent:qa:rejected';
+const SECURITY_ACCEPTED_LABEL = 'agent:security:accepted';
+const SECURITY_REJECTED_LABEL = 'agent:security:rejected';
 
 function env(name, fallback = '') { return (process.env[name] || fallback).trim(); }
 function parseCsv(value) { return value.split(',').map((item) => item.trim()).filter(Boolean); }
