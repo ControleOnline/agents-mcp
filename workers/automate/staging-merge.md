@@ -6,7 +6,7 @@
 - DevOps monta uma branch `rc/X.Y.Z-rc.N` a partir do `master` atual.
 - A RC recebe individualmente de 1 a 5 tasks com os quatro accepts.
 - Depois do manifesto e freeze, o snapshot da RC e promovido para `staging`.
-- Staging e ambiente de homologacao da **composicao congelada**, nao branch de trabalho.
+- Staging é o ambiente de homologação da **composição congelada**, não branch de trabalho.
 - Depois da autorizacao humana em `Deploy`, DevOps promove a **mesma RC** para `master`.
 - `staging -> master`, `dev -> staging` e branches agregadoras manuais sao proibidos.
 

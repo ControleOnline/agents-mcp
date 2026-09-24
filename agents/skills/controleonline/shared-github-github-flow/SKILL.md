@@ -273,4 +273,8 @@ master
 
 ## Project Status: Blocked e Backlog
 
-Agents **não** selecionam nem movem items em **`Blocked`** ou **`Backlog`** como fila.
+Esta regra se refere exclusivamente a colunas do **GitHub Project #1**:
+agents nao selecionam, comentam, validam, rotulam, editam nem movem issues em
+`Blocked` ou `Backlog`. O status `blocked` de tasks Paperclip e distinto e
+constitui fila prioritária de recuperacao para Manager/CTO; essa recuperacao
+operacional nao autoriza mutacao na issue/board GitHub `Blocked`.

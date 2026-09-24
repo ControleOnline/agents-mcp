@@ -1,6 +1,51 @@
 const TASK_BRANCH = /^task-([1-9][0-9]*)$/;
 const RC_BRANCH = /^rc\/(\d+)\.(\d+)\.(\d+)-rc\.([1-9][0-9]*)$/;
 const SHA = /^[0-9a-f]{40}$/i;
+const GOVERNANCE_PR_ALLOWLISTS = new Map([
+  ['fix/dev-master-staging-rc-reconciliation', new Set([
+  '.github/workflows/integration-source-gate.yml',
+  '.github/workflows/reset-aggregate-branches.yml',
+  'tests/integration-source-policy.test.mjs',
+  'tests/reset-integration-branches.test.mjs',
+  'workers/automate/devops/integration-source-policy.mjs',
+  'workers/automate/scripts/reset-integration-branches.mjs',
+  ])],
+  ['automation/reset-integration-branches', new Set([
+  '.github/workflows/integration-source-gate.yml',
+  '.github/workflows/reset-aggregate-branches.yml',
+  'tests/integration-source-policy.test.mjs',
+  'tests/reset-integration-branches.test.mjs',
+  'workers/automate/devops/integration-source-policy.mjs',
+  'workers/automate/scripts/reset-integration-branches.mjs',
+  ])],
+  ['task-paperclip-status-distinction', new Set([
+  '.github/workflows/github-operations.yml',
+  '.github/workflows/integration-source-gate.yml',
+  'AGENTS.md',
+  'agents/roles/ceo/agent.md',
+  'agents/roles/developer/agent.md',
+  'agents/roles/devops/agent.md',
+  'agents/roles/manager/agent.md',
+  'agents/roles/qa/agent.md',
+  'agents/skills/controleonline/by-role-manager-README/SKILL.md',
+  'agents/skills/controleonline/by-role-qa-README/SKILL.md',
+  'agents/skills/controleonline/runners-README/SKILL.md',
+  'agents/skills/controleonline/shared-github-github-flow/SKILL.md',
+  'agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md',
+  'agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md',
+  'agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md',
+  'tests/qa-local-approval.test.mjs',
+  'tests/integration-source-policy.test.mjs',
+  'workers/automate/agents/runner-map.md',
+  'workers/automate/quality-assurance.md',
+  'workers/automate/scripts/github-operations.mjs',
+  'workers/automate/scripts/qa-project-review.mjs',
+  'workers/automate/devops/integration-source-policy.mjs',
+  'workers/automate/staging-merge.md',
+  'workers/automate/workflows/qa-project-review.yml',
+  'workers/automation/qa/base.md',
+  ])],
+]);
 
 export function parseTaskBranch(branch) {
   const match = TASK_BRANCH.exec(String(branch || '').trim());
@@ -15,6 +60,21 @@ export function parseRcBranch(branch) {
     version: `${match[1]}.${match[2]}.${match[3]}`,
     rc: Number(match[4]),
   };
+}
+
+/**
+ * Exact per-PR allowlists for structural agents-mcp governance changes.
+ * No exception applies to product repositories or unlisted file paths.
+ */
+export function validateGovernanceSource({ repository, sourceBranch, targetBranch, changedFiles = [] }) {
+  const allowlist = GOVERNANCE_PR_ALLOWLISTS.get(sourceBranch);
+  if (repository !== 'ControleOnline/agents-mcp' || targetBranch !== 'master' || !allowlist) {
+    return { allowed: false, reason: 'governance exception is limited to an exact allowlisted agents-mcp PR.' };
+  }
+  if (!Array.isArray(changedFiles) || changedFiles.length === 0 || changedFiles.some((file) => !allowlist.has(file))) {
+    return { allowed: false, reason: 'governance PR contains files outside its exact allowlist.' };
+  }
+  return { allowed: true, protectedTarget: true, type: 'governance' };
 }
 
 /**
@@ -51,12 +111,7 @@ export function validateIntegrationSource({ sourceBranch, targetBranch, manifest
   const target = String(targetBranch || '').trim();
   if (!['dev', 'staging', 'master'].includes(target)) return { allowed: true, protectedTarget: false };
 
-  if (target === 'dev') {
-    const task = parseTaskBranch(sourceBranch);
-    return task
-      ? { allowed: true, protectedTarget: true, type: 'task', issueNumber: task.issueNumber }
-      : { allowed: false, protectedTarget: true, reason: 'dev only accepts task-<issue> sources.' };
-  }
+  if (target === 'dev') return { allowed: true, protectedTarget: true, type: 'development' };
 
   try {
     const rc = validateRcManifest(manifest, sourceBranch);

@@ -163,6 +163,13 @@ Regras obrigatorias:
 - somente o `DevOps` publica `Deploy` → `master` e promove quadruplo-accepted → `staging` / `In Review`; para o DevOps, `Deploy` vem antes de `Working`
 - agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
 
+### QA é local; GitHub Actions não decide QA
+
+- A aprovação/reprovação de QA é responsabilidade do agent `Quality Assurance` executado localmente no workspace Paperclip.
+- QA executa localmente os testes automatizados adequados ao escopo, nos SHAs exatos entregues em `dev`, e registra comandos, SHAs, configuração usada (sem expor segredos) e resultados na task.
+- GitHub Actions, checks de PR e workflows não aprovam, reprovam, bloqueiam nem substituem a decisão de QA. Não aguarde uma execução de Actions/deploy para emitir aceite quando a evidência local necessária estiver completa.
+- Somente o agent QA, com base na revisão funcional local e nos requisitos da task, registra `agent:qa:accepted` ou `agent:qa:rejected`. Falha de Actions é sinal técnico suplementar; só afeta QA se for reproduzida localmente e demonstrar falha relevante do produto/teste.
+
 ## Fronteira do CTO
 
 O CTO supervisiona o ecossistema e corrige diretamente o `agents-mcp` quando houver falha estrutural de instrucao, runner, workflow, ownership ou automacao.
