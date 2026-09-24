@@ -12,16 +12,14 @@ const CONTROL_OWNER = "ControleOnline";
 const CENTRAL_REPO = "agents-mcp";
 const CENTRAL_BASE_URL = `https://github.com/${CONTROL_OWNER}/${CENTRAL_REPO}/blob/master`;
 const centralWorkspaceName = path.basename(platformRoot);
-const types = ["developer", "qa", "security", "devops", "tutorial-assistant", "technical-documenter"];
+// Only these three execution roles are provisioned for the current Paperclip pipeline.
+const types = ["developer", "security", "devops"];
+const retiredTypes = ["qa", "ux", "design", "tutorial-assistant", "technical-documenter"];
 
 const typeMeta = {
   developer: {
     displayName: "Developer",
     descriptionPrefix: "Executor autonomo de issues",
-  },
-  qa: {
-    displayName: "Quality Assurance",
-    descriptionPrefix: "Revisor tecnico de entregas",
   },
   security: {
     displayName: "Security",
@@ -30,14 +28,6 @@ const typeMeta = {
   devops: {
     displayName: "DevOps",
     descriptionPrefix: "Operador de fluxo e automacoes",
-  },
-  "tutorial-assistant": {
-    displayName: "Tutorial Assistant",
-    descriptionPrefix: "Agente de tutorial para cliente final",
-  },
-  "technical-documenter": {
-    displayName: "Technical Documenter",
-    descriptionPrefix: "Agente de wiki tecnica e de negocio",
   },
 };
 
@@ -285,6 +275,13 @@ function sync() {
     for (const type of types) {
       const wrapperPath = path.join(entry.localPath, ".github", "agents", `${type}.agent.md`);
       writeFile(wrapperPath, renderWrapper(type, entry));
+    }
+
+    for (const type of retiredTypes) {
+      const wrapperPath = path.join(entry.localPath, ".github", "agents", `${type}.agent.md`);
+      if (fs.existsSync(wrapperPath)) {
+        fs.unlinkSync(wrapperPath);
+      }
     }
   }
 

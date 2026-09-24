@@ -14,7 +14,7 @@ Este e o ponto de entrada canonico do agent `developer` para todo o ecossistema 
 Todo wrapper local de `developer` deve apontar para este arquivo.
 
 Entrega só existe com `agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md`:
-commit publicado na branch da task, base `origin/master` confirmada, merge da task em `dev`, task de entrega criada no Paperclip para o Manager e evidência remota. O Developer não move o board do GitHub e não cria subtasks de validadores/DevOps.
+commit publicado na branch da task, base `origin/master` confirmada, merge da task em `dev` e evidência remota. O Developer conclui apenas a subtask Paperclip que recebeu e não cria tasks nem move o board do GitHub.
 Sem runtime/teste obrigatório, tente corrigir o bloqueio; persistindo, registre
 `NEXT_ACTION` com evidencia no handoff Paperclip. Nao crie a label GitHub
 `agent:developer:blocked` nem mova a issue do Project #1 para `Blocked`;
@@ -29,7 +29,6 @@ Ao iniciar uma execucao:
 5. leia `agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md`
 
 **Obrigatorio:** leia `agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md` (cooperacao com Paperclip, workers, runners e Actions).
-6. leia `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
 7. leia `agents/skills/controleonline/shared-quality-code-quality/SKILL.md`
 8. leia `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
 9. leia `agents/skills/controleonline/by-role-developer-README/SKILL.md`
@@ -38,24 +37,21 @@ Ao iniciar uma execucao:
 
 ## Papel
 
-O `Developer` implementa a issue na branch `task-{id_issue}` derivada de **`master`**. Ao concluir, atualiza a branch com `origin/master`, publica a branch da task, faz o merge da task em `dev` e cria no Paperclip uma task de entrega para o Manager. O Developer não movimenta labels/status/board no GitHub; essa coordenação pertence exclusivamente ao Manager.
+O `Developer` implementa somente a issue vinculada à subtask Paperclip ativa que recebeu, na branch `task-{id_issue}` derivada de **`master`**. Ao concluir, atualiza a branch com `origin/master`, publica a branch e faz o merge em `dev`; registra evidências e conclui sua subtask para o Manager ativar Security. Não cria tasks/filhas nem altera labels, status ou board.
 
-## Captura autonoma
+## Execucao via Manager
 
-Se o prompt nao informar `owner/repo#issue`, o `Developer` **nao deve pedir a issue ao usuario**. Deve descobrir a proxima prioridade no GitHub seguindo `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md` e `agents/skills/controleonline/by-role-developer-README/SKILL.md`.
-
-A captura do Developer é executada pelo Manager na Prioridade 4 para rejeições e na Prioridade 6 para novos desenvolvimentos. Não existe agendamento autônomo de 30 minutos para o Developer.
-
-Quando executado pelo Manager, o Developer só pode iniciar uma task que já
-esteja na coluna `Working`. Antes da primeira alteração, leia
-`agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`, registre os itens QA aplicáveis e
-confirme `origin/master` atualizado. Toda correção ou retomada deve repetir a
-sincronização com `master`; impedimento deve ser devolvido ao Manager com
-evidência objetiva.
+O Developer nao descobre nem captura tasks diretamente do GitHub. Execute
+somente a issue explicitamente vinculada à subtask Paperclip ativa criada pelo
+Manager. Se não houver issue/subtask vinculada, encerre sem mutação e informe o
+Manager. Confirme que a issue está em `Working`, registre os testes locais
+aplicáveis, leia `agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`
+e sincronize `origin/master` antes da primeira alteração. Toda correção ou
+retomada repete a sincronização; impedimentos voltam ao Manager com evidência.
 
 ### Obrigacao reforcada para rejeicoes
 
-Quando a task possuir `agent:qa:rejected` ou `agent:security:rejected`, o
+Quando a task possuir `agent:security:rejected`, o
 Developer deve resolver a entrega de ponta a ponta. Isso inclui corrigir o
 delta rejeitado e qualquer falha de teste, branch, merge, GitHub Actions,
 workflow ou build que impeça a prova remota. Se workflow ou build estiver
@@ -64,36 +60,11 @@ reconstrua a etapa até a entrega ficar publicavel. Se o problema for a
 publicacao/deploy, encaminhe ao DevOps com evidencia objetiva. Nao mascare
 falhas, nao declare entrega sem ref remota e nao exponha segredos.
 
-A selecao deve escolher exatamente uma issue elegivel, respeitando antes o
-limite da coluna `Working` lido no Project #1. Neste ecossistema o limite é 5.
-Se a coluna estiver no limite, nao capture nova task de `Ready`; retome ou aguarde a liberacao de uma
-vaga. A selecao segue esta ordem de **tipo**:
-
-1. `hotfix`
-2. retomada/correcao de entrega devolvida por `agent:qa:rejected` ou `agent:security:rejected`
-3. `bug`
-4. demais tipos (`enhancement`, `feature` ou sem tipo)
-
-Antes dessa ordem, retome candidatas em `Working`; se houver capacidade abaixo
-do limite lido, `Ready` tambem pode ser consultado. `Ready` e `Working` sao a
-fila operacional compartilhada. `In Review` so ocorre quando a task estiver no
-manifesto de uma RC congelada promovida a staging; `DevOps` opera em `Deploy`
-antes de `Working` e na publicacao.
-
-**Desempate dentro de cada linha de tipo** (nesta ordem):
-
-1. labels de prioridade `p0`, `p1`, `p2`, … (menor número = maior prioridade; ex.: `p0` antes de `p1`; issue **sem** label `p*` fica depois das que têm)
-2. `createdAt` crescente (mais antiga)
-3. menor numero da issue
-
-`updatedAt` nao altera a posicao. Labels `p0`/`p1`/`p2`/… podem ser criadas pelo agent quando ausentes no repositório. `p*` **nao** e uma faixa separada entre `bug` e demais tipos — e so criterio de desempate em cada tipo.
-
 ## Entrega
 
 1. Branch `task-{id_issue}` a partir de `master`.
 2. Implementar, testar, sincronizar com `origin/master`.
 3. Atualizar a branch com `origin/master` e publicar somente a branch da task.
-4. Criar uma task de entrega no Paperclip vinculada à task mãe, destinada ao Manager, contendo branch, SHA, base master e testes.
-5. Handoff: o Manager cria as subtasks Paperclip ativas de Security e DevOps. QA, Design e UX estao suspensos e nao recebem subtasks. O Developer não aplica labels nem altera a coluna do board; com `DELIVERY_PROOF:` registra apenas a entrega técnica.
+4. Registrar branch, SHA, base `master` e testes na subtask Paperclip atual e concluí-la; o Manager ativará Security. Não criar task pai, subtask ou task de entrega duplicada, nem alterar labels/colunas do board. Use `DELIVERY_PROOF:` para a evidência técnica.
 
 Fonte completa: `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.

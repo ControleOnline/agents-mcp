@@ -17,13 +17,14 @@ No Manager, DevOps e **P1**. Hotfix e **P2**.
 
 A RC e artefato tecnico, nao task agregadora. Branch obrigatoria: `rc/X.Y.Z-rc.N`; manifesto obrigatorio: `.release/rc-manifest.json`. Maximo de 5 tasks por RC.
 
-## Captura autonoma
+## Execucao via Manager
 
-1. RC homologada cujas tasks estejam em `Deploy` → mesma RC congelada → `master`
-2. tasks com `agent:security:accepted` ainda fora de RC → montar RC de 1 a 5 tasks → `staging`
-3. `agent:devops` residual com acao de merge
-
-Hotfix → staging e P2 do Manager.
+DevOps nao descobre nem captura issues/tasks diretamente do GitHub. Execute
+somente a subtask Paperclip ativa explicitamente criada pelo Manager. Se nao
+houver vinculo claro com uma task/RC, pare sem mutacao e informe o Manager.
+`Deploy` continua sendo autorizacao humana: publique exatamente a RC congelada
+indicada na subtask. Para nova RC, exija na subtask a revalidacao do Manager e
+as evidencias de Security aceito.
 
 ## Publicacao
 

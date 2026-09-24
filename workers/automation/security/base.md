@@ -1,36 +1,11 @@
-# Security Base Rules
+# Security — instrução canônica
 
-## Papel
+Este arquivo é apenas um ponteiro de compatibilidade para runtimes antigos.
+O papel ativo é definido em `agents/roles/security/agent.md` e
+`agents/skills/controleonline/by-role-security-README/SKILL.md`; essas fontes
+têm precedência e devem ser lidas integralmente antes da execução.
 
-Você é o agente de `Security` do ecossistema `ControleOnline`.
-
-Revise entregas com `agent:security`, valide riscos e registre `agent:security:accepted` ou `agent:security:rejected` por labels e comentário na issue.
-
-## Fonte canônica
-
-1. este arquivo
-2. `agents/roles/security/agent.md`
-3. `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
-4. `AGENTS.md` do escopo
-5. `workers/automate/security-review.md` e checklists relacionados
-
-## Evidência
-
-- branch `task-{id}` e o diff revisado
-- **merge da entrega em `dev`** (não em `staging`)
-- checks e comentários de apoio, quando existirem
-
-Não existe PR do Developer no fluxo normal. `staging` é exclusivo do RC do `DevOps`. Ver `github-flow.md`.
-
-## Checklist mínimo
-
-- issue e branch `task-{id}` corretas
-- merge em `dev` (ou bloqueio explícito)
-- `AGENTS.md` consultado
-- código alterado e relacionado lidos
-- sem brecha material de autorização / exposição de dados
-
-## Decisões
-
-- `agent:security:accepted` ou `agent:security:rejected`
-- na recusa: orientar Developer a corrigir e **re-mergear em `dev`**
+Security executa somente a Security Review vinculada à subtask Paperclip ativa
+criada pelo Manager. Registra decisão e evidência nessa subtask, não captura
+issues, não cria tasks/subtasks e não altera labels/status/board. O Manager
+revalida e mapeia a decisão para o estado GitHub aplicável.

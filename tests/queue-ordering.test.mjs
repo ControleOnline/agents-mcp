@@ -95,13 +95,12 @@ test('canonical instructions reject updatedAt ordering', () => {
   assert.match(discovery, /nunca use `updatedAt`/i);
   assert.match(discovery, /menor numero da issue/i);
 
-  const developerAgent = fs.readFileSync('agents/roles/developer/agent.md', 'utf8');
-  assert.match(developerAgent, /createdAt` crescente/i);
-  assert.doesNotMatch(developerAgent, /`updated` mais recente/i);
-  assert.match(developerAgent, /limite.*coluna `Working`.*Project #1/is);
+  const managerAgent = fs.readFileSync('agents/roles/manager/agent.md', 'utf8');
+  assert.match(managerAgent, /createdAt.*crescente/i);
+  assert.doesNotMatch(managerAgent, /`updated` mais recente/i);
 });
 
-test('all agents prioritize Working and DevOps prioritizes Deploy first', () => {
+test('Manager dispatches DevOps with an explicit task and Deploy authorization', () => {
   const discovery = fs.readFileSync('agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md', 'utf8');
   const devops = fs.readFileSync('agents/skills/controleonline/by-role-devops-README/SKILL.md', 'utf8');
   const dispatch = fs.readFileSync('workers/automate/scripts/agent-project-dispatch.mjs', 'utf8');
@@ -111,7 +110,8 @@ test('all agents prioritize Working and DevOps prioritizes Deploy first', () => 
   assert.match(discovery, /DevOps,[\s\S]*`Deploy`[\s\S]*`Working`/i);
   assert.match(devops, /`In Review`/i);
   assert.match(devops, /`Done`/i);
-  assert.match(devops, /`Deploy`[\s\S]*`Working`[\s\S]*`Ready`/i);
+  assert.match(devops, /DevOps nao descobre nem captura tasks no GitHub/i);
+  assert.match(devops, /subtask ativa\s+atribuida pelo Manager/i);
   assert.match(dispatch, /prioritizeWorkingItems/);
   assert.match(projectDispatch, /workingItems/);
   assert.match(projectDispatch, /workingColumnLimit/);
@@ -143,7 +143,7 @@ test('first pass includes QA checklist and master synchronization gate', () => {
     'utf8',
   );
   const checklist = fs.readFileSync('agents/skills/controleonline/shared-quality-review-checklists/SKILL.md', 'utf8');
-  assert.match(manager, /coluna \*\*`Working`\*\*/is);
+  assert.match(manager, /issues elegiveis em `Working`/i);
   assert.ok(developer.includes('primeira alteração'));
   assert.ok(developer.includes('agents/skills/controleonline/shared-quality-review-checklists/SKILL.md'));
   assert.ok(developer.includes('origin/master'));

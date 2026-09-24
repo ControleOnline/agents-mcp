@@ -5,18 +5,26 @@ import { spawnSync } from 'node:child_process';
 
 const read = (path) => fs.readFileSync(new URL(path, import.meta.url), 'utf8');
 
-test('QA approval is local and independent of GitHub Actions', () => {
-  const policy = [
-    read('../AGENTS.md'),
-    read('../agents/roles/qa/agent.md'),
-    read('../workers/automation/qa/base.md'),
-    read('../workers/automate/quality-assurance.md'),
-    read('../agents/skills/controleonline/by-role-qa-README/SKILL.md'),
-  ].join('\n');
-
-  assert.match(policy, /workspace Paperclip/);
-  assert.match(policy, /não aprovam, reprovam, bloqueiam/i);
-  assert.match(policy, /testes.*localmente/is);
+test('Paperclip product chain exposes Developer, Security, Manager and DevOps only', () => {
+  const manager = read('../agents/roles/manager/agent.md');
+  const managerSkill = read('../agents/skills/controleonline/by-role-manager-README/SKILL.md');
+  const developer = read('../agents/roles/developer/agent.md');
+  const security = read('../agents/roles/security/agent.md');
+  const devops = read('../agents/roles/devops/agent.md');
+  const workerSkills = [
+    read('../agents/skills/controleonline/by-role-developer-README/SKILL.md'),
+    read('../agents/skills/controleonline/by-role-security-README/SKILL.md'),
+    read('../agents/skills/controleonline/by-role-devops-README/SKILL.md'),
+    read('../agents/skills/controleonline/shared-github-github-flow/SKILL.md'),
+    read('../agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md'),
+  ];
+  const provisioner = read('../workers/scripts/sync-paperclip-agents.mjs');
+  assert.match(manager, /Developer.*Security.*Manager.*DevOps/is);
+  assert.match(managerSkill, /Developer.*Security.*Manager.*DevOps/is);
+  for (const instructions of [manager, managerSkill, developer, security, devops, ...workerSkills]) {
+    assert.doesNotMatch(instructions, /\b(?:QA|Quality Assurance|Design|UX)\b/i);
+  }
+  assert.match(provisioner, /const types = \["developer", "security", "devops"\]/);
   assert.equal(fs.existsSync(new URL('../workers/automate/workflows/qa-project-review.yml', import.meta.url)), false);
 });
 

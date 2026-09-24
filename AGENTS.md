@@ -12,7 +12,7 @@ Este repositorio e a fonte oficial para automacoes, agents, runners, workflows e
 
 **Exceção estrutural única:** edição de governança, runners, workflows e documentação **deste** repositório canônico de agents quando a falha for estrutural (`agents-mcp`). Mutações de produto continuam restritas a `ControleOnline/*`.
 
-Qualquer agent (Manager, Developer, QA, Security, DevOps, Sysadmin, Documentadores, CTO) que detectar trabalho elegível fora de ControleOnline deve **ignorar** e registrar no contrato de conclusão: `OUT_OF_SCOPE` (org/repo).
+Qualquer agent ativo (Manager, Developer, Security, DevOps, CTO) que detectar trabalho elegível fora de ControleOnline deve **ignorar** e registrar no contrato de conclusão: `OUT_OF_SCOPE` (org/repo).
 
 ## Fonte canonica
 
@@ -133,8 +133,8 @@ que a task esta no inventario.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
-- `Design`, `UX` e `QA` estao temporariamente suspensos: nao criam subtasks, nao
-  aplicam labels e nao bloqueiam staging/RC
+- A esteira ativa do Paperclip e exclusivamente `Developer` → `Security` →
+  `Manager` → `DevOps`; nenhum outro papel cria subtasks ou gates
 - `Security` e o unico validador ativo antes da revalidacao do `Manager`
 - `DevOps` reúne tecnicamente de 1 a 5 tasks com `agent:security:accepted` em uma RC congelada `rc/X.Y.Z-rc.N`, sem criar task pai
 - a RC nasce do `master`, possui manifesto imutável de SHAs e é homologada como composição em `staging`
@@ -161,9 +161,9 @@ Labels oficiais de review na task:
 
 - `agent:security:accepted` / `agent:security:rejected`
 
-Labels de `QA`, `Design` e `UX` existem apenas como historico/instrucoes
-documentadas; enquanto a suspensao estiver ativa, nao entram na fila, nao
-geram subtasks e nao sao gate de `staging`, `In Review`, `Deploy` ou `Done`.
+Somente `agent:security:accepted` / `agent:security:rejected` sao labels ativas
+de validacao. Nenhum outro papel de validacao participa da fila, cria subtasks
+ou define gates de `staging`, `In Review`, `Deploy` ou `Done`.
 
 Regras obrigatorias:
 
@@ -172,22 +172,21 @@ Regras obrigatorias:
 - `Developer` seleciona trabalho apenas quando a issue ainda esta aberta, foi criada por membro da equipe e nao existe pendencia ativa de decisao por `Security`
 - `Developer` so trabalha na `task-{id_issue}` e entrega em **`dev`** por merge, sem abrir PR
 - `Developer` nao mexe diretamente em `master`, `main`, `dev`, `staging`
-- `Security` registra apenas labels de aceite/recusa na task
-- quando `Security` recusar, comenta de forma objetiva para o `Developer`
+- `Security` registra decisão e evidência somente na subtask Paperclip
+- o `Manager` aplica labels de Security conforme essa decisão e reativa `Developer` em caso de recusa
 - se um merge ou rebase se tornar confuso, não force a resolução: descarte e
   recrie a branch da task desde `master`, refaça a implementação e retroceda a
   task no Notion aos passos iniciais para uma nova rodada de evidências
 - somente o `DevOps` publica `Deploy` → `master` e promove RC congelada → `staging` / `In Review`; para o DevOps, `Deploy` vem antes de `Working`
 - agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
 
-### QA suspenso; GitHub Actions nao decide QA
+### Escopo ativo do Paperclip
 
-- Enquanto suspenso, `Quality Assurance` nao captura tasks, nao cria subtasks e
-  nao aplica `agent:qa:*`.
-- GitHub Actions, checks de PR e workflows não aprovam, reprovam, bloqueiam nem
-  substituem decisao de QA.
-- Quando QA for reativado por decisao humana, a decisao volta a ser local no
-  workspace Paperclip, com testes adequados ao escopo e evidencia registrada.
+- O Paperclip deve expor somente `Manager` (coordenacao), `Developer`,
+  `Security` e `DevOps` para o fluxo de produto.
+- A sequencia e Developer → Security → revalidacao do Manager → DevOps.
+- Testes locais sao responsabilidade do Developer e revalidados pelo Manager;
+  nao existe etapa ou aceite separado.
 
 ## Fronteira do CTO
 
@@ -203,63 +202,40 @@ a trilha de `staging`/`master` pertence ao `DevOps`, conforme
 
 ## Full Pipeline / Manager
 
-Existe **um** Full Pipeline. SysAdmin permanece fora deste mode (automacao separada).
+Existe **um** Full Pipeline. O Manager coordena; nao implementa codigo nem abre
+etapas adicionais. Ordem: recuperar task Paperclip existente → DevOps para
+Deploy/RC pronta → continuar task ativa em Developer → Security → revalidacao
+do Manager → DevOps → somente entao considerar uma nova task. A task pai
+depende das filhas por `blocked by`, com apenas a etapa vigente ativada.
 
-Ordem:
-
-1. P1 DevOps
-2. P2 Hotfix
-3. P3 Documentacao
-4. P4 Developer — rejeicoes de QA/Security
-5. P5 Security
-6. P6 Developer — novas tarefas
-7. P7 Higiene residual + board
-
-O Manager, ao chegar em P4 ou P6 com trabalho elegivel, **le e executa** `agents/roles/developer/agent.md` sobre exatamente uma issue elegivel. Em P4, somente corrige rejeicoes de QA/Security; em P6, captura novos desenvolvimentos. Nao inventa rito proprio de codigo.
-
-Developer executado de forma standalone (prompt direto no papel) continua podendo capturar a propria fila; isso nao cria um segundo pipeline nem autoriza higiene a rodar na frente da implementacao.
+Developer executa somente a subtask atribuida pelo Manager; nao captura fila nem cria execucao paralela.
 
 ## Mode de Acao do Agent (Full Pipeline / Manager)
 
-Quando a automacao unificada (`Controle Online - Full Pipeline`) for executada, ela deve seguir **estritamente** a ordem de prioridade abaixo.
-O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**.
-
-### Ordem de prioridade
-
-1. **P1 DevOps**
-   - Se existir RC homologada cujas tasks estejam em `Deploy`, promover exatamente essa RC congelada para `master`
-   - Senao, montar RC técnica de 1 a 5 tasks com `agent:security:accepted`, congelar manifesto e promover o snapshot para `staging` + `In Review`
-   - `Deploy` autoriza a publicação da composição já homologada; não autoriza recompor SHAs
-   - RC é artefato técnico, nunca task/issue agregadora
-2. **P2 Hotfix**
-   - Validar ou promover task `hotfix` ja implementada (Security / DevOps → staging)
-   - Implementacao de hotfix e P6 Developer, nao P2
-3. **P3 Documentacao**
-   - Technical Documenter
-   - Tutorial Assistant
-4. **P4 Developer — rejeicoes**
-   - Corrigir issues com `agent:qa:rejected` ou `agent:security:rejected`
-   - A correcao vai ate a entrega publicavel: o Developer deve resolver falhas de workflow, Actions, build, branch, merge ou evidencia que impeçam a entrega
-   - Se o workflow/build estiver falhando, deve investigar, corrigir, repetir a execucao, rerotear ou reconstruir a etapa; se o problema for a publicacao/deploy, deve encaminhar ao DevOps com evidencia objetiva
-   - Uma correcao por rodada, antes de qualquer nova validacao
-5. **P5 Security**
-   - Security valida a entrega ativa; QA, Design e UX permanecem suspensos
-6. **P6 Developer — novos desenvolvimentos**
-   - Exatamente uma issue elegivel
-   - Branch `task-{id}` a partir de `master`, merge em `dev`, handoff para Security
-7. **P7 Higiene residual + board**
-   - Somente com P1–P6 sem acao executavel
+Quando a automacao unificada (`Controle Online - Full Pipeline`) for executada,
+ela deve seguir estritamente a ordem acima e retomar a task atual ate resolve-la
+antes de criar outra task pai.
 
 ### Regras deste mode
 
-- Tente a prioridade mais alta com trabalho elegivel e executavel.
-- Se `Working` já tiver 5 tasks, não capture outra task para P5 ou P6; continue
+- Considere somente Developer, Security e DevOps como papeis executores; o
+  Manager e o coordenador e revalidador.
+- Mantenha exatamente uma task pai aberta por issue GitHub, com suas filhas
+  encadeadas por `blocked by`; nao abra outra enquanto a atual estiver ativa.
+- Developer implementa e executa testes locais; Security valida; Manager
+  revalida; DevOps cria a RC congelada e move para `In Review`.
+- A aprovacao humana em `Deploy` autoriza DevOps a publicar a mesma RC em
+  `master`; nao altere seu manifesto depois do freeze.
+
+Tente a prioridade mais alta com trabalho elegivel e executavel.
+- Se `Working` já tiver 5 tasks, não capture outra task; continue
   resolvendo as tasks ativas. P1 `DevOps` permanece executável para `Deploy`.
 - Dentro da mesma prioridade funcional, selecione a task elegivel mais antiga por `createdAt` crescente; em empate, use o menor numero da issue.
 - `updatedAt` serve apenas como evidencia de atividade e nunca reposiciona uma task na fila.
 - SysAdmin **nao** participa deste mode (deve continuar rodando em paralelo em automacao separada).
-- **Developer participa deste mode como P4 para rejeicoes e P6 para novos desenvolvimentos.** Nao avance para P5 enquanto existir rejeicao elegivel; nao avance para P7 enquanto existir trabalho elegivel em P1–P6.
-- Falha operacional em P4 ou P6 nao autoriza fallback para higiene.
+- **Developer deve continuar a task ativa antes de capturar outra.** Nao exceda
+  cinco tasks simultaneas na coluna `Working`.
+- Falha operacional nao autoriza criar tasks fora da esteira ativa.
 - Sempre confirme o estado real no GitHub / Project #1 antes de agir.
 - Siga integralmente as fontes canonicas de cada papel (`agents/roles/*/agent.md` e skills referenciadas).
 - Colunas `Blocked` e `Backlog` sao exclusivamente humanas.

@@ -21,7 +21,6 @@ Ao iniciar uma revisao:
 4. leia `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
 
 **Obrigatorio:** leia `agents/skills/controleonline/shared-operations-paperclip-direct-execution/SKILL.md` (cooperacao com Paperclip, workers, runners e Actions).
-5. leia `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
 6. leia `agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md`
 7. leia `agents/skills/controleonline/shared-security-security-guardrails/SKILL.md`
 8. leia `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
@@ -31,18 +30,19 @@ Ao iniciar uma revisao:
 
 ## Papel
 
-O agent `security` executa **Security Review**: valida riscos de seguranca, autorizacao, exposicao de dados, impactos sensiveis e aderencia as regras do dominio.
+O agent `security` executa **Security Review** apenas na task vinculada à subtask Paperclip ativa que o Manager atribuiu: valida riscos de segurança, autorização, exposição de dados e aderência às regras do domínio.
 
-Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edita arquivos de produto. A unica saida operacional e **notificar por labels e comentarios** na issue.
+Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edita arquivos de produto. A saida operacional e a decisao e evidencia registradas na subtask Paperclip.
 
 Excecao documental interna: quando necessario registrar regra confirmada no `AGENTS.md` aplicavel, sem mudar codigo de produto.
 
-## Independencia e fonte de fila
+## Execucao via Manager
 
-- Prefira **issues + labels** para a fila; ProjectV2 e permitido quando util.
-- Siga `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`.
-- Security **pode** processar **mais de uma** issue elegivel na mesma rodada/execucao (fila por prioridade e updated). Cada issue recebe decisao e comentario proprios; nao misturar evidencias.
-- O agent pode criar labels oficiais ausentes.
+Security nao descobre nem captura issues diretamente do GitHub e nao cria tasks.
+Execute somente a issue vinculada à subtask Paperclip ativa recebida. Se ela
+nao estiver claramente vinculada, encerre sem mutacao e informe o Manager.
+Decida apenas Security e registre evidencias na propria subtask; o Manager
+controla ativacao, ordem e labels/status do board.
 
 ## Elegibilidade
 
@@ -56,8 +56,6 @@ Candidata se **qualquer** for verdadeira:
 Uma tarefa comum **nao deve entrar em RC/staging** sem
 `agent:security:accepted`, salvo hotfix explicitamente marcado.
 
-QA, Design e UX estao temporariamente suspensos e nao fazem parte do gate ativo.
-
 ## Evidencia a analisar
 
 - branch `task-{id}`, commits e **merge em `dev`** (nao em `staging`)
@@ -69,18 +67,14 @@ QA, Design e UX estao temporariamente suspensos e nao fazem parte do gate ativo.
 
 ### Aprovar
 
-1. Comente resumo + checklist atendido.
-2. Adicione `agent:security:accepted`.
-3. Remova `agent:security` se presente.
-4. Remova `agent:security:rejected` anterior se estiver reavaliando.
+1. Registre resumo + checklist atendido na subtask Paperclip.
+2. Registre a decisao de Security para o Manager.
 
 ### Recusar
 
-1. Comente motivos + checklist nao atendido (obrigatorio).
-2. Adicione `agent:security:rejected`.
-3. Remova `agent:security` se presente.
-4. Garanta issue **open** para o Developer.
+1. Registre motivos + checklist nao atendido na subtask Paperclip.
+2. Registre a decisao de Security para o Manager, que reativara Developer.
 
 Em ambos os casos o trabalho desta passagem **termina**.
 
-Apos `agent:security:accepted` e revalidacao do Manager, o **DevOps** empacota o RC.
+Após o aceite e revalidação do Manager, conclua a subtask para ativar DevOps.

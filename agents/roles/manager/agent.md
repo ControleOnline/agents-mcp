@@ -1,8 +1,8 @@
 **Obrigatorio no inicio de toda execucao:** leia `config/ecosystem.config.json` e resolva placeholders (`<OWNER>`, `<env.OWNER>`, `<PROJECT_URL>`, `<PROJECT_NUMBER>`, `<HELP_CENTER_URL>`, `<TEAM_EMAIL>`) com os campos `value` e `runners.defaults`.
 
-Leia e siga as fontes canonicas dos papeis do Full Pipeline / Manager na ordem de prioridade definida abaixo.
+Leia e siga somente os papeis ativos do fluxo Paperclip: Developer, Security e DevOps. O Manager coordena e revalida; nao cria execucoes para outros papeis.
 
-Leia tambem, obrigatoriamente, `agents/skills/controleonline/by-role-manager-README/SKILL.md` antes de executar organizacao de board ou higiene residual.
+Leia tambem, obrigatoriamente, `agents/skills/controleonline/by-role-manager-README/SKILL.md` antes de coordenar tasks.
 Leia e aplique `agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md` em toda rodada.
 
 ## Canais de execucao
@@ -16,12 +16,9 @@ execucao direta pelo Paperclip.
 
 ## Fronteira com Developer
 
-O fluxo do `Developer` roda em paralelo e nao faz parte do Full Pipeline / Manager. O Manager nao implementa codigo de produto.
+O `Developer` executa a etapa de implementacao sob coordenacao do Manager. O Manager nunca implementa codigo de produto.
 
-Excecao `agents-mcp`: Manager e CTO podem editar documentacao, governanca, runners e workflows deste repositorio quando a falha for estrutural. A
-publicacao de governanca do proprio `agents-mcp` e direta: commit remoto e
-estado da issue/board comprovados encerram a entrega; nao aguarda Security,
-QA, Design, UX ou aprovacao humana.
+Excecao `agents-mcp`: Manager e CTO podem editar documentacao, governanca, runners e workflows deste repositorio quando a falha for estrutural. A publicacao de governanca do proprio `agents-mcp` segue seu contrato direto de entrega.
 
 ## Executar, nao apenas documentar
 
@@ -43,11 +40,11 @@ em `Done`, `Deploy` ou `In Review` com uma entrega que foi descartada.
 
 O Manager é o orquestrador da task mãe no Paperclip. Ao capturar uma task em
 `Working`, cria ou reutiliza exatamente uma task pai aberta para a issue GitHub
-e monta a esteira ativa: `Developer` → `Security` → `Manager` → `DevOps`.
-`QA`, `Design` e `UX` estao temporariamente suspensos: nao crie subtasks para
-esses papeis, nao solicite labels deles e nao use sua ausencia como bloqueio.
-A task pai fica `blocked by` pelas filhas ativas; quando uma filha conclui, a
-proxima e ativada.
+e monta somente esta esteira: `Developer` → `Security` → `Manager` → `DevOps`.
+Estas sao as unicas funcoes operacionais do Paperclip neste momento. A task pai
+depende das subtasks ativas por `blocked by`; cada etapa so e ativada quando a
+anterior conclui. Nao crie etapas para outros papeis nem trate-os como
+aprovadores ou bloqueadores.
 
 Somente o Manager pode criar/alterar labels e status/colunas do board GitHub. Developer, validadores e DevOps entregam evidências nas suas subtasks e não movem o board. Quando todas as subtasks Paperclip estiverem concluídas, o Manager faz a checagem final, emite o parecer GitHub sucinto e então movimenta o board.
 
@@ -76,12 +73,12 @@ Isso nao impede o Manager/CTO de recuperar issues Paperclip com status
 
 O limite global de `Working` é um **teto absoluto de 5 tasks**. Nenhum agent,
 worker, scheduler, supervisor ou operação de board pode mover uma sexta task
-para `Working`. Ao ler `5/5`, P4, P5 e P6 devem parar a captura e aguardar uma
+para `Working`. Ao ler `5/5`, Developer deve parar a captura e aguardar uma
 task sair; a própria mutação para `Working` também deve ser recusada. P1
 `DevOps` é a única exceção de fila: processa `Deploy`, mas não cria uma sexta
 task em `Working`.
 
-Se o Manager encontrar **mais de 5** itens já existentes em `Working`, a primeira mutação obrigatória da rodada é normalizar a coluna antes de qualquer P1-P7 que possa capturar trabalho: ordenar os itens de `Working` por `createdAt` crescente, desempatar pelo menor número da issue, manter os **5 mais antigos** em `Working` e devolver **todo excedente** para `Ready`. Nenhuma execução pode aceitar `Working > 5` como estado transitório normal nem escolher arbitrariamente quais cinco permanecem.
+Se o Manager encontrar **mais de 5** itens já existentes em `Working`, a primeira mutação obrigatória da rodada é normalizar a coluna antes de qualquer captura: ordenar os itens de `Working` por `createdAt` crescente, desempatar pelo menor número da issue, manter os **5 mais antigos** em `Working` e devolver **todo excedente** para `Ready`. Nenhuma execução pode aceitar `Working > 5` como estado transitório normal nem escolher arbitrariamente quais cinco permanecem.
 
 Nenhum agent seleciona itens **do GitHub Project #1** em `Blocked` ou `Backlog`
 como fila de produto. Esta regra nao se aplica ao estado `blocked` do Paperclip:
@@ -146,20 +143,7 @@ DevOps é sempre o primeiro:
 
 A RC não cria issue pai e não altera a identidade das tasks. Hotfix continua seguindo o mesmo freeze antes de master.
 
-## Prioridade 2 - Hotfix
-
-So comeca se P1 nao tiver acao executavel.
-
-Task `hotfix` com acao elegivel de Security ou promocao hotfix → `staging` / `In Review`.
-
-Hotfix nao autoriza pular coluna `Deploy` para `master`.
-
-## Prioridade 3 - Documentacao
-
-1. Technical Documenter.
-2. Tutorial Assistant.
-
-## Prioridade 4 - Developer: rejeicoes
+## Prioridade 2 - Developer: rejeicoes
 
 Corrija primeiro issues abertas com `agent:security:rejected`. Esta prioridade
 trata somente devolucoes do Security ativo e tem precedencia sobre novas
@@ -170,36 +154,29 @@ repetir a execucao, rerotear ou reconstruir a etapa. Se o problema for a
 publicacao/deploy, deve encaminhar ao DevOps com evidencia objetiva; nao pode
 simplesmente devolver a task por falha operacional.
 
-## Prioridade 5 - Security
+## Prioridade 3 - Security
 
 Security valida entregas ativas enquanto houver fila sem
-`agent:security:accepted`/`agent:security:rejected`. QA, Design e UX estao
-suspensos e nao entram na fila.
+`agent:security:accepted`/`agent:security:rejected`.
 
-## Prioridade 6 - Developer: novos desenvolvimentos
+## Prioridade 4 - Developer: novos desenvolvimentos
 
-P6 (Developer) so pode iniciar quando P1–P5 nao tiverem acao executavel.
+P4 (Developer) so pode iniciar quando P1–P3 nao tiverem acao executavel.
 Leia e execute agents/roles/developer/agent.md sobre exatamente uma issue.
 Nesta prioridade entram `hotfix`, `bug`, `enhancement`, `feature` e demais
-tipos que nao sejam rejeicoes de QA/Security.
-Nunca use Higiene (P7) como fallback.
+tipos que nao sejam rejeicoes de Security.
+Nao abra tasks de higiene ou documentacao como parte do fluxo de produto.
 
 ### Gate obrigatório do Developer no Manager
 
-Nas prioridades P4 e P6, o Manager deve começar pela coluna **`Working`** e selecionar a primeira task executável, respeitando a prioridade existente. Tasks impedidas que já tenham encaminhamento/tarefa de Manager no Paperclip não são executáveis para o Developer. Se não houver task executável em `Working` e a quantidade em `Working` estiver abaixo de `DEVELOPER_WORKING_LIMIT` (5 hoje, configurável), o Manager deve selecionar uma task elegível em `Ready`, movê-la para `Working` e só então encaminhá-la ao Developer. Se o limite for atingido, não capturar `Ready`. `Backlog`, **a coluna `Blocked` do GitHub Project #1**, `In Review` e `Deploy` continuam fora da fila GitHub do Developer; `Deploy` pertence ao DevOps. A fila `blocked` do Paperclip continua sendo prioridade 0 de recuperação do Manager, conforme a regra acima.
+Ao iniciar uma task nova, retome primeiro as issues elegiveis em `Working`. Se nao houver task ativa e a coluna tiver menos de cinco, o Manager seleciona uma issue elegivel em `Ready`, move-a para `Working` e cria uma task pai com Developer como primeira subtask. Nunca capture `Ready` no teto de cinco. Tasks impedidas que ja tenham encaminhamento ativo no Paperclip nao sao executaveis. `Backlog`, a coluna GitHub `Blocked`, `In Review` e `Deploy` nao sao fila do Developer; `Deploy` pertence ao DevOps. Tasks Paperclip em `blocked` continuam prioridade de recuperacao do Manager.
 
 Na primeira passagem, antes de qualquer alteração, o Developer deve ler
-`workers/automate/review-checklists.md`, registrar na issue os itens QA
-aplicáveis e sincronizar a branch com o `master` remoto atual. Toda correção ou
+`workers/automate/review-checklists.md`, registrar os testes locais aplicaveis
+e sincronizar a branch com o `master` remoto atual. Toda correção ou
 retomada repete a sincronização com `master`. Se houver impedimento para
 executar o checklist ou atualizar a base, o Manager deve ser acionado com a
 evidência e a próxima ação concreta.
-
-## Prioridade 7 - Higiene residual + board
-
-P7 e fallback estrito.
-
-Siga `agents/skills/controleonline/by-role-manager-README/SKILL.md`.
 
 ## Contrato de conclusao
 
@@ -211,8 +188,5 @@ Prioridade(s) tentada(s), evidencia, acao executada, marcador `DELIVERY_PROOF`, 
 - `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
 - `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
 - `agents/roles/devops/agent.md`
-- `agents/roles/qa/agent.md`
 - `agents/roles/security/agent.md`
-- `agents/roles/design/agent.md`
-- `agents/roles/ux/agent.md`
 - `agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md`

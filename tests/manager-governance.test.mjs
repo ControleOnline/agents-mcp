@@ -18,23 +18,16 @@ const conflictResolution = fs.readFileSync(
   'utf8',
 );
 
-test('manager is fail-closed before hygiene', () => {
+test('manager only operates the Developer, Security, DevOps pipeline', () => {
   assert.match(managerAgent, /prioridade e fail-closed/i);
-  assert.match(managerAgent, /P7 e fallback estrito/i);
-  assert.match(managerAgent, /P6 \(Developer\) so pode iniciar/i);
-  assert.match(managerAgent, /nunca use Higiene \(P7\) como fallback/i);
-  assert.match(managerAgent, /Prioridade 4 - Developer: rejeicoes/i);
-  assert.match(managerAgent, /Prioridade 5 - Security/i);
-  assert.match(managerAgent, /Prioridade 6 - Developer: novos desenvolvimentos/i);
-  assert.match(managerAgent, /Prioridade 7 - Higiene residual/i);
+  assert.match(managerAgent, /Developer.*Security.*Manager.*DevOps/is);
+  assert.doesNotMatch(managerAgent, /agents\/roles\/(?:qa|design|ux)\/agent\.md/);
+  assert.doesNotMatch(managerAgent, /Technical Documenter|Tutorial Assistant/);
 });
 
 test('manager prioritizes rejected work before security and new development', () => {
-  const order = managerAgent.match(
-    /Prioridade 4 - Developer: rejeicoes[\s\S]*Prioridade 5 - Security[\s\S]*Prioridade 6 - Developer: novos desenvolvimentos[\s\S]*Prioridade 7 - Higiene residual/,
-  );
-  assert.ok(order, 'expected rejection -> security -> new development -> hygiene order');
-  assert.doesNotMatch(managerAgent, /Corrija primeiro issues abertas com `agent:qa:rejected`/);
+  assert.match(managerAgent, /Prioridade 2 - Developer: rejeicoes[\s\S]*Prioridade 3 - Security[\s\S]*Prioridade 4 - Developer: novos desenvolvimentos/);
+  assert.doesNotMatch(managerAgent, /agent:qa:rejected|agent:design|agent:ux/);
   assert.match(managerAgent, /agent:security:rejected/);
 });
 
@@ -50,7 +43,7 @@ test('Deploy publication uses the frozen RC and active Security gate', () => {
   assert.match(managerAgent, /Security aceito[\s\S]*`Done`/i);
   assert.match(managerAgent, /faltar Security[\s\S]*`Working`/i);
   assert.match(managerAgent, /agent:security:accepted/);
-  assert.match(managerAgent, /QA`, `Design` e `UX` estao temporariamente suspensos/);
+  assert.match(managerAgent, /unicas funcoes operacionais do Paperclip/i);
   const devopsAgent = fs.readFileSync('agents/roles/devops/agent.md', 'utf8');
   assert.match(devopsAgent, /mesma RC congelada/i);
   assert.match(devopsAgent, /agent:security:accepted/i);
@@ -95,8 +88,8 @@ test('manager cannot close a round with commentary-only progress', () => {
 test('agents-mcp governance is published directly without validator approval', () => {
   assert.match(deliveryProof, /Governança \(`agents-mcp`\)[\s\S]*não aguarda QA, Security, Design, UX ou aprovação humana/i);
   assert.match(deliveryProof, /governança do próprio `agents-mcp`[\s\S]*Não se cria[\s\S]*handoff para validadores/i);
-  assert.match(managerAgent, /publicacao de governanca do proprio `agents-mcp`[\s\S]*nao aguarda Security/is);
-  assert.match(managerSkill, /Governança publicada no próprio `agents-mcp`[\s\S]*sem aprovação ou[\s\S]*handoff para QA/is);
+  assert.match(managerAgent, /publicacao de governanca do proprio `agents-mcp`[\s\S]*contrato direto de entrega/is);
+  assert.match(managerSkill, /contrato direto de\s+entrega/is);
 });
 
 test('scheduled managers recover global backlog independently of push', () => {
@@ -104,8 +97,8 @@ test('scheduled managers recover global backlog independently of push', () => {
   assert.doesNotMatch(managerAgent, /\bCodex\b|\bGrok\b/i);
   assert.doesNotMatch(directExecutionSkill, /\bCodex\b|\bGrok\b/i);
   assert.match(managerAgent, /nao depende de novo push/i);
-  assert.match(managerSkill, /consumidores globais.*recuperacao de backlog/is);
-  assert.match(managerAgent, /Security[\s\S]*P6|Developer/is);
+  assert.match(managerSkill, /Manager e responsavel pela recuperacao global de tasks Paperclip bloqueadas/i);
+  assert.match(managerAgent, /Prioridade 3 - Security[\s\S]*Prioridade 4 - Developer/is);
 });
 
 test('direct Paperclip execution is the active surface', () => {
@@ -119,8 +112,18 @@ test('direct Paperclip execution is the active surface', () => {
 test('active completion contract is Security plus Manager revalidation', () => {
   assert.match(managerAgent, /agent:security:accepted/);
   assert.match(managerAgent, /revalidacao do\s+Manager/i);
-  assert.match(managerAgent, /QA, Design e UX estao\s+suspensos/i);
+  assert.match(managerAgent, /Developer.*Security.*Manager.*DevOps/is);
+  assert.doesNotMatch(managerAgent, /\b(?:QA|Quality Assurance|Design|UX)\b/i);
+  assert.match(managerSkill, /Developer.*Security.*Manager.*DevOps/is);
+  assert.doesNotMatch(managerSkill, /\b(?:QA|Quality Assurance|Design|UX)\b/i);
   assert.doesNotMatch(managerAgent, /gate de quatro aprovacoes/i);
+});
+
+test('Paperclip provisioning sync creates only the three active worker roles', () => {
+  const syncScript = fs.readFileSync('workers/scripts/sync-paperclip-agents.mjs', 'utf8');
+  assert.match(syncScript, /const types = \["developer", "security", "devops"\]/);
+  assert.match(syncScript, /retiredTypes/);
+  assert.match(syncScript, /fs\.unlinkSync\(wrapperPath\)/);
 });
 
 test('queue ordering is oldest first and never updatedAt', () => {

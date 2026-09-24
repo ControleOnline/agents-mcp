@@ -9,35 +9,26 @@ handoff textual ou commit apenas local não são entrega.
 
 ## Workflow
 
-1. confirme a tag `agent:*` esperada para a etapa atual
-2. nunca atribua a task a pessoas, bots ou fallbacks tecnicos; assignee nao faz parte do fluxo
-3. agentes nao fecham tasks fora do rito de colunas; humanos controlam `closed` quando aplicavel
-4. se a task estiver em `Ready` ou `Working` sem `agent:*`, a entrada padrao e `Developer`
-5. fluxo tecnico padrao:
-   - `Developer` implementa em `task-{id}` (de `master`), **merge em `dev`**, handoff com `agent:security`, task em `Working`
-   - `Security` registra `agent:security:accepted` ou `agent:security:rejected`
-   - `QA`, `Design` e `UX` estao temporariamente suspensos e nao recebem subtasks nem labels
-   - quando a task tiver `agent:security:accepted` e revalidacao do Manager, o `Manager` aciona o `DevOps`; o DevOps cria/congela RC de 1 a 5 tasks, promove exatamente o manifesto para `staging` e o Manager move somente as tasks inventariadas para **`In Review`**
-   - humano move a task/RC homologada para **`Deploy`**; a mudança é a autorização explícita de publicação
-   - item em **`Deploy`** publica a **mesma RC congelada** em `master`; com Security aceito move para **`Done`**, sem Security/evidencia move para **`Working`** para segunda rodada de validação
-   - documentacao (`tutorial-assistant` / `technical-documenter`): no publish (fail-closed) aplicar labels de solicitacao ausentes; so os documentadores marcam `:done`
-6. **Pulo de etapa ja concluida:** se o passo ja estiver feito (evidencia no GitHub), pule, avance e comente a justificativa. Security ainda registra aceite/recusa da propria etapa.
-7. qualquer etapa pode abrir task paralela de infraestrutura com `agent:sysadmin`; nunca substitui a tarefa-mae
-8. quando o `Sysadmin` concluir a paralela, comenta na mae e aplica o handoff cabivel
-9. cada agent so troca a tag da propria proxima etapa quando sua etapa estiver concluida (ou pulada com evidencia)
-10. RC e artefato tecnico obrigatorio para staging/In Review. Nao criar task pai `RC X.Y.Z-rc.N`; congele manifesto `rc/X.Y.Z-rc.N` e nunca inclua task depois do freeze sem `rc.N+1`.
-11. nao faca handoff sem evidencia concreta
-12. o handoff só é válido com mutação verificável: commit/ref remoto e merge
-    para entrega de código, decisão de label para validação, ou merge + coluna
+1. O `Manager` e o unico dono de descoberta/captura GitHub, task pai, subtasks, prioridade, labels e colunas.
+2. Nunca atribua tasks a pessoas, bots ou fallbacks tecnicos.
+3. A esteira de produto e exclusivamente `Developer` → `Security` → `Manager` → `DevOps`; ative apenas a subtask vigente e ligue as dependencias com `blocked by`.
+4. `Developer` implementa em `task-{id}` a partir de `master`, executa testes locais, faz merge em `dev` e registra evidencias na subtask atual; nao cria tasks ou subtasks.
+5. `Security` revisa somente a subtask atribuida e registra decisao/evidencia nela. O `Manager` traduz a decisao para labels; recusa reativa `Developer`.
+6. Apos aceite Security, o `Manager` revalida testes locais e evidencias; so entao ativa `DevOps`.
+7. `DevOps` executa somente a subtask atribuida: cria/congela RC com manifesto imutavel, promove para `staging` e solicita ao Manager mover as tasks inventariadas para `In Review`.
+8. O humano move a RC homologada para `Deploy`; DevOps publica a mesma RC em `master`, sem alterar SHAs. O Manager atualiza a coluna apos prova do deploy.
+9. Nao crie tarefas auxiliares de outros papeis, nem aceite, status ou gate fora desta sequencia.
+10. Nao faca handoff sem evidencia concreta; o handoff só é válido com mutação verificável: commit/ref remoto e merge
+    para entrega de código, decisão de Security na subtask, ou merge + coluna
     para DevOps/board;
-13. se a tentativa falhar após correção objetiva, nao aplique labels GitHub
+11. se a tentativa falhar após correção objetiva, nao aplique labels GitHub
     `agent:<papel>:blocked` nem mova a issue no GitHub Project #1 para `Blocked`;
     ambos sao estados humanos e a issue/board ficam somente-leitura para agents.
     Registre `NEXT_ACTION` com responsavel, tentativa e evidencia. Se a task de
     execucao Paperclip receber `status=blocked` pelo fluxo operacional, ela
     passa para a inbox Paperclip de recuperacao e deve ser priorizada pelo
     Manager/CTO; esse status nao bloqueia nem altera o item no GitHub.
-14. não repita a mesma issue sem SHA/label/coluna/evidência novos.
+12. não repita a mesma issue sem SHA/label/coluna/evidência novos.
 
 ## Gate obrigatorio de entrega local
 

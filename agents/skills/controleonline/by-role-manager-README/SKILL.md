@@ -21,32 +21,27 @@ issues Paperclip com status `blocked`.
 
 ## Papel
 
-O Manager cria e acompanha a task de coordenação no Paperclip e suas subtasks
-ativas de Developer, Security e DevOps. QA, Design e UX estao suspensos e nao
-recebem subtasks enquanto essa regra estiver ativa. A entrega do Developer
-retorna como task de entrega para o Manager. Somente o Manager pode alterar
-labels, status ou colunas no board GitHub; os demais agentes apenas entregam
-evidências nas próprias subtasks. Após todas as subtasks concluírem, o Manager
-faz a checagem final e movimenta o board.
+O Manager coordena uma task pai por issue GitHub e somente as etapas ativas
+Developer → Security → Manager → DevOps. Esses sao os unicos papeis de execucao
+de produto habilitados no Paperclip. A task pai usa `blocked by` para ativar
+uma etapa de cada vez. Developer implementa e testa localmente; Security
+valida; Manager revalida; DevOps cria a RC congelada e so entao move a task para
+`In Review`. Somente Manager altera labels/status/colunas no board; os demais
+agentes registram evidencias nas proprias subtasks.
 
-Ordem resumida:
+Ordem de execucao:
 
-1. **DevOps** — sempre primeiro. Tasks com `agent:security:accepted` e revalidacao do Manager entram em uma RC tecnica congelada de no maximo 5 tasks e sao homologadas juntas em `staging`. Depois da autorizacao humana em `Deploy`, a mesma RC, com manifesto e SHAs identicos, e promovida para `master`. O Manager decide `Done`/revalidacao por task.
-2. **Hotfix** — Security e promocao hotfix → staging.
-3. **Documentacao**
-4. **Developer — rejeicoes** (`agent:security:rejected`) — corrigir até a entrega ficar publicável, inclusive workflow/build; problemas de publicação/deploy vão para o DevOps com evidências.
-5. **Security**
-6. **Developer — novos desenvolvimentos** — exatamente uma issue elegível.
-7. **Higiene** — fallback estrito, somente sem trabalho elegível em P1–P6.
+1. Recupere tasks existentes bloqueadas no Paperclip; nao abra nova task pai.
+2. DevOps publica RC ja em `Deploy`; caso contrario, compoe RC apenas com tasks revalidadas pelo Manager.
+3. Continue a task ativa pelo fluxo Developer → Security → Manager → DevOps.
+4. Sem task ativa, o Manager pode selecionar exatamente uma issue em `Ready`, movê-la para `Working` se houver capacidade abaixo de cinco e criar sua task pai com Developer como primeira subtask.
 
-Toda rodada executa. Documentacao nao e fallback de P1/P2.
+Toda rodada retoma a primeira etapa elegivel da task ativa. Apenas o Manager
+descobre/captura issues e cria tasks pai. Developer executa somente a issue
+atribuida; ela precisa estar em `Working` antes da primeira passagem e
+permanecer nela durante a entrega.
 
-P4 e P6 do Developer consultam exclusivamente a coluna `Working`. O Manager
-nao captura ou encaminha Developer a partir de `Ready`; a task precisa estar
-em `Working` antes da primeira passagem e permanecer nessa coluna enquanto a
-entrega estiver em andamento.
-
-Na primeira passagem, o Developer deve ler e registrar o checklist QA de
+Na primeira passagem, o Developer deve ler e registrar o checklist local de
 `workers/automate/review-checklists.md` antes de alterar o alvo. Cada correção
 ou retomada deve atualizar a branch com o `master` remoto atual. Impedimentos
 de checklist ou de sincronização devem voltar ao Manager com evidência.
@@ -57,28 +52,25 @@ novo, labels/coluna novas ou mudança externa comprovada, a mesma issue deve ser
 registrada com `NEXT_ACTION` e responsavel pela proxima acao; nunca repetida e
 nunca convertida em tag ou estado de bloqueio.
 
-Governança publicada no próprio `agents-mcp` é exceção direta: commit remoto e
-estado da issue/board comprovados encerram a entrega, sem aprovação ou
-handoff para QA, Security, Design ou UX.
+Governança publicada no próprio `agents-mcp` segue o contrato direto de
+entrega; nao crie etapas de validacao adicionais para esse repositorio.
 
 Não repita uma issue com os mesmos SHAs, labels, coluna e evidência da rodada
 anterior. Sem delta novo, o resultado é `NEXT_ACTION`.
 
-O Manager é consumidor global da recuperação de backlog; consumidores globais
-recuperacao de backlog e schedulers nao dependem de novo push. P4 (rejeicoes)
-tem precedencia sobre P5 (Security) e P6 (novos desenvolvimentos). P7 é
-fallback estrito. A capacidade global de `Working` é **5 tasks**; ao atingir
-cinco, nenhuma nova task entra até uma task ativa sair da coluna. A exceção é
-P1 `DevOps`, que continua publicando tasks em `Deploy`.
+O Manager e responsavel pela recuperacao global de tasks Paperclip bloqueadas;
+rotinas nao dependem de novo push. Tasks rejeitadas por Security retornam ao
+Developer antes de nova captura. A capacidade global de `Working` e **5 tasks**;
+ao atingir cinco, nenhuma nova task entra ate uma task ativa sair da coluna.
+DevOps continua publicando tasks autorizadas em `Deploy`.
 
 ## Gate de staging
 
 `agent:security:accepted` + revalidacao do Manager com testes locais e evidencia
-da entrega em `dev`.
-Conclusão da task exige RC publicada e `agent:security:accepted`. Depois que o
-Manager mover para `Done`, ele cria no Paperclip as tasks filhas documentais
-aplicáveis; a conclusão dos documentadores não é pré-requisito para o `Done` da
-publicação.
+da entrega em `dev`. Apos a revalidacao, DevOps cria/congela a RC e publica em
+staging; somente as tasks inventariadas entram em `In Review`. Depois da
+aprovacao humana e movimentacao para `Deploy`, DevOps promove a mesma RC para
+master. Nao crie subtasks adicionais fora da sequencia ativa.
 
 ## Output Contract
 

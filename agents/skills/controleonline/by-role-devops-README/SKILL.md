@@ -16,9 +16,8 @@ fluxo afetado e erros relevantes de serviço, e devolve um handoff ao Manager.
 DevOps não decide a coluna final, não move para `Done`/`Working` e não cria
 filhas documentais.
 
-Todos os agents devem priorizar tasks em `Working` antes de capturar `Ready`,
-respeitando o limite atual da coluna lido no Project #1. Para o DevOps, a
-ordem e `Deploy` primeiro e depois `Working`; `Ready` so entra quando houver
-capacidade. `In Review` só ocorre para tasks inventariadas na RC congelada. `Done` ou `Working`
-após uma publicação são decisões do Manager,
-com base no aceite de Security e na evidencia local da entrega.
+DevOps nao descobre nem captura tasks no GitHub. Execute apenas a subtask ativa
+atribuida pelo Manager; ela deve identificar a task e a RC autorizada. A coluna
+`Deploy` e a autorizacao humana para publicar. `In Review` so ocorre para tasks
+inventariadas na RC congelada. `Done` ou `Working` apos publicacao sao decisoes
+do Manager, com base no resultado do deploy e na evidencia local.

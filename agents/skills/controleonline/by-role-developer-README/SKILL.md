@@ -2,7 +2,7 @@
 
 ## Papel
 
-`Developer` executa a mudanca em issues elegiveis: branch a partir de `master`, entrega da branch e task Paperclip para o Manager.
+`Developer` executa somente a issue vinculada à subtask Paperclip ativa criada pelo Manager: branch a partir de `master`, testes locais e entrega comprovada na mesma subtask.
 
 ## Skills compartilhadas essenciais
 
@@ -15,25 +15,22 @@
 
 ## Ownership
 
-- se o prompt nao informar issue, descubra a proxima prioridade no GitHub; **nao peca ao usuario para escolher a issue**
-- leitura de backlog: issues abertas com ownership de `Developer` (`agent:developer`) ou entrada padrao em `Ready`/`Working` sem `agent:*`, sem pendencia ativa de Security
-- limite operacional: a coluna `Working` comporta no máximo **5 tasks**; ao atingir cinco, não capture outra task até uma sair da coluna. O P1 `DevOps` continua sendo a única exceção para publicação em `Deploy`.
-- `Ready` e `Working` sao a fila operacional compartilhada; todos os agents priorizam `Working` antes de `Ready`. `In Review` so ocorre para tasks em RC congelada publicada em staging; DevOps consulta `Deploy` antes de `Working`
-- prioridade por **tipo**: `hotfix` → recusa Security (`agent:security:rejected`) → `bug` → demais (`enhancement`/`feature`/sem tipo)
-- desempate **dentro de cada tipo**: `p0` → `p1` → `p2` → … (sem `p*` por ultimo) → depois `createdAt` crescente → menor numero da issue; `updatedAt` nao altera a posicao
+- O Manager é dono da fila, da prioridade e da capacidade; Developer nao captura issues nem cria tasks pai.
+- Se a subtask Paperclip não incluir claramente a issue `owner/repo#n`, pare sem mutação e informe o Manager.
+- A issue precisa estar em `Working`, dentro do teto de cinco, antes do início.
 - branch permitida: apenas `task-{id_issue}` derivada de **`master`**
 - branches proibidas para trabalho direto: `master`, `main`, `dev`, `staging` e qualquer outra fora da task
 - **PR proibida** no fluxo normal
-- destino da entrega: branch `task-{id}` publicada + task Paperclip para o Manager
+- destino da entrega: branch `task-{id}` publicada + evidência e conclusão da subtask Paperclip atual
 
 ## Regras de execucao
 
 - siga `agents/skills/controleonline/shared-github-github-flow/SKILL.md`
 - investigacao com acao segura no escopo → implemente na mesma rodada
-- handoff por task de entrega no Paperclip, sem PR e sem alteração do board
-- após a entrega da branch, o Manager cria as subtasks ativas de Security/DevOps e decide a integração
-- recusa: corrigir na mesma `task-{id}` sobre `origin/master` e devolver nova task de entrega ao Manager
-- fila inicial `Working`; o Manager captura `Ready`, cria subtasks e permanece dono do board
+- handoff por conclusão da subtask atual, sem criar duplicata, sem PR e sem alteração do board
+- após a entrega, o Manager ativa a subtask Security e decide a integração
+- recusa Security: corrigir na mesma `task-{id}` sobre `origin/master` e devolver evidências à task atual
+- fila inicial `Working`; somente o Manager captura `Ready`, cria a task pai e permanece dono do board
 
 ## Fontes principais
 

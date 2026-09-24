@@ -69,26 +69,22 @@ revisado semanticamente, aborte e registre o bloqueio.
 ```text
 master
   └─ task-{id}                         (Developer cria a partir de master)
-       └─ task de entrega no Paperclip  (Developer → Manager)
-            └─ subtasks Developer + Security + DevOps
-                 └─ Manager organiza labels, status e board
-                      └─ Security
-                      └─ agent:security:accepted + revalidacao Manager
-                      └─ DevOps publica RC congelada e alinha gitlinks staging → staging
-                           └─ coluna In Review
-                                └─ humano → coluna Deploy
-                                     └─ DevOps integra task em master e alinha gitlinks master → master
-                                          ├─ Security aceito → Done
-                                          └─ sem Security/evidencia → Working
+       └─ task pai Paperclip (Manager)
+            └─ Developer subtask: implementa, testa localmente, integra em dev
+                 └─ Security subtask: revisa e registra evidencia
+                      └─ Manager revalida e ativa DevOps
+                           └─ DevOps congela RC, publica staging → In Review
+                                └─ humano → Deploy
+                                     └─ DevOps publica a mesma RC em master
+                                          └─ Manager atualiza board com prova
 ```
 
 ## Etapas já concluídas (pular com justificativa)
 
 Se o estado real do GitHub mostrar que o passo **já foi feito**, o agent não refaz. Deve confirmar evidência (commits, merge-base, labels, coluna), pular só o concluído, avançar o próximo estágio e comentar a justificativa.
 
-**Não** pule etapas por intuição. Enquanto `QA`, `Design` e `UX` estiverem
-suspensos, nao crie labels/subtasks deles nem use sua ausencia como bloqueio.
-`Security` continua obrigatorio.
+**Não** pule etapas por intuição. A única validação ativa é Security, seguida
+da revalidação do Manager.
 
 ## Gate de atenção redobrada antes de qualquer merge
 
@@ -160,13 +156,13 @@ entrega.
 
 ## Developer
 
-1. Captura issue elegível.
+1. Executa somente a issue ligada à subtask Paperclip ativa criada pelo Manager; não captura issues nem cria task pai.
 2. Cria ou reutiliza `task-{id_issue}` **a partir de `master`** atualizado.
 3. Implementa e valida na branch da tarefa.
 4. Sincroniza com `origin/master` antes de continuar/encerrar.
-5. Publica somente `task-{id_issue}` e cria task de entrega no Paperclip para o Manager.
+5. Publica somente `task-{id_issue}` e registra branch/SHA/testes na mesma subtask.
 6. Executa o gate compartilhado de entrega local: toda alteração em projeto principal, submódulo ou gitlink deve estar publicada; cada checkout afetado deve ser conferido contra `origin/master` e ficar sem staged/unstaged/untracked. Registra exceções de branch com SHA e ref remoto.
-7. O Manager cria as subtasks ativas de Security e DevOps, organiza labels/status/board e só então promove a integração.
+7. Conclui a subtask; o Manager cria/ativa Security, revalida e depois ativa DevOps.
 
 ### Proibições do Developer
 
@@ -175,54 +171,46 @@ entrega.
 - **Não** commit/push direto em `master`, `main`, `dev`, `staging`.
 - Trabalho só na `task-{id_issue}`; chegada em `dev` é por **merge** da task branch.
 
-### Entrega = branch publicada + task Paperclip
+### Entrega = branch publicada + subtask Paperclip atualizada
 
-A entrega técnica é a branch `task-{id_issue}` publicada e a task de entrega no Paperclip. O Manager decide, por suas subtasks concluídas e pela checagem final, quando promover a integração e mover o board.
+A entrega técnica é a branch `task-{id_issue}` publicada e a subtask Paperclip atualizada. O Manager decide, por suas subtasks e pela checagem final, quando promover a integração e mover o board.
 
 ## Revisão ativa (Security)
 
-- `Security` atua sobre a task/issue e a evidência da entrega (commits na task branch e o que foi mergeado em **`dev`**).
-- Registra `agent:security:accepted` ou `agent:security:rejected`.
-- **Não** abre PR; **não** finaliza task; **não** mexe em branches de integração.
-- Recusa devolve prioridade ao Developer na mesma `task-{id_issue}`.
-
-`QA`, `Design` e `UX` estao temporariamente suspensos: nao capturam fila, nao
-aplicam labels e nao bloqueiam RC, staging ou Deploy.
+- `Security` atua somente na subtask Paperclip atribuida e registra decisao/evidencia nela.
+- **Não** aplica labels, altera colunas, abre PR, finaliza task pai nem mexe em branches de integração.
+- O Manager traduz a decisao de Security em label e, se houver recusa, reativa Developer na mesma `task-{id_issue}`.
 
 Gate de staging/RC (task comum):
 
 - `agent:security:accepted`
 
-## DevOps — integração contínua por task (sem RC)
+## DevOps — integração via RC congelada
 
 No Manager, DevOps é **P1**. Hotfix é **P2**.
 
 ### Entrada (P1)
 
-1. Todas as tasks na coluna **`Deploy`** (cada delta publicado separadamente em
-   `master`) — primeiro.
-2. Task com `agent:security:accepted` e revalidacao do Manager ainda fora de RC / `staging` / `In Review`.
-3. Issues/PRs com `agent:devops` com ação de merge restante.
-
-Promoção de `hotfix` → staging é P2, não P1.
+1. RC homologada com todas as tasks inventariadas em **`Deploy`** → publicar a mesma RC em `master`.
+2. Subtask DevOps criada pelo Manager para tasks com `agent:security:accepted` e revalidacao confirmada → criar RC congelada e promover para `staging`.
 
 ### Proibido
 
-- Criar task pai `RC X.Y.Z-rc.N`.
-- Freeze de pacote / inventário de filhas como rito novo.
+- Criar task pai/issue GitHub para representar a RC.
+- Capturar tasks diretamente do GitHub sem subtask do Manager.
 - Mergear `dev` inteiro em `staging`.
-- Abrir segundo “RC” paralelo.
-- Promover task comum a staging fora de uma RC congelada ou sem `agent:security:accepted` (exceção: `hotfix` na P2).
+- Alterar o manifesto ou SHAs de RC congelada; qualquer mudança exige nova RC e homologação.
+- Promover task a staging fora de RC congelada ou sem `agent:security:accepted` e revalidação do Manager.
 
 ### Promoção a staging
 
-1. Staging parte de `master` atual + merge **somente** de `task-{id}`.
-2. Pai + submódulos afetados (submódulos primeiro; pins coerentes).
+1. Criar `rc/X.Y.Z-rc.N` a partir do `master` atual e registrar manifesto imutável.
+2. Integrar individualmente de 1 a 5 tasks aprovadas pelo Manager, com submódulos antes do pai e pins coerentes.
 3. Aplicar o **Gate de atenção redobrada antes de qualquer merge**. Conflito:
    abortar aquele merge, comentar, seguir a próxima task. Ausência de conflito
    não dispensa a revisão semântica do resultado.
-4. Versão em `package.json` / `app.json` quando o bump for necessário: **somente números** (SemVer). Sem sufixo `-rc`.
-5. Push em `staging` dispara deploy de conferência.
+4. Confirmar versão e composição exatas do manifesto; não modificar versões depois do freeze.
+5. Promover o snapshot congelado para `staging`.
 6. A passagem para **`In Review`** é feita pelo Manager somente para tasks
    presentes no manifesto da RC congelada que chegou a staging; o DevOps não
    move a task para essa coluna.
@@ -235,16 +223,14 @@ freeze da RC sem pedido humano explicito para gerar `rc.N+1`.
 
 ### Publicação (coluna Deploy)
 
-1. Humano move a task para **`Deploy`**, com ou sem o quarteto; essa mudança
+1. Humano move as tasks homologadas para **`Deploy`**; essa mudança
    de coluna é a autorização explícita para publicar em `master`.
 2. DevOps aplica o **Gate de atenção redobrada antes de qualquer merge** e
-   mescla somente o delta da task (`task-{id}`) → `master` (pai + submódulos).
+   promove a mesma RC congelada → `master` (pai + submódulos), sem recalcular SHAs.
 3. devolva ao Manager o handoff com SHA, versão publicada, runtime e estado de
    `Security`.
-4. O Manager decide a coluna final. Com `agent:security:accepted`, move para
-   **`Done`** e cria no Paperclip as filhas documentais aplicáveis. Sem Security
-   aceito, move para **`Working`** e reativa `agent:security`; com rejeição,
-   aciona o Developer para corrigir e depois reencaminha a Security.
+4. O Manager decide a coluna final com base na prova do deploy e no aceite
+   Security. Se houver problema, reativa Developer pela subtask existente.
 
 Nunca direto a `master` sem coluna `Deploy`, salvo correção estrutural de governança em `agents-mcp`.
 
@@ -253,33 +239,32 @@ Detalhes: `agents/skills/controleonline/shared-github-master-publication/SKILL.m
 ### O que o DevOps não faz
 
 - Não implementa feature de produto no lugar do Developer.
-- Não monta RC.
-- Não inclui task comum sem `agent:security:accepted` e revalidacao do Manager (exceção `hotfix` na P2).
+- Não cria tasks-pai para representar RC nem captura issues sem subtask do Manager.
+- Não compõe RC sem `agent:security:accepted` e revalidação do Manager.
 
 ## Quem pode o que
 
-| Acao | Developer | Validadores | DevOps |
-|------|-----------|-------------|--------|
-| Branch `task-{id}` a partir de `master` | sim | nao | so excecao |
-| Merge `task-{id}` → `dev` | não | não | Manager/DevOps conforme subtask |
-| Merge `task-{id}` → `staging` | **nao** | **nao** | **sim** |
-| Abrir PR de produto / task | **nao** | **nao** | **nao** (salvo excecao) |
-| Labels `:accepted` / `:rejected` | nao | sim | nao |
-| Criar task pai RC | **nao** | **nao** | **nao** |
-| Merge delta → `master` | **nao** | **nao** | **sim** (coluna Deploy) |
+| Acao | Developer | Security | Manager | DevOps |
+|------|-----------|----------|---------|--------|
+| Branch `task-{id}` a partir de `master` | sim | nao | nao | so excecao |
+| Merge `task-{id}` → `dev` | sim, com evidencia | nao | coordena | conforme subtask |
+| Security Review | nao | sim, subtask atribuida | revalida | nao |
+| Labels/status/board GitHub | nao | nao | sim | nao |
+| Criar RC congelada e promover `staging` | nao | nao | delega | sim, com subtask |
+| Merge RC → `master` | nao | nao | move para Deploy sob autorizacao humana | sim |
 
-## Hotfix (P2 do Manager)
+## Hotfix
 
 Label obrigatória: `hotfix`.
 
-No Full Pipeline, hotfix vem **depois** do DevOps (P1).
+Hotfix percorre a mesma esteira Developer → Security → Manager → DevOps e exige RC congelada. A urgencia nao remove os gates nem autoriza desvio de branch.
 
 ```text
 master
   └─ task-{id}
        └─ merge task-{id} → dev
-            └─ DevOps cria RC de hotfix → staging [P2]
-                 └─ In Review → humano Deploy → delta → master
+            └─ DevOps congela RC de hotfix → staging
+                 └─ In Review → humano Deploy → mesma RC → master
                       ├─ Security aceito → Done
                       └─ sem Security/evidencia → Working → segunda validação
 ```
