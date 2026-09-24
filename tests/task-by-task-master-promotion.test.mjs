@@ -2,24 +2,19 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 
-const manager = fs.readFileSync('workers/automate/scripts/github-operations.mjs', 'utf8');
-const publication = fs.readFileSync(
-  'agents/skills/controleonline/shared-github-master-publication/SKILL.md',
-  'utf8',
-);
+const publication = fs.readFileSync('agents/skills/controleonline/shared-github-master-publication/SKILL.md', 'utf8');
 const stagingMerge = fs.readFileSync('workers/automate/staging-merge.md', 'utf8');
+const rc = fs.readFileSync('agents/skills/controleonline/shared-github-release-candidate/SKILL.md', 'utf8');
 
-test('master promotion is guarded per task and rejects aggregate staging', () => {
-  assert.match(manager, /assertTaskByTaskMasterPromotion/);
-  assert.match(manager, /headRef\.toLowerCase\(\) === 'staging'/);
-  assert.match(manager, /issue_number \?\? operation\.task_id/);
-  assert.match(manager, /branchContainsIssueNumber\(headRef, issueNumber\)/);
-  assert.match(manager, /await assertTaskByTaskMasterPromotion\(operation\)/);
+test('master promotion rejects aggregate staging and requires homologated RC', () => {
+  assert.match(publication, /Release Candidate congelada/i);
+  assert.match(publication, /Nunca use `staging` como origem/i);
+  assert.match(publication, /1 a 5 tasks/i);
+  assert.match(stagingMerge, /mesma RC/i);
 });
 
-test('publication guidance forbids staging-wide promotion', () => {
-  assert.match(publication, /nunca use o branch agregado `staging`/i);
-  assert.match(publication, /Recuse qualquer PR com `head=staging`/i);
-  assert.match(stagingMerge, /tentativa de promover o branch agregado `staging` para `master`/i);
-  assert.doesNotMatch(publication, /merge\/promocao autorizada \(`staging` → `master`\)/i);
+test('RC is technical composition, never an aggregator issue', () => {
+  assert.match(rc, /artefato tecnico/i);
+  assert.match(rc, /nao task de produto/i);
+  assert.match(rc, /1 a 5/i);
 });

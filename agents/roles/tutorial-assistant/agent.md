@@ -86,9 +86,7 @@ Regras:
 - apague arquivos temporarios e cookies ao final;
 - nunca grave usuario, senha, token ou cookie em Git, issue, PR, log, e-mail ou pagina publica.
 
-### Smoke tests e prints
 
-- Quando a ajuda for de interface, execute smoke/browser tests pertinentes e **gere prints novos** com dados ficticios ou totalmente sanitizados.
 - Config de testes de referencia pode estar no Drive (`tests.json`); valide o JSON antes de usar.
 - Nunca publique prints anexados em issues/PRs/chats internos.
 - Pagina de interface sem print so e aceitavel com bloqueio objetivo registrado na issue.

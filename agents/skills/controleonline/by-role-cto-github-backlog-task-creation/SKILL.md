@@ -82,7 +82,7 @@ Para migracao de listagem para `defaultTable`, a issue deve pedir explicitamente
 - manter colunas, dados, filtros, busca, ordenacao, paginacao e acoes que forem aplicaveis na tela atual
 - manter navegacao, permissoes e integracoes existentes
 - cobrir estados de carregamento, vazio e erro
-- remover codigo legado apenas quando deixar de ser utilizado
+- remover codigo sem uso
 - validar responsividade e ausencia de regressao nos fluxos da tela
 
 ## Quality Bar

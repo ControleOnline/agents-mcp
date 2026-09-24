@@ -1,51 +1,34 @@
-# Integracao (dev) e staging (RC)
+# Integracao (dev) e staging (RC congelada)
 
 ## Regra geral
 
-No fluxo normal de task:
+- Developer integra somente `task-{id}` em `dev`.
+- DevOps monta uma branch `rc/X.Y.Z-rc.N` a partir do `master` atual.
+- A RC recebe individualmente de 1 a 5 tasks com os quatro accepts.
+- Depois do manifesto e freeze, o snapshot da RC e promovido para `staging`.
+- Staging é o ambiente de homologação da **composição congelada**, não branch de trabalho.
+- Depois da autorizacao humana em `Deploy`, DevOps promove a **mesma RC** para `master`.
+- `staging -> master`, `dev -> staging` e branches agregadoras manuais sao proibidos.
 
-- o `Developer` integra a `task-{id_issue}` em **`dev`** por **merge** (sem PR)
-- o `DevOps` promove cada **task individual** em **`staging`** e, apos coluna `Deploy`, promove somente essa task para **`master`**
+Fonte: `shared-github-github-flow` + `shared-github-release-candidate`.
 
-Fonte canonica: `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.
+## Invalidacao
 
-## Entrega do Developer → `dev`
+Qualquer commit, task, gitlink, SHA ou versao diferente do manifesto apos o freeze invalida a RC. Nao conserte a RC homologada em lugar: crie `rc.N+1`, gere novo manifesto e rode novamente os testes de composicao.
 
-- origem: `task-{id_issue}`
-- operacao: **merge** em **`dev`**
-- proibido: PR do Developer; merge em `staging` ou `master`; push direto de commits soltos em `dev`/`staging`/`master`
+## Gates
 
-## Staging = tasks individuais (DevOps)
+A RC so congela com:
+- 1 a 5 tasks;
+- quatro accepts em cada task;
+- base master registrada;
+- SHAs completos de todos os repositorios/submodulos afetados;
+- build da composicao;
+- browser/smoke aplicavel;
+- API/Postman aplicavel;
+- regressao dos bugs cobertos;
+- ausencia de mudanca fora do manifesto.
 
-- `staging` **nao** e destino do Developer
-- `DevOps` coloca somente a task autorizada em `staging` apos os gates exigidos
-- update de `staging` dispara deploy de conferencia humana
-- a conferencia do ambiente publicado, incluindo runtime, fluxo afetado e
-  erros/logs relevantes, e responsabilidade do `DevOps` apos a promocao; ela
-  nao bloqueia o aceite local do `Developer`/`QA`
-- apos coluna `Deploy`: merge da branch da task → `master` → coluna `Done`
+## Ownership
 
-## Promoção para staging por task
-
-Quando houver uma task com simultaneamente:
-
-- `agent:qa:accepted`
-- `agent:security:accepted`
-- e **nao** estiver em `staging` / `In Review`
-
-nessa situacao ele deve promover somente a branch `task-{id_issue}` dessa task
-e nunca consolidar ou congelar outras tasks no mesmo merge.
-
-## Bloqueios
-
-- faltar uma das duas aprovacoes por label
-- existir `agent:qa:rejected` ou `agent:security:rejected`
-- integracao em `dev` (Developer) ou `staging` (RC) em conflito sem resolucao
-- branch da tarefa nao vinculada ao numero da issue
-- tentativa de promover o branch agregado `staging` para `master`
-
-## Restricao de ownership
-
-- `Developer`, `Security` e `QA` **nao abrem PR** no fluxo normal
-- `Developer` entrega por **merge** em **`dev`**
-- somente `DevOps` promove a task individual para `staging` e, após `Deploy`, para `master`
+Developer nao publica staging/master. DevOps cria/promove RC. Manager controla board. Humano autoriza Deploy.

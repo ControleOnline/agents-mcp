@@ -1,11 +1,21 @@
-## Proibicao de fila Blocked / Backlog
+## Distincao obrigatoria: GitHub Blocked e Paperclip blocked
 
-Nao usar `Blocked`/`Backlog` como fila. Bloqueio operacional da rodada deve ser resolvido.
+Proibicao de tags de bloqueio: agents nao criam nem aplicam labels `agent:*:blocked`
+no GitHub. Isso nao impede a recuperacao prioritaria de
+issues Paperclip com status `blocked`.
 
-Nenhum agent, worker ou automacao pode criar, aplicar, remover ou solicitar
-labels `agent:*:blocked`, nem mover items para **`Blocked`**. Esses estados sao
-exclusivamente humanos; o fluxo deve corrigir, reencaminhar ou registrar
-`NEXT_ACTION` sem bloqueio terminal.
+- `Blocked` no GitHub Project #1 e `Backlog` sao estados de board sob controle
+  humano. Agents/workers nao comentam, validam, rotulam, editam nem movem itens
+  dessas colunas.
+- `blocked` no Paperclip (`issue.status=blocked` / `/CON/inbox/blocked`) e a fila
+  de recuperacao e prioridade maxima do Manager. Investigue a causa, retome ou
+  corrija a execucao/task Paperclip e confirme por readback antes de capturar
+  nova task.
+- Se uma task Paperclip blocked apontar para uma issue GitHub em `Blocked`, a
+  recuperacao limita-se ao estado Paperclip que possa ser corrigido sem mutar a
+  issue/board GitHub; o trabalho GitHub aguarda acao humana.
+- Nao crie/aplique/remova/solicite labels GitHub `agent:*:blocked` nem mova
+  itens GitHub para `Blocked`. Essa vedacao nao se aplica ao status Paperclip.
 
 # Manager Skills
 
@@ -15,7 +25,7 @@ O Manager cria e acompanha a task de coordenação no Paperclip e suas subtasks 
 
 Ordem resumida:
 
-1. **DevOps** — sempre primeiro. `Deploy` → `master`; com quarteto → `Done`, sem quarteto → `Working` para segunda rodada; se vazio, quarteto → `staging` + `In Review`. Sem RC.
+1. **DevOps** — sempre primeiro. Tasks com quarteto entram em uma RC tecnica congelada de no maximo 5 tasks e sao homologadas juntas em `staging`. Depois da autorizacao humana em `Deploy`, a mesma RC, com manifesto e SHAs identicos, e promovida para `master`. O Manager decide `Done`/revalidacao por task.
 2. **Hotfix** — validadores e promocao hotfix → staging.
 3. **Documentacao**
 4. **Developer — rejeicoes** (`agent:qa:rejected` / `agent:security:rejected`) — corrigir até a entrega ficar publicável, inclusive workflow/build; problemas de publicação/deploy vão para o DevOps com evidências.
@@ -60,9 +70,9 @@ P1 `DevOps`, que continua publicando tasks em `Deploy`.
 `agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
 As formas históricas qa:accepted e security:accepted não substituem as labels
 oficiais agent:*.
-Conclusão também exige `qa:accepted`, `security:accepted`,
-`agent:technical-documenter:done` e `agent:tutorial-assistant:done` quando
-aplicável.
+Conclusão da task exige os quatro accepts oficiais. Depois que o Manager mover
+para `Done`, ele cria no Paperclip as tasks filhas documentais aplicáveis; a
+conclusão dos documentadores não é pré-requisito para o `Done` da publicação.
 
 ## Output Contract
 

@@ -44,3 +44,11 @@ Ao iniciar uma execucao:
 
 Para filas, execuções e bloqueios do Paperclip, leia e siga
 `agents/skills/controleonline/by-role-cto-paperclip-operations/SKILL.md`.
+
+## Prioridade operacional número 1
+
+Em toda execução, comece pela inbox de pendências bloqueadas do Paperclip:
+`https://ia.controleonline.com/CON/inbox/blocked`.
+Destrave cada pendência acionável com ação efetiva e readback antes de avançar;
+não substitua a resolução por comentário ou simples mudança de status. Só depois
+da varredura da inbox siga para auditoria estrutural, GitHub ou demais funções.

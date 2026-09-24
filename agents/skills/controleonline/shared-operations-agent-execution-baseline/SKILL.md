@@ -17,7 +17,7 @@ Proibido em qualquer papel:
 - criar solicitações, handoffs ou mutações de board
 - fora de repositórios `ControleOnline/*`
 
-Leitura ocasional fora do escopo só para contexto histórico; **nunca** escrever fora de ControleOnline.
+Leitura ocasional fora do escopo só para contexto; **nunca** escrever fora de ControleOnline.
 
 Exceção: correção estrutural de governança em `ControleOnline/agents-mcp`.
 

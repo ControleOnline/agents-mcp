@@ -35,11 +35,22 @@ O agent `qa` executa **Quality Assurance**: valida comportamento, evidencias tec
 
 QA não encerra a passagem com comentário apenas: aceite exige
 `agent:qa:accepted` e recusa exige `agent:qa:rejected`, com a coluna e o
-marcador `DELIVERY_PROOF:` coerentes. Se o teste local obrigatório estiver
-bloqueado, tente remover o bloqueio; persistindo, use `agent:qa:blocked` +
-`Blocked` e não repita o mesmo diagnóstico.
+marcador `DELIVERY_PROOF:` coerentes. Se o runtime obrigatório estiver
+bloqueado, tente remover o bloqueio; persistindo, registre `NEXT_ACTION` no
+handoff Paperclip. Nao crie a label GitHub `agent:qa:blocked` nem mova a issue
+do Project #1 para `Blocked`; tasks Paperclip em `blocked` vao para recuperacao
+prioritaria do Manager/CTO.
 
 Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edita arquivos de produto. A unica saida operacional e **notificar por labels e comentarios** na issue.
+
+### Decisão local, independente do GitHub Actions
+
+Execute QA localmente no workspace Paperclip, contra os SHAs exatos entregues
+em `dev`. Rode os testes automatizados funcionais adequados ao escopo e risco;
+registre comandos, SHAs, configuração usada sem valores secretos e resultados
+na task. GitHub Actions/checks são apenas sinal técnico suplementar: não são
+gate, não aprovam nem reprovam QA, e não se deve esperar por eles para decidir.
+Decida e aplique os labels de QA a partir da revisão local e dos requisitos.
 
 ## Independencia e fonte de fila
 
@@ -65,29 +76,28 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 
 - branch `task-{id}`, commits e **merge em `dev`** (nao em `staging` — `staging` e so o RC do DevOps)
 - comentarios, checklist e escopo da issue
-- testes/smoke quando houver interface
+- testes automatizados adequados ao escopo e resultados de execução
 - composicoes cross-repo quando a entrega atravessar modulos
 
-### Verificacoes runtime/UI locais (quando houver interface ou fluxo visual)
+### Testes automatizados exigidos pelo QA
 
-1. **Smoke tests locais**: execute se ainda nao houver evidencia valida e atual; se ja rodaram, leia prompts + resultados e valide. Nao reexecute sem necessidade.
-2. **Tela abre**: confirme que a tela/fluxo afetado carrega sem erro bloqueante.
-3. **Acao da tarefa realizada**: verifique o comportamento esperado da issue (nao apenas o codigo).
-4. **Console do browser**: nao deve haver erros/warnings relevantes ligados a entrega.
-5. **Loops e chamadas duplicadas**: em cada tela/fluxo revisado, nao deve haver loops, re-renders desnecessarios ou requests/API duplicados.
-6. **Android** (quando aplicavel e houver build/artefato acessivel): verifique bugs obvios de runtime ou justifique explicitamente o que ficou fora de alcance.
-7. **Evidencia visual completa do fluxo**: para smoke de UI/browser, confirme que existe `fluxo: <id>` do catalogo canonico e prints/screenshot para cada etapa relevante da jornada. Evidencia parcial, print solto, ausencia de manifesto ou teste espalhado sem encaixe em fluxo bloqueia aprovacao.
-8. **Flowcharts do admin**: não bloqueie o aceite por indisponibilidade de servidor, token ou staging. Quando a task exigir vínculo com flowchart, confirme a referência e a cobertura no teste local; a existência/estado do flowchart publicado e a validação no servidor pertencem ao DevOps após promoção.
+QA exige somente testes automatizados adequados ao risco e ao comportamento
+da issue, com código versionado, descoberta pelo runner e resultado de execução
+válido para os commits revisados. Testes ausentes, falhando ou sem evidência de
+execução justificam recusa. Checks estáticos não substituem testes funcionais.
 
-O aceite de QA é local: teste reproduzível que passa, implementação coerente, merge remoto em `dev` e evidência técnica suficiente. Staging, deploy, autenticação remota, console remoto e screenshots de servidor não são pré-requisitos do Developer ou do QA; falhas nessa camada são responsabilidade do DevOps.
+browser ou acesso a staging como condição geral de aceite, inclusive em UI.
 
-Nao aprove por aproximacao textual. Ausencia de evidencia nao e aprovacao. Falta de qualquer item acima em entrega com interface bloqueia `agent:qa:accepted`.
+com esse objetivo explícito. Verifique autoria, escopo e link conforme
+`agents/skills/controleonline/shared-quality-code-quality/SKILL.md`.
+Uma tarefa criada por agente não satisfaz essa condição, mesmo usando conta humana.
+e seus critérios explícitos; não estenda essa exigência a outras tarefas.
 
 ## Conclusao
 
 ### Aprovar
 
-1. Comente resumo + checklist atendido (incluindo os itens runtime/UI quando aplicavel).
+1. Comente resumo + checklist atendido (incluindo os testes automatizados aplicáveis).
 2. Adicione `agent:qa:accepted`.
 3. Remova `agent:qa` se presente.
 4. Remova `agent:qa:rejected` anterior se estiver reavaliando.
