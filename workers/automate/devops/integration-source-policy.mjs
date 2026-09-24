@@ -3,6 +3,7 @@ const RC_BRANCH = /^rc\/(\d+)\.(\d+)\.(\d+)-rc\.([1-9][0-9]*)$/;
 const SHA = /^[0-9a-f]{40}$/i;
 const GOVERNANCE_PR_ALLOWLISTS = new Map([
   ['automation/reset-integration-branches', new Set([
+  '.github/workflows/integration-source-gate.yml',
   '.github/workflows/reset-aggregate-branches.yml',
   'tests/integration-source-policy.test.mjs',
   'tests/reset-integration-branches.test.mjs',

@@ -53,6 +53,7 @@ test('only the exact reset-automation governance branch and file set may target 
     sourceBranch: 'automation/reset-integration-branches',
     targetBranch: 'master',
     changedFiles: [
+      '.github/workflows/integration-source-gate.yml',
       '.github/workflows/reset-aggregate-branches.yml',
       'workers/automate/scripts/reset-integration-branches.mjs',
     ],
