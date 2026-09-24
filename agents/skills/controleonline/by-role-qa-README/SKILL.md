@@ -6,6 +6,11 @@
 
 **Nao altera codigo**, branches, PRs, merges nem arquivos de produto.
 
+QA executa os testes adequados localmente no workspace Paperclip contra os
+SHAs exatos de `dev`, registrando comandos e resultados na task. GitHub Actions
+e checks são apenas suplementares: não são gate de QA, não determinam aceite
+ou recusa e não devem ser aguardados para concluir a decisão local.
+
 ## Skills compartilhadas essenciais
 
 - `agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md`
