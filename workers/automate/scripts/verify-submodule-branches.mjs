@@ -46,11 +46,11 @@ async function verifyTree(repo, branch, sha, visited = new Set()) {
   for (const entry of gitlinks) {
     const module = modules.find((item) => item.path === entry.path);
     if (!module) throw new Error(`${repo}:${branch} gitlink ${entry.path} has no .gitmodules entry.`);
+    const child = repoFromUrl(module.url);
+    if (!child) continue;
     if (module.branch !== branch) {
       throw new Error(`${repo}:${branch} submodule ${entry.path} declares branch=${module.branch || '(unset)'}.`);
     }
-    const child = repoFromUrl(module.url);
-    if (!child) throw new Error(`${repo}:${branch} submodule ${entry.path} is outside ControleOnline or has an unsupported URL.`);
     const ref = await request(`/repos/${child}/git/ref/heads/${branch}`);
     if (entry.sha !== ref.object.sha) {
       throw new Error(`${repo}:${branch} gitlink ${entry.path} points to ${entry.sha}; ${child}:${branch} is ${ref.object.sha}.`);

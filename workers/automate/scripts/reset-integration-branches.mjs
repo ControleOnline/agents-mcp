@@ -33,8 +33,9 @@ async function getAll(path, fetchImpl) {
   }
 }
 
-function repositoryFromUrl(url) {
+export function repositoryFromUrl(url) {
   const match = String(url || '').match(/(?:github\.com[:/])ControleOnline\/([A-Za-z0-9_.-]+?)(?:\.git)?$/i);
+  if (match?.[1].endsWith('.wiki')) return null;
   return match ? `${ORG}/${match[1]}` : null;
 }
 
@@ -58,21 +59,37 @@ export function parseGitmodules(content) {
 
 export function setGitmoduleBranches(content, branch) {
   const lines = String(content).split(/\r?\n/);
-  let inSubmodule = false;
-  let sawBranch = false;
+  const modules = new Map(parseGitmodules(content).map((module) => [module.name, module]));
   const output = [];
+  let section = [];
+
   const flush = () => {
-    if (inSubmodule && !sawBranch) output.push(`\tbranch = ${branch}`);
+    if (!section.length) return;
+    const header = section[0].match(/^\s*\[submodule\s+"([^"]+)"\]\s*$/i);
+    const module = header && modules.get(header[1]);
+    if (module && repositoryFromUrl(module.url)) {
+      let branchUpdated = false;
+      section = section.map((line) => {
+        if (!/^\s*branch\s*=/.test(line)) return line;
+        branchUpdated = true;
+        return line.replace(/^(\s*branch\s*=\s*).*/, `$1${branch}`);
+      });
+      if (!branchUpdated) {
+        let insertionIndex = section.length;
+        while (insertionIndex > 1 && !section[insertionIndex - 1].trim()) insertionIndex -= 1;
+        section.splice(insertionIndex, 0, `\tbranch = ${branch}`);
+      }
+    }
+    output.push(...section);
+    section = [];
   };
+
   for (const line of lines) {
     if (/^\s*\[submodule\s+"[^"]+"\]\s*$/i.test(line)) {
       flush();
-      inSubmodule = true;
-      sawBranch = false;
-      output.push(line);
-    } else if (inSubmodule && /^\s*branch\s*=/.test(line)) {
-      output.push(line.replace(/^(\s*branch\s*=\s*).*/, `$1${branch}`));
-      sawBranch = true;
+      section.push(line);
+    } else if (section.length) {
+      section.push(line);
     } else {
       output.push(line);
     }
@@ -90,15 +107,19 @@ async function alignedTree({ repository, branch, sourceSha, apply, fetchImpl, lo
   const tree = await githubRequest(`/repos/${repository}/git/trees/${commit.tree.sha}?recursive=1`, {}, fetchImpl);
   const entries = [];
   let gitmodulesBlob = tree.tree.find((entry) => entry.path === '.gitmodules' && entry.type === 'blob');
+  const modulesText = gitmodulesBlob
+    ? Buffer.from((await githubRequest(`/repos/${repository}/git/blobs/${gitmodulesBlob.sha}`, {}, fetchImpl)).content, 'base64').toString('utf8')
+    : '';
+  const modules = parseGitmodules(modulesText);
 
   for (const entry of tree.tree.filter((item) => item.mode === '160000' && item.type === 'commit')) {
-    const modulesText = gitmodulesBlob
-      ? Buffer.from((await githubRequest(`/repos/${repository}/git/blobs/${gitmodulesBlob.sha}`, {}, fetchImpl)).content, 'base64').toString('utf8')
-      : '';
-    const module = parseGitmodules(modulesText).find((item) => item.path === entry.path);
+    const module = modules.find((item) => item.path === entry.path);
     if (!module) throw new Error(`${repository}: gitlink ${entry.path} has no matching .gitmodules entry.`);
     const child = repositoryFromUrl(module.url);
-    if (!child) throw new Error(`${repository}: cannot resolve ControleOnline repository for submodule ${entry.path}.`);
+    if (!child) {
+      log(`SKIP ${repository}:${branch}/${entry.path}: external or GitHub Wiki submodule is outside same-branch policy`);
+      continue;
+    }
     let childRef;
     try {
       childRef = await getBranchRef(child, branch, fetchImpl);
@@ -153,7 +174,7 @@ async function findOpenPullRequest(repository, branch, base, fetchImpl) {
   return pulls[0] ?? null;
 }
 
-async function queueProtectedReset({ repository, target, targetSha, sourceTree, sourceBranch, fetchImpl, log }) {
+export async function queueProtectedReset({ repository, target, targetSha, sourceSha, sourceTree, sourceBranch, fetchImpl, log }) {
   const branchName = `automation/align-${sourceBranch}-${target}-${targetSha.slice(0, 8)}-${sourceTree.slice(0, 8)}`;
   let pull = await findOpenPullRequest(repository, branchName, target, fetchImpl);
   if (pull?.state === 'closed' && !pull.merged_at) {
@@ -287,7 +308,6 @@ export async function resetIntegrationBranches({
           fetchImpl,
           log,
         });
-        const sourceCommit = await githubRequest(`/repos/${repo.full_name}/git/commits/${sourceSha}`, {}, fetchImpl);
         const targetCommit = await githubRequest(`/repos/${repo.full_name}/git/commits/${targetRef.object.sha}`, {}, fetchImpl);
         if (targetCommit.tree.sha === sourceTree) {
           unchanged += 1;
