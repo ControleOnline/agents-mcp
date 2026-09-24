@@ -13,7 +13,7 @@ Esta pasta organiza os pontos de entrada e a documentação operacional por agen
 ## Regra de ownership
 
 - o runner do GitHub deve preferir executar a entrada do agent dentro de `workers/automate/agents/<agent>/`
-- os arquivos legados em `workers/automate/scripts/` permanecem apenas como base compartilhada ou compatibilidade de caminho
+- os arquivos em `workers/automate/scripts/` permanecem apenas quando forem base compartilhada ou compatibilidade de caminho
 - a política funcional continua documentada nos arquivos `.md` já existentes em `workers/automate/`
 
 ## Override manual ativo

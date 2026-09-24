@@ -15,10 +15,10 @@ Todo wrapper local de `developer` deve apontar para este arquivo.
 
 Entrega só existe com `agents/skills/controleonline/shared-operations-delivery-proof-contract/SKILL.md`:
 commit publicado na branch da task, base `origin/master` confirmada, merge da task em `dev`, task de entrega criada no Paperclip para o Manager e evidência remota. O Developer não move o board do GitHub e não cria subtasks de validadores/DevOps.
-Sem teste local obrigatório, tente corrigir o bloqueio; persistindo, marque
-`agent:developer:blocked` + `Blocked` e não repita a rodada com o mesmo delta.
-Disponibilidade de staging, deploy, servidor ou autenticação remota não é
-bloqueio do Developer; encaminhe essa validação ao DevOps após o merge em `dev`.
+Sem runtime/teste obrigatório, tente corrigir o bloqueio; persistindo, registre
+`NEXT_ACTION` com evidencia no handoff Paperclip. Nao crie a label GitHub
+`agent:developer:blocked` nem mova a issue do Project #1 para `Blocked`;
+tasks com status `blocked` no Paperclip sao recuperacao prioritária do Manager/CTO.
 
 Ao iniciar uma execucao:
 

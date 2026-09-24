@@ -1,16 +1,14 @@
-# Checklist — UX Review
+# UX Checklist
 
-Usar a sequencia de prints do smoke como caminhada da jornada. Cada item: `ok` / `fail` / `n/a` + etapa.
+Base: heuristica de Nielsen (NN/g) + auditoria de jornada **ao vivo no browser**.
+Heuristica nao substitui teste com usuario; e o gate interno antes do staging.
 
-Fontes de referencia:
-- Nielsen / NN/g — 10 heuristicas de usabilidade
-- auditoria UX (acao primaria, estados vazio/erro/loading, reconhecimento vs memoria)
-- Hick (menos escolhas simultaneas) e Fitts (alvo clicavel o bastante)
+Percorra o fluxo na tela real (abrir browser → autenticar se preciso → navegar).
 
-## 1. Status do sistema (H1)
+## 1. Visibilidade do status do sistema (H1)
 
-- [ ] Usuario sabe onde esta (titulo, breadcrumb, passo)
-- [ ] Acao dispara feedback visivel (loading, sucesso, erro) nos prints
+- [ ] Loading / progresso / feedback imediato apos acao
+- [ ] Estados de resultado (sucesso, erro) visiveis na tela
 - [ ] Nao parece "travado" sem estado
 
 ## 2. Linguagem do mundo do cliente (H2)
@@ -52,12 +50,11 @@ Fontes de referencia:
 ## 9. Erro recuperavel (H9)
 
 - [ ] Mensagem de erro esta perto do problema e fala o proximo passo
-- [ ] Falha nao apaga o trabalho ja preenchido (quando o print permitir julgar)
+- [ ] Falha nao apaga o trabalho ja preenchido (quando a tela permitir julgar)
 
-## 10. Jornada completa nos prints
+## 10. Jornada completa
 
-- [ ] Prints cobrem inicio → acao da issue → resultado
-- [ ] Falta de etapa no smoke bloqueia aceite
+- [ ] Fluxo percorrido cobre inicio → acao da issue → resultado na tela real
 
 ## Decisao
 

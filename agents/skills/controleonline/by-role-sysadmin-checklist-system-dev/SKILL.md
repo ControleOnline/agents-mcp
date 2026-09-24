@@ -35,7 +35,6 @@ Checklist **incrementável** usado quando o `sysadmin` (ou a operação) detecta
 - [ ] Reproduzir ou confirmar pelo log/teste
 - [ ] Corrigir no repositório correto (multi-repo: listar módulos suspeitos)
 - [ ] Atualizar versão de biblioteca **no código** (manifest + lock) quando for o caso
-- [ ] Testes / smoke do fluxo afetado
 - [ ] Branch `task-{id}`, **merge em `dev`** conforme fluxo do `developer` (não em `staging`)
 - [ ] Não commitar segredos; não logar PII
 

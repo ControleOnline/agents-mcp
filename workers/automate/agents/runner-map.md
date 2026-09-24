@@ -21,9 +21,9 @@ Hoje a execucao operacional oficial do ecossistema combina duas trilhas compleme
 ### Quality Assurance
 
 - workflow desativado: `.github/workflows/qa-runner.yml`
-- entry point de runtime: `workers/src/qa-runner.js`
-- logica final atual: `workers/automate/scripts/pr-label-review-runner.mjs`
-- papel atual: registrar `agent:qa:accepted` ou `agent:qa:rejected` em PR do developer
+- aprovação oficial: agent QA local no workspace Paperclip, executando os testes nos SHAs revisados e decidindo por labels/comentário na issue
+- runners GitHub de QA e `qa-project-review.mjs` são legados, não são fonte de decisão e não podem aprovar/reprovar; o preview legado falha fechado para qualquer modo de escrita
+- GitHub Actions/checks são suplementares e nunca bloqueiam nem substituem a aprovação local
 
 ### Security
 
@@ -58,5 +58,5 @@ Ao revisar funcionamento, incidentes, ownership ou backlog do ecossistema:
 
 1. confirme primeiro qual runner e script realmente implementam o papel ou a mutacao exigida hoje
 2. trate os workflows YAML por papel apenas como trilha historica, salvo reativacao explicita e documentada
-3. trate `agent-project-dispatch.mjs`, `qa-project-review.mjs` e `security-project-review.mjs` como legado quando nao forem o caminho real do entry point atual
+3. trate `agent-project-dispatch.mjs`, `qa-project-review.mjs` e `security-project-review.mjs` como fora da trilha atual quando nao forem o caminho real do entry point
 4. somente o runner de `CTO` pode aprovar PR e mover a task para `In Review`

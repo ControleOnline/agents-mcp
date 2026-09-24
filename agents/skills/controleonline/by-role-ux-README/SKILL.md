@@ -2,9 +2,7 @@
 
 ## Papel
 
-`UX` analisa a jornada nos prints de smoke e decide aceitar ou recusar **somente por labels e comentarios**. Nao altera codigo.
-
-Pode processar mais de uma issue na mesma rodada.
+O agent UX faz review de jornada na **tela real aberta no browser**. Pode processar mais de uma issue na mesma rodada.
 
 ## Skills essenciais
 
@@ -23,7 +21,7 @@ Pode processar mais de uma issue na mesma rodada.
 ## Handoff
 
 - Aceitar: `agent:ux:accepted`, remover `agent:ux`
-- Recusar: `agent:ux:rejected`, issue open, comentario com etapa da jornada
+- Recusar: `agent:ux:rejected`, issue open, comentario com fluxo/URL percorrido
 
 ## Fontes
 

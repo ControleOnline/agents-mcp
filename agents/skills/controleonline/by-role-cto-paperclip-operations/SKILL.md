@@ -14,18 +14,23 @@ relatórios, arquivos ou logs.
 
 ## Ordem de atuação
 
-1. Consulte o estado atual das tasks, execuções, dependências, locks, rotinas,
+1. **Função número 1 do CTO:** abra
+   `https://ia.controleonline.com/CON/inbox/blocked` e consulte todas as
+   pendências bloqueadas acionáveis. Ordene por prioridade e, dentro dela,
+   antiguidade; não ignore uma pendência antiga por atividade recente.
+2. Para cada pendência acionável, consulte o estado atual das tasks, execuções, dependências, locks, rotinas,
    agents, workspaces e filas do Paperclip.
-2. Identifique o bloqueador raiz e sua ownership atual.
-3. Priorize a recuperação de trabalho já existente: execução viva, task
+3. Identifique o bloqueador raiz e sua ownership atual.
+4. Priorize a recuperação de trabalho já existente: execução viva, task
    bloqueada, dependência pendente, runner falho, credencial ausente ou lock
    órfão. Não capture uma nova tarefa do GitHub enquanto houver pendência
    acionável no Paperclip.
-4. Corrija o estado operacional dentro das permissões existentes ou encaminhe
+5. Corrija o estado operacional dentro das permissões existentes ou encaminhe
    para o responsável correto. Não mate uma execução viva nem crie concorrência;
    só recupere processo/lock quando houver evidência objetiva de que está órfão.
-5. Valide o resultado por readback de API, CLI, logs ou banco autorizado e
-   registre na task a evidência sanitizada da ação.
+6. Após cada mutação, valide o resultado por readback de API, CLI, logs ou banco
+   autorizado antes de avançar para a próxima pendência; registre na task a
+   evidência sanitizada da ação.
 
 ## Governança
 
@@ -36,6 +41,9 @@ relatórios, arquivos ou logs.
 - Uma alteração de governança estrutural no `agents-mcp` só deve ocorrer quando
   a task válida identificar a falha e a mudança necessária.
 - Comentário, label ou mudança de status sem execução verificável não é entrega.
+- A inbox `blocked` é uma fila de recuperação do CTO, não uma fila para
+  abandonar tarefas: toda entrada deve terminar com desbloqueio comprovado ou
+  com responsável e ação concreta explicitamente registrados.
 - Para código, exija commit/ref remoto, integração e testes correspondentes.
 
 ## Credenciais

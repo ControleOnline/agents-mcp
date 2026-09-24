@@ -4,7 +4,15 @@
 
 Fonte canônica do fluxo de branches e entrega técnica do ecossistema ControleOnline.
 
-Integração contínua **por task**. Não se monta Release Candidate, task pai de RC, freeze de pacote nem inventário de filhas. RCs históricos (`RC X.Y.Z-rc.N`) são legado e não orientam execuções novas.
+Integração de desenvolvimento continua **por task**. A publicação usa Release Candidate técnica congelada para validar a composição. RC não é task pai, não cria issue agregadora e contém no máximo 5 tasks.
+
+## Gate de origem das branches protegidas
+
+- `dev`: origem obrigatória `task-{id_issue}`.
+- `staging`: origem obrigatória `rc/X.Y.Z-rc.N` com manifesto congelado válido.
+- `master`: origem obrigatória da **mesma RC homologada**; `staging` nunca é origem.
+- `dev`, `staging`, `master`, `release/*`, branches multi-task manuais e tasks agregadoras nunca são origens válidas.
+- A RC pode agregar tecnicamente de 1 a 5 tasks, mas somente pelo rito de freeze definido em `shared-github-release-candidate/SKILL.md`.
 
 ## Regra inviolável de integração
 
@@ -57,7 +65,7 @@ Se o estado real do GitHub mostrar que o passo **já foi feito**, o agent não r
 
 Merge não é apenas uma operação textual nem fica validado porque o Git não
 reportou conflito. Antes de confirmar **qualquer** merge entre uma task e uma
-branch de integração, ou entre `staging` e `master`, o agent responsável deve:
+branch de integração, ou entre a RC homologada e `master`, o agent responsável deve:
 
 1. confirmar a origem, o destino, os dois SHAs atuais e o `merge-base`; se a
    origem foi criada antes de uma alteração relevante já presente no destino,
@@ -70,7 +78,7 @@ branch de integração, ou entre `staging` e `master`, o agent responsável deve
    outras tasks foram preservadas;
 4. em projetos com submódulos, revisar o diff de cada submódulo e o gitlink do
    pai, confirmando que o SHA apontado é o commit integrado esperado e não uma
-   versão antiga carregada pela branch de origem;
+   versão anterior carregada pela branch de origem;
 5. executar os testes/verificações focados no comportamento alterado e registrar
    a evidência do estado pós-merge antes do push.
 
@@ -101,7 +109,7 @@ Apagar e recriar a branch não autoriza copiar o gitlink, escolher “ours” ou
 resultado recriado deve passar pelo mesmo gate semântico e deixar comentário
 com a branch descartada, a nova base `master`, os SHAs e os testes executados.
 Uma task recriada não pode permanecer em `Done`, `Deploy` ou `In Review`, nem
-ser validada com labels antigas: a validação começa novamente após o novo
+ser validada com labels anteriores: a validação começa novamente após o novo
 merge em `dev`.
 
 ### Regra explícita de status e revalidação após entrega em `dev`
@@ -110,7 +118,7 @@ Quando a task reconstruída ou corrigida tiver sido publicada somente em
 `dev`, o Manager deve, na mesma rodada:
 
 1. manter ou retornar o item do Project #1 para **`Working`**;
-2. remover todas as decisões históricas dos validadores daquela entrega
+2. remover todas as decisões anteriores dos validadores daquela entrega
    (`agent:qa:accepted`, `agent:qa:rejected`, `agent:security:accepted`,
    `agent:security:rejected`, `agent:design:accepted`,
    `agent:design:rejected`, `agent:ux:accepted` e `agent:ux:rejected`);
@@ -164,7 +172,8 @@ No Manager, DevOps é **P1**. Hotfix é **P2**.
 
 ### Entrada (P1)
 
-1. Task na coluna **`Deploy`** (publicar o delta sozinho em `master`) — primeiro.
+1. Todas as tasks na coluna **`Deploy`** (cada delta publicado separadamente em
+   `master`) — primeiro.
 2. Task **quádruplo-accepted** ainda fora de `staging` / `In Review`.
 3. Issues/PRs com `agent:devops` com ação de merge restante.
 
@@ -201,15 +210,13 @@ coluna. Se parecer indevida: comentar + `agent:devops` + esperar humano.
 1. Humano move a task para **`Deploy`**, com ou sem o quarteto; essa mudança
    de coluna é a autorização explícita para publicar em `master`.
 2. DevOps aplica o **Gate de atenção redobrada antes de qualquer merge** e
-   mescla o delta (`staging` / `task-{id}`) → `master` (pai + submódulos).
-3. Se a task possuir os quatro accepts (`agent:qa:accepted`,
-   `agent:security:accepted`, `agent:design:accepted`, `agent:ux:accepted`),
-   move para **`Done`**.
-4. Se faltar qualquer accept, mantenha a issue aberta, mova para **`Working`**
-   e reative as solicitações dos validadores ainda pendentes para a segunda
-   rodada de validação.
-5. Handoff documental fail-closed (`agent:technical-documenter` /
-   `agent:tutorial-assistant` se faltar `:done`).
+   mescla somente o delta da task (`task-{id}`) → `master` (pai + submódulos).
+3. devolva ao Manager o handoff com SHA, versão publicada, runtime e estado dos
+   quatro accepts.
+4. O Manager decide a coluna final. Com os quatro accepts, move para **`Done`**
+   e cria no Paperclip as filhas documentais aplicáveis. Sem qualquer accept,
+   move para **`Working`** e reativa os validadores pendentes; com rejeição,
+   aciona o Developer para corrigir e depois reencaminha aos validadores.
 
 Nunca direto a `master` sem coluna `Deploy`, salvo correção estrutural de governança em `agents-mcp`.
 
@@ -266,4 +273,8 @@ master
 
 ## Project Status: Blocked e Backlog
 
-Agents **não** selecionam nem movem items em **`Blocked`** ou **`Backlog`** como fila.
+Esta regra se refere exclusivamente a colunas do **GitHub Project #1**:
+agents nao selecionam, comentam, validam, rotulam, editam nem movem issues em
+`Blocked` ou `Backlog`. O status `blocked` de tasks Paperclip e distinto e
+constitui fila prioritária de recuperacao para Manager/CTO; essa recuperacao
+operacional nao autoriza mutacao na issue/board GitHub `Blocked`.

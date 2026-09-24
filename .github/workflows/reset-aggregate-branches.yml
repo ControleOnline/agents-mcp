@@ -1,0 +1,36 @@
+name: Reconcile dev to master and staging to the published RC
+
+on:
+  # Cross-repository workflow_run events are not delivered to this repository.
+  # Poll the canonical release manifest so a master publication is reconciled
+  # even if its dispatch event is lost or unavailable.
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+    inputs:
+      rc_branch:
+        description: Frozen RC branch (leave empty to use the RC published in api-community/master)
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: reset-aggregate-integration-branches
+  cancel-in-progress: false
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+      - name: Reconcile protected refs using the published frozen RC
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          RC_BRANCH: ${{ inputs.rc_branch }}
+        run: node workers/automate/scripts/reset-integration-branches.mjs --apply
