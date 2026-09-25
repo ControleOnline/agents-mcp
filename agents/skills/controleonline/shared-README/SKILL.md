@@ -52,6 +52,7 @@ Todo agent **deve estender** `operations/paperclip-direct-execution.md`.
 - `github/github-issue-handling.md`
 - `github/operational-github-workflow.md`
 - `github/master-publication.md`
+- `github/package-publication.md`
 
 ### documentation/
 - `documentation/documentation-governance.md`
