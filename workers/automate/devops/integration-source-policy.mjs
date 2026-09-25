@@ -2,6 +2,12 @@ const TASK_BRANCH = /^task-([1-9][0-9]*)$/;
 const RC_BRANCH = /^rc\/(\d+)\.(\d+)\.(\d+)-rc\.([1-9][0-9]*)$/;
 const SHA = /^[0-9a-f]{40}$/i;
 const GOVERNANCE_PR_ALLOWLISTS = new Map([
+  ['docs/package-publication-guide', new Set([
+    'agents/skills/controleonline/shared-README/SKILL.md',
+    'agents/skills/controleonline/shared-github-package-publication/SKILL.md',
+    'tests/integration-source-policy.test.mjs',
+    'workers/automate/devops/integration-source-policy.mjs',
+  ])],
   ['fix/con-552-paperclip-direct-governance', new Set([
     '.github/workflows/integration-source-gate.yml',
     '.github/workflows/reset-aggregate-branches.yml',
