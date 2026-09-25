@@ -27,7 +27,7 @@ Composer modules are released from their individual `ControleOnline/<module>` re
 
 In `api-community`, keep each `controleonline/*` production requirement pinned to an exact stable version. Update `composer.json`, `composer.lock`, and the corresponding module gitlink as one reviewed change. Validate that the lock entry has the same stable version and immutable source/dist commit as the approved release. Development may redirect Composer autoloading to module source checkouts; staging and production must install the locked package artifacts and must not silently run `composer update` to recover from stale pins.
 
-The central package version tag worker may create a module tag only when its approval manifest names an already merged, exact commit. Verify that the worker has access to the required organization token and that the approved commit is on the module's default branch. A scheduled worker is not publication approval: do not add an unreviewed version to the approval manifest or infer Security acceptance from the tag.
+The Composer tag worker may create a module tag only when its approval manifest names an already merged, exact commit. Configure the `api-community` Actions secret `PACKAGE_TAG_TOKEN` as a fine-grained token limited to the 20 allowlisted API package repositories with `Contents: read and write`; do not reuse a broad organization token. The script's repository allowlist adds a second scope check. A scheduled worker is not publication approval: do not add an unreviewed version to the approval manifest or infer Security acceptance from the tag.
 
 ## Completion evidence
 
