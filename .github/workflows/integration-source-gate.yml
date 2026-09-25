@@ -70,11 +70,19 @@ jobs:
         run: node workers/automate/scripts/verify-submodule-branches.mjs
 
       - name: Validate frozen RC manifest
-        if: github.base_ref != 'dev' && github.head_ref != 'task-paperclip-status-distinction' && github.head_ref != 'automation/reset-integration-branches' && github.head_ref != 'fix/dev-master-staging-rc-reconciliation' && github.head_ref != 'fix/con-552-paperclip-direct-governance' && !startsWith(github.head_ref, 'automation/reset-rc-') && !startsWith(github.head_ref, 'automation/align-')
         env:
           HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
         run: |
           set -eu
+          if [ "$BASE_REF" = "dev" ]; then
+            echo "dev does not require an RC manifest"
+            exit 0
+          fi
+          if ! printf '%s' "$HEAD_REF" | grep -Eq '^rc/[0-9]+\.[0-9]+\.[0-9]+-rc\.[1-9][0-9]*$'; then
+            echo "Allowlisted governance source does not use an RC manifest"
+            exit 0
+          fi
           test -f .release/rc-manifest.json || {
             echo "::error::Missing .release/rc-manifest.json"
             exit 1

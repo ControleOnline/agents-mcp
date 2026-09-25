@@ -109,6 +109,7 @@ test('only the reviewed agents-mcp governance PR can bypass RC source on master'
 
 test('package publication documentation governance PR is limited to its reviewed files', () => {
   const changedFiles = [
+    '.github/workflows/integration-source-gate.yml',
     'agents/skills/controleonline/shared-README/SKILL.md',
     'agents/skills/controleonline/shared-github-package-publication/SKILL.md',
     'tests/integration-source-policy.test.mjs',

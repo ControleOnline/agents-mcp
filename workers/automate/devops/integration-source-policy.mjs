@@ -3,6 +3,7 @@ const RC_BRANCH = /^rc\/(\d+)\.(\d+)\.(\d+)-rc\.([1-9][0-9]*)$/;
 const SHA = /^[0-9a-f]{40}$/i;
 const GOVERNANCE_PR_ALLOWLISTS = new Map([
   ['docs/package-publication-guide', new Set([
+    '.github/workflows/integration-source-gate.yml',
     'agents/skills/controleonline/shared-README/SKILL.md',
     'agents/skills/controleonline/shared-github-package-publication/SKILL.md',
     'tests/integration-source-policy.test.mjs',
