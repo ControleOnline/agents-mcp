@@ -31,7 +31,7 @@ faz a checagem final e movimenta o board.
 
 Ordem resumida:
 
-1. **DevOps** — sempre primeiro. Tasks com `agent:security:accepted` e revalidacao do Manager entram em uma RC tecnica congelada de no maximo 5 tasks e sao homologadas juntas em `staging`. Depois da autorizacao humana em `Deploy`, a mesma RC, com manifesto e SHAs identicos, e promovida para `master`. O Manager decide `Done`/revalidacao por task.
+1. **DevOps** — sempre primeiro. Tasks com `agent:security:accepted` e revalidacao do Manager entram em uma RC tecnica congelada de no maximo 5 tasks; DevOps **deve** deixar `staging` no tip da RC antes do Manager mover para `In Review` (homologacao humana no staging). Depois da autorizacao humana em `Deploy`, a mesma RC, com manifesto e SHAs identicos, e promovida para `master`. O Manager decide `Done`/revalidacao por task.
 2. **Hotfix** — Security e promocao hotfix → staging.
 3. **Documentacao**
 4. **Developer — rejeicoes** (`agent:security:rejected`) — corrigir até a entrega ficar publicável, inclusive workflow/build; problemas de publicação/deploy vão para o DevOps com evidências.

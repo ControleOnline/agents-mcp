@@ -2,7 +2,9 @@
 
 ## Objetivo
 
-Homologar a composicao real antes de producao sem voltar ao modelo de staging acumulativo.
+Homologar a composicao real **no ambiente staging** antes de producao, sem voltar ao modelo de staging acumulativo.
+
+A RC existe para o **humano validar no staging**. Criar a branch `rc/*` sem promover o snapshot para `staging` **nao conclui** a criacao da RC.
 
 ## Contrato
 
@@ -12,11 +14,30 @@ Homologar a composicao real antes de producao sem voltar ao modelo de staging ac
 - A branch da RC usa `rc/X.Y.Z-rc.N`.
 - A RC nasce do `master` remoto atual e recebe somente os deltas das tasks listadas no manifesto.
 - O manifesto `.release/rc-manifest.json` e obrigatorio e imutavel depois do freeze.
-- `staging` deve representar exatamente o snapshot congelado da RC.
+- **`staging` DEVE representar exatamente o snapshot congelado da RC** (mesmo SHA de tip da branch `rc/X.Y.Z-rc.N` no repositorio pai e os mesmos gitlinks/pins do manifesto).
 - Qualquer mudanca de SHA, task, gitlink, versao ou arquivo depois do freeze invalida a homologacao e exige nova RC.
 - `master` recebe somente a **mesma RC homologada**, com os mesmos SHAs do manifesto aprovado.
 - Nunca publicar o branch agregado `staging` como origem de `master`.
 - Nunca criar RC pai/issue agregadora. RC e artefato tecnico de release, nao task de produto.
+
+## Criterio de conclusao de "criar RC"
+
+A criacao de RC so esta **concluida** quando **todas** as condicoes abaixo forem verdadeiras:
+
+1. Branch `rc/X.Y.Z-rc.N` publicada com manifesto `frozen: true`.
+2. **`origin/staging` (pai e modulos pinados no manifesto) aponta para o mesmo snapshot da RC** — HEAD de staging = tip da RC no app pai; submodulos/pins iguais ao manifesto.
+3. Pipeline de deploy/build de staging disparado ou em andamento a partir desse snapshot (quando o repo tiver workflow de deploy em push de `staging`).
+4. Tasks inventariadas movidas para **In Review** somente **depois** do item 2.
+
+Enquanto `staging` divergir da RC, o resultado e `NEXT_ACTION` de DevOps: **promover/resetar staging para o tip da RC**. Nao encerre a rodada como RC pronta so com a branch `rc/*`.
+
+## Promocao obrigatoria para staging
+
+- A promocao e **parte do rito de freeze**, nao um passo opcional pos-homologacao.
+- Preferir atualizar `staging` para o tip da RC (fast-forward ou **reset** para o SHA da RC).
+- Se o historico de `staging` divergir (RC anterior, commits extras), **resetar** `staging` para o tip da RC e o contrato. Staging acumulativo e proibido.
+- Quando regras do GitHub bloquearem force-push, usar o mecanismo autorizado do repo (PR de reset `automation/reset-rc-…-staging`, bypass de regras por identidade de automacao, ou workflow de reset). O objetivo e o mesmo: **HEAD de staging = tip da RC**.
+- Falha de promocao a staging = RC **nao entregue**; registrar evidencia e insistir no reset, nao no merge de historicos divergentes que misturem commits fora do manifesto.
 
 ## Manifesto minimo
 
@@ -42,7 +63,7 @@ Regras:
 - Cada gitlink do pai deve apontar para commit ja integrado na branch de RC correspondente do submodulo.
 - O manifesto homologado e comparado byte-a-byte/semanticamente no gate de master.
 
-## Freeze
+## Freeze (ordem obrigatoria)
 
 1. Atualize `master`.
 2. Selecione no maximo 5 tasks elegiveis.
@@ -50,10 +71,11 @@ Regras:
 4. Integre cada task separadamente, registrando a ordem e o SHA resultante.
 5. Gere o manifesto.
 6. Marque `frozen: true`.
-7. Promova o snapshot para `staging`.
-8. Rode build, browser/smoke, API/Postman e regressao da composicao.
-9. Se qualquer correcao for necessaria, **nao altere a RC homologada**: gere `rc.N+1`.
-10. Quando o humano autorizar Deploy, promova a mesma RC congelada para `master`.
+7. **Promova o snapshot para `staging` ate `origin/staging` coincidir com o tip da RC** (reset se necessario).
+8. Confirme runtime/deploy de staging (workflow ou evidencia de servidor) a partir desse SHA.
+9. Manager move as tasks inventariadas para **In Review** (homologacao humana no staging).
+10. Se qualquer correcao for necessaria apos o freeze, **nao altere a RC homologada**: gere `rc.N+1` e repita a promocao a staging.
+11. Quando o humano autorizar **Deploy**, promova a **mesma** RC congelada para `master`.
 
 ## Gate de producao
 
@@ -62,7 +84,7 @@ Antes de master:
 - RC contem de 1 a 5 tasks;
 - HEAD da RC e os SHAs por repositorio sao os mesmos homologados em staging;
 - staging nao recebeu commit posterior ao snapshot;
-- build/smokes da composicao passaram;
+- build/smokes da composicao passaram (ou `force_deploy` explicitamente registrado, se politica ativa);
 - nenhuma mudanca fora do manifesto entrou;
 - submodulos nao sofreram downgrade silencioso;
 - versao estavel final deriva da RC homologada.
