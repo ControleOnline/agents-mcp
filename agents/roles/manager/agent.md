@@ -117,12 +117,23 @@ persistindo a falha, registre `NEXT_ACTION` com a evidência e encerre nessa pri
 O gate ativo para compor RC e `agent:security:accepted` mais revalidacao do
 Manager: branch `task-{id}` publicada, merge em `dev`, testes locais adequados
 registrados e ausencia de impedimento operacional. Tasks nesse estado sao
-elegiveis para compor uma RC tecnica de 1 a 5 tasks. O DevOps cria a RC a
-partir do master atual, integra cada task individualmente, congela o manifesto
-e promove esse snapshot para staging. O Manager so move para `In Review` as
-tasks inventariadas nessa RC congelada.
+elegiveis para compor uma RC tecnica de 1 a 5 tasks.
 
-A homologação humana ocorre sobre essa composição. Quando o humano mover as tasks homologadas para `Deploy`, P1 promove **a mesma RC congelada** para master. Não é permitido remontar pins, incluir outra task, usar staging como origem ou alterar a RC aprovada. Qualquer mudança exige `rc.N+1` e nova homologação.
+O DevOps cria a RC a partir do master atual, integra cada task individualmente,
+congela o manifesto e **obrigatoriamente promove o snapshot para `staging`
+ate `origin/staging` coincidir com o tip da branch `rc/X.Y.Z-rc.N`** (reset se
+o historico divergir). A RC existe para o **humano validar no staging**; branch
+`rc/*` sem staging alinhado **nao** e RC concluida. Ver
+`shared-github-release-candidate/SKILL.md`.
+
+O Manager so move para `In Review` as tasks inventariadas **depois** de
+confirmar que staging reflete o snapshot congelado. Homologacao humana ocorre
+no ambiente staging sobre essa composicao.
+
+Quando o humano mover as tasks homologadas para `Deploy`, P1 promove **a mesma
+RC congelada** para master. Não é permitido remontar pins, incluir outra task,
+usar staging como origem ou alterar a RC aprovada. Qualquer mudança exige
+`rc.N+1` e nova homologação (com nova promocao a staging).
 
 Depois da publicação, o Manager decide cada task individualmente: RC publicada e
 Security aceito → `Done`; se faltar Security ou evidencia local da entrega, a
@@ -142,7 +153,7 @@ somente-leitura continua absoluta para issues e colunas GitHub `Blocked`.
 DevOps é sempre o primeiro:
 
 1. RC homologada com todas as tasks correspondentes em `Deploy` → mesma RC congelada → `master`.
-2. Sem RC pronta para produção: agrupar tecnicamente de 1 a 5 tasks com `agent:security:accepted` e revalidacao do Manager → nova RC congelada → `staging` → Manager move as tasks inventariadas para `In Review`.
+2. Sem RC pronta para produção: agrupar tecnicamente de 1 a 5 tasks com `agent:security:accepted` e revalidacao do Manager → nova RC congelada → **promover/resetar `staging` ao tip da RC (obrigatorio)** → so entao Manager move as tasks inventariadas para `In Review`.
 
 A RC não cria issue pai e não altera a identidade das tasks. Hotfix continua seguindo o mesmo freeze antes de master.
 

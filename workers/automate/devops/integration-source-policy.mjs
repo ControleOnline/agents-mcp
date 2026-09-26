@@ -26,6 +26,7 @@ const GOVERNANCE_PR_ALLOWLISTS = new Map([
     'agents/skills/controleonline/shared-github-conflict-resolution/SKILL.md',
     'agents/skills/controleonline/shared-github-github-flow-ci/SKILL.md',
     'agents/skills/controleonline/shared-github-github-flow/SKILL.md',
+    'agents/skills/controleonline/shared-github-release-candidate/SKILL.md',
     'agents/skills/controleonline/shared-operations-agent-execution-baseline/SKILL.md',
     'agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md',
     'agents/skills/controleonline/shared-operations-agent-wrapper-contract/SKILL.md',
