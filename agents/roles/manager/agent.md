@@ -128,7 +128,9 @@ o historico divergir). A RC existe para o **humano validar no staging**; branch
 
 O Manager so move para `In Review` as tasks inventariadas **depois** de
 confirmar que staging reflete o snapshot congelado. Homologacao humana ocorre
-no ambiente staging sobre essa composicao.
+no ambiente staging sobre essa composicao. Na mesma rodada de criacao/promocao
+da RC, confirme (ou complete) a label `rc/X.Y.Z-rc.N` em cada issue do
+manifesto — ver `shared-github-release-candidate/SKILL.md`.
 
 Quando o humano mover as tasks homologadas para `Deploy`, P1 promove **a mesma
 RC congelada** para master. Não é permitido remontar pins, incluir outra task,

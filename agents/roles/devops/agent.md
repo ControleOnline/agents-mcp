@@ -23,6 +23,7 @@ A RC e artefato tecnico, nao task agregadora. Branch obrigatoria: `rc/X.Y.Z-rc.N
 - Promover/resetar `staging` para o tip da RC e **obrigatorio** no mesmo ciclo de "criar RC".
 - Historico divergente em staging: **reset** para o SHA da RC (PR `automation/reset-rc-…-staging`, force autorizado ou workflow de reset). Nao misturar commits fora do manifesto.
 - So apos `staging` == tip da RC o Manager move as tasks para **In Review**.
+- **Label de RC:** ao concluir o freeze, aplicar em cada issue do manifesto a label cujo nome e exatamente a branch (`rc/X.Y.Z-rc.N`). Criar a label no repositorio da issue se nao existir. Ver `shared-github-release-candidate/SKILL.md`.
 
 ## Captura autonoma
 

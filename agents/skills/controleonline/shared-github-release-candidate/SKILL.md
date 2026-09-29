@@ -27,7 +27,8 @@ A criacao de RC so esta **concluida** quando **todas** as condicoes abaixo forem
 1. Branch `rc/X.Y.Z-rc.N` publicada com manifesto `frozen: true`.
 2. **`origin/staging` (pai e modulos pinados no manifesto) aponta para o mesmo snapshot da RC** — HEAD de staging = tip da RC no app pai; submodulos/pins iguais ao manifesto.
 3. Pipeline de deploy/build de staging disparado ou em andamento a partir desse snapshot (quando o repo tiver workflow de deploy em push de `staging`).
-4. Tasks inventariadas movidas para **In Review** somente **depois** do item 2.
+4. Label `rc/X.Y.Z-rc.N` aplicada em **cada** issue inventariada no manifesto (criada no repo se ainda nao existir).
+5. Tasks inventariadas movidas para **In Review** somente **depois** do item 2.
 
 Enquanto `staging` divergir da RC, o resultado e `NEXT_ACTION` de DevOps: **promover/resetar staging para o tip da RC**. Nao encerre a rodada como RC pronta so com a branch `rc/*`.
 
@@ -63,6 +64,17 @@ Regras:
 - Cada gitlink do pai deve apontar para commit ja integrado na branch de RC correspondente do submodulo.
 - O manifesto homologado e comparado byte-a-byte/semanticamente no gate de master.
 
+## Label de identificacao da RC nas issues
+
+Ao concluir o freeze (manifesto `frozen: true` + staging alinhado), **obrigatorio** aplicar em **cada** issue inventariada no manifesto a label GitHub cujo nome e exatamente o identificador da branch da RC:
+
+- Formato: `rc/X.Y.Z-rc.N` (igual ao campo `branch` do manifesto, sem prefixo extra).
+- Exemplo: branch `rc/1.10.27-rc.1` → label `rc/1.10.27-rc.1` em todas as issues de `tasks`.
+- Criar a label no repositorio da issue se ainda nao existir (cor sugerida `#5319E7`, descricao `Release Candidate X.Y.Z-rc.N`).
+- A label e o marcador operacional para filtrar/identificar no board quais issues pertencem a qual RC; nao substitui manifesto, coluna `In Review` nem gate de Security.
+- Em `rc.N+1` (nova RC apos correcao): aplicar a label da **nova** RC; a label da RC anterior pode permanecer para historico ou ser removida a criterio do Manager — nao e bloqueio.
+- A ausencia da label **nao** invalida o manifesto nem o gate de master; e higiene de identificacao e deve ser corrigida na mesma rodada de criacao da RC (DevOps no freeze; Manager pode completar ao mover para `In Review`).
+
 ## Freeze (ordem obrigatoria)
 
 1. Atualize `master`.
@@ -73,9 +85,10 @@ Regras:
 6. Marque `frozen: true`.
 7. **Promova o snapshot para `staging` ate `origin/staging` coincidir com o tip da RC** (reset se necessario).
 8. Confirme runtime/deploy de staging (workflow ou evidencia de servidor) a partir desse SHA.
-9. Manager move as tasks inventariadas para **In Review** (homologacao humana no staging).
-10. Se qualquer correcao for necessaria apos o freeze, **nao altere a RC homologada**: gere `rc.N+1` e repita a promocao a staging.
-11. Quando o humano autorizar **Deploy**, promova a **mesma** RC congelada para `master`.
+9. **Aplique a label `rc/X.Y.Z-rc.N` em cada issue inventariada** (criar a label no repo se necessario).
+10. Manager move as tasks inventariadas para **In Review** (homologacao humana no staging).
+11. Se qualquer correcao for necessaria apos o freeze, **nao altere a RC homologada**: gere `rc.N+1` e repita a promocao a staging (e a label da nova RC).
+12. Quando o humano autorizar **Deploy**, promova a **mesma** RC congelada para `master`.
 
 ## Gate de producao
 
