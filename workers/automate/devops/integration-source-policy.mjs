@@ -67,6 +67,7 @@ const GOVERNANCE_PR_ALLOWLISTS = new Map([
   'workers/automate/scripts/reset-integration-branches.mjs',
   ])],
   ['fix/rc-label-on-issues', new Set([
+  '.github/workflows/integration-source-gate.yml',
   'agents/roles/devops/agent.md',
   'agents/roles/manager/agent.md',
   'agents/skills/controleonline/by-role-devops-README/SKILL.md',
