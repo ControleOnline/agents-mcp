@@ -6,6 +6,36 @@ Fonte canônica do fluxo de branches e entrega técnica do ecossistema ControleO
 
 Integração de desenvolvimento continua **por task**. A publicação usa Release Candidate técnica congelada para validar a composição. RC não é task pai, não cria issue agregadora e contém no máximo 5 tasks.
 
+## Dependencias publicadas (Composer e npm)
+
+Aplicacoes consumidoras devem depender somente de versoes estaveis numericas ja
+publicadas no registry correspondente. Para pacotes ControleOnline, use a
+versao exata no formato X.Y.Z. Exemplo de Composer:
+
+```json
+{
+  "require": {
+    "controleonline/people": "1.0.2"
+  }
+}
+```
+
+No Composer, use o Packagist padrao. E proibido adicionar repositories para
+apontar para branches, repositorios Git, arquivos ZIP, URLs de arquivos ou
+diretorios locais. Tambem sao proibidos dev-master, dev-main, dev-*, @dev,
+aliases de branch e qualquer outra referencia de branch em composer.json ou
+composer.lock.
+
+No npm, dependencias @controleonline/* tambem devem usar exatamente X.Y.Z,
+publicado no registry npm configurado. Dependencias GitHub/Git, URLs, caminhos
+locais e sufixos de branch/tag nao substituem uma versao publicada. A versao
+propria de um pacote npm tambem deve ser numerica X.Y.Z, sem sufixo RC.
+
+Publique primeiro a versao do pacote no registry. Somente depois atualize o
+manifesto do consumidor para essa versao. Isso vale em desenvolvimento,
+staging e producao; nao use branch como atalho para consumir codigo ainda nao
+publicado.
+
 ## Gate de origem das branches protegidas
 
 - `dev`: origem obrigatória `task-{id_issue}`.

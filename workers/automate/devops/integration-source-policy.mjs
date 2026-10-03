@@ -58,6 +58,12 @@ const GOVERNANCE_PR_ALLOWLISTS = new Map([
     'workers/scripts/sync-paperclip-agents.mjs',
     'workers/src/direct-push-ingest.js',
   ])],
+  ['task-197', new Set([
+    'agents/skills/controleonline/shared-github-github-flow/SKILL.md',
+    'agents/skills/controleonline/shared-github-master-publication/SKILL.md',
+    'tests/integration-source-policy.test.mjs',
+    'workers/automate/devops/integration-source-policy.mjs',
+  ])],
   ['fix/dev-master-staging-rc-reconciliation', new Set([
   '.github/workflows/integration-source-gate.yml',
   '.github/workflows/reset-aggregate-branches.yml',

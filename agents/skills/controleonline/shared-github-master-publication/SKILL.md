@@ -28,6 +28,15 @@ Leia antes: `shared-github-github-flow/SKILL.md`, `shared-github-release-candida
 9. Rode smokes pós-deploy e registre o SHA anterior para rollback determinístico.
 10. Manager decide o estado final de cada task individual.
 
+## Dependencias de pacotes
+
+Dependencias ControleOnline em composer.json e package.json devem usar uma
+versao numerica exata X.Y.Z ja publicada no Packagist ou no registry npm.
+Referencias de branch, aliases, Git URLs e repositories Composer customizados
+para pacotes ControleOnline bloqueiam a publicacao. Publique as versoes dos
+pacotes primeiro; nunca substitua versoes por branches durante dev, staging ou
+master.
+
 ## Versão
 
 - `package.json` / `app.json`: `X.Y.Z`.
