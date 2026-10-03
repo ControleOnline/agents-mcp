@@ -107,6 +107,27 @@ test('only the reviewed agents-mcp governance PR can bypass RC source on master'
   }
 });
 
+test('task-197 package version policy is an exact governance source', () => {
+  const changedFiles = [
+    'agents/skills/controleonline/shared-github-github-flow/SKILL.md',
+    'agents/skills/controleonline/shared-github-master-publication/SKILL.md',
+    'tests/integration-source-policy.test.mjs',
+    'workers/automate/devops/integration-source-policy.mjs',
+  ];
+  assert.deepEqual(validateGovernanceSource({
+    repository: 'ControleOnline/agents-mcp',
+    sourceBranch: 'task-197',
+    targetBranch: 'master',
+    changedFiles,
+  }), { allowed: true, protectedTarget: true, type: 'governance' });
+  assert.equal(validateGovernanceSource({
+    repository: 'ControleOnline/agents-mcp',
+    sourceBranch: 'task-197',
+    targetBranch: 'master',
+    changedFiles: [...changedFiles, 'workers/src/product.js'],
+  }).allowed, false);
+});
+
 test('CON-552 Paperclip and submodule governance PR is limited to its reviewed file set', () => {
   assert.deepEqual(validateGovernanceSource({
     repository: 'ControleOnline/agents-mcp',
