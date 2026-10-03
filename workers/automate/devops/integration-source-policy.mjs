@@ -59,6 +59,7 @@ const GOVERNANCE_PR_ALLOWLISTS = new Map([
     'workers/src/direct-push-ingest.js',
   ])],
   ['task-197', new Set([
+    '.github/workflows/integration-source-gate.yml',
     'agents/skills/controleonline/shared-github-github-flow/SKILL.md',
     'agents/skills/controleonline/shared-github-master-publication/SKILL.md',
     'tests/integration-source-policy.test.mjs',
