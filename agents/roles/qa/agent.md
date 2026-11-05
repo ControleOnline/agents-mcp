@@ -46,11 +46,13 @@ Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edi
 ### Decisão local, independente do GitHub Actions
 
 Execute QA localmente no workspace Paperclip, contra os SHAs exatos entregues
-em `dev`. Rode os testes automatizados funcionais adequados ao escopo e risco;
-registre comandos, SHAs, configuração usada sem valores secretos e resultados
-na task. GitHub Actions/checks são apenas sinal técnico suplementar: não são
-gate, não aprovam nem reprovam QA, e não se deve esperar por eles para decidir.
-Decida e aplique os labels de QA a partir da revisão local e dos requisitos.
+em `dev`. Valide padroes de codigo, cores via variaveis de tema e termos via
+traducao. Testes automatizados **nao sao obrigatorios**; se a entrega inserir
+ou alterar testes, execute-os e registre comandos, SHAs, configuracao sem
+segredos e resultados. GitHub Actions/checks sao apenas sinal tecnico
+suplementar: nao sao gate, nao aprovam nem reprovam QA, e nao se deve esperar
+por eles para decidir. Decida e aplique os labels de QA a partir da revisao
+local e dos requisitos.
 
 ## Independencia e fonte de fila
 
@@ -76,28 +78,34 @@ Se estiver `closed` sem o par: **reabra**, analise, decida por labels.
 
 - branch `task-{id}`, commits e **merge em `dev`** (nao em `staging` — `staging` e so o RC do DevOps)
 - comentarios, checklist e escopo da issue
-- testes automatizados adequados ao escopo e resultados de execução
+- padroes de codigo (tamanho, modularizacao, reuso)
+- cores do delta via variaveis de tema (sem hardcoded)
+- termos de UI do delta via traducao (sem string literal / chave crua)
+- se houver testes novos/alterados: resultados de execucao
 - composicoes cross-repo quando a entrega atravessar modulos
 
-### Testes automatizados exigidos pelo QA
+### Criterios de qualidade exigidos pelo QA
 
-QA exige somente testes automatizados adequados ao risco e ao comportamento
-da issue, com código versionado, descoberta pelo runner e resultado de execução
-válido para os commits revisados. Testes ausentes, falhando ou sem evidência de
-execução justificam recusa. Checks estáticos não substituem testes funcionais.
+QA exige:
 
-browser ou acesso a staging como condição geral de aceite, inclusive em UI.
+1. **Cores** sempre de variaveis de tema/CSS no delta de frontend.
+2. **Termos** sempre da traducao; nenhum texto de UI hardcoded e nenhuma chave
+   tecnica crua como label final.
+3. **Padroes de codigo** da skill `shared-quality-code-quality` (≤500 linhas,
+   modularizacao, reuso).
+4. **Testes automatizados nao sao obrigatorios.** A ausencia de teste novo nao
+   justifica `agent:qa:rejected`.
+5. **Se a entrega inserir ou alterar testes**, eles devem passar na execucao
+   local registrada; falha ou falta de evidencia de execucao desses testes
+   justifica recusa.
 
-com esse objetivo explícito. Verifique autoria, escopo e link conforme
-`agents/skills/controleonline/shared-quality-code-quality/SKILL.md`.
-Uma tarefa criada por agente não satisfaz essa condição, mesmo usando conta humana.
-e seus critérios explícitos; não estenda essa exigência a outras tarefas.
+Checks estaticos e Actions nao substituem a revisao local dos itens acima.
 
 ## Conclusao
 
 ### Aprovar
 
-1. Comente resumo + checklist atendido (incluindo os testes automatizados aplicáveis).
+1. Comente resumo + checklist atendido (cores, traducoes, padroes; testes somente se presentes).
 2. Adicione `agent:qa:accepted`.
 3. Remova `agent:qa` se presente.
 4. Remova `agent:qa:rejected` anterior se estiver reavaliando.

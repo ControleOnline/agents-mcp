@@ -8,9 +8,11 @@ Esta skill e a fonte oficial para criterios compartilhados de:
 
 - modularizacao
 - tamanho de arquivos e componentes
-- cobertura de testes
 - reuso de contratos e componentes
+- cores exclusivamente via variaveis de tema
+- termos de UI exclusivamente via traducao
 - manutencao de mudancas pequenas e rastreaveis
+- validacao de testes quando presentes na entrega
 
 ## Regra central
 
@@ -27,26 +29,29 @@ Se houver conflito entre um AGENTS local e esta skill para criterios de qualidad
 - se a regra de modularizacao puder ser respeitada com divisao simples, a divisao deve acontecer na mesma entrega
 - reutilize componentes, stores, helpers e contratos existentes antes de criar duplicatas
 - nao replique contrato de tela, store ou API quando a base compartilhada ja existir
-- QA exige testes automatizados adequados ao escopo, inclusive em mudanças de UI
-- qualquer mudanca funcional deve ter testes automatizados adequados ao risco
-- a ausencia de teste automatizado adequado bloqueia a aprovacao de mudanca funcional
-- lint e testes automatizados do escopo devem ter resultados de execução verificáveis
+- **cores:** no delta de frontend, toda cor deve vir de variaveis de tema/CSS (`brandColors`, tokens do theme, `var(--*)` / palette). Hex, rgb, rgba e nomes de cor hardcoded no delta sao recusa
+- **termos/textos de UI:** todo texto visivel ao usuario deve vir do mecanismo de traducao (`t` / `translate` / store de traducao). String literal de UI no delta e recusa; chaves cruas (`mk7`, ids tecnicos) nao podem aparecer como label final
+- **testes automatizados nao sao obrigatorios** para aceite de QA. A ausencia de teste novo nao justifica `agent:qa:rejected`
+- **quando a entrega inserir ou alterar testes automatizados**, esses testes devem passar na execucao local registrada; teste novo/alterado falhando ou sem evidencia de execucao justifica recusa
+- lint do escopo deve estar coerente com o padrao do repositorio
 - o resultado da validacao deve ser descrito com o escopo real do que foi coberto
 
 ## Teste automatizado versionado x artefato de execução
 
-A entrega de um teste é o **código automatizado versionado**, integrado na task e
-publicado no destino previsto (`dev` para Developer). Ela exige:
+Quando houver teste na entrega, a entrega do teste e o **codigo automatizado versionado**, integrado na task e publicado no destino previsto (`dev` para Developer). Ela exige:
 
-1. arquivo de teste executável (por exemplo, PHPUnit, Jest, Node test ou Playwright);
+1. arquivo de teste executavel (por exemplo, PHPUnit, Jest, Node test ou Playwright);
 2. comando ou runner que descubra o teste em auditorias futuras;
-3. execução registrada com o resultado real, ou bloqueio técnico objetivo;
+3. execucao registrada com o resultado real, ou bloqueio tecnico objetivo;
 4. commit remoto da task e merge remoto no destino previsto.
 
-PNG, screenshot, vídeo, trace, `report.json`, manifesto ou índice gerado pelo
-runner são **artefatos de execução**. Eles podem complementar uma auditoria
-visual, mas não são a entrega do teste, não substituem o código automatizado e
-não devem ser tratados como gate geral de aceite.
+PNG, screenshot, video, trace, `report.json`, manifesto ou indice gerado pelo
+runner sao **artefatos de execucao**. Eles podem complementar uma auditoria
+visual, mas nao sao a entrega do teste e nao devem ser tratados como gate
+geral de aceite.
+
+A falta de teste automatizado **nao** bloqueia QA. Somente testes presentes
+(novos ou alterados) precisam passar.
 
 ## Uso por papel
 
@@ -59,17 +64,18 @@ Uma entrega so avanca quando:
 
 - a base ficou modularizada
 - os arquivos e componentes ficaram pequenos o suficiente
-- os testes relevantes existem e passam, ou existe bloqueio externo documentado
-- os testes automatizados permanecem versionados onde o runner os descobre
-- a evidência dos testes cobre o comportamento que mudou
+- cores do delta usam apenas variaveis de tema
+- termos de UI do delta passam pela traducao (sem string literal e sem chave crua como label)
+- se houver testes novos/alterados, eles passam na execucao registrada
+- a evidencia cobre o comportamento que mudou
 
 ## Sinais de rejeicao
 
 Devolva a entrega quando:
 
-- faltar teste apropriado
-- teste automatizado ausente, não descoberto pelo runner ou não integrado na
-  ref remota prevista
 - houver componente ou arquivo grande demais sem quebra aceitavel
 - a mudanca duplicar contrato que ja existe em shared/store/component
 - a mudanca tornar o codigo mais centralizado, dificil de reaproveitar ou dificil de testar
+- cores hardcoded no delta de frontend
+- texto de UI hardcoded ou chave tecnica crua exibida ao usuario
+- testes novos/alterados na entrega falhando ou sem evidencia de execucao

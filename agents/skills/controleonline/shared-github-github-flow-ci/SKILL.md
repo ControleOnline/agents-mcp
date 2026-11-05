@@ -10,5 +10,5 @@ rito de Release Candidate definido em `shared-github-github-flow/SKILL.md` e
 - `staging` recebe somente RC congelada `rc/X.Y.Z-rc.N`.
 - `master` recebe somente a mesma RC homologada em `Deploy`.
 - `Security` e o gate ativo antes da revalidacao do Manager.
-- `QA`, `Design` e `UX` estao suspensos e nao bloqueiam RC.
+- `Design` e `UX` estao suspensos e nao bloqueiam RC. QA esta ativo: RC exige `agent:qa:accepted` + `agent:security:accepted`.
 - Hotfix tambem precisa de RC congelada antes de master.

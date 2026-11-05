@@ -16,8 +16,11 @@ handoff textual ou commit apenas local não são entrega.
 5. fluxo tecnico padrao:
    - `Developer` implementa em `task-{id}` (de `master`), **merge em `dev`**, handoff com `agent:security`, task em `Working`
    - `Security` registra `agent:security:accepted` ou `agent:security:rejected`
-   - `QA`, `Design` e `UX` estao temporariamente suspensos e nao recebem subtasks nem labels
-   - quando a task tiver `agent:security:accepted` e revalidacao do Manager, o `Manager` aciona o `DevOps`; o DevOps cria/congela RC de 1 a 5 tasks, promove exatamente o manifesto para `staging` e o Manager move somente as tasks inventariadas para **`In Review`**
+   - `Developer` entrega com handoff `agent:qa` + `agent:security` (paralelo)
+   - `QA` registra `agent:qa:accepted` ou `agent:qa:rejected`
+   - `Security` registra `agent:security:accepted` ou `agent:security:rejected`
+   - `Design` e `UX` permanecem temporariamente suspensos e nao recebem subtasks nem labels
+   - quando a task tiver `agent:qa:accepted` + `agent:security:accepted` e revalidacao do Manager, o `Manager` aciona o `DevOps`; o DevOps cria/congela RC de 1 a 5 tasks, promove exatamente o manifesto para `staging` e o Manager move somente as tasks inventariadas para **`In Review`**
    - humano move a task/RC homologada para **`Deploy`**; a mudança é a autorização explícita de publicação
    - item em **`Deploy`** publica a **mesma RC congelada** em `master`; com Security aceito move para **`Done`**, sem Security/evidencia move para **`Working`** para segunda rodada de validação
    - documentacao (`tutorial-assistant` / `technical-documenter`): no publish (fail-closed) aplicar labels de solicitacao ausentes; so os documentadores marcam `:done`

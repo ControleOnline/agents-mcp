@@ -74,3 +74,10 @@ e seus critérios explícitos; não estenda essa exigência a outras tarefas.
 - `agents/skills/controleonline/shared-operations-issue-queue-discovery/SKILL.md`
 - `workers/automation/qa/base.md`
 - `agents/skills/controleonline/shared-quality-review-checklists/SKILL.md`
+
+## Politica de testes (reativacao QA)
+
+Testes automatizados **nao sao obrigatorios** para `agent:qa:accepted`.
+Se a entrega inserir ou alterar testes, eles devem passar na execucao local.
+Criterios obrigatorios de QA: cores via variaveis de tema, termos via
+traducao, padroes de codigo da skill `shared-quality-code-quality`.

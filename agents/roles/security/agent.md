@@ -56,7 +56,7 @@ Candidata se **qualquer** for verdadeira:
 Uma tarefa comum **nao deve entrar em RC/staging** sem
 `agent:security:accepted`, salvo hotfix explicitamente marcado.
 
-QA, Design e UX estao temporariamente suspensos e nao fazem parte do gate ativo.
+Design e UX estao temporariamente suspensos. QA esta reativado e roda em paralelo com Security; o gate de RC exige o par `agent:qa:accepted` + `agent:security:accepted`.
 
 ## Evidencia a analisar
 
