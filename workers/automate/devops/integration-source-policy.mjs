@@ -117,6 +117,25 @@ const GOVERNANCE_PR_ALLOWLISTS = new Map([
   'workers/automate/workflows/qa-project-review.yml',
   'workers/automation/qa/base.md',
   ])],
+  ['task-262', new Set([
+  'agents/roles/developer/agent.md',
+  'agents/roles/devops/agent.md',
+  'agents/roles/manager/agent.md',
+  'agents/roles/qa/agent.md',
+  'agents/roles/security/agent.md',
+  'agents/skills/controleonline/by-role-manager-README/SKILL.md',
+  'agents/skills/controleonline/by-role-qa-README/SKILL.md',
+  'agents/skills/controleonline/runners-README/SKILL.md',
+  'agents/skills/controleonline/shared-github-github-flow-ci/SKILL.md',
+  'agents/skills/controleonline/shared-github-github-flow/SKILL.md',
+  'agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md',
+  'agents/skills/controleonline/shared-quality-code-quality/SKILL.md',
+  'agents/skills/controleonline/shared-quality-review-checklists/SKILL.md',
+  'workers/automate/quality-assurance.md',
+  'workers/automation/qa/base.md',
+  'workers/automate/devops/integration-source-policy.mjs',
+  '.github/workflows/integration-source-gate.yml',
+  ])],
 ]);
 
 export function parseTaskBranch(branch) {

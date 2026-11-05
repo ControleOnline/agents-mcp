@@ -43,9 +43,12 @@ em `Done`, `Deploy` ou `In Review` com uma entrega que foi descartada.
 
 O Manager é o orquestrador da task mãe no Paperclip. Ao capturar uma task em
 `Working`, cria ou reutiliza exatamente uma task pai aberta para a issue GitHub
-e monta a esteira ativa: `Developer` → `Security` → `Manager` → `DevOps`.
-`QA`, `Design` e `UX` estao temporariamente suspensos: nao crie subtasks para
-esses papeis, nao solicite labels deles e nao use sua ausencia como bloqueio.
+e monta a esteira ativa: `Developer` → `QA` + `Security` (em paralelo) → `Manager` → `DevOps`.
+`Design` e `UX` permanecem temporariamente suspensos: nao crie subtasks para
+esses dois papeis, nao solicite labels deles e nao use sua ausencia como bloqueio.
+`QA` voltou a ser gate ativo junto com `Security`: o Developer deve receber
+`agent:qa` e `agent:security`; a esteira so avanca para RC/In Review com o par
+`agent:qa:accepted` + `agent:security:accepted`.
 A task pai fica `blocked by` pelas filhas ativas; quando uma filha conclui, a
 proxima e ativada.
 
@@ -114,8 +117,8 @@ persistindo a falha, registre `NEXT_ACTION` com a evidência e encerre nessa pri
 
 ### Rito obrigatório de RC e Deploy
 
-O gate ativo para compor RC e `agent:security:accepted` mais revalidacao do
-Manager: branch `task-{id}` publicada, merge em `dev`, testes locais adequados
+O gate ativo para compor RC e o par `agent:qa:accepted` + `agent:security:accepted`
+mais revalidacao do Manager: branch `task-{id}` publicada, merge em `dev`, testes locais adequados
 registrados e ausencia de impedimento operacional. Tasks nesse estado sao
 elegiveis para compor uma RC tecnica de 1 a 5 tasks.
 
@@ -155,7 +158,7 @@ somente-leitura continua absoluta para issues e colunas GitHub `Blocked`.
 DevOps é sempre o primeiro:
 
 1. RC homologada com todas as tasks correspondentes em `Deploy` → mesma RC congelada → `master`.
-2. Sem RC pronta para produção: agrupar tecnicamente de 1 a 5 tasks com `agent:security:accepted` e revalidacao do Manager → nova RC congelada → **promover/resetar `staging` ao tip da RC (obrigatorio)** → so entao Manager move as tasks inventariadas para `In Review`.
+2. Sem RC pronta para produção: agrupar tecnicamente de 1 a 5 tasks com `agent:qa:accepted` + `agent:security:accepted` e revalidacao do Manager → nova RC congelada → **promover/resetar `staging` ao tip da RC (obrigatorio)** → so entao Manager move as tasks inventariadas para `In Review`.
 
 A RC não cria issue pai e não altera a identidade das tasks. Hotfix continua seguindo o mesmo freeze antes de master.
 
@@ -163,7 +166,7 @@ A RC não cria issue pai e não altera a identidade das tasks. Hotfix continua s
 
 So comeca se P1 nao tiver acao executavel.
 
-Task `hotfix` com acao elegivel de Security ou promocao hotfix → `staging` / `In Review`.
+Task `hotfix` com acao elegivel de QA/Security ou promocao hotfix → `staging` / `In Review`.
 
 Hotfix nao autoriza pular coluna `Deploy` para `master`.
 
@@ -183,11 +186,14 @@ repetir a execucao, rerotear ou reconstruir a etapa. Se o problema for a
 publicacao/deploy, deve encaminhar ao DevOps com evidencia objetiva; nao pode
 simplesmente devolver a task por falha operacional.
 
-## Prioridade 5 - Security
+## Prioridade 5 - QA e Security
 
-Security valida entregas ativas enquanto houver fila sem
-`agent:security:accepted`/`agent:security:rejected`. QA, Design e UX estao
-suspensos e nao entram na fila.
+QA e Security validam entregas ativas em paralelo enquanto houver fila sem
+`agent:qa:accepted`/`agent:qa:rejected` ou sem
+`agent:security:accepted`/`agent:security:rejected`.
+`Design` e `UX` permanecem suspensos e nao entram na fila.
+Gate de avanco para RC: o par `agent:qa:accepted` + `agent:security:accepted`
+(com revalidacao do Manager).
 
 ## Prioridade 6 - Developer: novos desenvolvimentos
 

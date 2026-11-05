@@ -9,17 +9,21 @@ Estas listas sao o criterio de aprovacao que deve ser copiado para a task quando
 - limite de linhas e tamanho do componente estao coerentes com o escopo
 - componentes, hooks, services e helpers existentes foram reaproveitados quando possivel
 - subchecklist de reaproveitamento de componentes em `agents/skills/controleonline/shared-quality-review-checklists/component-reuse-checklist.md` foi executado quando a entrega afetar frontend
-- testes automatizados adequados ao risco foram executados e os resultados correspondem à entrega revisada; sem evidência de execução, recusar e devolver ao Developer
-- testes unitarios relevantes em PHP e JS foram adicionados ou atualizados
-- helpers da pasta `ui-commun` foram usados quando aplicavel
+- **cores:** no delta de frontend, apenas variaveis de tema/CSS (sem hex/rgb/rgba hardcoded)
+- **termos:** todo texto de UI do delta vem da traducao; sem string literal e sem chave crua como label
+- padroes de codigo (modularizacao, reuso, ≤500 linhas) respeitados
+- **testes automatizados nao sao obrigatorios**; se a entrega inserir ou alterar testes, eles devem passar na execucao local registrada
+- helpers da pasta `ui-common` / `ui-commun` foram usados quando aplicavel
 - a issue e o `AGENTS.md` mais especifico do escopo foram consultados
 
 ## Gate de primeira passagem do Developer
 
 O Developer deve ler este checklist no início da primeira passagem, registrar
 os itens aplicáveis na issue e manter a lista como critério de entrega. A
-primeira passagem não pode ser encerrada sem evidência dos testes e critérios
-QA aplicáveis, ou sem encaminhar o impedimento objetivo ao Manager.
+primeira passagem nao pode ser encerrada sem evidência dos criterios QA
+aplicaveis (cores, traducoes, padroes de codigo) ou sem encaminhar o
+impedimento objetivo ao Manager. Testes automatizados sao opcionais; se
+incluidos, devem passar.
 
 ## Security
 

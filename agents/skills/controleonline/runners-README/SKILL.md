@@ -22,7 +22,7 @@ Com isso:
 
 - `Developer`, `Security` e `DevOps` continuam tendo comportamento real definido pelas roles canonicas
 - Labels canonicos de validacao ativos: `agent:security:accepted`, `agent:security:rejected`
-- Labels de QA/Design/UX ficam suspensos ate nova decisao humana
+- Labels de Design/UX ficam suspensos ate nova decisao humana; QA esta reativado junto com Security
 - quando `agent:security:accepted` existe e o Manager revalidou a entrega, `DevOps` cria/congela a RC; uma pessoa aprova a tarefa movendo-a para `Deploy`, e a partir de `Deploy` `DevOps` publica a RC em produção
 - `DevOps` permanece responsável pela fila própria de deploy e pela reconciliação operacional
 

@@ -22,8 +22,9 @@ issues Paperclip com status `blocked`.
 ## Papel
 
 O Manager cria e acompanha a task de coordenação no Paperclip e suas subtasks
-ativas de Developer, Security e DevOps. QA, Design e UX estao suspensos e nao
-recebem subtasks enquanto essa regra estiver ativa. A entrega do Developer
+ativas de Developer, QA, Security e DevOps. Design e UX permanecem suspensos e
+nao recebem subtasks enquanto essa regra estiver ativa. QA esta reativado e
+roda em paralelo com Security. A entrega do Developer
 retorna como task de entrega para o Manager. Somente o Manager pode alterar
 labels, status ou colunas no board GitHub; os demais agentes apenas entregam
 evidências nas próprias subtasks. Após todas as subtasks concluírem, o Manager
@@ -31,11 +32,11 @@ faz a checagem final e movimenta o board.
 
 Ordem resumida:
 
-1. **DevOps** — sempre primeiro. Tasks com `agent:security:accepted` e revalidacao do Manager entram em uma RC tecnica congelada de no maximo 5 tasks; DevOps **deve** deixar `staging` no tip da RC antes do Manager mover para `In Review` (homologacao humana no staging). Depois da autorizacao humana em `Deploy`, a mesma RC, com manifesto e SHAs identicos, e promovida para `master`. O Manager decide `Done`/revalidacao por task.
+1. **DevOps** — sempre primeiro. Tasks com `agent:qa:accepted` + `agent:security:accepted` e revalidacao do Manager entram em uma RC tecnica congelada de no maximo 5 tasks; DevOps **deve** deixar `staging` no tip da RC antes do Manager mover para `In Review` (homologacao humana no staging). Depois da autorizacao humana em `Deploy`, a mesma RC, com manifesto e SHAs identicos, e promovida para `master`. O Manager decide `Done`/revalidacao por task.
 2. **Hotfix** — Security e promocao hotfix → staging.
 3. **Documentacao**
-4. **Developer — rejeicoes** (`agent:security:rejected`) — corrigir até a entrega ficar publicável, inclusive workflow/build; problemas de publicação/deploy vão para o DevOps com evidências.
-5. **Security**
+4. **Developer — rejeicoes** (`agent:qa:rejected` / `agent:security:rejected`) — corrigir até a entrega ficar publicável, inclusive workflow/build; problemas de publicação/deploy vão para o DevOps com evidências.
+5. **QA e Security** (paralelo)
 6. **Developer — novos desenvolvimentos** — exatamente uma issue elegível.
 7. **Higiene** — fallback estrito, somente sem trabalho elegível em P1–P6.
 
@@ -73,9 +74,9 @@ P1 `DevOps`, que continua publicando tasks em `Deploy`.
 
 ## Gate de staging
 
-`agent:security:accepted` + revalidacao do Manager com testes locais e evidencia
-da entrega em `dev`.
-Conclusão da task exige RC publicada e `agent:security:accepted`. Depois que o
+`agent:qa:accepted` + `agent:security:accepted` + revalidacao do Manager com
+evidencia da entrega em `dev`.
+Conclusão da task exige RC publicada e o par QA+Security aceito. Depois que o
 Manager mover para `Done`, ele cria no Paperclip as tasks filhas documentais
 aplicáveis; a conclusão dos documentadores não é pré-requisito para o `Done` da
 publicação.

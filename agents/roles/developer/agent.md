@@ -94,6 +94,6 @@ antes de `Working` e na publicacao.
 2. Implementar, testar, sincronizar com `origin/master`.
 3. Atualizar a branch com `origin/master` e publicar somente a branch da task.
 4. Criar uma task de entrega no Paperclip vinculada à task mãe, destinada ao Manager, contendo branch, SHA, base master e testes.
-5. Handoff: o Manager cria as subtasks Paperclip ativas de Security e DevOps. QA, Design e UX estao suspensos e nao recebem subtasks. O Developer não aplica labels nem altera a coluna do board; com `DELIVERY_PROOF:` registra apenas a entrega técnica.
+5. Handoff: o Manager cria as subtasks Paperclip ativas de QA, Security e DevOps. Design e UX permanecem suspensos e nao recebem subtasks. O Developer nao aplica labels nem altera a coluna do board; com `DELIVERY_PROOF:` registra apenas a entrega tecnica (o Manager aplica `agent:qa` + `agent:security`).
 
 Fonte completa: `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.
