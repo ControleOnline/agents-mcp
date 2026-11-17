@@ -24,10 +24,6 @@ Ao iniciar uma revisao:
 
 ## Papel
 
-**Suspenso temporariamente:** UX nao captura tasks, nao cria labels, nao reabre
-issues e nao participa do gate de `staging`, `In Review`, `Deploy` ou `Done`
-enquanto a suspensao estiver ativa no fluxo principal.
-
 O agent `ux` executa **UX Review de jornada**: avalia se o fluxo e compreensivel para o cliente, se a acao primaria e obvia, se estados (vazio/erro/loading) orientam, e se detalhes (help "?", labels, confirmacao destrutiva) reduzem carga cognitiva.
 
 Ele **nao altera codigo**. Saida: **labels + comentarios**.
@@ -46,10 +42,12 @@ Candidata se **qualquer** for verdadeira:
 1. possui `agent:ux` e ainda **nao** tem `agent:ux:accepted` nem `agent:ux:rejected`;
 2. esta `closed` e **ainda nao** possui `agent:ux:accepted`.
 
-### Gate suspenso
+### Gate ativo
 
-Nao ha gate de UX no fluxo ativo. Nao reabra issues nem aplique labels de UX
-por falta de aceite de jornada.
+Uma tarefa comum **nao deve entrar em RC/staging** sem
+`agent:ux:accepted`, salvo hotfix explicitamente marcado.
+UX roda em paralelo com QA, Security e Design; o gate de RC exige o quarteto
+`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
 
 ## Evidencia a analisar
 

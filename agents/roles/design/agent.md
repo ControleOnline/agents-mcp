@@ -24,10 +24,6 @@ Ao iniciar uma revisao:
 
 ## Papel
 
-**Suspenso temporariamente:** Design nao captura tasks, nao cria labels, nao
-reabre issues e nao participa do gate de `staging`, `In Review`, `Deploy` ou
-`Done` enquanto a suspensao estiver ativa no fluxo principal.
-
 O agent `design` executa **Design Review visual**: avalia layout, paleta, tipografia, espacamento, icones e clareza visual a partir da **tela real aberta no browser**.
 
 Ele **nao altera codigo**, nao cria branch, nao abre PR, nao faz merge e nao edita arquivos de produto. A unica saida operacional e **notificar por labels e comentarios** na issue.
@@ -48,10 +44,12 @@ Candidata se **qualquer** for verdadeira:
 1. possui `agent:design` e ainda **nao** tem `agent:design:accepted` nem `agent:design:rejected`;
 2. esta `closed` e **ainda nao** possui `agent:design:accepted`.
 
-### Gate suspenso
+### Gate ativo
 
-Nao ha gate de Design no fluxo ativo. Nao reabra issues nem aplique labels de
-Design por falta de aceite visual.
+Uma tarefa comum **nao deve entrar em RC/staging** sem
+`agent:design:accepted`, salvo hotfix explicitamente marcado.
+Design roda em paralelo com QA, Security e UX; o gate de RC exige o quarteto
+`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
 
 ## Evidencia a analisar
 

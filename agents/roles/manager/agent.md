@@ -43,12 +43,11 @@ em `Done`, `Deploy` ou `In Review` com uma entrega que foi descartada.
 
 O Manager é o orquestrador da task mãe no Paperclip. Ao capturar uma task em
 `Working`, cria ou reutiliza exatamente uma task pai aberta para a issue GitHub
-e monta a esteira ativa: `Developer` → `QA` + `Security` (em paralelo) → `Manager` → `DevOps`.
-`Design` e `UX` permanecem temporariamente suspensos: nao crie subtasks para
-esses dois papeis, nao solicite labels deles e nao use sua ausencia como bloqueio.
-`QA` voltou a ser gate ativo junto com `Security`: o Developer deve receber
-`agent:qa` e `agent:security`; a esteira so avanca para RC/In Review com o par
-`agent:qa:accepted` + `agent:security:accepted`.
+e monta a esteira ativa: `Developer` → `QA` + `Security` + `Design` + `UX` (em paralelo) → `Manager` → `DevOps`.
+Os quatro validadores sao gate ativo: o Developer deve receber
+`agent:qa`, `agent:security`, `agent:design` e `agent:ux`; a esteira so avanca
+para RC/In Review com o quarteto
+`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`.
 A task pai fica `blocked by` pelas filhas ativas; quando uma filha conclui, a
 proxima e ativada.
 
@@ -117,7 +116,7 @@ persistindo a falha, registre `NEXT_ACTION` com a evidência e encerre nessa pri
 
 ### Rito obrigatório de RC e Deploy
 
-O gate ativo para compor RC e o par `agent:qa:accepted` + `agent:security:accepted`
+O gate ativo para compor RC e o quarteto `agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`
 mais revalidacao do Manager: branch `task-{id}` publicada, merge em `dev`, testes locais adequados
 registrados e ausencia de impedimento operacional. Tasks nesse estado sao
 elegiveis para compor uma RC tecnica de 1 a 5 tasks.
@@ -141,9 +140,9 @@ usar staging como origem ou alterar a RC aprovada. Qualquer mudança exige
 `rc.N+1` e nova homologação (com nova promocao a staging).
 
 Depois da publicação, o Manager decide cada task individualmente: RC publicada e
-Security aceito → `Done`; se faltar Security ou evidencia local da entrega, a
-task permanece aberta e volta para `Working`, respeitando sempre o teto global
-de 5.
+Security aceito (no quarteto QA+Security+Design+UX) → `Done`; se faltar Security
+ou evidencia local da entrega, a task permanece aberta e volta para `Working`,
+respeitando sempre o teto global de 5.
 
 ## Prioridade 0 - Recuperacao Paperclip
 
@@ -158,7 +157,7 @@ somente-leitura continua absoluta para issues e colunas GitHub `Blocked`.
 DevOps é sempre o primeiro:
 
 1. RC homologada com todas as tasks correspondentes em `Deploy` → mesma RC congelada → `master`.
-2. Sem RC pronta para produção: agrupar tecnicamente de 1 a 5 tasks com `agent:qa:accepted` + `agent:security:accepted` e revalidacao do Manager → nova RC congelada → **promover/resetar `staging` ao tip da RC (obrigatorio)** → so entao Manager move as tasks inventariadas para `In Review`.
+2. Sem RC pronta para produção: agrupar tecnicamente de 1 a 5 tasks com o quarteto aceito (`qa`+`security`+`design`+`ux`) e revalidacao do Manager → nova RC congelada → **promover/resetar `staging` ao tip da RC (obrigatorio)** → so entao Manager move as tasks inventariadas para `In Review`.
 
 A RC não cria issue pai e não altera a identidade das tasks. Hotfix continua seguindo o mesmo freeze antes de master.
 
@@ -177,8 +176,8 @@ Hotfix nao autoriza pular coluna `Deploy` para `master`.
 
 ## Prioridade 4 - Developer: rejeicoes
 
-Corrija primeiro issues abertas com `agent:security:rejected`. Esta prioridade
-trata somente devolucoes do Security ativo e tem precedencia sobre novas
+Corrija primeiro issues abertas com `agent:qa:rejected`, `agent:security:rejected`, `agent:design:rejected` ou `agent:ux:rejected`. Esta prioridade
+trata devolucoes dos validadores ativos e tem precedencia sobre novas
 capturas de Security ou Developer. A responsabilidade do Developer vai ate a entrega publicavel:
 inclui codigo, testes, branches, merges, GitHub Actions, workflow e build. Se
 workflow ou build falhar no GitHub, o Developer deve investigar e corrigir,
@@ -186,13 +185,12 @@ repetir a execucao, rerotear ou reconstruir a etapa. Se o problema for a
 publicacao/deploy, deve encaminhar ao DevOps com evidencia objetiva; nao pode
 simplesmente devolver a task por falha operacional.
 
-## Prioridade 5 - QA e Security
+## Prioridade 5 - QA, Security, Design e UX
 
-QA e Security validam entregas ativas em paralelo enquanto houver fila sem
-`agent:qa:accepted`/`agent:qa:rejected` ou sem
-`agent:security:accepted`/`agent:security:rejected`.
-`Design` e `UX` permanecem suspensos e nao entram na fila.
-Gate de avanco para RC: o par `agent:qa:accepted` + `agent:security:accepted`
+QA, Security, Design e UX validam entregas ativas em paralelo enquanto houver
+fila sem decisao (`:accepted`/`:rejected`) em qualquer um dos quatro papeis.
+Gate de avanco para RC: o quarteto
+`agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted`
 (com revalidacao do Manager).
 
 ## Prioridade 6 - Developer: novos desenvolvimentos
@@ -200,7 +198,7 @@ Gate de avanco para RC: o par `agent:qa:accepted` + `agent:security:accepted`
 P6 (Developer) so pode iniciar quando P1–P5 nao tiverem acao executavel.
 Leia e execute agents/roles/developer/agent.md sobre exatamente uma issue.
 Nesta prioridade entram `hotfix`, `bug`, `enhancement`, `feature` e demais
-tipos que nao sejam rejeicoes de QA/Security.
+tipos que nao sejam rejeicoes de QA/Security/Design/UX.
 Nunca use Higiene (P7) como fallback.
 
 ### Gate obrigatório do Developer no Manager

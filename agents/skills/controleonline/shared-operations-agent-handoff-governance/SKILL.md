@@ -14,13 +14,13 @@ handoff textual ou commit apenas local não são entrega.
 3. agentes nao fecham tasks fora do rito de colunas; humanos controlam `closed` quando aplicavel
 4. se a task estiver em `Ready` ou `Working` sem `agent:*`, a entrada padrao e `Developer`
 5. fluxo tecnico padrao:
-   - `Developer` implementa em `task-{id}` (de `master`), **merge em `dev`**, handoff com `agent:security`, task em `Working`
-   - `Security` registra `agent:security:accepted` ou `agent:security:rejected`
-   - `Developer` entrega com handoff `agent:qa` + `agent:security` (paralelo)
+   - `Developer` implementa em `task-{id}` (de `master`), **merge em `dev`**, task em `Working`
+   - `Developer` entrega; o Manager aplica handoff `agent:qa` + `agent:security` + `agent:design` + `agent:ux` (paralelo)
    - `QA` registra `agent:qa:accepted` ou `agent:qa:rejected`
    - `Security` registra `agent:security:accepted` ou `agent:security:rejected`
-   - `Design` e `UX` permanecem temporariamente suspensos e nao recebem subtasks nem labels
-   - quando a task tiver `agent:qa:accepted` + `agent:security:accepted` e revalidacao do Manager, o `Manager` aciona o `DevOps`; o DevOps cria/congela RC de 1 a 5 tasks, promove exatamente o manifesto para `staging` e o Manager move somente as tasks inventariadas para **`In Review`**
+   - `Design` registra `agent:design:accepted` ou `agent:design:rejected`
+   - `UX` registra `agent:ux:accepted` ou `agent:ux:rejected`
+   - quando a task tiver o quarteto `agent:qa:accepted` + `agent:security:accepted` + `agent:design:accepted` + `agent:ux:accepted` e revalidacao do Manager, o `Manager` aciona o `DevOps`; o DevOps cria/congela RC de 1 a 5 tasks, promove exatamente o manifesto para `staging` e o Manager move somente as tasks inventariadas para **`In Review`**
    - humano move a task/RC homologada para **`Deploy`**; a mudança é a autorização explícita de publicação
    - item em **`Deploy`** publica a **mesma RC congelada** em `master`; com Security aceito move para **`Done`**, sem Security/evidencia move para **`Working`** para segunda rodada de validação
    - documentacao (`tutorial-assistant` / `technical-documenter`): no publish (fail-closed) aplicar labels de solicitacao ausentes; so os documentadores marcam `:done`

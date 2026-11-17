@@ -116,9 +116,9 @@ master
 
 Se o estado real do GitHub mostrar que o passo **já foi feito**, o agent não refaz. Deve confirmar evidência (commits, merge-base, labels, coluna), pular só o concluído, avançar o próximo estágio e comentar a justificativa.
 
-**Não** pule etapas por intuição. Enquanto `QA`, `Design` e `UX` estiverem
-suspensos (Design/UX), nao crie labels/subtasks deles nem use sua ausencia como bloqueio. QA esta ativo em paralelo com Security.
-`Security` continua obrigatorio.
+**Não** pule etapas por intuição. `QA`, `Security`, `Design` e `UX` estao ativos
+em paralelo: o Manager solicita os quatro labels e o gate de RC exige o quarteto
+`:accepted` de cada um.
 
 ## Gate de atenção redobrada antes de qualquer merge
 
@@ -216,12 +216,15 @@ A entrega técnica é a branch `task-{id_issue}` publicada e a task de entrega n
 - **Não** abre PR; **não** finaliza task; **não** mexe em branches de integração.
 - Recusa devolve prioridade ao Developer na mesma `task-{id_issue}`.
 
-`Design` e `UX` estao temporariamente suspensos: nao capturam fila, nao
-aplicam labels e nao bloqueiam RC, staging ou Deploy.
+`QA`, `Security`, `Design` e `UX` capturam fila, aplicam labels e bloqueiam
+RC/staging/Deploy ate o aceite (excecao hotfix).
 
 Gate de staging/RC (task comum):
 
+- `agent:qa:accepted`
 - `agent:security:accepted`
+- `agent:design:accepted`
+- `agent:ux:accepted`
 
 ## DevOps — integração contínua por task (sem RC)
 

@@ -133,10 +133,11 @@ que a task esta no inventario.
 
 - branch de trabalho: `task-{id_issue}` derivada de `master`
 - `Developer` entrega em **`dev`** por **merge** da task branch (sem PR)
-- `Design`, `UX` e `QA` estao temporariamente suspensos: nao criam subtasks, nao
-  aplicam labels e nao bloqueiam staging/RC
-- `Security` e o unico validador ativo antes da revalidacao do `Manager`
-- `DevOps` reúne tecnicamente de 1 a 5 tasks com `agent:security:accepted` em uma RC congelada `rc/X.Y.Z-rc.N`, sem criar task pai
+- `QA`, `Security`, `Design` e `UX` sao validadores ativos em paralelo: criam
+  labels `:accepted`/`:rejected` e participam do gate de staging/RC
+- O gate de RC exige o quarteto `agent:qa:accepted` + `agent:security:accepted` +
+  `agent:design:accepted` + `agent:ux:accepted` antes da revalidacao do `Manager`
+- `DevOps` reúne tecnicamente de 1 a 5 tasks com o quarteto aceito em uma RC congelada `rc/X.Y.Z-rc.N`, sem criar task pai
 - a RC nasce do `master`, possui manifesto imutável de SHAs e é homologada como composição em `staging`
 - humano confere staging e move as tasks homologadas para **`Deploy`**
 - `DevOps` promove **a mesma RC congelada** diretamente para `master`; `staging` nunca é origem de master
@@ -159,11 +160,13 @@ branch e exige o check; o workflow faz a comparação recursiva dos gitlinks.
 
 Labels oficiais de review na task:
 
+- `agent:qa:accepted` / `agent:qa:rejected`
 - `agent:security:accepted` / `agent:security:rejected`
+- `agent:design:accepted` / `agent:design:rejected`
+- `agent:ux:accepted` / `agent:ux:rejected`
 
-Labels de `QA`, `Design` e `UX` existem apenas como historico/instrucoes
-documentadas; enquanto a suspensao estiver ativa, nao entram na fila, nao
-geram subtasks e nao sao gate de `staging`, `In Review`, `Deploy` ou `Done`.
+Os quatro validadores sao gate de `staging`, `In Review`, `Deploy` e `Done`
+(excecao: hotfix e governanca estrutural de `agents-mcp`).
 
 Regras obrigatorias:
 
@@ -180,14 +183,13 @@ Regras obrigatorias:
 - somente o `DevOps` publica `Deploy` → `master` e promove RC congelada → `staging` / `In Review`; para o DevOps, `Deploy` vem antes de `Working`
 - agents nao fecham tasks por conta propria fora do rito de colunas do board; `closed` formal segue governanca humana quando aplicavel
 
-### QA suspenso; GitHub Actions nao decide QA
+### Validadores ativos; GitHub Actions nao decide gate
 
-- Enquanto suspenso, `Quality Assurance` nao captura tasks, nao cria subtasks e
-  nao aplica `agent:qa:*`.
+- `QA`, `Security`, `Design` e `UX` capturam fila, aplicam labels e participam do gate.
 - GitHub Actions, checks de PR e workflows não aprovam, reprovam, bloqueiam nem
-  substituem decisao de QA.
-- Quando QA for reativado por decisao humana, a decisao volta a ser local no
-  workspace Paperclip, com testes adequados ao escopo e evidencia registrada.
+  substituem decisao de QA/Design/UX/Security.
+- A decisao de cada validador e local no workspace Paperclip, com evidencia
+  adequada ao escopo (codigo, tela real no browser, checklist do papel).
 
 ## Fronteira do CTO
 
@@ -228,7 +230,7 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
 
 1. **P1 DevOps**
    - Se existir RC homologada cujas tasks estejam em `Deploy`, promover exatamente essa RC congelada para `master`
-   - Senao, montar RC técnica de 1 a 5 tasks com `agent:security:accepted`, congelar manifesto e promover o snapshot para `staging` + `In Review`
+   - Senao, montar RC técnica de 1 a 5 tasks com o quarteto aceito (`qa`+`security`+`design`+`ux`), congelar manifesto e promover o snapshot para `staging` + `In Review`
    - `Deploy` autoriza a publicação da composição já homologada; não autoriza recompor SHAs
    - RC é artefato técnico, nunca task/issue agregadora
 2. **P2 Hotfix**
@@ -242,8 +244,8 @@ O principio e: **sempre atuar no que esta mais avancado no pipeline do Manager**
    - A correcao vai ate a entrega publicavel: o Developer deve resolver falhas de workflow, Actions, build, branch, merge ou evidencia que impeçam a entrega
    - Se o workflow/build estiver falhando, deve investigar, corrigir, repetir a execucao, rerotear ou reconstruir a etapa; se o problema for a publicacao/deploy, deve encaminhar ao DevOps com evidencia objetiva
    - Uma correcao por rodada, antes de qualquer nova validacao
-5. **P5 Security**
-   - Security valida a entrega ativa; QA, Design e UX permanecem suspensos
+5. **P5 Validadores (QA + Security + Design + UX)**
+   - QA, Security, Design e UX validam a entrega ativa em paralelo
 6. **P6 Developer — novos desenvolvimentos**
    - Exatamente uma issue elegivel
    - Branch `task-{id}` a partir de `master`, merge em `dev`, handoff para Security
