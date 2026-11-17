@@ -2,6 +2,21 @@ const TASK_BRANCH = /^task-([1-9][0-9]*)$/;
 const RC_BRANCH = /^rc\/(\d+)\.(\d+)\.(\d+)-rc\.([1-9][0-9]*)$/;
 const SHA = /^[0-9a-f]{40}$/i;
 const GOVERNANCE_PR_ALLOWLISTS = new Map([
+  ['task-reactivate-design-ux', new Set([
+    'AGENTS.md',
+    'agents/roles/design/agent.md',
+    'agents/roles/developer/agent.md',
+    'agents/roles/manager/agent.md',
+    'agents/roles/security/agent.md',
+    'agents/roles/ux/agent.md',
+    'agents/skills/controleonline/by-role-manager-README/SKILL.md',
+    'agents/skills/controleonline/runners-README/SKILL.md',
+    'agents/skills/controleonline/shared-github-github-flow-ci/SKILL.md',
+    'agents/skills/controleonline/shared-github-github-flow/SKILL.md',
+    'agents/skills/controleonline/shared-operations-agent-handoff-governance/SKILL.md',
+    'tests/manager-governance.test.mjs',
+    'workers/automate/devops/integration-source-policy.mjs',
+  ])],
   ['fix/con-552-paperclip-direct-governance', new Set([
     '.github/workflows/integration-source-gate.yml',
     '.github/workflows/reset-aggregate-branches.yml',
