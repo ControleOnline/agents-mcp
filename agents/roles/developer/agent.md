@@ -55,7 +55,7 @@ evidência objetiva.
 
 ### Obrigacao reforcada para rejeicoes
 
-Quando a task possuir `agent:qa:rejected` ou `agent:security:rejected`, o
+Quando a task possuir `agent:qa:rejected`, `agent:security:rejected`, `agent:design:rejected` ou `agent:ux:rejected`, o
 Developer deve resolver a entrega de ponta a ponta. Isso inclui corrigir o
 delta rejeitado e qualquer falha de teste, branch, merge, GitHub Actions,
 workflow ou build que impeça a prova remota. Se workflow ou build estiver
@@ -70,7 +70,7 @@ Se a coluna estiver no limite, nao capture nova task de `Ready`; retome ou aguar
 vaga. A selecao segue esta ordem de **tipo**:
 
 1. `hotfix`
-2. retomada/correcao de entrega devolvida por `agent:qa:rejected` ou `agent:security:rejected`
+2. retomada/correcao de entrega devolvida por `agent:qa:rejected`, `agent:security:rejected`, `agent:design:rejected` ou `agent:ux:rejected`
 3. `bug`
 4. demais tipos (`enhancement`, `feature` ou sem tipo)
 
@@ -94,6 +94,6 @@ antes de `Working` e na publicacao.
 2. Implementar, testar, sincronizar com `origin/master`.
 3. Atualizar a branch com `origin/master` e publicar somente a branch da task.
 4. Criar uma task de entrega no Paperclip vinculada à task mãe, destinada ao Manager, contendo branch, SHA, base master e testes.
-5. Handoff: o Manager cria as subtasks Paperclip ativas de QA, Security e DevOps. Design e UX permanecem suspensos e nao recebem subtasks. O Developer nao aplica labels nem altera a coluna do board; com `DELIVERY_PROOF:` registra apenas a entrega tecnica (o Manager aplica `agent:qa` + `agent:security`).
+5. Handoff: o Manager cria as subtasks Paperclip ativas de QA, Security, Design, UX e DevOps. O Developer nao aplica labels nem altera a coluna do board; com `DELIVERY_PROOF:` registra apenas a entrega tecnica (o Manager aplica `agent:qa` + `agent:security` + `agent:design` + `agent:ux`).
 
 Fonte completa: `agents/skills/controleonline/shared-github-github-flow/SKILL.md`.
