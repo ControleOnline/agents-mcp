@@ -9,7 +9,7 @@ Esta skill e a fonte oficial para criterios compartilhados de:
 - modularizacao
 - tamanho de arquivos e componentes
 - reuso de contratos e componentes
-- cores exclusivamente via variaveis de tema
+- cores exclusivamente via variaveis de tema (proibido cor literal no codigo)
 - termos de UI exclusivamente via traducao
 - manutencao de mudancas pequenas e rastreaveis
 - validacao de testes quando presentes na entrega
@@ -29,7 +29,14 @@ Se houver conflito entre um AGENTS local e esta skill para criterios de qualidad
 - se a regra de modularizacao puder ser respeitada com divisao simples, a divisao deve acontecer na mesma entrega
 - reutilize componentes, stores, helpers e contratos existentes antes de criar duplicatas
 - nao replique contrato de tela, store ou API quando a base compartilhada ja existir
-- **cores:** no delta de frontend, toda cor deve vir de variaveis de tema/CSS (`brandColors`, tokens do theme, `var(--*)` / palette). Hex, rgb, rgba e nomes de cor hardcoded no delta sao recusa
+- **cores — proibido cor no codigo:** nenhuma cor literal em codigo de frontend, em nenhuma circunstancia. Toda cor vem de variaveis do tema (tokens do theme store / tema da empresa, palette, `brandColors`, `var(--*)`). Hex, `rgb`/`rgba`, `hsl`/`hsla` e nomes de cor (`'white'`, `'black'`, `'red'`...) sao recusa, inclusive:
+  - fallback (`status.color || '#1d9bf0'`, `t.primary || '#000'`): sem token, use outro token (ex.: `palette.primary`) ou derive de um token (`withOpacity(token, 0.5)`)
+  - fundo de modal/overlay: use `modalOverlay` / `overlayBackground` do tema
+  - props de cor de componentes (`placeholderTextColor`, `ActivityIndicator color`, `tintColor`, `borderTopColor`...)
+  - `StyleSheet.create` estatico: estilos com cor sao gerados a partir da palette (`makeStyles(palette)` + hook)
+  - defaults/mocks de tema fora do contrato oficial do tema
+  - arquivo tocado que ja tinha cor literal: migrar na mesma entrega (nao "so o delta")
+  - verificacao objetiva (deve voltar vazio nos arquivos tocados): `grep -nE "#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\(" <arquivos>`
 - **termos/textos de UI:** todo texto visivel ao usuario deve vir do mecanismo de traducao (`t` / `translate` / store de traducao). String literal de UI no delta e recusa; chaves cruas (`mk7`, ids tecnicos) nao podem aparecer como label final
 - **testes automatizados nao sao obrigatorios** para aceite de QA. A ausencia de teste novo nao justifica `agent:qa:rejected`
 - **quando a entrega inserir ou alterar testes automatizados**, esses testes devem passar na execucao local registrada; teste novo/alterado falhando ou sem evidencia de execucao justifica recusa
@@ -64,7 +71,7 @@ Uma entrega so avanca quando:
 
 - a base ficou modularizada
 - os arquivos e componentes ficaram pequenos o suficiente
-- cores do delta usam apenas variaveis de tema
+- nenhuma cor literal nos arquivos tocados (grep de cores vazio); tudo via variaveis de tema
 - termos de UI do delta passam pela traducao (sem string literal e sem chave crua como label)
 - se houver testes novos/alterados, eles passam na execucao registrada
 - a evidencia cobre o comportamento que mudou
@@ -76,6 +83,6 @@ Devolva a entrega quando:
 - houver componente ou arquivo grande demais sem quebra aceitavel
 - a mudanca duplicar contrato que ja existe em shared/store/component
 - a mudanca tornar o codigo mais centralizado, dificil de reaproveitar ou dificil de testar
-- cores hardcoded no delta de frontend
+- qualquer cor literal (hex/rgb/rgba/hsl/nome) em codigo de frontend, inclusive fallback, overlay e props de cor
 - texto de UI hardcoded ou chave tecnica crua exibida ao usuario
 - testes novos/alterados na entrega falhando ou sem evidencia de execucao
