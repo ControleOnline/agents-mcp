@@ -9,7 +9,7 @@ Estas listas sao o criterio de aprovacao que deve ser copiado para a task quando
 - limite de linhas e tamanho do componente estao coerentes com o escopo
 - componentes, hooks, services e helpers existentes foram reaproveitados quando possivel
 - subchecklist de reaproveitamento de componentes em `agents/skills/controleonline/shared-quality-review-checklists/component-reuse-checklist.md` foi executado quando a entrega afetar frontend
-- **cores:** proibido cor literal no codigo (hex/rgb/rgba/hsl/nome), inclusive fallback, overlay de modal e props de cor; arquivo tocado com cor legada e migrado; `grep -nE "#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\("` vazio nos arquivos tocados
+- **cores:** proibido cor literal no codigo (hex/rgb/rgba/hsl/nome), inclusive fallback, overlay de modal e props de cor; arquivo tocado com cor legada e migrado; `grep -nE "#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\("` vazio nos arquivos tocados
 - **termos:** todo texto de UI do delta vem da traducao; sem string literal e sem chave crua como label
 - padroes de codigo (modularizacao, reuso, ≤500 linhas) respeitados
 - **testes automatizados nao sao obrigatorios**; se a entrega inserir ou alterar testes, eles devem passar na execucao local registrada

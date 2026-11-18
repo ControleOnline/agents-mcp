@@ -36,7 +36,7 @@ Se houver conflito entre um AGENTS local e esta skill para criterios de qualidad
   - `StyleSheet.create` estatico: estilos com cor sao gerados a partir da palette (`makeStyles(palette)` + hook)
   - defaults/mocks de tema fora do contrato oficial do tema
   - arquivo tocado que ja tinha cor literal: migrar na mesma entrega (nao "so o delta")
-  - verificacao objetiva (deve voltar vazio nos arquivos tocados): `grep -nE "#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\(" <arquivos>`
+  - verificacao objetiva (deve voltar vazio nos arquivos tocados): `grep -nE "#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(" <arquivos>`
 - **termos/textos de UI:** todo texto visivel ao usuario deve vir do mecanismo de traducao (`t` / `translate` / store de traducao). String literal de UI no delta e recusa; chaves cruas (`mk7`, ids tecnicos) nao podem aparecer como label final
 - **testes automatizados nao sao obrigatorios** para aceite de QA. A ausencia de teste novo nao justifica `agent:qa:rejected`
 - **quando a entrega inserir ou alterar testes automatizados**, esses testes devem passar na execucao local registrada; teste novo/alterado falhando ou sem evidencia de execucao justifica recusa
