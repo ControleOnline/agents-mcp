@@ -2,6 +2,12 @@ const TASK_BRANCH = /^task-([1-9][0-9]*)$/;
 const RC_BRANCH = /^rc\/(\d+)\.(\d+)\.(\d+)-rc\.([1-9][0-9]*)$/;
 const SHA = /^[0-9a-f]{40}$/i;
 const GOVERNANCE_PR_ALLOWLISTS = new Map([
+  ['task-265', new Set([
+    '.github/workflows/integration-source-gate.yml',
+    'agents/skills/controleonline/shared-quality-code-quality/SKILL.md',
+    'agents/skills/controleonline/shared-quality-review-checklists/SKILL.md',
+    'workers/automate/devops/integration-source-policy.mjs',
+  ])],
   ['task-reactivate-design-ux', new Set([
     '.github/workflows/integration-source-gate.yml',
     'AGENTS.md',
