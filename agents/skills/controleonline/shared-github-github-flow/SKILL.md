@@ -331,11 +331,12 @@ inteiro de `dev` adiante arrasta commits ainda não homologados.
 Regras duras:
 
 - **Nunca** abrir PR `dev -> staging` ou `dev -> master`.
-- **Nunca** abrir PR `rc/* -> staging` ou `rc/* -> master` como passagem
-  direta de um lote arbitrário; a RC só promove 1..5 tasks com quarteto
-  aceito, pelo rito de `shared-github-release-candidate/SKILL.md`.
-- Cada `task-{id_issue}` sobe separadamente: PR da task branch para a RC
-  técnica, e dessa RC congelada para `staging`/`master` sob o rito de
+- A RC `rc/X.Y.Z-rc.N` pode conter **várias** tasks (cherry-pick dos
+  commits escolhidos a partir de `master`), mas **nunca** significar
+  "dev inteiro"; o lote precisa ser deliberado, com quarteto aceito por
+  task, pelo rito de `shared-github-release-candidate/SKILL.md`.
+- Cada `task-{id_issue}` chega à RC por cherry-pick explícito; a RC
+  congelada promove `staging`/`master` sob o rito de
   `shared-github-master-publication/SKILL.md`.
 - Se a branch `task-{id}` já foi apagada no merge em `dev`, reconstrua-a a
   partir de `master` com `cherry-pick` seletivo dos commits daquela task
