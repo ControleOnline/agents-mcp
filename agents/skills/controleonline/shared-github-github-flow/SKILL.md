@@ -322,12 +322,57 @@ master
 - Publica **somente o delta** da `task-{id}`.
 - Manager P1 = DevOps. Manager P2 = hotfix. Manager **não** implementa produto; exceção estrutural em `agents-mcp` (docs/governança/runners).
 
+## Promoção para staging e master é por task, nunca por lote
+
+A branch `dev` acumula trabalho de várias pessoas em estados diversos de
+validação pelo quarteto (QA + Security + Design + UX). Levar o estado
+inteiro de `dev` adiante arrasta commits ainda não homologados.
+
+Regras duras:
+
+- **Nunca** abrir PR `dev -> staging` ou `dev -> master`.
+- **Nunca** abrir PR `rc/* -> staging` ou `rc/* -> master` como passagem
+  direta de um lote arbitrário; a RC só promove 1..5 tasks com quarteto
+  aceito, pelo rito de `shared-github-release-candidate/SKILL.md`.
+- Cada `task-{id_issue}` sobe separadamente: PR da task branch para a RC
+  técnica, e dessa RC congelada para `staging`/`master` sob o rito de
+  `shared-github-master-publication/SKILL.md`.
+- Se a branch `task-{id}` já foi apagada no merge em `dev`, reconstrua-a a
+  partir de `master` com `cherry-pick` seletivo dos commits daquela task
+  antes de levá-la à RC; nunca derive uma nova branch de `dev` para
+  promover.
+
+Errado:
+
+```
+# Varre dev inteiro para master
+gh pr create --base master --head dev
+git push origin dev:master
+```
+
+Certo:
+
+```
+# Uma task por vez via RC congelada
+git checkout -b rc/1.2.3-rc.1 master
+git cherry-pick <sha-task-84>
+git commit --allow-empty -m "release: freeze rc/1.2.3-rc.1"
+# ...homologa em staging...
+# ...autoriza em Deploy...
+# ...promove rc para master...
+```
+
+A fail-closed de `shared-github-master-publication/SKILL.md` já bloqueia
+origem `dev`, `staging`, `release/*` ou agregadora manual. Esta seção é o
+reforço explícito no fluxo do Developer.
+
 ## Quality Bar
 
 - não derive task branch de `dev`/`staging` (sempre de `master`)
 - não entregue Developer em `staging` (destino é `dev`)
 - não faça handoff com mudança local, commit não publicado ou projeto/submódulo afetado sem conferência contra `origin/master`
 - não promova para `master` sem coluna `Deploy` e passagem por `In Review`
+- **nunca promova `dev` para `staging`/`master` como lote; cada task sobe por sua RC**
 - não monte RC, pai de RC ou freeze de pacote
 - não pule etapa sem evidência verificável
 - não mova `Deploy` de volta para `In Review` sem rejeição humana explícita
